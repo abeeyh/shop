@@ -1,0 +1,17 @@
+{
+  "Metadata": {
+    "title": "Services WoW : or, raids et Mythique+",
+    "description": "Or, raids et donjons Mythique+ pour World of Warcraft US et EU. Paiement en USDT ou par carte."
+  },
+  "ComingSoon": {
+    "badge": "Bientôt disponible",
+    "title": "Progressez dans WoW, sans le farm",
+    "subtitle": "Or, raids et donjons Mythique+ pour Retail US et EU — prix en USDT, horaires dans votre fuseau.",
+    "categories": {
+      "gold": "Or",
+      "raids": "Raids",
+      "dungeons": "Donjons"
+    },
+    "payment": "Paiement en USDT ou par carte"
+  }
+}

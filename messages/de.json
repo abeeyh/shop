@@ -1,0 +1,17 @@
+{
+  "Metadata": {
+    "title": "WoW-Services: Gold, Raids und Mythisch+",
+    "description": "Gold, Raids und Mythisch+-Dungeons für World of Warcraft US und EU. Bezahlung in USDT oder per Karte."
+  },
+  "ComingSoon": {
+    "badge": "Demnächst verfügbar",
+    "title": "Dein WoW-Fortschritt, ohne Grind",
+    "subtitle": "Gold, Raids und Mythisch+-Dungeons für Retail US und EU – Preise in USDT, Termine in deiner Zeitzone.",
+    "categories": {
+      "gold": "Gold",
+      "raids": "Raids",
+      "dungeons": "Dungeons"
+    },
+    "payment": "Bezahlung in USDT oder per Karte"
+  }
+}

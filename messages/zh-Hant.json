@@ -1,0 +1,17 @@
+{
+  "Metadata": {
+    "title": "WoW 服務：金幣、團隊副本與傳奇+",
+    "description": "World of Warcraft 美服與歐服的金幣、團隊副本與傳奇+地城。以 USDT 或信用卡付款。"
+  },
+  "ComingSoon": {
+    "badge": "即將推出",
+    "title": "輕鬆推進你的 WoW 進度",
+    "subtitle": "美服與歐服正式版的金幣、團隊副本代打與傳奇+地城——以 USDT 計價，依你的時區排程。",
+    "categories": {
+      "gold": "金幣",
+      "raids": "團隊副本",
+      "dungeons": "地城"
+    },
+    "payment": "以 USDT 或信用卡付款"
+  }
+}

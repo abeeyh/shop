@@ -1,0 +1,1 @@
+pnpm typecheck && pnpm i18n:check && pnpm test --run

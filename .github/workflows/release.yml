@@ -1,0 +1,38 @@
+# docs/13 §6: release-please na main; depois da release, back-merge main → hom
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.rp.outputs.release_created }}
+      tag_name: ${{ steps.rp.outputs.tag_name }}
+    steps:
+      - id: rp
+        uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          target-branch: main
+
+  back-merge:
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Abrir PR main → hom
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create --repo "${{ github.repository }}" --base hom --head main \
+            --title "chore: back-merge ${{ needs.release-please.outputs.tag_name }} para hom" \
+            --body "Sincroniza hom com a release ${{ needs.release-please.outputs.tag_name }} (docs/13 §5). Merge commit, sem squash." \
+            || echo "Nada a sincronizar ou PR já aberto."

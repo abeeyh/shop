@@ -1,0 +1,27 @@
+# PRs de dependência entram por hom, como qualquer mudança (docs/13 §5)
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    target-branch: hom
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      minor-patch:
+        update-types: [minor, patch]
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: hom
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "ci(deps)"
+  - package-ecosystem: docker
+    directory: /
+    target-branch: hom
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "chore(deps)"

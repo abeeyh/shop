@@ -1,0 +1,28 @@
+# Serviços locais de desenvolvimento (docs/05 — Ambientes). Só para máquina local.
+services:
+  db:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_USER: shop
+      POSTGRES_PASSWORD: shop
+      POSTGRES_DB: shop
+    ports:
+      - "127.0.0.1:${SHOP_DB_PORT:-5433}:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shop"]
+      interval: 5s
+      retries: 10
+
+  cache:
+    image: valkey/valkey:8.1-alpine
+    ports:
+      - "127.0.0.1:${SHOP_CACHE_PORT:-6380}:6379"
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  db-data:

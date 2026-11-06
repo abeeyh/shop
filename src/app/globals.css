@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+/* Paleta e tokens: docs/11-design.md §1–2. Hex só aqui. */
+:root {
+  --radius: 0.9375rem;
+  --heading: #ffffff;
+  --link: #6b95ff;
+  --error-text: #f43f5e;
+  --gradient-from: #fc466b;
+  --gradient-to: #3f5efb;
+  --background: #080326;
+  --foreground: #cecdd4;
+  --card: #110d2e;
+  --card-foreground: #cecdd4;
+  --popover: #110d2e;
+  --popover-foreground: #cecdd4;
+  --primary: #2f63e6;
+  --primary-hover: #2556cc;
+  --primary-foreground: #ffffff;
+  --secondary: #ffffff14;
+  --secondary-foreground: #ffffff;
+  --muted: #ffffff14;
+  --muted-foreground: #9c9aa8;
+  --accent: #ffffff1f;
+  --accent-foreground: #ffffff;
+  --destructive: #e11d48;
+  --destructive-foreground: #ffffff;
+  --border: #ffffff1a;
+  --input: #0f0935;
+  --ring: #6b95ff;
+  --font-cjk:
+    "PingFang TC", "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", "Noto Sans CJK TC",
+    "Noto Sans CJK SC", sans-serif;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-heading: var(--heading);
+  --color-link: var(--link);
+  --color-error-text: var(--error-text);
+  --color-gradient-from: var(--gradient-from);
+  --color-gradient-to: var(--gradient-to);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 5px);
+  --radius-sm: calc(var(--radius) - 10px);
+  --font-sans: var(--font-mulish), var(--font-cjk);
+  --font-heading: var(--font-inter), var(--font-cjk);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

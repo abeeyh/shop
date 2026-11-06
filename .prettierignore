@@ -1,0 +1,6 @@
+pnpm-lock.yaml
+.next/
+coverage/
+CHANGELOG.md
+docs/
+*.md

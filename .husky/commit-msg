@@ -1,0 +1,5 @@
+pnpm exec commitlint --edit "$1"
+if grep -qiE '^co-authored-by:.*(claude|anthropic|copilot|openai|chatgpt|gpt|gemini)' "$1"; then
+  echo "Commits não podem ter IA como coautora (CONTRIBUTING.md)." >&2
+  exit 1
+fi

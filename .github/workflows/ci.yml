@@ -1,0 +1,82 @@
+# docs/13-padroes-qualidade.md §7 — bloqueia merge em hom e main
+name: CI
+
+on:
+  pull_request:
+    branches: [hom, main]
+  push:
+    branches: [hom, main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm typecheck
+      - run: pnpm i18n:check
+      - run: pnpm test:coverage
+      - run: pnpm build
+      - run: pnpm audit --prod --audit-level high
+
+  pr-rules:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          scopes: |
+            auth
+            ui
+            db
+            infra
+            deps
+            docs
+            catalog
+            pricing
+            schedule
+            cart
+            checkout
+            payments
+            orders
+            admin
+            preferences
+            i18n
+            support
+            observability
+          requireScope: false
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Commits sem IA como coautora (CONTRIBUTING.md)
+        run: |
+          if git log --format=%B "origin/${{ github.base_ref }}..${{ github.event.pull_request.head.sha }}" \
+            | grep -qiE '^co-authored-by:.*(claude|anthropic|copilot|openai|chatgpt|gpt|gemini)'; then
+            echo "::error::Há commit com IA como coautora."
+            exit 1
+          fi
+      - name: Destino correto (docs/13 §5)
+        if: github.base_ref == 'main'
+        run: |
+          case "${{ github.head_ref }}" in
+            hom|hotfix/*|release-please--*) ;;
+            *) echo "::error::PR para main só de hom, hotfix/* ou release-please."; exit 1 ;;
+          esac
