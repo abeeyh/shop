@@ -22,16 +22,18 @@ Modelo `opus` onde errar custa caro (conformidade, dinheiro, segurança, diagnó
 
 ```mermaid
 flowchart LR
-  P[Pedido] --> G[guardiao-docs]
+  P[Pedido] --> IS[Issue no GitHub]
+  IS --> G[guardiao-docs]
   G -- conflito --> U[Pergunta ao usuário]
   G -- ok --> I[Implementação<br/>backend-api / pagamentos → frontend-ui]
   I --> T[i18n<br/>se houver texto]
   T --> Q[qa-testes]
   Q --> S[seguranca<br/>se tocar auth, dinheiro, dados, logs, infra]
-  S --> PR[PR para hom]
-  PR --> H[homologação] --> M[promoção → main → release]
+  S --> PR[PR para dev<br/>Closes #N]
+  PR --> D[dev] --> H[hom / homologação] --> M[main / produção]
 ```
 
+- Todo pedido vira (ou já é) uma issue; o agente trabalha na branch `<tipo>/<nº>-<assunto>` criada de `dev`.
 - Tarefas que atravessam camadas: backend (contrato da API) primeiro, depois UI, depois traduções.
 - Tudo que toca `checkout`, `src/lib/payments`, `src/lib/fx` ou `/api/webhooks/*` é do `pagamentos` e passa **sempre** pelo `seguranca`.
 - Mudança em CI, deploy, branches ou observabilidade é do `infra`.
@@ -45,7 +47,7 @@ flowchart LR
   IS --> Q[qa-testes<br/>teste que reproduz]
   Q --> F[agente da área corrige<br/>fix/* ou hotfix/*]
   F --> S[seguranca se necessário]
-  S --> PR[PR → hom → main]
+  S --> PR[PR → dev → hom → main]
 ```
 
 ## Regras comuns

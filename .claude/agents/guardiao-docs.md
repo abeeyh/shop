@@ -18,7 +18,7 @@ Para cada pedido ou diff:
    - texto em todos os 6 idiomas (RN-80); horário guardado em UTC e exibido no fuso escolhido (RN-83);
    - tokens do doc 11 (nada de hex fora do `globals.css`); Atomic Design;
    - log só pelo `logger`, sem dado pessoal (doc 16);
-   - fluxo branch → `hom` → `main` (doc 13 §5).
+   - existe issue para a tarefa; fluxo branch `<tipo>/<nº>-…` → `dev` → `hom` → `main` (doc 13 §5).
 4. Responda neste formato:
 
 ```
