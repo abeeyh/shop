@@ -2,9 +2,12 @@
 
 <!-- Uma ou duas frases. Título do PR em Conventional Commits: feat(escopo): ... -->
 
+Closes #<!-- nº da issue (obrigatório em PR para dev) -->
+
 ## Destino
 
-- [ ] `hom` (trabalho normal, squash)
+- [ ] `dev` (tarefa, squash)
+- [ ] `hom` (promoção de `dev`, merge commit)
 - [ ] `main` (promoção de `hom` com merge commit, ou `hotfix/*`)
 
 ## Conformidade

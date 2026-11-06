@@ -122,43 +122,62 @@ export default {
 
 O CI repete tudo; `--no-verify` não fura a regra.
 
-## 5. Branches e PRs
+## 5. Tarefas, branches e PRs
 
-Fluxo obrigatório: **branch → `hom` → `main` (prod)**.
+**Toda tarefa nasce de uma issue** e segue o fluxo **issue → branch da tarefa → `dev` → `hom` → `main` (prod)**.
 
-| Branch | Papel | Recebe PR de | Merge | Deploy |
-|--------|-------|--------------|-------|--------|
-| `feat/*`, `fix/*`, `refactor/*`, `docs/*`, `chore/*`, `test/*`, `ci/*` | Trabalho, curta (< 3 dias), criada a partir de `hom` | — | — | — |
-| `hom` (padrão do repositório) | Homologação | branches de trabalho | **Squash** (1 commit semântico por PR) | Automático em homologação |
-| `main` | Produção | só `hom` (promoção) ou `hotfix/*` | **Merge commit** (preserva os commits semânticos para o changelog) | Tag `vX.Y.Z` → produção com aprovação |
-| `hotfix/*` | Correção urgente, criada a partir de `main` | — | Squash em `main` | Produção; depois back-merge em `hom` |
+### Issue
+
+- Criada com o template `tarefa` (ou `bug`), com marco da fase (`F0`…`F5`), regras RN e critério "pronto quando".
+- Sem issue, não há branch nem PR. Exceções automáticas: Dependabot, release-please e back-merge.
+- Tarefa que depende de decisão do dono recebe a label `decisao` e não começa antes da resposta.
+
+### Branches
+
+| Branch | Papel | Criada de | PR para | Merge | Deploy |
+|--------|-------|-----------|---------|-------|--------|
+| `<tipo>/<nº-da-issue>-<assunto>` (ex.: `feat/14-seletor-de-fuso`) | Tarefa, curta (< 3 dias) | `dev` | `dev` | **Squash** (1 commit semântico por issue) | — |
+| `dev` (**padrão do repositório**) | Integração das tarefas | — | `hom` | **Merge commit** | Nenhum (só CI) |
+| `hom` | Homologação | — | `main` | **Merge commit** | Automático em homologação |
+| `main` | Produção | — | — | — | Tag `vX.Y.Z` → produção com aprovação |
+| `hotfix/<nº>-<assunto>` | Bug S1 ([16 §5](16-observabilidade.md#5-fluxo-de-um-bug)) | `main` | `main` | Squash | Produção; depois back-merge |
+
+`<tipo>` = tipo do Conventional Commit: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `ci`, `perf`, `build`.
 
 ```mermaid
 gitGraph
   commit id: "v0.1.0"
   branch hom
-  checkout hom
-  branch feat/carrinho
+  branch dev
+  checkout dev
+  branch feat/14-fuso
   commit id: "wip"
+  checkout dev
+  merge feat/14-fuso id: "feat(preferences) #14 squash"
   checkout hom
-  merge feat/carrinho id: "feat(cart) squash"
+  merge dev id: "promoção dev→hom"
   checkout main
-  merge hom id: "promoção" tag: "v0.2.0"
+  merge hom id: "promoção hom→main" tag: "v0.2.0"
   checkout hom
   merge main id: "back-merge"
+  checkout dev
+  merge hom id: "sync dev"
 ```
 
-- Nome da branch = tipo do commit: `feat/carrinho-anonimo`.
-- Push direto em `hom` e `main` bloqueado; CI verde obrigatório nas duas.
-- Depois de toda release ou hotfix na `main`, **back-merge `main` → `hom`** (automático no CI) para as duas não divergirem.
-- Título do PR em Conventional Commits (checado no CI).
-- PR < 400 linhas alteradas (sem lockfile e migrações geradas).
+### Regras
+
+- PR para `dev`: corpo com **`Closes #<nº>`** (checado no CI). Como `dev` é a branch padrão, a issue fecha no merge.
+- PR para `hom`: só de `dev` (ou back-merge vindo de `main`). PR para `main`: só de `hom`, `hotfix/*` ou release-please (checado no CI).
+- Promoções (`dev → hom`, `hom → main`) e back-merges usam **merge commit**, nunca squash: o changelog depende dos commits semânticos de cada tarefa.
+- Depois de toda release ou hotfix, **back-merge automático**: PRs `main → hom` e `main → dev`.
+- Título do PR em Conventional Commits (checado no CI); PR < 400 linhas alteradas (sem lockfile e migrações geradas).
 - Template de PR com checklist; 1 revisão + agente `seguranca` quando tocar auth, dados ou infra.
+- **Push direto em `dev`, `hom` e `main` é proibido.** O repositório é privado no plano gratuito, que não tem proteção de branch: a regra vale por disciplina e pelos checks do CI. Com GitHub Pro, ativar rulesets nas três branches.
 
 ## 6. SemVer e changelog
 
 - `MAJOR.MINOR.PATCH`; `0.x` no MVP; `1.0.0` no lançamento público.
-- **release-please** roda na `main`: lê os commits semânticos que chegaram de `hom`, mantém o Release PR com versão e `CHANGELOG.md`; o merge cria tag, release e dispara produção.
+- **release-please** roda na `main`: lê os commits semânticos que chegaram por `dev → hom`, mantém o Release PR com versão e `CHANGELOG.md`; o merge cria tag, release e dispara produção.
 - Configuração `bump-minor-pre-major: true`, para que `feat!` em `0.x` suba o MINOR e não pule para `1.0.0` sem querer.
 - `CHANGELOG.md` gerado, nunca editado à mão.
 
@@ -166,7 +185,8 @@ gitGraph
 
 ```mermaid
 flowchart LR
-  PR[Pull Request] --> CI
+  I[Issue #N] --> BR[branch tipo/N-assunto]
+  BR -- PR + Closes #N --> CI
   subgraph CI["CI (todo PR)"]
     A[install<br/>frozen lockfile] --> B[lint + format]
     B --> C[typecheck]
@@ -174,28 +194,30 @@ flowchart LR
     D --> E[build]
     E --> F[E2E]
     A --> G[audit]
-    A --> H[título semântico]
-    A --> I[chaves de tradução]
+    A --> H[título, issue,<br/>destino, coautoria]
+    A --> T[chaves de tradução]
   end
-  CI -- squash --> H[hom]
-  H --> J[imagem → registry]
+  CI -- squash --> DEV[dev]
+  DEV -- PR de promoção<br/>merge commit --> HOM[hom]
+  HOM --> J[imagem → registry]
   J --> K[deploy homologação<br/>+ migrações + smoke]
-  H -- PR de promoção<br/>merge commit --> M[main]
+  HOM -- PR de promoção<br/>merge commit --> M[main]
   M --> RP[release-please]
-  RP -- merge --> T[tag vX.Y.Z]
-  T --> L{aprovação}
+  RP -- merge --> TG[tag vX.Y.Z]
+  TG --> L{aprovação}
   L --> P[deploy produção<br/>mesma imagem de hom]
-  P --> BM[back-merge main → hom]
+  P --> BM[back-merge main → hom e main → dev]
 ```
 
 | Gatilho | Jobs | Bloqueia merge? |
 |---------|------|-----------------|
-| PR para `hom` | install, lint, format, typecheck, traduções, testes, cobertura, build, E2E, audit, título semântico, commits sem coautoria de IA | Sim |
+| PR para `dev` | install, lint, format, typecheck, traduções, testes, cobertura, build, E2E, audit, título semântico, `Closes #N`, commits sem coautoria de IA | Sim |
+| PR `dev` → `hom` | mesmos jobs + destino permitido | Sim |
 | Merge em `hom` | imagem, deploy em homologação, migrações, smoke | — |
-| PR `hom` → `main` | mesmos jobs do PR + smoke de homologação verde | Sim |
-| Merge do Release PR na `main` | tag, produção com aprovação manual (promove a imagem testada em hom), smoke, back-merge `main` → `hom` | — |
+| PR `hom` → `main` | mesmos jobs + destino permitido + smoke de homologação verde | Sim |
+| Merge do Release PR na `main` | tag, produção com aprovação manual (promove a imagem testada em hom), smoke, back-merge para `hom` e `dev` | — |
 | PR com `infra/` | `terraform fmt -check`, `validate`, `plan` | Sim |
-| Semanal | rebuild de imagens, audit, Dependabot | — |
+| Semanal | rebuild de imagens, audit, Dependabot (PRs para `dev`) | — |
 
 Rollback: redeploy da tag anterior. Produção só recebe imagem que passou por homologação (exceção: `hotfix/*`, com smoke antes). Migrações compatíveis com a versão anterior (expandir → migrar → contrair).
 
@@ -223,7 +245,7 @@ Rollback: redeploy da tag anterior. Produção só recebe imagem que passou por 
 - [ ] Acessível e responsivo
 - [ ] Textos em todos os idiomas
 - [ ] Título semântico; nenhum commit com IA coautora
-- [ ] PR para `hom` (ou `main` só se for promoção/hotfix)
+- [ ] Issue linkada (`Closes #N`); PR para `dev` (ou `hom`/`main` só em promoção/hotfix)
 
 ## 10. Ferramentas (versões fixadas)
 

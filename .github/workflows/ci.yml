@@ -3,9 +3,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [hom, main]
+    branches: [dev, hom, main]
   push:
-    branches: [hom, main]
+    branches: [dev, hom, main]
 
 permissions:
   contents: read
@@ -37,6 +37,7 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pull-requests: read
     steps:
       - uses: amannn/action-semantic-pull-request@v5
@@ -74,9 +75,23 @@ jobs:
             exit 1
           fi
       - name: Destino correto (docs/13 §5)
-        if: github.base_ref == 'main'
+        env:
+          BASE: ${{ github.base_ref }}
+          HEAD: ${{ github.head_ref }}
         run: |
-          case "${{ github.head_ref }}" in
-            hom|hotfix/*|release-please--*) ;;
-            *) echo "::error::PR para main só de hom, hotfix/* ou release-please."; exit 1 ;;
+          case "$BASE:$HEAD" in
+            main:hom|main:hotfix/*|main:release-please--*) ;;
+            hom:dev|hom:main) ;;
+            dev:main|dev:hom|dev:dependabot/*) ;;
+            dev:feat/[0-9]*|dev:fix/[0-9]*|dev:docs/[0-9]*|dev:refactor/[0-9]*|dev:test/[0-9]*|dev:chore/[0-9]*|dev:ci/[0-9]*|dev:perf/[0-9]*|dev:build/[0-9]*) ;;
+            *) echo "::error::PR de '$HEAD' para '$BASE' fora do fluxo. Tarefa: <tipo>/<nº>-<assunto> → dev; dev → hom; hom → main."; exit 1 ;;
           esac
+      - name: Tarefa linkada a uma issue (docs/13 §5)
+        if: github.base_ref == 'dev' && !startsWith(github.head_ref, 'dependabot/') && github.head_ref != 'main' && github.head_ref != 'hom'
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          if ! printf '%s' "$BODY" | grep -qiE '(closes|fixes|resolves) #[0-9]+'; then
+            echo "::error::PR de tarefa precisa de 'Closes #<nº da issue>' no corpo."
+            exit 1
+          fi

@@ -154,4 +154,5 @@ sequenceDiagram
 | `/api/support/stream` | API (SSE) | Equipe — avisos da fila |
 | `/[locale]/admin/suporte` | Página | Suporte e admin com 2FA (fila, conversa, dados do pedido) |
 | `/[locale]/admin/equipe` | Página | Só admin (convidar, desativar, papéis, idiomas, horário) |
+| `/[locale]/admin/docs`, `/[locale]/admin/docs/[slug]` | Página | Admin e suporte com 2FA (RN-74); lê `docs/*.md` no build — sem cópia |
 | `/[locale]/admin/bug-reports` | Página | Admin com 2FA |

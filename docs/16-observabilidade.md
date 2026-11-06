@@ -86,7 +86,7 @@ flowchart LR
 
 | Severidade | Exemplo | Prazo de resposta | Caminho |
 |------------|---------|-------------------|---------|
-| **S1** | Checkout fora do ar, pagamento confirmado sem pedido pago, vazamento de dados | Imediato | `hotfix/*` a partir de `main` ([13 §5](13-padroes-qualidade.md#5-branches-e-prs)) |
+| **S1** | Checkout fora do ar, pagamento confirmado sem pedido pago, vazamento de dados | Imediato | `hotfix/*` a partir de `main` ([13 §5](13-padroes-qualidade.md#5-tarefas-branches-e-prs)) |
 | **S2** | Funcionalidade quebrada sem alternativa (ex.: fuso errado na agenda) | 1 dia útil | `fix/*` → `hom` → `main` |
 | **S3** | Defeito com alternativa ou visual | Próxima release | `fix/*` → `hom` |
 
