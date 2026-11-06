@@ -1,0 +1,49 @@
+name: Bug
+description: Algo não funciona como deveria
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severidade (docs/16 §5)
+      options:
+        - S1 — checkout/pagamento/dados (hotfix)
+        - S2 — funcionalidade quebrada sem alternativa
+        - S3 — defeito com alternativa ou visual
+    validations:
+      required: true
+  - type: dropdown
+    id: env
+    attributes:
+      label: Ambiente
+      options: [production, homologacao, local]
+    validations:
+      required: true
+  - type: input
+    id: ids
+    attributes:
+      label: ID do erro / requestId / link do Sentry
+  - type: input
+    id: release
+    attributes:
+      label: Versão (tag vX.Y.Z)
+  - type: textarea
+    id: steps
+    attributes:
+      label: Passos para reproduzir
+      description: Inclua idioma, região, fuso e tamanho de tela se forem relevantes.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Esperado × obtido
+    validations:
+      required: true
+  - type: input
+    id: rules
+    attributes:
+      label: Regras afetadas (RN-xx)
+  - type: markdown
+    attributes:
+      value: "Não cole senha, token, dados de cartão, chave de carteira nem e-mail completo de cliente."

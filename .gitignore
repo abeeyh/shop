@@ -1,0 +1,37 @@
+# dependências e build
+node_modules/
+.next/
+out/
+dist/
+*.tsbuildinfo
+
+# ambiente (segredos)
+.env
+.env.*
+!.env.example
+
+# testes
+coverage/
+playwright-report/
+test-results/
+
+# terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+
+# sistema / editor
+.DS_Store
+Thumbs.db
+.idea/
+
+# Claude Code (config local da máquina)
+.claude/settings.local.json
+
+# next.js
+next-env.d.ts
+.pnp.*
+*.pem
+.vercel

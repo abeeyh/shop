@@ -1,0 +1,238 @@
+# 06 — UML
+
+Diagramas em Mermaid. Atualize junto com qualquer mudança em [02](02-regras-de-negocio.md) ou [04](04-arquitetura.md).
+
+## 1. Casos de uso
+
+```mermaid
+flowchart LR
+  C((Comprador))
+  A((Admin))
+  P((Provedores de<br/>pagamento))
+  S((Suporte))
+  subgraph Shop
+    UC0([Escolher idioma, região e fuso])
+    UC1([Navegar por categorias e produtos])
+    UC2([Escolher slot de raid])
+    UC3([Pagar em USDT ou cartão])
+    UC4([Acompanhar pedido])
+    UC5([Gerenciar categorias, produtos e preços])
+    UC8([Gerenciar promoções por tempo e cupons])
+    UC9([Aplicar cupom])
+    UC10([Conversar com o suporte])
+    UC11([Atender conversas e pedidos])
+    UC12([Gerenciar equipe e horário de atendimento])
+    UC6([Atribuir, entregar, provar entrega, reembolsar])
+    UC7([Confirmar pagamento])
+  end
+  C --> UC0 & UC1 & UC2 & UC3 & UC4 & UC9 & UC10
+  A --> UC5 & UC6 & UC8 & UC11 & UC12
+  S --> UC6 & UC11
+  P --> UC7
+```
+
+## 2. Classes (domínio)
+
+```mermaid
+classDiagram
+  class Category {
+    +id: string
+    +kind: gold|raid|dungeon
+    +name: string
+    +slug: string
+    +sortOrder: int
+    +active: boolean
+  }
+  class Product {
+    +id: string
+    +region: US|EU
+    +name: string
+    +priceUsdtCents: int
+    +unit: string
+    +options: json
+    +active: boolean
+  }
+  class Promotion {
+    +type: percent|fixed
+    +value: int
+    +scope: store|category|product
+    +startsAt: Date (UTC)
+    +endsAt: Date (UTC)
+  }
+  class Coupon {
+    +code: string
+    +type: percent|fixed
+    +value: int
+    +scope: store|category|product
+    +startsAt: Date (UTC)
+    +endsAt: Date (UTC)
+    +maxUses: int?
+    +maxUsesPerEmail: int?
+    +minOrderUsdtCents: int?
+  }
+  class CouponRedemption {
+    +email: string
+    +status: reserved|used|released
+  }
+  class RaidSlot {
+    +startsAt: Date (UTC)
+    +capacity: int
+    +reserved: int
+  }
+  class Order {
+    +id: string
+    +email: string
+    +locale: string
+    +timezone: string
+    +region: US|EU
+    +status: OrderStatus
+    +subtotalUsdtCents: int
+    +discountUsdtCents: int
+    +discountSource: promotion|coupon|none
+    +totalUsdtCents: int
+    +paymentMethod: usdt|card
+    +network: string?
+    +txHash: string?
+    +quoteRate: decimal?
+    +chargedAmount: int?
+    +chargedCurrency: string?
+  }
+  class OrderItem {
+    +unitPriceUsdtCents: int
+    +quantity: int
+    +options: json
+    +characterName: string
+    +realm: string
+    +faction: string
+  }
+  class Delivery {
+    +proofUrl: string
+    +deliveredAt: Date
+  }
+  class PaymentEvent {
+    +provider: string
+    +providerEventId: string
+    +type: string
+  }
+  Category "1" *-- "*" Product
+  Product "1" *-- "*" RaidSlot
+  Promotion "*" --> "*" Product : aplica a
+  Promotion "*" --> "*" Category : aplica a
+  Coupon "1" *-- "*" CouponRedemption
+  CouponRedemption "*" --> "1" Order
+  Order "1" *-- "1..*" OrderItem
+  OrderItem "*" --> "1" Product
+  OrderItem "*" --> "0..1" RaidSlot
+  Order "1" -- "0..1" Delivery
+  Order "1" <-- "*" PaymentEvent
+  class StaffProfile {
+    +role: suporte|admin
+    +languages: string[]
+    +active: boolean
+  }
+  class SupportConversation {
+    +locale: string
+    +status: aberta|em_atendimento|resolvida
+    +guestEmail: string?
+    +lastMessageAt: Date
+  }
+  class SupportMessage {
+    +authorType: customer|staff|system
+    +body: string (mascarado)
+    +createdAt: Date
+  }
+  SupportConversation "1" *-- "*" SupportMessage
+  SupportConversation "*" --> "0..1" Order
+  SupportConversation "*" --> "0..1" StaffProfile : atendente
+```
+
+## 3. Sequência — compra
+
+```mermaid
+sequenceDiagram
+  actor U as Comprador
+  participant W as App
+  participant DB as Banco
+  participant FX as Cotação
+  participant P as Provedor (cripto ou cartão)
+  U->>W: Finalizar compra (USDT ou cartão)
+  W->>DB: recalcula total em USDT (RN-20), cria pedido pendente, reserva gold/vaga (RN-34)
+  alt cartão
+    W->>FX: cotação USDT→moeda do cartão
+    W->>DB: grava cotação travada 15 min (RN-36)
+  end
+  W->>P: createCheckout
+  P-->>U: fatura USDT (rede) ou checkout de cartão (3-D Secure)
+  U->>P: paga
+  P->>W: webhook/IPN assinado
+  W->>W: verifyWebhook
+  W->>DB: insere payment_event (único — RN-33)
+  W->>DB: pedido → pago ou pagamento_parcial (RN-32, RN-37)
+  W-->>U: e-mail no idioma do pedido
+```
+
+## 4. Estados — pedido (RN-50, RN-51)
+
+```mermaid
+stateDiagram-v2
+  [*] --> pendente
+  pendente --> pago: pagamento confirmado
+  pendente --> pagamento_parcial: USDT a menor
+  pagamento_parcial --> pago: complemento
+  pendente --> expirado: 30 min sem pagamento
+  pago --> em_andamento: admin atribui
+  em_andamento --> concluido: prova de entrega (RN-52)
+  pago --> reembolsado
+  em_andamento --> reembolsado
+  pago --> contestado: chargeback
+  em_andamento --> contestado: chargeback
+  concluido --> contestado: chargeback
+  expirado --> [*]
+  reembolsado --> [*]
+  concluido --> [*]
+```
+
+## 4b. Atividade — preço final (RN-20 a RN-29)
+
+```mermaid
+flowchart TD
+  A[Itens do carrinho] --> B[Preço-base de cada produto no banco]
+  B --> C[Promoções ativas agora para cada produto<br/>pega a de maior desconto — RN-23]
+  C --> D[Total com promoção]
+  B --> E{Cupom informado?}
+  E -- não --> F[Total final = total com promoção]
+  E -- sim --> G{Cupom válido?<br/>janela, usos, mínimo, escopo — RN-25}
+  G -- não --> H[Erro genérico — RN-28] --> F
+  G -- sim --> I[Total com cupom sobre o preço-base]
+  D --> J{Qual dá maior desconto? — RN-26}
+  I --> J
+  J --> K[Total final + origem do desconto gravados no pedido — RN-29]
+  F --> K
+```
+
+## 4c. Estados — conversa de suporte (RN-93)
+
+```mermaid
+stateDiagram-v2
+  [*] --> aberta: cliente abre
+  aberta --> em_atendimento: atendente assume
+  em_atendimento --> resolvida: atendente resolve
+  resolvida --> aberta: cliente responde em até 7 dias
+  resolvida --> [*]: 7 dias sem resposta
+```
+
+## 5. Implantação
+
+```mermaid
+flowchart TB
+  BR[Navegador] --> CDN[DNS/CDN]
+  CDN --> HOM[App homologação<br/>branch hom]
+  CDN --> PROD[App produção<br/>tag vX.Y.Z]
+  HOM --> DBH[(Banco hom)]
+  PROD --> DBP[(Banco prod)]
+  HOM -. sandbox .-> PAYT[Provedores em modo teste]
+  PROD --> PAYR[Provedores reais]
+  GH[CI] -- imagem --> REG[Registry]
+  REG --> HOM
+  REG -- mesma imagem, aprovação --> PROD
+```

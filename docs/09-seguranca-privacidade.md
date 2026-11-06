@@ -1,0 +1,145 @@
+# 09 — Segurança e privacidade
+
+Base de segurança válida para qualquer app web. Complete as seções marcadas com o que for específico do projeto.
+
+## 1. Modelo de ameaças
+
+### Fronteiras de confiança (tudo que entra é hostil)
+
+| Fronteira | Entrada não confiável |
+|-----------|----------------------|
+| Navegador → API | Formulários, parâmetros de rota, cookies |
+| Links de e-mail → API | Tokens de verificação e recuperação |
+| Provedores OAuth → Auth | Callback (`state`, `code`) |
+| Webhooks externos → API | Eventos de pagamento e serviços |
+| Cron → API | Chamadas a `/api/cron/*` |
+| Gateway cripto → API | IPN de pagamento (HMAC) |
+| API de cotação → App | Taxa USDT→moeda (pode vir errada ou manipulada) |
+| Seletores de idioma/fuso/região | Cookies `NEXT_LOCALE`, `tz`, `region` |
+| Chat de suporte → API | Mensagens, anexos, cookie da conversa do visitante, conexão SSE |
+| Convite de equipe → Auth | Link de convite de suporte/admin |
+
+### Ativos
+
+Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de personagem (nome, realm), saldo nos provedores, reputação do domínio.
+
+### STRIDE
+
+| Ameaça | Exemplo no projeto | Controle |
+|--------|--------------------|----------|
+| Falsificação | [ ] | Sessão do servidor; webhooks com assinatura |
+| Adulteração | [ ] | Valores sensíveis (plano, papel, limites) vêm do banco, nunca do cliente; consultas parametrizadas; `zod` |
+| Repúdio | [ ] | Log de auditoria de ações sensíveis |
+| Vazamento | [ ] | Respostas que não revelam se um e-mail existe; erros genéricos |
+| Negação de serviço | [ ] | Rate limit em store compartilhado; CAPTCHA no cadastro; CDN/WAF |
+| Elevação de privilégio | [ ] | Autorização sobre o recurso em toda rota; admin com 2FA |
+
+### Casos de abuso que viram testes
+
+1. Rota protegida sem sessão → 401.
+2. Usuário acessa recurso de outro usuário → 404.
+3. Força bruta no login → bloqueio após N tentativas.
+4. Token de e-mail reutilizado ou vencido → recusado.
+5. Webhook sem assinatura ou repetido → ignorado.
+6. Cron sem segredo → 401.
+7. Cliente altera preço/quantidade no request do checkout → total recalculado do banco (RN-20).
+8. Webhook de pagamento forjado → assinatura inválida, ignorado (RN-32).
+9. IPN cripto com valor menor que o pedido → `pagamento_parcial`, sem entrega (RN-37).
+10. Checkout de cartão com cotação vencida (> 15 min) → recusado, pede nova cotação (RN-36).
+11. Cookie `tz` ou `region` inválido → valor padrão; nunca usado sem validação (lista IANA / enum).
+12. Locale fora dos 6 na URL → 404 ou redireciona para `en` (RN-81).
+13a. Cupom: força bruta de códigos → bloqueio após 10 tentativas/hora (RN-28); uso simultâneo além do limite → só os primeiros reservam (RN-27, transação); cupom ou desconto enviado pelo cliente → ignorado, recalculado no servidor (RN-20).
+13b. Admin sem 2FA tentando alterar preço, promoção ou cupom → 403; toda alteração auditada (RN-71).
+13c. Mensagem de chat com `<script>` → exibida como texto, nunca HTML.
+13d. Visitante tenta ler conversa de outro (trocando o `id`) → 404 (RN-92).
+13e. Atendente de suporte tenta mudar preço, cupom, reembolso ou equipe → 403 (RN-06).
+13f. Mensagem com número de cartão ou frase-semente → gravada mascarada (RN-95).
+13g. Anexo que não é imagem, maior que 5 MB ou com extensão falsa → recusado pelo conteúdo, não pela extensão (RN-96).
+13h. Link de convite de equipe reutilizado ou vencido → recusado.
+13. Spam no "Reportar problema" → bloqueado após 5/hora por IP (RN-91).
+14. Erro forçado em produção → resposta sem stack trace, com código e ID (RN-90); log sem dados pessoais.
+
+## 2. Controles
+
+### Autenticação e sessão
+- Senhas com scrypt/argon2; nunca em log.
+- Verificação de e-mail; tokens de uso único com validade curta.
+- Vínculo de contas OAuth ↔ senha só com e-mails verificados.
+- Senhas vazadas recusadas (HIBP por k-anonimato).
+- Rate limit em store compartilhado (não em memória).
+- Cookie `httpOnly`, `Secure`, `SameSite=Lax`; trocar senha encerra outras sessões.
+- CSRF: origens confiáveis configuradas.
+
+### Autorização
+- Toda rota checa sessão **e** permissão sobre o recurso.
+
+### Entrada e saída
+- `zod` em toda entrada; tamanho máximo de corpo.
+- React escapa por padrão; proibido `dangerouslySetInnerHTML` com dado de usuário.
+- Servidor nunca busca URL enviada por usuário (SSRF).
+- Upload (se houver): URL assinada, chave gerada pelo servidor, antivírus, download como anexo em outro domínio.
+
+### Headers
+- CSP com nonce + `strict-dynamic`, `frame-ancestors 'none'`, HSTS, `nosniff`, `Referrer-Policy`, `Permissions-Policy` mínima.
+- Sem CORS aberto.
+
+### Webhooks e cron
+- Assinatura verificada + tabela de idempotência.
+- Cron com segredo e só pela rede interna.
+
+### Servidores
+- Firewall mínimo; banco e cache sem IP público.
+- SSH só por chave, sem root, IP restrito.
+- Atualizações automáticas; containers sem root.
+- Backups criptografados em armazenamento privado.
+
+### Segredos e dependências
+- Segredos fora do repositório; `.env.example` com placeholders.
+- `pnpm install --frozen-lockfile`, scripts de instalação só de pacotes aprovados, `pnpm audit` antes de release, Dependabot.
+
+### Logs e rastreamento de erros
+- Nunca registrar senha, token, cookie, dados de cartão, chave de carteira ou dados pessoais completos; `redact` do pino e `beforeSend` do Sentry ([16 §3–4](16-observabilidade.md#3-padrão-de-log)).
+- Sentry com `sendDefaultPii: false` e Session Replay desligado ou totalmente mascarado.
+- Source maps só no Sentry, nunca públicos.
+- Acesso ao Better Stack e ao Sentry só com 2FA; tokens de ingestão por ambiente, em segredo.
+- `access_logs` sem tela no admin; consulta só por ordem judicial, registrada em auditoria; IP lido só do header confiável da CDN.
+
+### Pagamentos
+- Checkout hospedado pelo provedor; pedido/plano só muda por webhook (RN-32).
+- A loja nunca recebe, loga ou guarda número de cartão, CVV ou validade (mantém o escopo PCI em SAQ-A).
+- Valor cobrado sempre recalculado no servidor (RN-20); 3-D Secure ligado; antifraude do provedor ativo.
+
+## 3. Nunca (não negociável sem aprovação explícita)
+
+- Confiar no cliente para plano, limite, papel ou identidade.
+- Guardar senha sem hash, ou segredo no código/repositório.
+- Revelar se um e-mail está cadastrado.
+- Exibir stack trace ao usuário.
+- Buscar no servidor uma URL enviada por usuário.
+- Receber ou guardar dados de cartão no servidor da loja.
+- Aceitar preço, total ou cotação enviados pelo cliente.
+- Pedir, receber ou guardar login/senha de Battle.net do cliente (RN-03).
+- Guardar chave privada ou seed de carteira cripto no servidor da app.
+- Atendente pedir senha, código 2FA ou dados de cartão ao cliente pelo chat.
+- Criar conta de suporte/admin pelo cadastro público.
+
+## 4. LGPD
+
+| Dado | Finalidade | Base legal | Retenção |
+|------|-----------|------------|----------|
+| E-mail, hash da senha | Conta e login | Execução de contrato | Até excluir a conta + 30 dias |
+| IP e logs de acesso (tabela `access_logs`) | Segurança, Marco Civil (art. 15) | Obrigação legal | 6 meses, apagado por cron diário |
+| Logs de depuração (Better Stack) | Correção de erros | Legítimo interesse | 3 dias |
+| Cookies de anúncio/analytics | [ ] | Consentimento | Conforme CMP |
+| Nome do personagem, realm, facção | Entrega do serviço | Execução de contrato | 5 anos (fiscal) |
+| Hash da transação USDT, cotação, valor cobrado | Conciliação e fiscal | Obrigação legal | 5 anos |
+| Reporte de bug (descrição, e-mail opcional, navegador) | Suporte e correção | Legítimo interesse | 1 ano |
+| Conversas e anexos do chat de suporte | Atendimento ao cliente | Execução de contrato / legítimo interesse | 1 ano após resolvida; anexos apagados junto |
+| Contas de equipe (nome, e-mail, idiomas, ações auditadas) | Operação e auditoria | Execução de contrato | Enquanto ativa + 5 anos da auditoria |
+| Idioma, fuso, região (cookies) | Funcionamento do site | Legítimo interesse (cookie funcional, sem consentimento) | 1 ano |
+
+- Operadores com acordo de tratamento de dados: Better Stack (logs, Europa/DE), Sentry (erros), gateway cripto, provedor de cartão, e-mail transacional, hospedagem. [confirmar DPA de cada um]
+- Excluir conta apaga os dados pessoais; mantém só o exigido por lei.
+- Exportar dados pelo perfil.
+- Encarregado (DPO): [e-mail].
+- Termos e Privacidade revisados por advogado antes do lançamento.

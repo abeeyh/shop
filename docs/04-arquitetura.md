@@ -1,0 +1,157 @@
+# 04 — Arquitetura
+
+## Visão geral
+
+```mermaid
+flowchart LR
+  U[Navegador] -- HTTPS --> CDN[DNS / CDN]
+  CDN --> APP[App Next.js<br/>UI + API<br/>6 idiomas]
+  APP --> DB[(PostgreSQL)]
+  APP --> C[(Cache / rate limit<br/>cotações)]
+  APP -- fatura USDT --> CRY[Gateway cripto]
+  APP -- checkout --> CARD[Cartão: on-ramp ou high-risk]
+  CRY -- IPN assinado --> APP
+  CARD -- webhook assinado --> APP
+  APP --> FX[API de cotação USDT]
+  APP --> MAIL[E-mail transacional]
+  APP -. erros .-> ET[Sentry]
+  APP -. logs JSON .-> LS[(Better Stack Logs<br/>gratuito)]
+```
+
+Observabilidade (erros, logs, alertas, fluxo de bug): [16](16-observabilidade.md).
+
+## Backend
+
+Dentro do próprio Next.js: Server Actions para formulários e Route Handlers para webhooks e cron. Nenhum serviço separado no MVP.
+
+Regra de ouro: **toda decisão de negócio e de permissão acontece no backend.** Preço vem do banco em USDT (RN-12, RN-20); cotação para cartão é travada no servidor (RN-36); pagamento só é confirmado por webhook (RN-32).
+
+## Camadas (regra de dependência — [13 §2](13-padroes-qualidade.md#2-padrões-de-projeto))
+
+```
+app/[locale] (rotas, actions, handlers) ──► features/<x> (index.ts) ──► lib (adapters, env)
+                                                 │
+components (Atomic) ◄────────────────────────────┘   components nunca importam features
+```
+
+## Responsabilidades
+
+| Componente | Faz | Não faz |
+|------------|-----|---------|
+| Página / Server Action / Route Handler | Valida (`schemas.ts`), checa sessão e permissão, chama a feature | Regra de negócio, SQL |
+| `features/<x>/rules.ts` | Regras RN puras: preço por região, **preço final com promoção/cupom (`pricing/rules.ts`)**, cálculo de M+, vagas, transições do pedido, conversão de fuso | Banco, rede ou framework |
+| `features/<x>/queries.ts` | Leitura e escrita no banco da feature | Decidir regra |
+| `lib/payments/crypto` e `lib/payments/card` | Adapters `PaymentProvider` (`createCheckout`, `verifyWebhook`, `refund`) | Mudar estado do pedido |
+| `lib/fx` | Busca cotação USDT→USD/EUR/moeda local, com cache | Cobrar |
+| `lib/logger` | Log JSON com `requestId` e mascaramento ([16 §3](16-observabilidade.md#3-padrão-de-log)) | Decidir o que é dado pessoal na hora: a lista de chaves proibidas é fixa |
+| Provedores de pagamento | Fatura cripto, cartão, 3-D Secure, antifraude | — (a loja nunca vê cartão nem chave de carteira — RN-30) |
+| Banco | Fonte da verdade de serviços, preços, slots, pedidos e eventos de webhook | — |
+
+## Features
+
+`catalog` (categorias e produtos), `pricing` (promoções, cupons e cálculo do preço final — RN-21 a RN-29), `schedule` (slots de raid), `cart`, `checkout`, `payments`, `orders`, `admin`, `auth`, `preferences` (região, idioma, fuso), `support` (chat de suporte e reportes de bug), `staff` (contas de suporte/admin, papéis, idiomas e horário de atendimento) — os mesmos nomes dos escopos de commit.
+
+## Idioma, região e fuso (RN-14, RN-80 a RN-83)
+
+| Preferência | Detecção automática | Onde fica | Troca |
+|-------------|---------------------|-----------|-------|
+| Idioma | `Accept-Language` no middleware do next-intl | Segmento da URL `/[locale]` + cookie `NEXT_LOCALE` | Seletor no cabeçalho |
+| Fuso | `Intl.DateTimeFormat().resolvedOptions().timeZone` no navegador | Cookie `tz` (+ perfil, se logado) | Seletor no cabeçalho (lista IANA) |
+| Região do jogo | Sugestão pelo fuso (Américas → US, Europa → EU) | Cookie `region` | Seletor no cabeçalho |
+
+- Horários guardados em UTC (`timestamptz`); formatação com `Intl.DateTimeFormat` no fuso escolhido — sem biblioteca de datas.
+- Primeira renderização sem cookie `tz`: horários renderizados no cliente (evita mostrar fuso errado vindo do servidor).
+- URLs: `/en`, `/fr`, `/de`, `/pt-br`, `/zh-hant`, `/zh-hans`; `hreflang` em todas as páginas.
+
+## Rede
+
+- Banco e cache sem IP público; só rede privada.
+- Portas públicas mínimas; SSH só por chave e IP restrito.
+
+## Fluxos principais
+
+### Compra
+
+1. Cliente escolhe região, produto e opções (realm/facção para gold, slot para raid, chave para M+), e opcionalmente um cupom.
+2. O servidor recalcula o total em USDT a partir do banco (RN-20) e aplica o maior desconto entre promoção e cupom (RN-23, RN-26).
+3. "Finalizar": escolhe **USDT** ou **cartão** (RN-35). A action cria o pedido `pendente`, reserva gold/vaga (RN-34) e:
+   - USDT: cria fatura no gateway (rede escolhida — RN-37);
+   - Cartão: trava a cotação por 15 min e cria o checkout (RN-36, RN-38).
+4. Webhook/IPN assinado → evento gravado em `payment_events` (RN-33) → pedido `pago` (RN-32) ou `pagamento_parcial` (RN-37).
+5. Admin atribui o pedido à equipe → `em_andamento` → registra a prova de entrega → `concluido` (RN-52).
+6. Pagamento não confirmado em 30 min → cron marca `expirado` e libera a reserva (RN-34).
+
+Sequência em [06](06-uml.md#3-sequência--compra). Pagamentos em [14](14-pagamentos-internacionais.md).
+
+### Chat de suporte (RN-92 a RN-99)
+
+```mermaid
+sequenceDiagram
+  actor C as Cliente
+  participant W as App (qualquer instância)
+  participant DB as PostgreSQL
+  participant V as Valkey pub/sub
+  actor S as Atendente
+  C->>W: POST mensagem
+  W->>W: valida, mascara cartão/semente (RN-95), rate limit (RN-97)
+  W->>DB: grava mensagem
+  W->>V: publica "conversa X tem mensagem nova"
+  V-->>W: instância que segura o SSE do atendente
+  W-->>S: evento SSE com a mensagem
+  S->>W: POST resposta
+  W->>DB: grava
+  W->>V: publica
+  alt cliente conectado
+    W-->>C: evento SSE
+  else cliente fora da página
+    W-->>C: e-mail com link assinado (RN-94)
+  end
+```
+
+- A mensagem é gravada **antes** de ser avisada: se o SSE cair, o cliente busca o que perdeu pelo GET das mensagens (a partir do último `id`).
+- Conexões SSE longas exigem que proxy/CDN não cortem a resposta: ping a cada 25 s e `Cache-Control: no-cache`.
+- Visitante sem conta: cookie `httpOnly` com token aleatório da conversa (guardado só o hash).
+
+## Modelo de dados (resumo)
+
+- `categories` (id, kind `gold|raid|dungeon`, name, slug, description, image_url, sort_order, active) — RN-13; texto único para todos os idiomas (RN-84)
+- `products` (id, category_id, region `US|EU`, name, slug, description, image_url, price_usdt_cents, unit, options jsonb, active) — RN-19
+- `promotions` (id, name, type `percent|fixed`, value, scope `store|category|product`, starts_at, ends_at, active) + `promotion_targets` (promotion_id, category_id?, product_id?) — RN-21 a RN-24
+- `coupons` (id, code único (minúsculas), type `percent|fixed`, value, scope, starts_at, ends_at, max_uses, max_uses_per_email, min_order_usdt_cents, active) + `coupon_targets` — RN-25
+- `coupon_redemptions` (coupon_id, order_id, email, status `reserved|used|released`) — RN-27
+- `audit_log` (id, admin_id, entity, entity_id, action, before jsonb, after jsonb, created_at) — RN-71
+- `raid_slots` (id, product_id, region, starts_at timestamptz, capacity, reserved)
+- `orders` (id, email, locale, timezone, region, status, subtotal_usdt_cents, discount_usdt_cents, discount_source `promotion|coupon|none`, discount_ref, total_usdt_cents, payment_method `usdt|card`, network, tx_hash, quote_rate, charged_amount, charged_currency, provider_payment_id, created_at)
+- `order_items` (order_id, product_id, options jsonb, unit_price_usdt_cents, discount_usdt_cents, quantity, raid_slot_id, character_name, realm, faction)
+- `deliveries` (order_id, proof_url, note, delivered_at, admin_id) — RN-52
+- `payment_events` (provider, provider_event_id **único**, type, received_at) — idempotência
+- `users` / `sessions` (Better Auth), com `locale` e `timezone`
+- `access_logs` (occurred_at, ip, port?, user_id?, session_id?, method, route, status, request_id) — log de acesso legal, 6 meses ([16 §9](16-observabilidade.md#9-log-de-acesso-obrigação-legal))
+- `staff_profiles` (user_id, role `suporte|admin`, languages text[], active, invited_by, created_at) — RN-04 a RN-06; clientes não têm linha aqui
+- `support_hours` (weekday, starts_at_utc, ends_at_utc) — RN-99
+- `support_conversations` (id, user_id?, guest_email?, guest_name?, order_id?, locale, status `aberta|em_atendimento|resolvida`, assigned_to?, guest_token_hash?, created_at, last_message_at, resolved_at) — RN-92, RN-93
+- `support_messages` (id, conversation_id, author_type `customer|staff|system`, author_id?, body, created_at, read_at) — corpo já mascarado (RN-95)
+- `support_attachments` (id, message_id, storage_key, mime, size_bytes) — RN-96
+- `bug_reports` (id, description, email?, page, request_id, locale, region, timezone, user_agent, release, status, created_at) — RN-91
+
+## Rotas
+
+| Rota | Tipo | Acesso |
+|------|------|--------|
+| `/[locale]` | Página | Público |
+| `/[locale]/wow/gold`, `/[locale]/wow/raids`, `/[locale]/wow/dungeons`, `/[locale]/wow/<categoria>/[slug]` | Página | Público |
+| `/[locale]/carrinho`, `/[locale]/checkout` | Página + Server Actions | Público (visitante — RN-01) |
+| `/[locale]/pedido/[id]` | Página | Dono do pedido (sessão ou link assinado) |
+| `/[locale]/admin/*` | Página | Admin com 2FA (RN-02) |
+| `/[locale]/admin/categorias`, `/[locale]/admin/produtos`, `/[locale]/admin/promocoes`, `/[locale]/admin/cupons` | Página + Server Actions | Admin com 2FA (RN-70) |
+| `/api/webhooks/crypto`, `/api/webhooks/card` | API | Só assinatura do provedor |
+| `/api/cron/expire-orders`, `/api/cron/refresh-fx`, `/api/cron/purge-access-logs` | API | Segredo do cron |
+| `/api/health` | API | Público; só status (sem versão de dependências nem dados) — usado pelo Better Stack Uptime |
+| `/api/bug-reports` | API | Público, com rate limit e CAPTCHA (RN-91) |
+| `/api/support/conversations` | API (POST) | Público, CAPTCHA para visitante, rate limit (RN-92, RN-97) |
+| `/api/support/conversations/[id]/messages` | API (GET/POST) | Dono da conversa (sessão ou cookie da conversa) ou equipe |
+| `/api/support/conversations/[id]/stream` | API (SSE) | Idem; ping a cada 25 s |
+| `/api/support/stream` | API (SSE) | Equipe — avisos da fila |
+| `/[locale]/admin/suporte` | Página | Suporte e admin com 2FA (fila, conversa, dados do pedido) |
+| `/[locale]/admin/equipe` | Página | Só admin (convidar, desativar, papéis, idiomas, horário) |
+| `/[locale]/admin/bug-reports` | Página | Admin com 2FA |
