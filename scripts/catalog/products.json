@@ -7,7 +7,9 @@
       "price": 600000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 0
+      "sortOrder": 0,
+      "createdAt": "2025-08-17T20:52:26.180239Z",
+      "updatedAt": "2026-09-04T17:16:29.182645Z"
     },
     {
       "id": 295,
@@ -16,7 +18,9 @@
       "price": 935000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 1
+      "sortOrder": 1,
+      "createdAt": "2026-03-25T18:39:33.074158Z",
+      "updatedAt": "2026-10-02T16:21:35.378502Z"
     },
     {
       "id": 425,
@@ -25,7 +29,9 @@
       "price": 1240000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 2
+      "sortOrder": 2,
+      "createdAt": "2026-08-23T15:16:41.976677Z",
+      "updatedAt": "2026-10-02T16:23:07.355653Z"
     },
     {
       "id": 294,
@@ -34,7 +40,9 @@
       "price": 2380000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 3
+      "sortOrder": 3,
+      "createdAt": "2026-03-25T18:39:05.669418Z",
+      "updatedAt": "2026-10-02T16:25:59.243602Z"
     },
     {
       "id": 188,
@@ -43,7 +51,9 @@
       "price": 70000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 4
+      "sortOrder": 4,
+      "createdAt": "2026-03-13T22:51:31.294094Z",
+      "updatedAt": "2026-10-02T16:17:20.801162Z"
     },
     {
       "id": 189,
@@ -52,7 +62,9 @@
       "price": 85000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 5
+      "sortOrder": 5,
+      "createdAt": "2026-03-13T22:51:46.699455Z",
+      "updatedAt": "2026-10-02T16:17:31.020794Z"
     },
     {
       "id": 297,
@@ -61,7 +73,9 @@
       "price": 370000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 6
+      "sortOrder": 6,
+      "createdAt": "2026-03-25T18:40:20.422469Z",
+      "updatedAt": "2026-09-17T01:00:50.133582Z"
     },
     {
       "id": 190,
@@ -70,7 +84,9 @@
       "price": 95000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 7
+      "sortOrder": 7,
+      "createdAt": "2026-03-13T22:52:01.439995Z",
+      "updatedAt": "2026-10-02T16:17:46.630817Z"
     },
     {
       "id": 191,
@@ -79,7 +95,9 @@
       "price": 110000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 8
+      "sortOrder": 8,
+      "createdAt": "2026-03-13T22:52:12.697595Z",
+      "updatedAt": "2026-10-02T16:17:54.783269Z"
     },
     {
       "id": 192,
@@ -88,7 +106,9 @@
       "price": 110000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 9
+      "sortOrder": 9,
+      "createdAt": "2026-03-13T22:52:24.638338Z",
+      "updatedAt": "2026-10-11T17:23:44.620608Z"
     },
     {
       "id": 298,
@@ -97,7 +117,9 @@
       "price": 420000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 10
+      "sortOrder": 10,
+      "createdAt": "2026-03-25T18:40:52.867791Z",
+      "updatedAt": "2026-10-11T17:24:02.652904Z"
     },
     {
       "id": 366,
@@ -106,7 +128,9 @@
       "price": 125000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 11
+      "sortOrder": 11,
+      "createdAt": "2026-05-17T19:50:32.638413Z",
+      "updatedAt": "2026-10-11T17:24:32.743755Z"
     },
     {
       "id": 358,
@@ -115,7 +139,9 @@
       "price": 140000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 12
+      "sortOrder": 12,
+      "createdAt": "2026-04-29T19:57:48.353522Z",
+      "updatedAt": "2026-10-11T17:24:20.654253Z"
     },
     {
       "id": 446,
@@ -124,7 +150,9 @@
       "price": 540000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 13
+      "sortOrder": 13,
+      "createdAt": "2026-09-01T16:30:24.699227Z",
+      "updatedAt": "2026-10-11T17:24:55.57453Z"
     },
     {
       "id": 359,
@@ -133,7 +161,9 @@
       "price": 160000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 14
+      "sortOrder": 14,
+      "createdAt": "2026-04-29T19:58:02.708408Z",
+      "updatedAt": "2026-10-11T17:25:04.062394Z"
     },
     {
       "id": 360,
@@ -142,7 +172,9 @@
       "price": 180000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 15
+      "sortOrder": 15,
+      "createdAt": "2026-04-29T19:58:15.797189Z",
+      "updatedAt": "2026-10-11T17:25:16.320805Z"
     },
     {
       "id": 352,
@@ -151,7 +183,9 @@
       "price": 240000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 16
+      "sortOrder": 16,
+      "createdAt": "2026-04-27T20:25:45.223974Z",
+      "updatedAt": "2026-10-11T17:25:22.519625Z"
     },
     {
       "id": 353,
@@ -160,7 +194,9 @@
       "price": 280000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 17
+      "sortOrder": 17,
+      "createdAt": "2026-04-27T20:26:02.038625Z",
+      "updatedAt": "2026-10-11T17:25:29.684004Z"
     },
     {
       "id": 354,
@@ -169,7 +205,9 @@
       "price": 400000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 18
+      "sortOrder": 18,
+      "createdAt": "2026-04-27T20:26:20.859799Z",
+      "updatedAt": "2026-10-11T17:25:37.253261Z"
     },
     {
       "id": 355,
@@ -178,7 +216,9 @@
       "price": 550000,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 19
+      "sortOrder": 19,
+      "createdAt": "2026-04-28T19:27:31.361942Z",
+      "updatedAt": "2026-10-11T17:25:43.927895Z"
     },
     {
       "id": 356,
@@ -187,7 +227,9 @@
       "price": 800,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 20
+      "sortOrder": 20,
+      "createdAt": "2026-04-28T19:27:55.926675Z",
+      "updatedAt": "2026-10-11T17:25:57.442638Z"
     },
     {
       "id": 357,
@@ -196,7 +238,9 @@
       "price": 1,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 21
+      "sortOrder": 21,
+      "createdAt": "2026-04-28T19:28:17.298206Z",
+      "updatedAt": "2026-09-04T17:16:29.786956Z"
     },
     {
       "id": 381,
@@ -205,7 +249,9 @@
       "price": 1,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 22
+      "sortOrder": 22,
+      "createdAt": "2026-07-15T19:18:30.139068Z",
+      "updatedAt": "2026-09-04T17:16:29.789935Z"
     },
     {
       "id": 382,
@@ -214,7 +260,9 @@
       "price": 1,
       "serviceCategoryId": 8,
       "hotItem": true,
-      "sortOrder": 23
+      "sortOrder": 23,
+      "createdAt": "2026-07-15T19:19:17.159582Z",
+      "updatedAt": "2026-09-04T17:16:29.792971Z"
     },
     {
       "id": 220,
@@ -223,7 +271,9 @@
       "price": 1,
       "serviceCategoryId": 35,
       "hotItem": true,
-      "sortOrder": 0
+      "sortOrder": 0,
+      "createdAt": "2026-03-19T20:54:40.086809Z",
+      "updatedAt": "2026-08-17T03:41:59.431618Z"
     },
     {
       "id": 221,
@@ -232,7 +282,9 @@
       "price": 1,
       "serviceCategoryId": 35,
       "hotItem": true,
-      "sortOrder": 1
+      "sortOrder": 1,
+      "createdAt": "2026-03-19T20:56:38.159553Z",
+      "updatedAt": "2026-08-17T03:44:56.583247Z"
     },
     {
       "id": 222,
@@ -241,7 +293,9 @@
       "price": 1,
       "serviceCategoryId": 35,
       "hotItem": true,
-      "sortOrder": 2
+      "sortOrder": 2,
+      "createdAt": "2026-03-19T20:57:14.904611Z",
+      "updatedAt": "2026-08-17T03:45:01.984497Z"
     },
     {
       "id": 223,
@@ -250,7 +304,9 @@
       "price": 1,
       "serviceCategoryId": 35,
       "hotItem": true,
-      "sortOrder": 3
+      "sortOrder": 3,
+      "createdAt": "2026-03-19T20:57:35.003293Z",
+      "updatedAt": "2026-08-17T03:45:08.383968Z"
     },
     {
       "id": 224,
@@ -259,7 +315,9 @@
       "price": 1,
       "serviceCategoryId": 35,
       "hotItem": true,
-      "sortOrder": 4
+      "sortOrder": 4,
+      "createdAt": "2026-03-19T20:58:02.51301Z",
+      "updatedAt": "2026-08-17T03:45:13.881083Z"
     },
     {
       "id": 225,
@@ -268,7 +326,9 @@
       "price": 1,
       "serviceCategoryId": 35,
       "hotItem": true,
-      "sortOrder": 5
+      "sortOrder": 5,
+      "createdAt": "2026-03-19T20:58:17.183179Z",
+      "updatedAt": "2026-08-17T03:45:19.707391Z"
     },
     {
       "id": 226,
@@ -277,7 +337,9 @@
       "price": 1,
       "serviceCategoryId": 35,
       "hotItem": true,
-      "sortOrder": 6
+      "sortOrder": 6,
+      "createdAt": "2026-03-19T20:58:33.387469Z",
+      "updatedAt": "2026-08-17T03:45:26.226418Z"
     },
     {
       "id": 227,
@@ -286,7 +348,9 @@
       "price": 1,
       "serviceCategoryId": 35,
       "hotItem": true,
-      "sortOrder": 7
+      "sortOrder": 7,
+      "createdAt": "2026-03-19T20:58:51.797963Z",
+      "updatedAt": "2026-08-17T03:45:31.177107Z"
     },
     {
       "id": 228,
@@ -295,7 +359,9 @@
       "price": 500000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 0
+      "sortOrder": 0,
+      "createdAt": "2026-03-19T21:04:20.454722Z",
+      "updatedAt": "2026-08-17T03:50:07.183184Z"
     },
     {
       "id": 229,
@@ -304,7 +370,9 @@
       "price": 300000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 1
+      "sortOrder": 1,
+      "createdAt": "2026-03-19T21:07:18.88158Z",
+      "updatedAt": "2026-08-17T03:50:01.410583Z"
     },
     {
       "id": 230,
@@ -313,7 +381,9 @@
       "price": 350000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 2
+      "sortOrder": 2,
+      "createdAt": "2026-03-19T21:11:24.764294Z",
+      "updatedAt": "2026-08-17T03:49:53.281141Z"
     },
     {
       "id": 231,
@@ -322,7 +392,9 @@
       "price": 500000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 3
+      "sortOrder": 3,
+      "createdAt": "2026-03-19T21:11:47.649447Z",
+      "updatedAt": "2026-08-17T03:49:44.762615Z"
     },
     {
       "id": 232,
@@ -331,7 +403,9 @@
       "price": 600000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 4
+      "sortOrder": 4,
+      "createdAt": "2026-03-19T21:12:17.081858Z",
+      "updatedAt": "2026-08-17T03:49:34.964603Z"
     },
     {
       "id": 233,
@@ -340,7 +414,9 @@
       "price": 550000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 5
+      "sortOrder": 5,
+      "createdAt": "2026-03-19T21:12:39.752553Z",
+      "updatedAt": "2026-08-17T03:49:29.359821Z"
     },
     {
       "id": 234,
@@ -349,7 +425,9 @@
       "price": 350000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 6
+      "sortOrder": 6,
+      "createdAt": "2026-03-19T21:13:06.243016Z",
+      "updatedAt": "2026-08-17T03:49:23.341261Z"
     },
     {
       "id": 235,
@@ -358,7 +436,9 @@
       "price": 400000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 7
+      "sortOrder": 7,
+      "createdAt": "2026-03-19T21:13:24.640306Z",
+      "updatedAt": "2026-08-17T03:49:16.757018Z"
     },
     {
       "id": 236,
@@ -367,7 +447,9 @@
       "price": 450000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 8
+      "sortOrder": 8,
+      "createdAt": "2026-03-19T21:13:49.36334Z",
+      "updatedAt": "2026-08-17T03:49:09.523617Z"
     },
     {
       "id": 237,
@@ -376,7 +458,9 @@
       "price": 500000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 9
+      "sortOrder": 9,
+      "createdAt": "2026-03-19T21:14:04.102835Z",
+      "updatedAt": "2026-08-17T03:48:59.231642Z"
     },
     {
       "id": 238,
@@ -385,7 +469,9 @@
       "price": 2000000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 10
+      "sortOrder": 10,
+      "createdAt": "2026-03-19T21:14:20.916696Z",
+      "updatedAt": "2026-08-17T03:48:46.2344Z"
     },
     {
       "id": 239,
@@ -394,7 +480,9 @@
       "price": 500000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 11
+      "sortOrder": 11,
+      "createdAt": "2026-03-19T21:14:36.242884Z",
+      "updatedAt": "2026-08-17T03:48:24.925298Z"
     },
     {
       "id": 240,
@@ -403,7 +491,9 @@
       "price": 300000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 12
+      "sortOrder": 12,
+      "createdAt": "2026-03-19T21:14:53.962088Z",
+      "updatedAt": "2026-03-19T21:14:53.962088Z"
     },
     {
       "id": 241,
@@ -412,7 +502,9 @@
       "price": 650000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 13
+      "sortOrder": 13,
+      "createdAt": "2026-03-19T21:15:11.412833Z",
+      "updatedAt": "2026-03-19T21:15:11.412833Z"
     },
     {
       "id": 242,
@@ -421,7 +513,9 @@
       "price": 350000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 14
+      "sortOrder": 14,
+      "createdAt": "2026-03-19T21:15:26.092606Z",
+      "updatedAt": "2026-03-19T21:15:26.092606Z"
     },
     {
       "id": 243,
@@ -430,7 +524,9 @@
       "price": 400000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 15
+      "sortOrder": 15,
+      "createdAt": "2026-03-19T21:15:54.121911Z",
+      "updatedAt": "2026-03-19T21:15:54.121911Z"
     },
     {
       "id": 244,
@@ -439,7 +535,9 @@
       "price": 450000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 16
+      "sortOrder": 16,
+      "createdAt": "2026-03-19T21:16:12.497018Z",
+      "updatedAt": "2026-03-19T21:16:12.497018Z"
     },
     {
       "id": 245,
@@ -448,7 +546,9 @@
       "price": 350000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 17
+      "sortOrder": 17,
+      "createdAt": "2026-03-19T21:16:31.819522Z",
+      "updatedAt": "2026-03-19T21:16:31.819522Z"
     },
     {
       "id": 246,
@@ -457,7 +557,9 @@
       "price": 450000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 18
+      "sortOrder": 18,
+      "createdAt": "2026-03-19T21:16:47.722397Z",
+      "updatedAt": "2026-03-19T21:16:47.722397Z"
     },
     {
       "id": 247,
@@ -466,7 +568,9 @@
       "price": 500000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 19
+      "sortOrder": 19,
+      "createdAt": "2026-03-19T21:17:03.500319Z",
+      "updatedAt": "2026-03-19T21:17:03.500319Z"
     },
     {
       "id": 248,
@@ -475,7 +579,9 @@
       "price": 350000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 20
+      "sortOrder": 20,
+      "createdAt": "2026-03-19T21:17:29.719818Z",
+      "updatedAt": "2026-03-19T21:17:29.719818Z"
     },
     {
       "id": 249,
@@ -484,7 +590,9 @@
       "price": 450000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 21
+      "sortOrder": 21,
+      "createdAt": "2026-03-19T21:17:44.673408Z",
+      "updatedAt": "2026-03-19T21:17:44.673408Z"
     },
     {
       "id": 250,
@@ -493,7 +601,9 @@
       "price": 450000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 22
+      "sortOrder": 22,
+      "createdAt": "2026-03-19T21:17:58.148536Z",
+      "updatedAt": "2026-03-19T21:17:58.148536Z"
     },
     {
       "id": 251,
@@ -502,7 +612,9 @@
       "price": 500000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 23
+      "sortOrder": 23,
+      "createdAt": "2026-03-19T21:18:13.277656Z",
+      "updatedAt": "2026-03-19T21:18:13.277656Z"
     },
     {
       "id": 252,
@@ -511,7 +623,9 @@
       "price": 450000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 24
+      "sortOrder": 24,
+      "createdAt": "2026-03-19T21:18:28.551767Z",
+      "updatedAt": "2026-03-19T21:18:28.551767Z"
     },
     {
       "id": 253,
@@ -520,7 +634,9 @@
       "price": 450000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 25
+      "sortOrder": 25,
+      "createdAt": "2026-03-19T21:18:45.013317Z",
+      "updatedAt": "2026-03-19T21:18:45.013317Z"
     },
     {
       "id": 254,
@@ -529,7 +645,9 @@
       "price": 450000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 26
+      "sortOrder": 26,
+      "createdAt": "2026-03-19T21:18:59.791693Z",
+      "updatedAt": "2026-03-19T21:18:59.791693Z"
     },
     {
       "id": 255,
@@ -538,7 +656,9 @@
       "price": 900000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 27
+      "sortOrder": 27,
+      "createdAt": "2026-03-19T21:19:15.192106Z",
+      "updatedAt": "2026-03-19T21:19:15.192106Z"
     },
     {
       "id": 256,
@@ -547,7 +667,9 @@
       "price": 550000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 28
+      "sortOrder": 28,
+      "createdAt": "2026-03-19T21:19:44.060364Z",
+      "updatedAt": "2026-03-19T21:19:44.060364Z"
     },
     {
       "id": 257,
@@ -556,7 +678,9 @@
       "price": 550000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 29
+      "sortOrder": 29,
+      "createdAt": "2026-03-19T21:20:02.066748Z",
+      "updatedAt": "2026-03-19T21:20:02.066748Z"
     },
     {
       "id": 258,
@@ -565,7 +689,9 @@
       "price": 550000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 30
+      "sortOrder": 30,
+      "createdAt": "2026-03-19T21:20:21.253552Z",
+      "updatedAt": "2026-03-19T21:20:21.253552Z"
     },
     {
       "id": 259,
@@ -574,7 +700,9 @@
       "price": 850000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 31
+      "sortOrder": 31,
+      "createdAt": "2026-03-19T21:20:37.136122Z",
+      "updatedAt": "2026-03-19T21:20:37.136122Z"
     },
     {
       "id": 260,
@@ -583,7 +711,9 @@
       "price": 500000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 32
+      "sortOrder": 32,
+      "createdAt": "2026-03-19T21:20:50.410748Z",
+      "updatedAt": "2026-03-19T21:20:50.410748Z"
     },
     {
       "id": 261,
@@ -592,7 +722,9 @@
       "price": 500000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 33
+      "sortOrder": 33,
+      "createdAt": "2026-03-19T21:21:03.310132Z",
+      "updatedAt": "2026-03-19T21:21:03.310132Z"
     },
     {
       "id": 262,
@@ -601,7 +733,9 @@
       "price": 900000,
       "serviceCategoryId": 36,
       "hotItem": true,
-      "sortOrder": 34
+      "sortOrder": 34,
+      "createdAt": "2026-03-19T21:21:16.71477Z",
+      "updatedAt": "2026-03-19T21:21:16.71477Z"
     },
     {
       "id": 269,
@@ -610,7 +744,9 @@
       "price": 15000,
       "serviceCategoryId": 37,
       "hotItem": true,
-      "sortOrder": 0
+      "sortOrder": 0,
+      "createdAt": "2026-03-20T13:38:15.673231Z",
+      "updatedAt": "2026-10-29T12:10:03.309487Z"
     },
     {
       "id": 270,
@@ -619,7 +755,9 @@
       "price": 30000,
       "serviceCategoryId": 37,
       "hotItem": true,
-      "sortOrder": 1
+      "sortOrder": 1,
+      "createdAt": "2026-03-20T13:38:57.852689Z",
+      "updatedAt": "2026-08-20T19:49:44.645909Z"
     },
     {
       "id": 271,
@@ -628,7 +766,9 @@
       "price": 40000,
       "serviceCategoryId": 37,
       "hotItem": true,
-      "sortOrder": 2
+      "sortOrder": 2,
+      "createdAt": "2026-03-20T13:39:29.326565Z",
+      "updatedAt": "2026-08-20T19:24:46.714727Z"
     },
     {
       "id": 272,
@@ -637,7 +777,9 @@
       "price": 80000,
       "serviceCategoryId": 37,
       "hotItem": true,
-      "sortOrder": 3
+      "sortOrder": 3,
+      "createdAt": "2026-03-20T13:40:21.926012Z",
+      "updatedAt": "2026-08-20T19:24:55.647704Z"
     },
     {
       "id": 463,
@@ -647,7 +789,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 2,
       "hotItem": true,
-      "sortOrder": 0
+      "sortOrder": 0,
+      "createdAt": "2026-10-12T19:24:29.59782Z",
+      "updatedAt": "2026-11-03T17:32:22.080973Z"
     },
     {
       "id": 464,
@@ -657,7 +801,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 2,
       "hotItem": true,
-      "sortOrder": 1
+      "sortOrder": 1,
+      "createdAt": "2026-10-12T19:26:09.161396Z",
+      "updatedAt": "2026-11-03T17:32:22.966636Z"
     },
     {
       "id": 400,
@@ -667,7 +813,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 2,
       "hotItem": true,
-      "sortOrder": 2
+      "sortOrder": 2,
+      "createdAt": "2026-08-20T19:34:00.316637Z",
+      "updatedAt": "2026-10-29T18:43:22.126926Z"
     },
     {
       "id": 402,
@@ -677,7 +825,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 2,
       "hotItem": true,
-      "sortOrder": 3
+      "sortOrder": 3,
+      "createdAt": "2026-08-20T19:40:15.887076Z",
+      "updatedAt": "2026-10-29T18:43:22.128521Z"
     },
     {
       "id": 481,
@@ -687,7 +837,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 2,
       "hotItem": false,
-      "sortOrder": 4
+      "sortOrder": 4,
+      "createdAt": "2026-10-29T18:42:17.058526Z",
+      "updatedAt": "2026-10-29T18:44:33.065035Z"
     },
     {
       "id": 397,
@@ -697,7 +849,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 2,
       "hotItem": true,
-      "sortOrder": 5
+      "sortOrder": 5,
+      "createdAt": "2026-08-17T04:23:01.616298Z",
+      "updatedAt": "2026-11-07T11:57:14.879153Z"
     },
     {
       "id": 398,
@@ -707,7 +861,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 2,
       "hotItem": true,
-      "sortOrder": 6
+      "sortOrder": 6,
+      "createdAt": "2026-08-17T04:23:46.2053Z",
+      "updatedAt": "2026-10-29T18:55:01.14817Z"
     },
     {
       "id": 416,
@@ -717,7 +873,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 2,
       "hotItem": true,
-      "sortOrder": 7
+      "sortOrder": 7,
+      "createdAt": "2026-08-23T15:01:19.489282Z",
+      "updatedAt": "2026-11-02T18:55:03.221036Z"
     },
     {
       "id": 417,
@@ -727,7 +885,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 2,
       "hotItem": true,
-      "sortOrder": 8
+      "sortOrder": 8,
+      "createdAt": "2026-08-23T15:02:25.529671Z",
+      "updatedAt": "2026-11-07T11:57:15.997411Z"
     },
     {
       "id": 455,
@@ -737,7 +897,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 2,
       "hotItem": true,
-      "sortOrder": 9
+      "sortOrder": 9,
+      "createdAt": "2026-09-16T16:00:22.904159Z",
+      "updatedAt": "2026-10-29T18:43:22.141506Z"
     },
     {
       "id": 399,
@@ -747,7 +909,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 3,
       "hotItem": true,
-      "sortOrder": 10
+      "sortOrder": 10,
+      "createdAt": "2026-08-20T19:31:57.030603Z",
+      "updatedAt": "2026-10-29T18:43:22.143604Z"
     },
     {
       "id": 401,
@@ -757,7 +921,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 3,
       "hotItem": true,
-      "sortOrder": 11
+      "sortOrder": 11,
+      "createdAt": "2026-08-20T19:39:32.685051Z",
+      "updatedAt": "2026-10-29T18:43:22.146735Z"
     },
     {
       "id": 395,
@@ -767,7 +933,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 3,
       "hotItem": true,
-      "sortOrder": 12
+      "sortOrder": 12,
+      "createdAt": "2026-08-17T04:01:23.432087Z",
+      "updatedAt": "2026-10-29T18:43:22.148486Z"
     },
     {
       "id": 396,
@@ -777,7 +945,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 3,
       "hotItem": true,
-      "sortOrder": 13
+      "sortOrder": 13,
+      "createdAt": "2026-08-17T04:21:44.189852Z",
+      "updatedAt": "2026-10-29T18:43:22.150247Z"
     },
     {
       "id": 411,
@@ -787,7 +957,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 3,
       "hotItem": true,
-      "sortOrder": 14
+      "sortOrder": 14,
+      "createdAt": "2026-08-23T14:56:13.882183Z",
+      "updatedAt": "2026-10-29T18:43:22.152201Z"
     },
     {
       "id": 431,
@@ -797,7 +969,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 3,
       "hotItem": true,
-      "sortOrder": 15
+      "sortOrder": 15,
+      "createdAt": "2026-08-26T16:37:12.981118Z",
+      "updatedAt": "2026-10-29T18:43:22.154886Z"
     },
     {
       "id": 404,
@@ -807,7 +981,9 @@
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 3,
       "hotItem": true,
-      "sortOrder": 16
+      "sortOrder": 16,
+      "createdAt": "2026-08-21T03:13:36.661617Z",
+      "updatedAt": "2026-10-29T18:43:22.156691Z"
     },
     {
       "id": 466,
@@ -817,7 +993,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 0
+      "sortOrder": 0,
+      "createdAt": "2026-10-13T01:06:36.298683Z",
+      "updatedAt": "2026-10-19T03:20:36.26282Z"
     },
     {
       "id": 465,
@@ -827,7 +1005,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 1
+      "sortOrder": 1,
+      "createdAt": "2026-10-13T01:03:48.463885Z",
+      "updatedAt": "2026-10-19T03:20:36.266385Z"
     },
     {
       "id": 462,
@@ -837,7 +1017,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 2
+      "sortOrder": 2,
+      "createdAt": "2026-10-12T19:13:12.356694Z",
+      "updatedAt": "2026-10-19T03:20:36.268444Z"
     },
     {
       "id": 427,
@@ -847,7 +1029,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 3
+      "sortOrder": 3,
+      "createdAt": "2026-08-25T04:25:27.438462Z",
+      "updatedAt": "2026-10-26T21:21:53.787316Z"
     },
     {
       "id": 444,
@@ -857,7 +1041,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 4
+      "sortOrder": 4,
+      "createdAt": "2026-08-31T22:44:19.482666Z",
+      "updatedAt": "2026-10-24T21:23:00.586148Z"
     },
     {
       "id": 450,
@@ -867,7 +1053,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 5
+      "sortOrder": 5,
+      "createdAt": "2026-09-06T18:51:29.691605Z",
+      "updatedAt": "2026-11-07T10:57:28.396393Z"
     },
     {
       "id": 456,
@@ -877,7 +1065,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 6
+      "sortOrder": 6,
+      "createdAt": "2026-09-21T17:43:06.676302Z",
+      "updatedAt": "2026-11-07T10:57:27.526089Z"
     },
     {
       "id": 458,
@@ -887,7 +1077,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 7
+      "sortOrder": 7,
+      "createdAt": "2026-09-25T22:25:40.617947Z",
+      "updatedAt": "2026-11-07T10:57:29.305393Z"
     },
     {
       "id": 461,
@@ -897,7 +1089,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 8
+      "sortOrder": 8,
+      "createdAt": "2026-10-06T21:58:14.338939Z",
+      "updatedAt": "2026-11-07T10:57:24.865156Z"
     },
     {
       "id": 452,
@@ -907,7 +1101,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 9
+      "sortOrder": 9,
+      "createdAt": "2026-09-07T22:11:19.847948Z",
+      "updatedAt": "2026-10-24T21:22:23.922577Z"
     },
     {
       "id": 453,
@@ -917,7 +1113,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 10
+      "sortOrder": 10,
+      "createdAt": "2026-09-07T22:12:41.682056Z",
+      "updatedAt": "2026-11-03T17:32:20.312019Z"
     },
     {
       "id": 454,
@@ -927,7 +1125,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 11
+      "sortOrder": 11,
+      "createdAt": "2026-09-07T22:13:43.384425Z",
+      "updatedAt": "2026-11-07T10:57:26.620964Z"
     },
     {
       "id": 457,
@@ -937,7 +1137,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 12
+      "sortOrder": 12,
+      "createdAt": "2026-09-21T17:46:40.311648Z",
+      "updatedAt": "2026-11-07T10:57:25.7266Z"
     },
     {
       "id": 467,
@@ -947,7 +1149,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 13
+      "sortOrder": 13,
+      "createdAt": "2026-10-15T22:58:08.265576Z",
+      "updatedAt": "2026-11-07T10:57:23.865322Z"
     },
     {
       "id": 478,
@@ -957,7 +1161,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 14
+      "sortOrder": 14,
+      "createdAt": "2026-10-19T03:19:16.244507Z",
+      "updatedAt": "2026-11-07T11:57:16.965678Z"
     },
     {
       "id": 479,
@@ -967,7 +1173,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 15
+      "sortOrder": 15,
+      "createdAt": "2026-10-19T03:20:33.00727Z",
+      "updatedAt": "2026-11-07T11:57:17.883966Z"
     },
     {
       "id": 447,
@@ -977,7 +1185,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 16
+      "sortOrder": 16,
+      "createdAt": "2026-09-03T22:14:19.016487Z",
+      "updatedAt": "2026-10-19T03:20:36.293148Z"
     },
     {
       "id": 448,
@@ -987,7 +1197,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 17
+      "sortOrder": 17,
+      "createdAt": "2026-09-03T22:17:06.486399Z",
+      "updatedAt": "2026-10-19T03:20:36.294688Z"
     },
     {
       "id": 449,
@@ -997,7 +1209,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 4,
       "hotItem": true,
-      "sortOrder": 18
+      "sortOrder": 18,
+      "createdAt": "2026-09-03T22:17:25.30708Z",
+      "updatedAt": "2026-10-19T03:20:36.296711Z"
     },
     {
       "id": 472,
@@ -1007,7 +1221,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 5,
       "hotItem": true,
-      "sortOrder": 19
+      "sortOrder": 19,
+      "createdAt": "2026-10-17T20:50:47.448869Z",
+      "updatedAt": "2026-11-07T10:57:21.163994Z"
     },
     {
       "id": 473,
@@ -1017,7 +1233,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 5,
       "hotItem": true,
-      "sortOrder": 20
+      "sortOrder": 20,
+      "createdAt": "2026-10-17T20:51:28.739136Z",
+      "updatedAt": "2026-11-07T10:57:22.030996Z"
     },
     {
       "id": 474,
@@ -1027,7 +1245,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 5,
       "hotItem": true,
-      "sortOrder": 21
+      "sortOrder": 21,
+      "createdAt": "2026-10-17T20:52:03.914941Z",
+      "updatedAt": "2026-11-07T10:57:22.911237Z"
     },
     {
       "id": 421,
@@ -1037,7 +1257,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 5,
       "hotItem": true,
-      "sortOrder": 22
+      "sortOrder": 22,
+      "createdAt": "2026-08-23T15:06:13.652513Z",
+      "updatedAt": "2026-11-03T17:15:22.782272Z"
     },
     {
       "id": 422,
@@ -1047,7 +1269,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 5,
       "hotItem": true,
-      "sortOrder": 23
+      "sortOrder": 23,
+      "createdAt": "2026-08-23T15:06:31.743643Z",
+      "updatedAt": "2026-11-07T10:57:18.000802Z"
     },
     {
       "id": 423,
@@ -1057,7 +1281,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 5,
       "hotItem": true,
-      "sortOrder": 24
+      "sortOrder": 24,
+      "createdAt": "2026-08-23T15:06:59.300512Z",
+      "updatedAt": "2026-11-07T10:57:19.151259Z"
     },
     {
       "id": 424,
@@ -1067,7 +1293,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 5,
       "hotItem": true,
-      "sortOrder": 25
+      "sortOrder": 25,
+      "createdAt": "2026-08-23T15:07:36.476394Z",
+      "updatedAt": "2026-11-07T10:57:20.031765Z"
     },
     {
       "id": 475,
@@ -1077,7 +1305,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 5,
       "hotItem": true,
-      "sortOrder": 26
+      "sortOrder": 26,
+      "createdAt": "2026-10-19T03:00:59.182313Z",
+      "updatedAt": "2026-11-07T11:46:30.872217Z"
     },
     {
       "id": 476,
@@ -1087,7 +1317,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 5,
       "hotItem": true,
-      "sortOrder": 27
+      "sortOrder": 27,
+      "createdAt": "2026-10-19T03:01:40.26458Z",
+      "updatedAt": "2026-10-26T21:20:41.387338Z"
     },
     {
       "id": 477,
@@ -1097,7 +1329,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 5,
       "hotItem": true,
-      "sortOrder": 28
+      "sortOrder": 28,
+      "createdAt": "2026-10-19T03:02:06.074415Z",
+      "updatedAt": "2026-10-26T21:20:48.463857Z"
     },
     {
       "id": 470,
@@ -1107,7 +1341,9 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 5,
       "hotItem": true,
-      "sortOrder": 29
+      "sortOrder": 29,
+      "createdAt": "2026-10-17T20:45:55.202526Z",
+      "updatedAt": "2026-11-07T10:57:14.298222Z"
     },
     {
       "id": 469,
@@ -1117,7 +1353,166 @@
       "serviceCategoryId": 41,
       "serviceSubcategoryId": 5,
       "hotItem": true,
-      "sortOrder": 30
+      "sortOrder": 30,
+      "createdAt": "2026-10-17T20:45:23.123723Z",
+      "updatedAt": "2026-11-07T10:57:15.22477Z"
+    },
+    {
+      "id": 468,
+      "name": "🔸All 3 Raids 10/10 FP 25 (VIP) HEROIC",
+      "description": "All items you can equip are yours / 5-6 items drop",
+      "price": 3910000,
+      "serviceCategoryId": 41,
+      "serviceSubcategoryId": 5,
+      "hotItem": true,
+      "sortOrder": 31,
+      "createdAt": "2026-10-17T20:44:46.172569Z",
+      "updatedAt": "2026-11-07T10:57:16.110293Z"
+    },
+    {
+      "id": 432,
+      "name": "🔸 Venomous Abyss 8/8 ATP 10 NORMAL",
+      "description": "ATP: 2-3 Drops Per Boss",
+      "price": 950000,
+      "serviceCategoryId": 41,
+      "serviceSubcategoryId": 6,
+      "hotItem": true,
+      "sortOrder": 32,
+      "createdAt": "2026-08-26T23:50:03.884321Z",
+      "updatedAt": "2026-10-19T03:20:36.322183Z"
+    },
+    {
+      "id": 433,
+      "name": "🔸 Venomous Abyss 8/8 ATP 15 NORMAL",
+      "description": "ATP: 3-4 Drops Per Boss",
+      "price": 1700000,
+      "serviceCategoryId": 41,
+      "serviceSubcategoryId": 6,
+      "hotItem": true,
+      "sortOrder": 33,
+      "createdAt": "2026-08-26T23:51:07.511481Z",
+      "updatedAt": "2026-10-19T03:20:36.323863Z"
+    },
+    {
+      "id": 434,
+      "name": "🔸 Venomous Abyss 8/8 ATP 20 NORMAL",
+      "description": "ATP: 4-5 Drops Per Boss",
+      "price": 2200000,
+      "serviceCategoryId": 41,
+      "serviceSubcategoryId": 6,
+      "hotItem": true,
+      "sortOrder": 34,
+      "createdAt": "2026-08-26T23:51:34.282842Z",
+      "updatedAt": "2026-10-19T03:20:36.325565Z"
+    },
+    {
+      "id": 407,
+      "name": "🔸Venomous Abyss 8/8 FP 10 NORMAL",
+      "description": "All items you can equip are yours / 2-3 items drop",
+      "price": 1200000,
+      "serviceCategoryId": 41,
+      "serviceSubcategoryId": 6,
+      "hotItem": true,
+      "sortOrder": 35,
+      "createdAt": "2026-08-21T03:32:38.424558Z",
+      "updatedAt": "2026-10-19T15:32:08.599778Z"
+    },
+    {
+      "id": 406,
+      "name": "🔸Venomous Abyss 8/8 FP 15 NORMAL",
+      "description": "All items you can equip are yours / 3-4 items drop",
+      "price": 1450000,
+      "serviceCategoryId": 41,
+      "serviceSubcategoryId": 6,
+      "hotItem": true,
+      "sortOrder": 36,
+      "createdAt": "2026-08-21T03:32:22.215682Z",
+      "updatedAt": "2026-10-19T15:32:14.494728Z"
+    },
+    {
+      "id": 403,
+      "name": "🔸Venomous Abyss 8/8 FP 20 NORMAL",
+      "description": "All items you can equip are yours / 4-5 items drop",
+      "price": 1800000,
+      "serviceCategoryId": 41,
+      "serviceSubcategoryId": 6,
+      "hotItem": true,
+      "sortOrder": 37,
+      "createdAt": "2026-08-21T03:10:47.356473Z",
+      "updatedAt": "2026-10-19T15:32:20.437599Z"
+    },
+    {
+      "id": 435,
+      "name": "🔸Venomous Abyss 8/8 FP 26 NORMAL",
+      "description": "All items you can equip are yours / 5-6 items drop",
+      "price": 2450000,
+      "serviceCategoryId": 41,
+      "serviceSubcategoryId": 6,
+      "hotItem": true,
+      "sortOrder": 38,
+      "createdAt": "2026-08-27T00:04:48.743519Z",
+      "updatedAt": "2026-10-19T15:32:26.287303Z"
+    },
+    {
+      "id": 412,
+      "name": "🔸 Venomous + Tidebound 9/9 FP 10 NORMAL",
+      "description": "All items you can equip are yours / 2-3 items drop ",
+      "price": 1200000,
+      "serviceCategoryId": 41,
+      "serviceSubcategoryId": 6,
+      "hotItem": true,
+      "sortOrder": 39,
+      "createdAt": "2026-08-23T14:57:51.44473Z",
+      "updatedAt": "2026-10-19T15:32:50.783016Z"
+    },
+    {
+      "id": 413,
+      "name": "🔸 Venomous + Tidebound 9/9 FP 15 NORMAL",
+      "description": "All items you can equip are yours / 3-4 items drop",
+      "price": 1700000,
+      "serviceCategoryId": 41,
+      "serviceSubcategoryId": 6,
+      "hotItem": true,
+      "sortOrder": 40,
+      "createdAt": "2026-08-23T14:58:12.81442Z",
+      "updatedAt": "2026-10-19T15:32:57.193243Z"
+    },
+    {
+      "id": 414,
+      "name": "🔸 Venomous + Tidebound 9/9 FP 20 NORMAL",
+      "description": "All items you can equip are yours / 4-5 items drop",
+      "price": 2200000,
+      "serviceCategoryId": 41,
+      "serviceSubcategoryId": 6,
+      "hotItem": true,
+      "sortOrder": 41,
+      "createdAt": "2026-08-23T14:58:57.657643Z",
+      "updatedAt": "2026-10-19T15:33:03.647296Z"
+    },
+    {
+      "id": 415,
+      "name": "🔸 Venomous + Tidebound 9/9 FP 26 NORMAL",
+      "description": "All items you can equip are yours / 5-6 items drop ",
+      "price": 2700000,
+      "serviceCategoryId": 41,
+      "serviceSubcategoryId": 6,
+      "hotItem": true,
+      "sortOrder": 42,
+      "createdAt": "2026-08-23T14:59:25.62806Z",
+      "updatedAt": "2026-10-19T15:33:09.720399Z"
+    },
+    {
+      "id": 480,
+      "name": "🔸March on Quel'Danas LURA MOUNT",
+      "description": "Only Mount Single Kill No Loot",
+      "price": 1240000,
+      "serviceCategoryId": 41,
+      "serviceSubcategoryId": 4,
+      "hotItem": true,
+      "sortOrder": 43,
+      "createdAt": "2026-10-20T23:17:27.680004Z",
+      "updatedAt": "2026-10-26T17:17:32.822666Z"
     }
-  ]
+  ],
+  "errors": []
 }
