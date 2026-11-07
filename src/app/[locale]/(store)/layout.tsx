@@ -1,27 +1,71 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { SiteFooter } from "@/components/organisms/SiteFooter";
 import { SiteHeader } from "@/components/organisms/SiteHeader";
 import { categoryHref, listCategories } from "@/features/catalog";
-import { getRegion } from "@/lib/preferences";
+import {
+  MobileMenu,
+  PreferenceSelects,
+  REGIONS,
+  TimezoneDetector,
+  timezoneOptions,
+} from "@/features/preferences";
+import { LOCALE_LABELS } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
+import { getRegion, getTimezone } from "@/lib/preferences";
 
 async function StoreHeader({ locale }: { locale: string }) {
-  await connection(); // categorias e região vêm do banco/cookie: hora da requisição
-  const [categories, region, t] = await Promise.all([
+  await connection(); // categorias e preferências vêm do banco/cookie: hora da requisição
+  const [categories, region, timezone, t] = await Promise.all([
     listCategories(),
     getRegion(),
+    getTimezone(),
     getTranslations({ locale, namespace: "Nav" }),
   ]);
+  const nav = categories.map((c) => ({ href: categoryHref(locale, c.slug), label: c.name }));
+  const prefs = {
+    locale,
+    locales: routing.locales.map((code) => ({ code, label: LOCALE_LABELS[code] ?? code })),
+    region,
+    regions: REGIONS,
+    timezone: timezone ?? "",
+    detecting: timezone === null,
+    timezones: timezoneOptions(timezone),
+    labels: {
+      language: t("language"),
+      region: t("region"),
+      timezone: t("timezone"),
+      detecting: t("detecting"),
+    },
+  };
   return (
     <SiteHeader
       homeHref={`/${locale}`}
       navLabel={t("label")}
-      nav={categories.map((c) => ({ href: categoryHref(locale, c.slug), label: c.name }))}
+      nav={nav}
       tools={
-        <span className="rounded-full bg-muted px-3 py-1 font-heading text-xs font-semibold text-muted-foreground">
-          {t("region")}: {region}
-        </span>
+        <>
+          <TimezoneDetector hasTimezone={timezone !== null} />
+          <div className="hidden lg:flex">
+            <PreferenceSelects idPrefix="pref" {...prefs} />
+          </div>
+          <MobileMenu openLabel={t("menu")} closeLabel={t("closeMenu")}>
+            <nav aria-label={t("label")} className="mb-4 grid gap-1">
+              {nav.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-md px-2 py-3 font-heading text-base font-semibold text-heading hover:bg-accent"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+            <PreferenceSelects idPrefix="pref-m" stacked {...prefs} />
+          </MobileMenu>
+        </>
       }
     />
   );

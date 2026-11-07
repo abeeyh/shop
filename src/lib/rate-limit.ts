@@ -1,10 +1,11 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
+import { env } from "./env";
 import { errorSummary, logger } from "./logger";
 import { readyValkey } from "./valkey";
 
 // Limites como configuração (docs/13 §1: sem número mágico espalhado). Valores em docs/09 §2.
 export const RATE_LIMITS = {
-  request: { limit: 300, windowMs: 60_000 }, // por IP, toda página/API no proxy
+  request: { limit: env.RATE_LIMIT_REQUESTS_PER_MIN, windowMs: 60_000 }, // por IP, toda página/API no proxy
   search: { limit: 30, windowMs: 60_000 }, // RN-105
 } as const;
 
