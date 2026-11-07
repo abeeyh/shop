@@ -195,7 +195,8 @@
       "store": "商店",
       "signOut": "登出",
       "promotions": "促銷活動",
-      "coupons": "優惠碼"
+      "coupons": "優惠碼",
+      "audit": "稽核紀錄"
     },
     "login": {
       "title": "團隊登入",
@@ -296,6 +297,22 @@
       "percent": "百分比",
       "fixed": "固定金額（USDT）",
       "store": "全店"
+    },
+    "audit": {
+      "when": "時間（UTC）",
+      "who": "人員",
+      "what": "項目",
+      "changes": "變更內容",
+      "entities": {
+        "category": "分類",
+        "product": "商品",
+        "promotion": "促銷",
+        "coupon": "優惠碼"
+      },
+      "actions": {
+        "create": "建立",
+        "update": "修改"
+      }
     }
   }
 }

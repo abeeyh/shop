@@ -195,7 +195,8 @@
       "store": "Shop",
       "signOut": "Abmelden",
       "promotions": "Aktionen",
-      "coupons": "Gutscheine"
+      "coupons": "Gutscheine",
+      "audit": "Änderungsprotokoll"
     },
     "login": {
       "title": "Anmeldung (Team)",
@@ -296,6 +297,22 @@
       "percent": "Prozent",
       "fixed": "Fester Betrag (USDT)",
       "store": "Ganzer Shop"
+    },
+    "audit": {
+      "when": "Wann (UTC)",
+      "who": "Wer",
+      "what": "Was",
+      "changes": "Änderungen",
+      "entities": {
+        "category": "Kategorie",
+        "product": "Produkt",
+        "promotion": "Aktion",
+        "coupon": "Gutschein"
+      },
+      "actions": {
+        "create": "Erstellt",
+        "update": "Geändert"
+      }
     }
   }
 }

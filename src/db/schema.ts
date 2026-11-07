@@ -360,3 +360,24 @@ export const couponRedemptions = pgTable(
   },
   (t) => [index("coupon_redemptions_coupon_idx").on(t.couponId, t.status)],
 );
+
+// Auditoria do dashboard (RN-71, RN-07): quem, quando, antes e depois. Só cresce — nunca editada.
+export const auditLog = pgTable(
+  "audit_log",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    staffId: text("staff_id")
+      .notNull()
+      .references(() => users.id),
+    entity: text("entity").notNull(), // category | product | promotion | coupon (e pedido com #23)
+    entityId: text("entity_id").notNull(),
+    action: text("action").notNull(), // create | update
+    before: jsonb("before"),
+    after: jsonb("after").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("audit_log_created_idx").on(t.createdAt),
+    index("audit_log_entity_idx").on(t.entity, t.entityId),
+  ],
+);

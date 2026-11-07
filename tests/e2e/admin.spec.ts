@@ -142,6 +142,12 @@ test.describe("admin", () => {
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");
 
+    // RN-71: as alterações aparecem na auditoria com quem e o antes → depois
+    await page.goto("/en/admin/auditoria");
+    await expect(page.getByText(`Updated Category: E2E Keys ${id}`).first()).toBeVisible();
+    await expect(page.getByText(`Created Product: E2E Key Product ${id}`)).toBeVisible();
+    await expect(page.getByText(E2E_ADMIN.email).first()).toBeVisible();
+
     // RN-02: depois de sair, o login pede o código
     await page.getByRole("button", { name: "Sign out" }).click();
     await expect(page).toHaveURL(/\/en\/admin\/entrar$/);

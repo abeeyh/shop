@@ -195,7 +195,8 @@
       "store": "Store",
       "signOut": "Sign out",
       "promotions": "Promotions",
-      "coupons": "Coupons"
+      "coupons": "Coupons",
+      "audit": "Audit log"
     },
     "login": {
       "title": "Staff sign in",
@@ -296,6 +297,22 @@
       "percent": "Percentage",
       "fixed": "Fixed amount (USDT)",
       "store": "Whole store"
+    },
+    "audit": {
+      "when": "When (UTC)",
+      "who": "Who",
+      "what": "What",
+      "changes": "Changes",
+      "entities": {
+        "category": "Category",
+        "product": "Product",
+        "promotion": "Promotion",
+        "coupon": "Coupon"
+      },
+      "actions": {
+        "create": "Created",
+        "update": "Updated"
+      }
     }
   }
 }
