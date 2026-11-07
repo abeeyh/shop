@@ -47,6 +47,7 @@ export function parseFilters(raw: Raw, defaults: { region: "US" | "EU"; categori
     min: money.parse(one(raw.min)),
     max: money.parse(one(raw.max)),
     available: one(raw.disponivel) === "1",
+    promo: one(raw.promo) === "1", // RN-22: só com promoção valendo agora
     sort: parseSort(one(raw.sort), q),
     page: pageNumber.parse(one(raw.page) ?? 1),
   };
@@ -66,6 +67,7 @@ export function filtersToQuery(f: Filters, defaultRegion: string, patch: Partial
     ["min", when(v.min !== undefined, String(v.min))],
     ["max", when(v.max !== undefined, String(v.max))],
     ["disponivel", when(v.available, "1")],
+    ["promo", when(v.promo, "1")],
     ["sort", when(v.sort !== defaultSort(v.q), v.sort)],
     ["page", when(v.page > 1, String(v.page))],
   ];

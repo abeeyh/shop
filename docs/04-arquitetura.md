@@ -166,7 +166,7 @@ sequenceDiagram
 | Rota | Tipo | Acesso |
 |------|------|--------|
 | `/[locale]` | Página | Público |
-| `/[locale]/produtos?q=&cat=&region=&min=&max=&disponivel=1&sort=&page=` | Página (busca e filtros — RN-100 a RN-103). Fora de `/wow/` para não colidir com o slug de uma categoria; `promo=1` e ordenação pelo preço final entram com #74 | Público |
+| `/[locale]/produtos?q=&cat=&region=&min=&max=&disponivel=1&sort=&page=` | Página (busca e filtros — RN-100 a RN-103). Fora de `/wow/` para não colidir com o slug de uma categoria; `promo=1` filtra produtos com promoção valendo; preço mínimo/máximo e ordenação usam o **preço final** (SQL em `catalog/search.ts`, mesma regra de `pricing/rules.ts`) | Público |
 | `/[locale]/wow/[categoria]`, `/[locale]/wow/[categoria]/[produto]` (slugs criados pelo admin — RN-13, RN-19; rotas no grupo `app/[locale]/(store)`). Inexistente → página "não encontrada" com `noindex` (status 200 por causa do streaming) | Página | Público |
 | `/[locale]/carrinho` (carrinho e checkout na mesma página: e-mail, rede e "Pagar com USDT") | Página + Server Actions | Público (visitante — RN-01) |
 | `/[locale]/pedido/[id]?t=` | Página | Dono do pedido: link assinado (HMAC do id com `ORDER_LINK_SECRET`); token errado = "não encontrado". Não mostra o e-mail |

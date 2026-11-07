@@ -36,6 +36,13 @@ describe("filtros da URL (RN-100 a RN-103)", () => {
     });
   });
 
+  it("RN-22: filtro em promoção entra e sai da URL", () => {
+    const f = parseFilters({ promo: "1" }, defaults);
+    expect(f.promo).toBe(true);
+    expect(filtersToQuery(f, "US")).toBe("?promo=1");
+    expect(filtersToQuery(f, "US", { promo: false })).toBe("");
+  });
+
   it("URL só com o que difere do padrão; patch remove filtros (chips, limpar)", () => {
     const f = parseFilters(
       { q: "gold", cat: "gold,raids", region: "EU", min: "10", disponivel: "1", page: "2" },

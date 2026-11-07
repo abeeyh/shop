@@ -83,7 +83,8 @@
     "tooMany": "Too many searches in a short time. Please wait a minute.",
     "pagination": "Pages",
     "prev": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "promo": "On sale"
   },
   "Buy": {
     "realm": "Realm",

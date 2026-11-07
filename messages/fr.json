@@ -83,7 +83,8 @@
     "tooMany": "Trop de recherches en peu de temps. Patientez une minute.",
     "pagination": "Pages",
     "prev": "Précédent",
-    "next": "Suivant"
+    "next": "Suivant",
+    "promo": "En promotion"
   },
   "Buy": {
     "realm": "Royaume",

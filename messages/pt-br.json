@@ -83,7 +83,8 @@
     "tooMany": "Muitas buscas em pouco tempo. Aguarde um minuto.",
     "pagination": "Páginas",
     "prev": "Anterior",
-    "next": "Próxima"
+    "next": "Próxima",
+    "promo": "Em promoção"
   },
   "Buy": {
     "realm": "Realm",
