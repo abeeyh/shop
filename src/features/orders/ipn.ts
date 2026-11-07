@@ -1,7 +1,7 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { z } from "zod";
 import { logger } from "@/lib/logger";
-import { verifyIpn } from "@/lib/payments/crypto";
+import { ipnReady, verifyIpn } from "@/lib/payments/crypto";
 import { applyPaymentEvent, type ApplyResult } from "./queries";
 import { outcomeOf } from "./rules";
 
@@ -30,6 +30,7 @@ const ALERT: Partial<Record<ApplyResult, string>> = {
 // RN-32, RN-33, RN-37. Responde 200 também para duplicado/ignorado: o provedor para de reenviar.
 export async function handleCryptoIpn(raw: string, signature: string | null, requestId: string) {
   if (raw.length > MAX_IPN_BYTES) return 413;
+  if (!ipnReady()) return 501; // sem segredo do provedor: API ainda não implementada
   let body: unknown;
   try {
     body = JSON.parse(raw);

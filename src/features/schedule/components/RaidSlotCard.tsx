@@ -13,7 +13,6 @@ export type RaidSlotCardData = {
   seatsLabel: string; // "3 vagas" ou "Esgotado" — decidido no servidor (RN-11, RN-16)
   soldOut: boolean;
   price: string;
-  estimate: string;
 };
 
 type Props = {
@@ -60,7 +59,7 @@ export function RaidSlotCard({ slot, locale, timeZone, serverTimeZone, serverNow
         <span className="text-xs text-muted-foreground">{labels.startsIn}</span>
         <Countdown until={slot.startsAt} serverNow={serverNow} label={labels.startsIn} />
       </div>
-      <PriceTag price={slot.price} estimate={slot.estimate} />
+      <PriceTag price={slot.price} />
     </GradientCard>
   );
 }

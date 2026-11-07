@@ -28,7 +28,6 @@ describe("env", () => {
   });
 
   const productionPayments = () => {
-    vi.stubEnv("PAYMENTS_PROVIDER", "nowpayments");
     vi.stubEnv("NOWPAYMENTS_API_KEY", "key");
     vi.stubEnv("NOWPAYMENTS_IPN_SECRET", "ipn-secret-16-chars");
     vi.stubEnv("NOWPAYMENTS_SANDBOX", "false");
@@ -45,29 +44,32 @@ describe("env", () => {
     expect(env.CLIENT_IP_HEADER).toBe("cf-connecting-ip");
   });
 
-  it("RN-32: production com pagamento fake ou sandbox não sobe", async () => {
+  it("RN-32: production com sandbox não sobe", async () => {
     vi.stubEnv("APP_ENV", "production");
     vi.stubEnv("CLIENT_IP_HEADER", "cf-connecting-ip");
     vi.stubEnv("VALKEY_URL", "redis://cache:6379");
     productionPayments();
-    vi.stubEnv("PAYMENTS_PROVIDER", "fake");
-    await expect(import("./env")).rejects.toThrow(/PAYMENTS_PROVIDER/);
-    vi.resetModules();
-    productionPayments();
     vi.stubEnv("NOWPAYMENTS_SANDBOX", "true");
-    await expect(import("./env")).rejects.toThrow(/PAYMENTS_PROVIDER/);
+    await expect(import("./env")).rejects.toThrow(/NOWPAYMENTS_SANDBOX/);
   });
 
-  it("RN-32: build de produção sem APP_ENV não sobe (nunca cai no pagamento fake)", async () => {
+  it("RN-32: chave do provedor sem segredo do IPN não sobe (pagamento nunca seria confirmado)", async () => {
+    vi.stubEnv("NOWPAYMENTS_API_KEY", "key");
+    vi.stubEnv("NOWPAYMENTS_IPN_SECRET", "");
+    await expect(import("./env")).rejects.toThrow(/NOWPAYMENTS_IPN_SECRET/);
+  });
+
+  it("build de produção sem APP_ENV não sobe", async () => {
     vi.stubEnv("NODE_ENV", "production");
     vi.stubEnv("APP_ENV", "");
     await expect(import("./env")).rejects.toThrow(/APP_ENV/);
   });
 
-  it("RN-32: homologação com pagamento fake não sobe (segredo de dev é público)", async () => {
+  it("RN-01: homologação sem ORDER_LINK_SECRET não sobe (segredo de dev é público)", async () => {
     vi.stubEnv("APP_ENV", "homologacao");
-    vi.stubEnv("PAYMENTS_PROVIDER", "fake");
-    await expect(import("./env")).rejects.toThrow(/PAYMENTS_PROVIDER/);
+    vi.stubEnv("BETTER_AUTH_SECRET", "y".repeat(32));
+    vi.stubEnv("ORDER_LINK_SECRET", "");
+    await expect(import("./env")).rejects.toThrow(/ORDER_LINK_SECRET/);
   });
 
   it("production sem VALKEY_URL não sobe (rate limit é controle de segurança)", async () => {

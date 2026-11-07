@@ -1,6 +1,5 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { canonicalLocale } from "@/i18n/routing";
-import { estimate } from "@/lib/fx";
 import { bestPromotion, type Promotion } from "@/features/pricing/rules";
 import type { ProductCardData } from "./components/ProductCard";
 import type { CatalogProduct } from "./queries";
@@ -12,12 +11,6 @@ export function formatUsdt(locale: string, cents: number): string {
     maximumFractionDigits: 2,
   });
   return `${n.format(cents / 100)} USDT`;
-}
-
-export function formatEstimate(locale: string, cents: number): string {
-  const { currency, amount } = estimate(locale, cents);
-  const money = new Intl.NumberFormat(canonicalLocale(locale), { style: "currency", currency });
-  return `≈ ${money.format(amount)}`;
 }
 
 export const categoryHref = (locale: string, slug: string) => `/${locale}/wow/${slug}`;
@@ -58,7 +51,6 @@ export function toProductCard(
     region: p.region,
     price: formatUsdt(locale, price.cents),
     original: price.originalCents ? formatUsdt(locale, price.originalCents) : undefined,
-    estimate: formatEstimate(locale, price.cents),
     unit: p.unit ? unitLabel(p.unit) : undefined,
   };
 }

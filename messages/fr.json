@@ -26,7 +26,7 @@
   },
   "Catalog": {
     "perK": "pour 1 000 pièces d'or",
-    "estimateNote": "Estimation dans votre devise ; facturé en USDT.",
+    "estimateNote": "Estimation dans votre devise : API pas encore implémentée. Facturé en USDT.",
     "selfPlay": "Self-play : vous jouez votre propre personnage. Nous ne demandons jamais votre mot de passe Battle.net.",
     "empty": "Aucun produit dans cette région pour le moment.",
     "region": "Région : {region}",
@@ -165,7 +165,8 @@
       "payment": "Impossible de créer le paiement. Réessayez dans un instant.",
       "coupon": "Ce coupon a atteint sa limite d'utilisation. Retirez-le pour continuer.",
       "changed": "Le prix a changé (une promotion s'est terminée ou le coupon a changé). Vérifiez le nouveau total et réessayez.",
-      "limited": "Trop de tentatives de paiement. Patientez quelques minutes puis réessayez."
+      "limited": "Trop de tentatives de paiement. Patientez quelques minutes puis réessayez.",
+      "notImplemented": "Paiement en USDT : API pas encore implémentée."
     }
   },
   "Order": {

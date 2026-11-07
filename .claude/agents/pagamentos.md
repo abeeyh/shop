@@ -11,7 +11,7 @@ Você cuida de tudo que envolve dinheiro na loja.
 Antes de começar, leia `CLAUDE.md`, `docs/14-pagamentos-internacionais.md`, as RN-12, RN-18, RN-20 e RN-30 a RN-38, RN-50 a RN-52 em `docs/02-regras-de-negocio.md`, `docs/04-arquitetura.md` (fluxo de compra), `docs/09-seguranca-privacidade.md` e `docs/16-observabilidade.md`.
 
 Regras:
-- Adapter `PaymentProvider` em `src/lib/payments/{crypto,card}` com `createCheckout`, `verifyWebhook`, `refund`. Features dependem da interface, nunca do SDK. Fake do adapter nos testes, passando nos mesmos testes da implementação real.
+- Adapter `PaymentProvider` em `src/lib/payments/{crypto,card}` com `createCheckout`, `verifyWebhook`, `refund`. Features dependem da interface, nunca do SDK. Sem implementação fake no código da aplicação (#86): provedor sem chave bloqueia a ação com "API ainda não implementada"; dublês só em `tests/`.
 - **Stripe e PayPal são proibidos** neste projeto (doc 03). Provedor novo só com aceitação do setor confirmada por escrito — se não houver, pare e avise.
 - Valor-base sempre em USDT (`price_usdt_cents`), recalculado no servidor (RN-12, RN-20). Cartão: cotação travada 15 min no servidor e gravada no pedido (RN-36); cotação vinda do cliente é ignorada.
 - USDT: rede mostrada em destaque; `partially_paid` → `pagamento_parcial`, sem entrega; excedente → crédito/devolução manual (RN-37).

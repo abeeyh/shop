@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { PriceTag } from "@/components/molecules/PriceTag";
 import { GradientCard } from "@/components/molecules/GradientCard";
 import { Countdown } from "@/components/molecules/Countdown";
-import { formatEstimate, formatUsdt, promoPrice, type CatalogProduct } from "@/features/catalog";
+import { formatUsdt, promoPrice, type CatalogProduct } from "@/features/catalog";
 import { activePromotions } from "@/features/discounts/queries";
 import {
   lineTotalCents,
@@ -61,7 +61,6 @@ export async function BuyBox({ locale, product, timeZone }: Props) {
       <PriceTag
         price={formatUsdt(locale, price.cents)}
         original={price.originalCents ? formatUsdt(locale, price.originalCents) : undefined}
-        estimate={formatEstimate(locale, price.cents)}
         unit={product.unit === "per_1k_gold" ? c("perK") : t(`unit.${kind}`)}
       />
       {price.endsAt ? (
