@@ -59,6 +59,7 @@ const isCurrent = (r: Row) =>
     hasSlots: r.hasSlots,
     slotId: r.slotId,
     hasVariants: r.hasVariants,
+    variantChosen: r.variantId !== null,
     variantOk: r.variantOk,
   });
 

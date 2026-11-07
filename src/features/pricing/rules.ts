@@ -46,10 +46,13 @@ export function itemStillValid(
     hasSlots: boolean;
     slotId: string | null;
     hasVariants: boolean; // #100: produto com eixos exige uma variante ativa, com preço, deste produto
+    variantChosen: boolean; // o item aponta para uma variante
     variantOk: boolean;
   },
 ): boolean {
-  if (product.hasVariants !== product.variantOk) return false;
+  // produto sem eixos com item de variante (admin tirou os eixos): o rótulo "8/8" não vale o preço base
+  if (product.hasVariants !== product.variantChosen) return false;
+  if (product.hasVariants && !product.variantOk) return false;
   if (!isCurrentOptions(options) || (options.kind === "gold") !== product.isGold) return false;
   if (options.kind === "gold") return true;
   const names = product.addons.map((a) => a.name);

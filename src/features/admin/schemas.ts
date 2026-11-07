@@ -57,7 +57,7 @@ const addons = z
   .refine((list) => new Set(list.map((a) => a.name.toLowerCase())).size === list.length);
 
 // #100: eixos de opção, um por linha — "Bosses | slider | 2/8, 3/8, 4/8" (slider anda na ordem escrita)
-const AXIS_LINE = /^([^|]{1,30}?)\s*\|\s*(slider|boxes)\s*\|\s*(.+)$/;
+const AXIS_LINE = /^([^|=;]{1,30}?)\s*\|\s*(slider|boxes)\s*\|\s*([^|=;]+)$/; // = e ; separam as combinações
 const lines = (v: string) =>
   v
     .split("\n")
@@ -67,7 +67,7 @@ const optionAxes = z
   .string()
   .max(2000)
   .transform(lines)
-  .pipe(z.array(z.string().regex(AXIS_LINE)).max(4))
+  .pipe(z.array(z.string().max(400).regex(AXIS_LINE)).max(4))
   .transform((ls) =>
     ls.map((l) => {
       const [, name, style, values] = AXIS_LINE.exec(l)!;
@@ -88,12 +88,12 @@ const optionAxes = z
 
 // #100: variantes, uma por linha — "Bosses=3/8; Tidebound Grotto=Included | 74.25 | nota"
 // preço "-" = sob consulta (RN-106); nota opcional (até 160)
-const VARIANT_LINE = /^(.+?)\s*\|\s*(-|\d{1,6}(?:\.\d{1,2})?)\s*(?:\|\s*(.{0,160}))?$/;
+const VARIANT_LINE = /^([^|]+?)\s*\|\s*(-|\d{1,6}(?:\.\d{1,2})?)\s*(?:\|\s*(.{0,160}))?$/;
 const variantLines = z
   .string()
   .max(20000)
   .transform(lines)
-  .pipe(z.array(z.string().regex(VARIANT_LINE)).max(200))
+  .pipe(z.array(z.string().max(400).regex(VARIANT_LINE)).max(200)) // linha curta: sem regex lenta
   .transform((ls) =>
     ls.map((l) => {
       const [, opts, price, note] = VARIANT_LINE.exec(l)!;
@@ -137,6 +137,9 @@ export const productInput = z
   })
   .superRefine((v, ctx) => {
     const issue = (path: string) => ctx.addIssue({ code: "custom", path: [path], message: path });
+    // campo que já falhou chega como texto cru: o erro dele já foi registrado
+    const raw = (a: unknown) => !Array.isArray(a) || a.some((x) => typeof x !== "object");
+    if (raw(v.optionAxes) || raw(v.variants)) return;
     if (v.optionAxes.length === 0) {
       if (v.variants.length) issue("variants");
       if (!v.priceOnRequest && v.price <= 0) issue("price");

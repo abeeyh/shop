@@ -54,6 +54,13 @@ describe("#100: eixos e combinações do produto", () => {
     expect(
       fieldsOf(productInput.safeParse({ ...base, optionAxes: "Bosses | wheel | 1", variants: "" }).error!),
     ).toContain("optionAxes");
+    // revisão de segurança: separadores no nome/valor e linha gigante (regex lenta) são recusados
+    expect(
+      fieldsOf(productInput.safeParse({ ...base, optionAxes: "A=B | boxes | x", variants: "" }).error!),
+    ).toContain("optionAxes");
+    const t0 = Date.now();
+    expect(bad(`a${" ".repeat(19_000)}b | 10`)).toEqual(["variants"]);
+    expect(Date.now() - t0).toBeLessThan(200);
   });
 });
 
