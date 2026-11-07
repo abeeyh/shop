@@ -162,6 +162,7 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
                 coupon: k("errors.coupon"),
                 changed: k("errors.changed"),
                 limited: k("errors.limited"),
+                notImplemented: k("errors.notImplemented"),
               },
             }}
           />

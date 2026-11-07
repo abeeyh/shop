@@ -26,7 +26,7 @@
   },
   "Catalog": {
     "perK": "每 1,000 金币",
-    "estimateNote": "按你的货币估算；按 USDT 收费。",
+    "estimateNote": "本地货币估算：API 尚未实现。按 USDT 收费。",
     "selfPlay": "本人上线：你使用自己的角色游戏。我们绝不索要你的 Battle.net 密码。",
     "empty": "该地区暂无商品。",
     "region": "地区：{region}",
@@ -165,7 +165,8 @@
       "payment": "无法创建付款，请稍后再试。",
       "coupon": "该优惠码已达到使用上限，请移除后继续。",
       "changed": "价格已变动（促销已结束或优惠码已变更），请确认新的总额后再试一次。",
-      "limited": "结算尝试次数过多，请稍等几分钟再试。"
+      "limited": "结算尝试次数过多，请稍等几分钟再试。",
+      "notImplemented": "USDT 付款：API 尚未实现。"
     }
   },
   "Order": {

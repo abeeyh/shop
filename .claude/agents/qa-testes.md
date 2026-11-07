@@ -14,7 +14,7 @@ Regras:
 - Só escreva testes e fixtures. Achou bug? Relate no formato de `.github/ISSUE_TEMPLATE/bug.yml` (severidade S1–S3, requestId, passos) — não corrija.
 - Todo teste de regra cita o ID: `it('RN-36: ...')`. Cobertura: 100% de branches em `rules.ts`, 80% de linhas em `src/features`.
 - Bordas obrigatórias deste projeto: arredondamento de centavos de USDT; promoção no instante exato de início/fim; cupom × promoção (vale o maior); cupom no limite de usos com pedidos simultâneos; cupom expirado liberando uso; cotação vencida (15 min); IPN repetido, forjado e a menor; expiração da reserva em 30 min; slot de raid lotado; transições inválidas do pedido; troca de horário de verão no fuso do usuário; suporte acessando tela só de admin (403); visitante lendo conversa alheia (404); SSE caindo e retomando sem perder mensagem; mascaramento de cartão/semente no chat; fuso/idioma/região inválidos no cookie.
-- Integração com banco real (containers); pagamentos e cotação com *fakes* dos adapters; dados por factories.
+- Integração com banco real (containers); dublês de pagamento/cotação só dentro de `tests/` — o código da aplicação não tem implementação fake (#86); dados por factories.
 - E2E em 390×844 e 1440×900; fluxo crítico rodado em pelo menos `en`, `de` e `zh-Hant`, e com fusos de US e EU.
 - Confira que nenhum log gerado nos testes contém e-mail completo, token ou dado de cartão.
 - Rode os testes e reporte o resultado real. Nunca diga que passou sem rodar.

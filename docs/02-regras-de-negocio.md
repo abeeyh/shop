@@ -35,7 +35,7 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 | RN-16 | Raid: tem raid, dificuldade (Normal/Heroic/Mythic), opção de loot e um **horário (slot)**; o slot tem vagas limitadas. *(proposta — confirmar)* |
 | RN-17 | Dungeon: nível da chave Mythic+, quantidade de runs e opção "timed"; preço calculado por tabela de configuração. *(proposta — confirmar)* |
 | RN-19 | **Produtos são criados pelo admin dentro de uma categoria**: nome, descrição, imagem, região (US/EU), preço-base em USDT (RN-12), opções do tipo da categoria e ativo. Textos iguais em todos os idiomas (RN-84). Produto desativado sai da vitrine, mas continua visível nos pedidos antigos. *(aprovada em 2026-11-06)* |
-| RN-18 | Preço em outra moeda (EUR, BRL, TWD, CNY…) é só **estimativa** exibida com "≈"; a cobrança é sempre pelo valor em USDT (RN-35). *(proposta — confirmar)* |
+| RN-18 | Preço em outra moeda (EUR, BRL, TWD, CNY…) é só **estimativa** exibida com "≈"; a cobrança é sempre pelo valor em USDT (RN-35). Sem API de cotação (#63) a estimativa não aparece — só o aviso "API ainda não implementada" na página do produto; nada de cotação fixa (#86). *(proposta — confirmar)* |
 
 ## Busca e filtros
 

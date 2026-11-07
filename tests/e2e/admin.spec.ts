@@ -1,7 +1,7 @@
 import { createHmac } from "node:crypto";
 import { expect, test, type Page } from "@playwright/test";
 import { E2E_ADMIN } from "./global-setup";
-import { checkout, ipn } from "./helpers";
+import { ipn, seedOrder } from "./helpers";
 
 // #20: admin com 2FA e CRUD de categorias/produtos. RN-02, RN-04, RN-13, RN-19, RN-70, RN-72, RN-73.
 
@@ -166,7 +166,8 @@ test.describe("admin", () => {
     // RN-50/RN-52: pedido pago → equipe inicia → conclui com prova → cliente vê no pedido
     const buyer = await browser.newContext({ baseURL });
     const buyerPage = await buyer.newPage();
-    const orderId = await checkout(buyerPage);
+    const { id: orderId, path: orderPath } = await seedOrder();
+    await buyerPage.goto(orderPath);
     const paid = { payment_id: Date.now() + Math.random(), order_id: orderId, pay_currency: "usdterc20" };
     await ipn(request, {
       ...paid,

@@ -26,7 +26,7 @@
   },
   "Catalog": {
     "perK": "pro 1.000 Gold",
-    "estimateNote": "Schätzung in deiner Währung; Abrechnung in USDT.",
+    "estimateNote": "Schätzung in deiner Währung: API noch nicht implementiert. Abrechnung in USDT.",
     "selfPlay": "Self-Play: Du spielst deinen eigenen Charakter. Wir fragen nie nach deinem Battle.net-Passwort.",
     "empty": "In dieser Region gibt es noch keine Produkte.",
     "region": "Region: {region}",
@@ -165,7 +165,8 @@
       "payment": "Die Zahlung konnte nicht erstellt werden. Versuche es gleich noch einmal.",
       "coupon": "Dieser Gutschein hat sein Nutzungslimit erreicht. Entferne ihn, um fortzufahren.",
       "changed": "Der Preis hat sich geändert (eine Aktion ist abgelaufen oder der Gutschein wurde geändert). Prüfe die neue Summe und versuche es erneut.",
-      "limited": "Zu viele Bestellversuche. Warte ein paar Minuten und versuche es erneut."
+      "limited": "Zu viele Bestellversuche. Warte ein paar Minuten und versuche es erneut.",
+      "notImplemented": "USDT-Zahlung: API noch nicht implementiert."
     }
   },
   "Order": {

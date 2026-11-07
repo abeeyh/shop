@@ -15,12 +15,12 @@ test("home lista categorias e mais vendidos da região US", async ({ browser, ba
   await context.close();
 });
 
-test("categoria mostra produtos com preço em USDT e estimativa na moeda local", async ({ page }) => {
+test("categoria mostra produtos com preço em USDT (sem estimativa fake na moeda local)", async ({ page }) => {
   await page.goto("/pt-br/wow/gold");
   await expect(page.getByRole("heading", { level: 1, name: "Gold" })).toBeVisible();
   const card = page.locator("div", { has: page.getByRole("link", { name: "Gold — US realms" }) }).last();
   await expect(card).toContainText("0,45 USDT");
-  await expect(card).toContainText("≈ R$"); // RN-18
+  await expect(card).not.toContainText("≈"); // RN-18: só com a API de cotação (#86, #63)
 });
 
 test("produto abre pelo card e mostra o aviso de self-play", async ({ page }) => {

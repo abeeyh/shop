@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test";
-import { checkout, ipn } from "./helpers";
+import { ipn, seedOrder } from "./helpers";
 
-// #18: fatura USDT (adapter fake) + IPN assinado. RN-01, RN-32, RN-33, RN-37, RN-50.
+// #18/#86: IPN assinado sobre pedido criado no banco (sem provedor o checkout é bloqueado).
+// RN-01, RN-32, RN-33, RN-37, RN-50.
 test.describe("checkout USDT", () => {
   test.skip(({ isMobile }) => isMobile, "fluxo de servidor; o layout do carrinho já é coberto no celular");
 
@@ -9,7 +10,8 @@ test.describe("checkout USDT", () => {
     page,
     request,
   }) => {
-    const orderId = await checkout(page);
+    const { id: orderId, path } = await seedOrder();
+    await page.goto(path);
     const status = page.getByTestId("order-status");
     await expect(status).toHaveText("Awaiting payment");
     await expect(page.getByText("Pay on the ERC-20 network only")).toBeVisible();
@@ -38,14 +40,11 @@ test.describe("checkout USDT", () => {
     await ipn(request, { ...base, payment_status: "expired", actually_paid: 0 }); // fora de ordem
     await page.reload();
     await expect(status).toHaveText("Paid");
-
-    // carrinho foi esvaziado no checkout
-    await page.goto("/en/carrinho");
-    await expect(page.getByText("Your cart is empty.")).toBeVisible();
   });
 
   test("RN-32: IPN sem assinatura válida é recusado e não muda o pedido", async ({ page, request }) => {
-    const orderId = await checkout(page);
+    const { id: orderId, path } = await seedOrder();
+    await page.goto(path);
     const body = {
       payment_id: Date.now() + Math.random(),
       order_id: orderId,
@@ -65,8 +64,21 @@ test.describe("checkout USDT", () => {
     await expect(page.getByTestId("order-status")).toHaveText("Awaiting payment");
   });
 
+  test("#86: sem provedor de pagamento o checkout é bloqueado com aviso e não cria pedido", async ({
+    page,
+  }) => {
+    await page.goto("/en/wow/mythic-plus/mplus-us");
+    await page.getByRole("button", { name: "Add to cart" }).click();
+    await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible();
+    await page.goto("/en/carrinho");
+    await page.getByLabel("Email").fill("buyer@example.com");
+    await page.getByRole("button", { name: "Pay with USDT" }).click();
+    await expect(page.getByText("USDT payment: API not yet implemented.")).toBeVisible();
+    await expect(page).toHaveURL(/\/en\/carrinho$/);
+  });
+
   test("link do pedido sem a assinatura certa não mostra nada (docs/09: IDOR)", async ({ page }) => {
-    const orderId = await checkout(page);
+    const { id: orderId } = await seedOrder();
     await page.goto(`/en/pedido/${orderId}?t=forjado`);
     await expect(page.getByTestId("order-status")).toHaveCount(0);
     await page.goto(`/en/pedido/${orderId}`);

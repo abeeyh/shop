@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+import { E2E_IPN_SECRET } from "./tests/e2e/constants";
+
 const PORT = Number(process.env.E2E_PORT ?? 3100);
 
 // docs/13 §8: E2E em 390×844 (celular) e 1440×900 (desktop), contra o build de produção (standalone).
@@ -31,7 +33,12 @@ export default defineConfig({
   webServer: {
     command: "node scripts/serve-standalone.mjs",
     url: `http://127.0.0.1:${PORT}/api/health`,
-    env: { PORT: String(PORT), HOSTNAME: "127.0.0.1", RATE_LIMIT_REQUESTS_PER_MIN: "100000" },
+    env: {
+      PORT: String(PORT),
+      HOSTNAME: "127.0.0.1",
+      RATE_LIMIT_REQUESTS_PER_MIN: "100000",
+      NOWPAYMENTS_IPN_SECRET: E2E_IPN_SECRET, // verifica o IPN; sem API key o checkout fica bloqueado
+    },
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
   },

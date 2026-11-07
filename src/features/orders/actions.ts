@@ -11,13 +11,14 @@ import { clientIp, rateLimitKey } from "@/lib/client-ip";
 import { env } from "@/lib/env";
 import { errorSummary, logger } from "@/lib/logger";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
-import { createInvoice } from "@/lib/payments/crypto";
+import { createInvoice, invoiceReady } from "@/lib/payments/crypto";
 import { orderPath } from "./link";
 import { CouponLimitError, insertOrder, markExpired, setInvoice, SoldOutError } from "./queries";
 import { NETWORKS, PAYMENT_WINDOW_MINUTES } from "./rules";
 
 export type CheckoutState = {
-  error: "" | "email" | "empty" | "unavailable" | "payment" | "coupon" | "changed" | "limited";
+  error:
+    "" | "email" | "empty" | "unavailable" | "payment" | "coupon" | "changed" | "limited" | "notImplemented";
 };
 
 const input = z.object({
@@ -58,6 +59,7 @@ export async function placeOrder(_prev: CheckoutState, form: FormData): Promise<
   const parsed = input.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: "email" };
   const { email, network, locale, expectedTotal } = parsed.data;
+  if (!invoiceReady()) return { error: "notImplemented" }; // sem provedor: nada é criado nem reservado
   if (await checkoutLimited()) return { error: "limited" };
   const cartId = await getCartId();
   const cart = await cartSummary(locale, cartId);
@@ -104,7 +106,7 @@ export async function placeOrder(_prev: CheckoutState, form: FormData): Promise<
       ipnUrl: `${env.APP_URL}/api/webhooks/crypto`,
       returnUrl: `${env.APP_URL}${orderPath(locale, orderId)}`,
     });
-    await setInvoice(orderId, env.PAYMENTS_PROVIDER, invoice.providerPaymentId, invoice.payUrl);
+    await setInvoice(orderId, "nowpayments", invoice.providerPaymentId, invoice.payUrl);
     payUrl = invoice.payUrl;
   } catch (err) {
     logger.error(

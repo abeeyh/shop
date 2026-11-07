@@ -1,6 +1,6 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { getTranslations } from "next-intl/server";
-import { formatEstimate, formatUsdt, productHref } from "@/features/catalog";
+import { formatUsdt, productHref } from "@/features/catalog";
 import { canonicalLocale } from "@/i18n/routing";
 import { RaidSlotCard } from "./components/RaidSlotCard";
 import { listSlotsForProduct, listUpcomingSlots } from "./queries";
@@ -64,7 +64,6 @@ export async function UpcomingRaids({
                 soldOut: !bookable,
                 seatsLabel: bookable ? t("seatsLeft", { n: seatsLeft(s) }) : t("soldOut"),
                 price: formatUsdt(locale, s.priceUsdtCents),
-                estimate: formatEstimate(locale, s.priceUsdtCents),
               }}
             />
           );
