@@ -7,6 +7,7 @@ import { readyValkey } from "./valkey";
 export const RATE_LIMITS = {
   request: { limit: env.RATE_LIMIT_REQUESTS_PER_MIN, windowMs: 60_000 }, // por IP, toda página/API no proxy
   search: { limit: 30, windowMs: 60_000 }, // RN-105
+  login: { limit: 10, windowMs: 10 * 60_000 }, // por IP e por e-mail: senha e código do 2FA (docs/09 §2)
 } as const;
 
 export type RateLimitResult = { allowed: boolean; remaining: number; resetMs: number };

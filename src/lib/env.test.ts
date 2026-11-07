@@ -33,6 +33,7 @@ describe("env", () => {
     vi.stubEnv("NOWPAYMENTS_IPN_SECRET", "ipn-secret-16-chars");
     vi.stubEnv("NOWPAYMENTS_SANDBOX", "false");
     vi.stubEnv("ORDER_LINK_SECRET", "x".repeat(32));
+    vi.stubEnv("BETTER_AUTH_SECRET", "y".repeat(32));
   };
 
   it("production com header da CDN sobe", async () => {

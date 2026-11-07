@@ -172,5 +172,88 @@
       "reembolsado": "已退款",
       "contestado": "爭議中"
     }
+  },
+  "Admin": {
+    "title": "管理後台",
+    "nav": {
+      "categories": "分類",
+      "products": "商品",
+      "store": "商店",
+      "signOut": "登出"
+    },
+    "login": {
+      "title": "團隊登入",
+      "email": "電子郵件",
+      "password": "密碼",
+      "submit": "登入"
+    },
+    "code": {
+      "title": "驗證碼",
+      "hint": "請輸入驗證器 App 顯示的 6 位數驗證碼。",
+      "code": "驗證碼",
+      "submit": "驗證"
+    },
+    "setup": {
+      "title": "啟用雙重驗證",
+      "intro": "管理後台需要雙重驗證。請確認密碼以取得設定金鑰。",
+      "password": "密碼",
+      "start": "取得金鑰",
+      "secret": "設定金鑰（加入驗證器 App）",
+      "backupCodes": "備用碼（請離線保存）",
+      "code": "App 驗證碼",
+      "confirm": "啟用並繼續"
+    },
+    "errors": {
+      "invalid": "電子郵件、密碼或驗證碼無效。",
+      "limited": "嘗試次數過多，請稍候幾分鐘再試。"
+    },
+    "dashboard": {
+      "title": "你好，{name}"
+    },
+    "fields": {
+      "name": "名稱",
+      "slug": "代稱（網址）",
+      "kind": "類型",
+      "description": "說明",
+      "imageUrl": "圖片網址（https）",
+      "sortOrder": "排序",
+      "active": "啟用",
+      "category": "分類",
+      "region": "地區",
+      "price": "價格（USDT）"
+    },
+    "kinds": {
+      "gold": "金幣",
+      "raid": "團隊副本",
+      "dungeon": "傳奇+"
+    },
+    "form": {
+      "newCategory": "新增分類",
+      "newProduct": "新增商品",
+      "edit": "編輯 {name}",
+      "save": "儲存",
+      "saved": "已儲存",
+      "cancel": "取消編輯",
+      "editLink": "編輯"
+    },
+    "table": {
+      "activeProducts": "啟用中的商品",
+      "status": "狀態",
+      "active": "啟用",
+      "inactive": "停用"
+    },
+    "formErrors": {
+      "generic": "請檢查欄位。",
+      "name": "名稱至少需要 2 個字元。",
+      "slug": "代稱：小寫字母、數字與連字號，且不可重複。",
+      "kind": "請選擇類型。",
+      "description": "說明過長。",
+      "imageUrl": "圖片必須是 https 網址。",
+      "sortOrder": "排序需為 0 至 999。",
+      "categoryId": "請選擇分類。",
+      "region": "請選擇地區。",
+      "price": "USDT 價格最多 2 位小數，且大於零。",
+      "activeProducts": "停用分類前，請先停用或移動其中啟用的商品。"
+    }
   }
 }

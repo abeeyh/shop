@@ -151,7 +151,7 @@ sequenceDiagram
 - `order_items` (order_id, product_id, raid_slot_id?, product_name (cópia), options jsonb — realm, facção e personagem do gold, loot da raid, nível e timed do M+ —, unit_price_usdt_cents, quantity). Preços congelados no checkout
 - `deliveries` (order_id, proof_url, note, delivered_at, admin_id) — RN-52
 - `payment_events` (provider, provider_event_id **único** = `payment_id:status:valor pago`, order_id, type, payment_id, pay_currency, paid_usdt_cents, tx_hash, received_at) — idempotência (RN-33) e conciliação; IPN que não bate com o pedido (rede/valor) fica registrado e sem efeito
-- `users` / `sessions` (Better Auth), com `locale` e `timezone`
+- `users`, `sessions`, `accounts` (hash scrypt da senha), `verifications`, `two_factors` (segredo TOTP criptografado) — Better Auth, só equipe no MVP (cliente compra sem conta — RN-01). Sem rota `/api/auth`: login e 2FA rodam em Server Actions via `auth.api`; telemetria do Better Auth desligada
 - `access_logs` (occurred_at, ip, port?, user_id?, session_id?, method, route, request_id) — log de acesso legal, 6 meses ([16 §9](16-observabilidade.md#9-log-de-acesso-obrigação-legal))
 - `staff_profiles` (user_id, role `suporte|admin`, languages text[], active, invited_by, created_at) — RN-04 a RN-06; clientes não têm linha aqui
 - `support_hours` (weekday, starts_at_utc, ends_at_utc) — RN-99
@@ -169,7 +169,8 @@ sequenceDiagram
 | `/[locale]/wow/[categoria]`, `/[locale]/wow/[categoria]/[produto]` (slugs criados pelo admin — RN-13, RN-19; rotas no grupo `app/[locale]/(store)`). Inexistente → página "não encontrada" com `noindex` (status 200 por causa do streaming) | Página | Público |
 | `/[locale]/carrinho` (carrinho e checkout na mesma página: e-mail, rede e "Pagar com USDT") | Página + Server Actions | Público (visitante — RN-01) |
 | `/[locale]/pedido/[id]?t=` | Página | Dono do pedido: link assinado (HMAC do id com `ORDER_LINK_SECRET`); token errado = "não encontrado". Não mostra o e-mail |
-| `/[locale]/admin/*` | Página | Admin com 2FA (RN-02) |
+| `/[locale]/admin/entrar`, `/[locale]/admin/entrar/codigo`, `/[locale]/admin/2fa` | Página + Server Actions | Login da equipe (senha → código TOTP); primeiro acesso ativa o 2FA. Conta inicial: `pnpm admin:create <email>` |
+| `/[locale]/admin/*` | Página | Equipe ativa com 2FA (RN-02); permissão conferida em cada página e action (`requireStaff`), não no layout |
 | `/[locale]/admin/categorias`, `/[locale]/admin/produtos`, `/[locale]/admin/promocoes`, `/[locale]/admin/cupons` | Página + Server Actions | Admin com 2FA (RN-70) |
 | `/api/webhooks/crypto`, `/api/webhooks/card` | API | Só assinatura do provedor |
 | `/api/cron/expire-orders`, `/api/cron/refresh-fx`, `/api/cron/purge-access-logs` | API | Segredo do cron |

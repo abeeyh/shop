@@ -172,5 +172,88 @@
       "reembolsado": "已退款",
       "contestado": "争议中"
     }
+  },
+  "Admin": {
+    "title": "管理后台",
+    "nav": {
+      "categories": "分类",
+      "products": "商品",
+      "store": "商店",
+      "signOut": "退出"
+    },
+    "login": {
+      "title": "团队登录",
+      "email": "电子邮箱",
+      "password": "密码",
+      "submit": "登录"
+    },
+    "code": {
+      "title": "验证码",
+      "hint": "请输入验证器 App 显示的 6 位验证码。",
+      "code": "验证码",
+      "submit": "验证"
+    },
+    "setup": {
+      "title": "启用双重验证",
+      "intro": "管理后台需要双重验证。请确认密码以获取设置密钥。",
+      "password": "密码",
+      "start": "获取密钥",
+      "secret": "设置密钥（添加到验证器 App）",
+      "backupCodes": "备用码（请离线保存）",
+      "code": "App 验证码",
+      "confirm": "启用并继续"
+    },
+    "errors": {
+      "invalid": "电子邮箱、密码或验证码无效。",
+      "limited": "尝试次数过多，请稍等几分钟再试。"
+    },
+    "dashboard": {
+      "title": "你好，{name}"
+    },
+    "fields": {
+      "name": "名称",
+      "slug": "别名（网址）",
+      "kind": "类型",
+      "description": "描述",
+      "imageUrl": "图片网址（https）",
+      "sortOrder": "排序",
+      "active": "启用",
+      "category": "分类",
+      "region": "地区",
+      "price": "价格（USDT）"
+    },
+    "kinds": {
+      "gold": "金币",
+      "raid": "团队副本",
+      "dungeon": "史诗钥石+"
+    },
+    "form": {
+      "newCategory": "新建分类",
+      "newProduct": "新建商品",
+      "edit": "编辑 {name}",
+      "save": "保存",
+      "saved": "已保存",
+      "cancel": "取消编辑",
+      "editLink": "编辑"
+    },
+    "table": {
+      "activeProducts": "启用中的商品",
+      "status": "状态",
+      "active": "启用",
+      "inactive": "停用"
+    },
+    "formErrors": {
+      "generic": "请检查字段。",
+      "name": "名称至少需要 2 个字符。",
+      "slug": "别名：小写字母、数字和连字符，且不能重复。",
+      "kind": "请选择类型。",
+      "description": "描述过长。",
+      "imageUrl": "图片必须是 https 网址。",
+      "sortOrder": "排序需为 0 至 999。",
+      "categoryId": "请选择分类。",
+      "region": "请选择地区。",
+      "price": "USDT 价格最多 2 位小数，且大于零。",
+      "activeProducts": "停用分类前，请先停用或移动其中启用的商品。"
+    }
   }
 }
