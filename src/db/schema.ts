@@ -75,6 +75,9 @@ export const products = pgTable(
   },
   (t) => [
     index("products_category_region_idx").on(t.categoryId, t.region),
+    // RN-100: busca por similaridade (pg_trgm, migração 0003)
+    index("products_name_trgm_idx").using("gin", t.name.op("gin_trgm_ops")),
+    index("products_description_trgm_idx").using("gin", t.description.op("gin_trgm_ops")),
     check("products_price_positive", sql`${t.priceUsdtCents} > 0`),
   ],
 );
