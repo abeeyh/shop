@@ -7,6 +7,7 @@ import { placeOrder, type CheckoutState } from "../actions";
 type Props = {
   locale: string;
   disabled: boolean;
+  expectedTotal: number; // total mostrado; o servidor recalcula e só compara (RN-20)
   labels: {
     email: string;
     emailHint: string;
@@ -23,11 +24,12 @@ const choice =
   "flex min-h-11 cursor-pointer items-center gap-3 rounded-md border border-border bg-input px-4 font-semibold text-heading has-[:checked]:border-primary has-[:checked]:bg-primary/10";
 
 // RN-01: visitante paga só com e-mail; RN-37: rede escolhida em destaque (rede errada = perda)
-export function CheckoutForm({ locale, disabled, labels }: Props) {
+export function CheckoutForm({ locale, disabled, expectedTotal, labels }: Props) {
   const [state, action, pending] = useActionState<CheckoutState, FormData>(placeOrder, { error: "" });
   return (
     <form action={action} className="grid gap-4 border-t border-border pt-4">
       <input type="hidden" name="locale" value={locale} />
+      <input type="hidden" name="expectedTotal" value={expectedTotal} />
       <label className="grid gap-1.5 text-sm">
         <span className="font-semibold text-foreground">{labels.email}</span>
         <input

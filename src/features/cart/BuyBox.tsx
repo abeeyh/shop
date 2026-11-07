@@ -2,8 +2,16 @@ import "server-only"; // regra de negócio, banco e segredos só no servidor (do
 import { getTranslations } from "next-intl/server";
 import { PriceTag } from "@/components/molecules/PriceTag";
 import { GradientCard } from "@/components/molecules/GradientCard";
-import { formatEstimate, formatUsdt, type CatalogProduct } from "@/features/catalog";
-import { lineTotalCents, PRICING, unitPriceCents, type ItemOptions } from "@/features/pricing/rules";
+import { Countdown } from "@/components/molecules/Countdown";
+import { formatEstimate, formatUsdt, promoPrice, type CatalogProduct } from "@/features/catalog";
+import { activePromotions } from "@/features/discounts/queries";
+import {
+  lineTotalCents,
+  PRICING,
+  promoUnitCents,
+  unitPriceCents,
+  type ItemOptions,
+} from "@/features/pricing/rules";
 import { isBookable, listSlotsForProduct, seatsLeft } from "@/features/schedule";
 import { canonicalLocale } from "@/i18n/routing";
 import { AddToCartForm } from "./components/AddToCartForm";
@@ -17,11 +25,14 @@ const DEFAULTS: Record<string, { options: ItemOptions; quantity: number }> = {
 
 type Props = { locale: string; product: CatalogProduct; timeZone: string | null };
 
+const unixNow = () => Math.floor(Date.now() / 1000);
+
 export async function BuyBox({ locale, product, timeZone }: Props) {
-  const [t, c, s] = await Promise.all([
+  const [t, c, s, promos] = await Promise.all([
     getTranslations({ locale, namespace: "Buy" }),
     getTranslations({ locale, namespace: "Catalog" }),
     getTranslations({ locale, namespace: "Schedule" }),
+    activePromotions(),
   ]);
   const kind = product.categoryKind;
   const slots =
@@ -34,19 +45,31 @@ export async function BuyBox({ locale, product, timeZone }: Props) {
         }))
       : [];
   const d = DEFAULTS[kind]!;
+  const unitCents = unitPriceCents(product.priceUsdtCents, d.options);
   const initial = formatUsdt(
     locale,
-    lineTotalCents(unitPriceCents(product.priceUsdtCents, d.options), d.quantity),
+    lineTotalCents(
+      promoUnitCents({ productId: product.id, categoryId: product.categoryId, unitCents }, promos),
+      d.quantity,
+    ),
   );
+  const price = promoPrice(product, promos); // RN-22: riscado + contagem até o fim
   const keys = ["realm", "character", "quantity", "slotId", "product", "faction", "keyLevel", "runs", "loot"];
 
   return (
     <GradientCard tone="solid" className="flex flex-col gap-4 lg:sticky lg:top-24">
       <PriceTag
-        price={formatUsdt(locale, product.priceUsdtCents)}
-        estimate={formatEstimate(locale, product.priceUsdtCents)}
+        price={formatUsdt(locale, price.cents)}
+        original={price.originalCents ? formatUsdt(locale, price.originalCents) : undefined}
+        estimate={formatEstimate(locale, price.cents)}
         unit={product.unit === "per_1k_gold" ? c("perK") : t(`unit.${kind}`)}
       />
+      {price.endsAt ? (
+        <p className="flex flex-wrap items-center gap-2 text-sm">
+          <span aria-hidden="true">{t("promoEnds")}</span>
+          <Countdown until={price.endsAt.toISOString()} serverNow={unixNow()} label={t("promoEnds")} />
+        </p>
+      ) : null}
       <AddToCartForm
         product={product.slug}
         kind={kind}

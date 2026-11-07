@@ -119,7 +119,8 @@
       "keyLevel": "Choose a key level from +2 to +15.",
       "runs": "Choose 1 to 10 runs.",
       "loot": "Choose a loot option."
-    }
+    },
+    "promoEnds": "Promotion ends in"
   },
   "Cart": {
     "title": "Cart",
@@ -138,7 +139,16 @@
       "full": "Full loot funnel"
     },
     "runs": "{n, plural, one {# run} other {# runs}}",
-    "timed": "timed"
+    "timed": "timed",
+    "coupon": "Coupon code",
+    "applyCoupon": "Apply",
+    "removeCoupon": "Remove",
+    "couponInvalid": "Invalid or expired coupon.",
+    "couponNotBetter": "Your coupon gives a smaller discount than the current promotion, so the promotion applies (they don't combine).",
+    "couponNotApplicable": "This coupon doesn't apply to the items in your cart or the minimum order wasn't reached.",
+    "discountCoupon": "Coupon {code}",
+    "discountPromotion": "Promotion",
+    "total": "Total"
   },
   "Checkout": {
     "email": "Email",
@@ -150,7 +160,10 @@
       "email": "Enter a valid email.",
       "empty": "Your cart is empty.",
       "unavailable": "Remove the unavailable items to continue.",
-      "payment": "We couldn't create the payment. Try again in a moment."
+      "payment": "We couldn't create the payment. Try again in a moment.",
+      "coupon": "This coupon reached its usage limit. Remove it to continue.",
+      "changed": "The price changed (a promotion ended or the coupon changed). Check the new total and try again.",
+      "limited": "Too many checkout attempts. Wait a few minutes and try again."
     }
   },
   "Order": {
@@ -171,7 +184,8 @@
       "expirado": "Expired",
       "reembolsado": "Refunded",
       "contestado": "Disputed"
-    }
+    },
+    "discount": "Coupon discount"
   },
   "Admin": {
     "title": "Admin",
@@ -179,7 +193,9 @@
       "categories": "Categories",
       "products": "Products",
       "store": "Store",
-      "signOut": "Sign out"
+      "signOut": "Sign out",
+      "promotions": "Promotions",
+      "coupons": "Coupons"
     },
     "login": {
       "title": "Staff sign in",
@@ -220,7 +236,16 @@
       "active": "Active",
       "category": "Category",
       "region": "Region",
-      "price": "Price (USDT)"
+      "price": "Price (USDT)",
+      "type": "Discount type",
+      "value": "Value (% or USDT)",
+      "target": "Applies to",
+      "startsAt": "Starts (UTC)",
+      "endsAt": "Ends (UTC)",
+      "code": "Code",
+      "maxUses": "Total uses (empty = no limit)",
+      "maxUsesPerEmail": "Uses per email (empty = no limit)",
+      "minOrder": "Minimum order (USDT)"
     },
     "kinds": {
       "gold": "Gold",
@@ -234,13 +259,16 @@
       "save": "Save",
       "saved": "Saved",
       "cancel": "Cancel editing",
-      "editLink": "Edit"
+      "editLink": "Edit",
+      "newPromotion": "New promotion",
+      "newCoupon": "New coupon"
     },
     "table": {
       "activeProducts": "Active products",
       "status": "Status",
       "active": "Active",
-      "inactive": "Inactive"
+      "inactive": "Inactive",
+      "uses": "Uses"
     },
     "formErrors": {
       "generic": "Check the highlighted fields.",
@@ -253,7 +281,21 @@
       "categoryId": "Choose a category.",
       "region": "Choose a region.",
       "price": "Price in USDT with up to 2 decimals, greater than zero.",
-      "activeProducts": "Deactivate or move the active products before deactivating the category."
+      "activeProducts": "Deactivate or move the active products before deactivating the category.",
+      "type": "Choose a discount type.",
+      "value": "Percentage from 1 to 90, or a USDT amount greater than zero.",
+      "target": "Choose what the discount applies to.",
+      "startsAt": "Enter the start date and time.",
+      "endsAt": "The end must be after the start.",
+      "code": "Code: 2–40 letters, numbers, hyphen or underscore, not used by another coupon.",
+      "maxUses": "Use a whole number of 1 or more.",
+      "maxUsesPerEmail": "Use a whole number of 1 or more.",
+      "minOrder": "Minimum in USDT with up to 2 decimals."
+    },
+    "discount": {
+      "percent": "Percentage",
+      "fixed": "Fixed amount (USDT)",
+      "store": "Whole store"
     }
   }
 }

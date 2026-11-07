@@ -42,3 +42,72 @@ export function unitPriceCents(basePriceCents: number, options: ItemOptions): nu
 }
 
 export const lineTotalCents = (unitCents: number, quantity: number) => unitCents * quantity;
+
+// ---- Descontos (RN-21 a RN-29) ----
+
+export type Discount = { type: "percent" | "fixed"; value: number }; // percent 1–90; fixed em centavos
+export type Scope = {
+  scope: "store" | "category" | "product";
+  categoryId: string | null;
+  productId: string | null;
+};
+export type Promotion = Discount & Scope & { id: string; startsAt: Date; endsAt: Date; active: boolean };
+export type Coupon = Discount &
+  Scope & { id: string; startsAt: Date; endsAt: Date; active: boolean; minOrderUsdtCents: number };
+export type PricedLine = { productId: string; categoryId: string; unitCents: number; quantity: number };
+
+export const PROMO_LIMITS = { minPercent: 1, maxPercent: 90 } as const; // RN-21
+
+// RN-24: centavos, arredondado; o preço final nunca fica abaixo de 1 centavo
+export function discountCents(baseCents: number, d: Discount): number {
+  const raw = d.type === "percent" ? Math.round((baseCents * d.value) / 100) : d.value;
+  return Math.max(0, Math.min(raw, baseCents - 1));
+}
+
+// RN-22: vale só dentro de [início, fim)
+export const inWindow = (x: { startsAt: Date; endsAt: Date; active: boolean }, now: Date) =>
+  x.active && x.startsAt.getTime() <= now.getTime() && now.getTime() < x.endsAt.getTime();
+
+export const appliesTo = (s: Scope, item: { productId: string; categoryId: string }) =>
+  s.scope === "store" ||
+  (s.scope === "category" && s.categoryId === item.categoryId) ||
+  (s.scope === "product" && s.productId === item.productId);
+
+// RN-23: várias promoções valendo → a de maior desconto (por unidade)
+export function bestPromotion(
+  item: { productId: string; categoryId: string; unitCents: number },
+  promos: Promotion[],
+  now: Date,
+): { promotion: Promotion; discountCents: number } | null {
+  let best: { promotion: Promotion; discountCents: number } | null = null;
+  for (const p of promos) {
+    if (!inWindow(p, now) || !appliesTo(p, item)) continue;
+    const d = discountCents(item.unitCents, p);
+    if (d > 0 && (!best || d > best.discountCents)) best = { promotion: p, discountCents: d };
+  }
+  return best;
+}
+
+// Cupom sobre os itens do escopo; mínimo do pedido sobre o subtotal original (RN-25)
+export function couponDiscountCents(lines: PricedLine[], c: Coupon, now: Date): number {
+  const subtotal = lines.reduce((s, l) => s + l.unitCents * l.quantity, 0);
+  if (!inWindow(c, now) || subtotal < c.minOrderUsdtCents) return 0;
+  const eligible = lines.filter((l) => appliesTo(c, l)).reduce((s, l) => s + l.unitCents * l.quantity, 0);
+  return eligible > 0 ? discountCents(eligible, c) : 0;
+}
+
+export type Applied = { source: "promotion" | "coupon" | "none"; discountCents: number };
+
+// RN-26: promoção e cupom não acumulam — vale o maior; empate fica com a promoção (não gasta o cupom)
+export function chooseDiscount(promotionCents: number, couponCents: number): Applied {
+  if (couponCents > promotionCents) return { source: "coupon", discountCents: couponCents };
+  if (promotionCents > 0) return { source: "promotion", discountCents: promotionCents };
+  return { source: "none", discountCents: 0 };
+}
+
+// Preço unitário final com a melhor promoção (RN-22 a RN-24) — vitrine, prévia e carrinho usam este
+export const promoUnitCents = (
+  item: { productId: string; categoryId: string; unitCents: number },
+  promos: Promotion[],
+  now = new Date(),
+) => item.unitCents - (bestPromotion(item, promos, now)?.discountCents ?? 0);

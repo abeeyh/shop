@@ -38,6 +38,16 @@ export async function deleteItem(cartId: string, itemId: string): Promise<boolea
 
 export async function clearCart(cartId: string) {
   await db.delete(cartItems).where(eq(cartItems.cartId, cartId));
+  await db.update(carts).set({ couponCode: null, updatedAt: new Date() }).where(eq(carts.id, cartId));
+}
+
+export async function getCartCoupon(cartId: string): Promise<string | null> {
+  const [r] = await db.select({ code: carts.couponCode }).from(carts).where(eq(carts.id, cartId));
+  return r?.code ?? null;
+}
+
+export async function setCartCoupon(cartId: string, code: string | null) {
+  await db.update(carts).set({ couponCode: code, updatedAt: new Date() }).where(eq(carts.id, cartId));
 }
 
 export async function countItems(cartId: string): Promise<number> {
@@ -59,6 +69,7 @@ export async function listItems(cartId: string) {
       region: products.region,
       basePriceCents: products.priceUsdtCents,
       unit: products.unit,
+      categoryId: products.categoryId,
       categorySlug: categories.slug,
       categoryKind: categories.kind,
       slotId: cartItems.raidSlotId,

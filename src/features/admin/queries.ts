@@ -1,8 +1,8 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
-import { and, asc, count, eq } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
 import { db } from "@/db";
-import { categories, products } from "@/db/schema";
-import type { CategoryInput, ProductInput } from "./schemas";
+import { categories, couponRedemptions, coupons, products, promotions } from "@/db/schema";
+import type { CategoryInput, CouponInput, ProductInput, PromotionInput } from "./schemas";
 
 // Admin vê tudo, inclusive inativos (a vitrine filtra — RN-19)
 export async function listAllCategories() {
@@ -81,4 +81,46 @@ export async function saveProductRow(id: string | null, v: ProductInput, unit: s
 export function isUniqueViolation(err: unknown): boolean {
   const e = err as { code?: string; cause?: { code?: string } } | null;
   return e?.code === "23505" || e?.cause?.code === "23505";
+}
+
+// alvo da promoção/cupom inexistente (FK)
+export function isForeignKeyViolation(err: unknown): boolean {
+  const e = err as { code?: string; cause?: { code?: string } } | null;
+  return e?.code === "23503" || e?.cause?.code === "23503";
+}
+
+export const listPromotions = () => db.select().from(promotions).orderBy(desc(promotions.endsAt));
+
+// RN-27: usos = reservados + usados
+export const listCoupons = () =>
+  db
+    .select({
+      coupon: coupons,
+      uses: db.$count(
+        couponRedemptions,
+        and(
+          eq(couponRedemptions.couponId, coupons.id),
+          inArray(couponRedemptions.status, ["reserved", "used"]),
+        ),
+      ),
+    })
+    .from(coupons)
+    .orderBy(desc(coupons.endsAt));
+
+export async function savePromotionRow(id: string | null, v: PromotionInput) {
+  if (id)
+    await db
+      .update(promotions)
+      .set({ ...v, updatedAt: new Date() })
+      .where(eq(promotions.id, id));
+  else await db.insert(promotions).values(v);
+}
+
+export async function saveCouponRow(id: string | null, v: CouponInput) {
+  if (id)
+    await db
+      .update(coupons)
+      .set({ ...v, updatedAt: new Date() })
+      .where(eq(coupons.id, id));
+  else await db.insert(coupons).values(v);
 }

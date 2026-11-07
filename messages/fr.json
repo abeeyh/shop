@@ -119,7 +119,8 @@
       "keyLevel": "Choisissez un niveau de +2 à +15.",
       "runs": "Choisissez de 1 à 10 runs.",
       "loot": "Choisissez une option de butin."
-    }
+    },
+    "promoEnds": "La promotion se termine dans"
   },
   "Cart": {
     "title": "Panier",
@@ -138,7 +139,16 @@
       "full": "Butin complet"
     },
     "runs": "{n, plural, one {# run} other {# runs}}",
-    "timed": "dans les temps"
+    "timed": "dans les temps",
+    "coupon": "Code promo",
+    "applyCoupon": "Appliquer",
+    "removeCoupon": "Retirer",
+    "couponInvalid": "Coupon invalide ou expiré.",
+    "couponNotBetter": "Votre coupon offre une remise inférieure à la promotion en cours : la promotion s'applique (non cumulables).",
+    "couponNotApplicable": "Ce coupon ne s'applique pas aux articles du panier ou le minimum de commande n'est pas atteint.",
+    "discountCoupon": "Coupon {code}",
+    "discountPromotion": "Promotion",
+    "total": "Total"
   },
   "Checkout": {
     "email": "E-mail",
@@ -150,7 +160,10 @@
       "email": "Indiquez un e-mail valide.",
       "empty": "Votre panier est vide.",
       "unavailable": "Retirez les articles indisponibles pour continuer.",
-      "payment": "Impossible de créer le paiement. Réessayez dans un instant."
+      "payment": "Impossible de créer le paiement. Réessayez dans un instant.",
+      "coupon": "Ce coupon a atteint sa limite d'utilisation. Retirez-le pour continuer.",
+      "changed": "Le prix a changé (une promotion s'est terminée ou le coupon a changé). Vérifiez le nouveau total et réessayez.",
+      "limited": "Trop de tentatives de paiement. Patientez quelques minutes puis réessayez."
     }
   },
   "Order": {
@@ -171,7 +184,8 @@
       "expirado": "Expiré",
       "reembolsado": "Remboursé",
       "contestado": "Contesté"
-    }
+    },
+    "discount": "Remise du coupon"
   },
   "Admin": {
     "title": "Admin",
@@ -179,7 +193,9 @@
       "categories": "Catégories",
       "products": "Produits",
       "store": "Boutique",
-      "signOut": "Se déconnecter"
+      "signOut": "Se déconnecter",
+      "promotions": "Promotions",
+      "coupons": "Coupons"
     },
     "login": {
       "title": "Connexion (équipe)",
@@ -220,7 +236,16 @@
       "active": "Actif",
       "category": "Catégorie",
       "region": "Région",
-      "price": "Prix (USDT)"
+      "price": "Prix (USDT)",
+      "type": "Type de remise",
+      "value": "Valeur (% ou USDT)",
+      "target": "S'applique à",
+      "startsAt": "Début (UTC)",
+      "endsAt": "Fin (UTC)",
+      "code": "Code",
+      "maxUses": "Utilisations au total (vide = illimité)",
+      "maxUsesPerEmail": "Utilisations par e-mail (vide = illimité)",
+      "minOrder": "Commande minimale (USDT)"
     },
     "kinds": {
       "gold": "Or",
@@ -234,13 +259,16 @@
       "save": "Enregistrer",
       "saved": "Enregistré",
       "cancel": "Annuler la modification",
-      "editLink": "Modifier"
+      "editLink": "Modifier",
+      "newPromotion": "Nouvelle promotion",
+      "newCoupon": "Nouveau coupon"
     },
     "table": {
       "activeProducts": "Produits actifs",
       "status": "Statut",
       "active": "Actif",
-      "inactive": "Inactif"
+      "inactive": "Inactif",
+      "uses": "Utilisations"
     },
     "formErrors": {
       "generic": "Vérifiez les champs.",
@@ -253,7 +281,21 @@
       "categoryId": "Choisissez une catégorie.",
       "region": "Choisissez une région.",
       "price": "Prix en USDT avec 2 décimales max., supérieur à zéro.",
-      "activeProducts": "Désactivez ou déplacez les produits actifs avant de désactiver la catégorie."
+      "activeProducts": "Désactivez ou déplacez les produits actifs avant de désactiver la catégorie.",
+      "type": "Choisissez un type de remise.",
+      "value": "Pourcentage de 1 à 90, ou montant en USDT supérieur à zéro.",
+      "target": "Choisissez où la remise s'applique.",
+      "startsAt": "Indiquez la date et l'heure de début.",
+      "endsAt": "La fin doit être après le début.",
+      "code": "Code : 2 à 40 lettres, chiffres, tiret ou tiret bas, non utilisé par un autre coupon.",
+      "maxUses": "Utilisez un nombre entier de 1 ou plus.",
+      "maxUsesPerEmail": "Utilisez un nombre entier de 1 ou plus.",
+      "minOrder": "Minimum en USDT avec 2 décimales max."
+    },
+    "discount": {
+      "percent": "Pourcentage",
+      "fixed": "Montant fixe (USDT)",
+      "store": "Toute la boutique"
     }
   }
 }

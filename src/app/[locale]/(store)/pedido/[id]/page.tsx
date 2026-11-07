@@ -42,10 +42,16 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/[l
           {order.items.map((i) => (
             <li key={i.id} className="flex justify-between gap-4">
               <span>{i.productName}</span>
-              <span>{formatUsdt(locale, i.unitPriceUsdtCents * i.quantity)}</span>
+              <span>{formatUsdt(locale, i.unitPriceUsdtCents * i.quantity - i.discountUsdtCents)}</span>
             </li>
           ))}
         </ul>
+        {order.discountSource === "coupon" ? (
+          <p className="flex justify-between gap-4 text-sm text-link">
+            <span>{t("discount")}</span>
+            <span>−{formatUsdt(locale, order.discountUsdtCents)}</span>
+          </p>
+        ) : null}
         <p className="flex items-baseline justify-between border-t border-border pt-4">
           <span>{t("total")}</span>
           <span className="font-heading text-2xl font-bold text-heading">

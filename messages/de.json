@@ -119,7 +119,8 @@
       "keyLevel": "Wähle eine Stufe von +2 bis +15.",
       "runs": "Wähle 1 bis 10 Runs.",
       "loot": "Wähle eine Loot-Option."
-    }
+    },
+    "promoEnds": "Aktion endet in"
   },
   "Cart": {
     "title": "Warenkorb",
@@ -138,7 +139,16 @@
       "full": "Voller Loot"
     },
     "runs": "{n, plural, one {# Run} other {# Runs}}",
-    "timed": "in der Zeit"
+    "timed": "in der Zeit",
+    "coupon": "Gutscheincode",
+    "applyCoupon": "Einlösen",
+    "removeCoupon": "Entfernen",
+    "couponInvalid": "Ungültiger oder abgelaufener Gutschein.",
+    "couponNotBetter": "Dein Gutschein ergibt weniger Rabatt als die laufende Aktion, daher gilt die Aktion (nicht kombinierbar).",
+    "couponNotApplicable": "Dieser Gutschein gilt nicht für die Artikel im Warenkorb oder der Mindestbestellwert ist nicht erreicht.",
+    "discountCoupon": "Gutschein {code}",
+    "discountPromotion": "Aktion",
+    "total": "Gesamt"
   },
   "Checkout": {
     "email": "E-Mail",
@@ -150,7 +160,10 @@
       "email": "Gib eine gültige E-Mail an.",
       "empty": "Dein Warenkorb ist leer.",
       "unavailable": "Entferne die nicht verfügbaren Artikel, um fortzufahren.",
-      "payment": "Die Zahlung konnte nicht erstellt werden. Versuche es gleich noch einmal."
+      "payment": "Die Zahlung konnte nicht erstellt werden. Versuche es gleich noch einmal.",
+      "coupon": "Dieser Gutschein hat sein Nutzungslimit erreicht. Entferne ihn, um fortzufahren.",
+      "changed": "Der Preis hat sich geändert (eine Aktion ist abgelaufen oder der Gutschein wurde geändert). Prüfe die neue Summe und versuche es erneut.",
+      "limited": "Zu viele Bestellversuche. Warte ein paar Minuten und versuche es erneut."
     }
   },
   "Order": {
@@ -171,7 +184,8 @@
       "expirado": "Abgelaufen",
       "reembolsado": "Erstattet",
       "contestado": "Angefochten"
-    }
+    },
+    "discount": "Gutscheinrabatt"
   },
   "Admin": {
     "title": "Admin",
@@ -179,7 +193,9 @@
       "categories": "Kategorien",
       "products": "Produkte",
       "store": "Shop",
-      "signOut": "Abmelden"
+      "signOut": "Abmelden",
+      "promotions": "Aktionen",
+      "coupons": "Gutscheine"
     },
     "login": {
       "title": "Anmeldung (Team)",
@@ -220,7 +236,16 @@
       "active": "Aktiv",
       "category": "Kategorie",
       "region": "Region",
-      "price": "Preis (USDT)"
+      "price": "Preis (USDT)",
+      "type": "Rabattart",
+      "value": "Wert (% oder USDT)",
+      "target": "Gilt für",
+      "startsAt": "Beginn (UTC)",
+      "endsAt": "Ende (UTC)",
+      "code": "Code",
+      "maxUses": "Nutzungen insgesamt (leer = unbegrenzt)",
+      "maxUsesPerEmail": "Nutzungen pro E-Mail (leer = unbegrenzt)",
+      "minOrder": "Mindestbestellwert (USDT)"
     },
     "kinds": {
       "gold": "Gold",
@@ -234,13 +259,16 @@
       "save": "Speichern",
       "saved": "Gespeichert",
       "cancel": "Bearbeiten abbrechen",
-      "editLink": "Bearbeiten"
+      "editLink": "Bearbeiten",
+      "newPromotion": "Neue Aktion",
+      "newCoupon": "Neuer Gutschein"
     },
     "table": {
       "activeProducts": "Aktive Produkte",
       "status": "Status",
       "active": "Aktiv",
-      "inactive": "Inaktiv"
+      "inactive": "Inaktiv",
+      "uses": "Nutzungen"
     },
     "formErrors": {
       "generic": "Prüfe die Felder.",
@@ -253,7 +281,21 @@
       "categoryId": "Wähle eine Kategorie.",
       "region": "Wähle eine Region.",
       "price": "Preis in USDT mit höchstens 2 Nachkommastellen, größer als null.",
-      "activeProducts": "Deaktiviere oder verschiebe die aktiven Produkte, bevor du die Kategorie deaktivierst."
+      "activeProducts": "Deaktiviere oder verschiebe die aktiven Produkte, bevor du die Kategorie deaktivierst.",
+      "type": "Wähle eine Rabattart.",
+      "value": "Prozent von 1 bis 90 oder ein USDT-Betrag größer als null.",
+      "target": "Wähle, wofür der Rabatt gilt.",
+      "startsAt": "Gib Datum und Uhrzeit des Beginns an.",
+      "endsAt": "Das Ende muss nach dem Beginn liegen.",
+      "code": "Code: 2–40 Buchstaben, Zahlen, Bindestrich oder Unterstrich, nicht schon vergeben.",
+      "maxUses": "Ganze Zahl ab 1.",
+      "maxUsesPerEmail": "Ganze Zahl ab 1.",
+      "minOrder": "Mindestwert in USDT mit höchstens 2 Nachkommastellen."
+    },
+    "discount": {
+      "percent": "Prozent",
+      "fixed": "Fester Betrag (USDT)",
+      "store": "Ganzer Shop"
     }
   }
 }

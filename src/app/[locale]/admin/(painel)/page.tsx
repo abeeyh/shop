@@ -6,6 +6,13 @@ import { requireStaff } from "@/features/auth/staff";
 
 export const instant = false;
 
+const SECTIONS = [
+  ["categorias", "categories"],
+  ["produtos", "products"],
+  ["promocoes", "promotions"],
+  ["cupons", "coupons"],
+] as const;
+
 export default async function AdminHome({ params }: PageProps<"/[locale]/admin">) {
   await connection();
   const { locale } = await params;
@@ -18,10 +25,10 @@ export default async function AdminHome({ params }: PageProps<"/[locale]/admin">
         {t("dashboard.title", { name: staff.user.name })}
       </h1>
       <div className="grid gap-4 sm:grid-cols-2">
-        {(["categorias", "produtos"] as const).map((s) => (
-          <Link key={s} href={`/${locale}/admin/${s}`}>
+        {SECTIONS.map(([path, key]) => (
+          <Link key={path} href={`/${locale}/admin/${path}`}>
             <GradientCard tone="solid" className="font-heading text-xl font-semibold text-heading">
-              {t(s === "categorias" ? "nav.categories" : "nav.products")}
+              {t(`nav.${key}`)}
             </GradientCard>
           </Link>
         ))}

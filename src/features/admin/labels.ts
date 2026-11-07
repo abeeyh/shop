@@ -15,6 +15,15 @@ const FIELDS = [
   "region",
   "price",
   "activeProducts",
+  "type",
+  "value",
+  "target",
+  "startsAt",
+  "endsAt",
+  "code",
+  "maxUses",
+  "maxUsesPerEmail",
+  "minOrder",
 ] as const;
 
 // mensagens de erro por campo para o ActionForm (o cliente não traduz — docs/04)

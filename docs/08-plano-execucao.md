@@ -63,7 +63,7 @@ gantt
 ## F3 — Admin e entrega
 
 - [ ] Dashboard admin com 2FA (RN-02, RN-70): **categorias e produtos** (RN-13, RN-19, RN-72, RN-73), preços, slots, pedidos. *Feito: login com 2FA, categorias, produtos e preços (#20). Faltam slots e pedidos (#23).*
-- [ ] **Promoções por tempo** (RN-21 a RN-24) e **cupons** (RN-25 a RN-29) com regra "vale o maior" (RN-26).
+- [x] **Promoções por tempo** (RN-21 a RN-24) e **cupons** (RN-25 a RN-29) com regra "vale o maior" (RN-26). *Datas digitadas em UTC no admin. Ordenação por preço final e filtro "em promoção": #74.*
 - [ ] Auditoria de alterações de preço, promoção e cupom (RN-71).
 - [ ] Fluxo `pago → em_andamento → concluido` com prova de entrega (RN-50, RN-52).
 - [ ] "Reportar problema" e lista de reportes no admin (RN-90, RN-91).
