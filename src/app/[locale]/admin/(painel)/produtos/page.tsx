@@ -18,6 +18,20 @@ const usdt = (cents: number) => (cents / 100).toFixed(2);
 // RN-17: adicionais no textarea, um por linha ("Armor Stack | 25")
 const addonLines = (a: { name: string; percent: number }[]) =>
   a.map((x) => `${x.name} | ${x.percent}`).join("\n");
+// #100: eixos e combinações no mesmo formato de texto que o admin digita
+const axisLines = (a: { name: string; style: string; values: string[] }[]) =>
+  a.map((x) => `${x.name} | ${x.style} | ${x.values.join(", ")}`).join("\n");
+const variantLines = (
+  axes: { name: string }[],
+  list: { options: Record<string, string>; priceUsdtCents: number; priceOnRequest: boolean; note: string }[],
+) =>
+  list
+    .map((v) => {
+      const opts = axes.map((a) => `${a.name}=${v.options[a.name] ?? ""}`).join("; ");
+      const price = v.priceOnRequest ? "-" : usdt(v.priceUsdtCents);
+      return [opts, price, v.note].filter((x, i) => i < 2 || x).join(" | ");
+    })
+    .join("\n");
 
 type ProductRow = Awaited<ReturnType<typeof listAllProducts>>[number];
 
@@ -37,8 +51,18 @@ function formValues(edit: ProductRow | undefined, firstCategory: string) {
     sortOrder: 0,
     ...edit,
     imageUrl: edit?.imageUrl ?? "",
-    addons: addonLines(edit?.addons ?? []),
-    price: edit && !edit.priceOnRequest ? usdt(edit.priceUsdtCents) : "",
+    ...(edit ? textFields(edit) : { addons: "", optionAxes: "", variants: "", price: "" }),
+  };
+}
+
+// campos de texto do produto em edição (adicionais, eixos, combinações e preço)
+function textFields(edit: ProductRow) {
+  return {
+    addons: addonLines(edit.addons),
+    optionAxes: axisLines(edit.optionAxes),
+    variants: variantLines(edit.optionAxes, edit.variants),
+    // com variantes o preço do produto é calculado (menor combinação)
+    price: !edit.priceOnRequest && !edit.optionAxes.length ? usdt(edit.priceUsdtCents) : "",
   };
 }
 
@@ -127,6 +151,23 @@ export default async function ProductsAdmin({ params, searchParams }: PageProps<
           <Field label={t("fields.addons")}>
             <Textarea name="addons" maxLength={1000} defaultValue={v.addons} placeholder="Armor Stack | 25" />
           </Field>
+          <Field label={t("fields.optionAxes")}>
+            <Textarea
+              name="optionAxes"
+              maxLength={2000}
+              defaultValue={v.optionAxes}
+              placeholder="Bosses | slider | 2/8, 3/8, 4/8"
+            />
+          </Field>
+          <Field label={t("fields.variants")}>
+            <Textarea
+              name="variants"
+              maxLength={20000}
+              rows={8}
+              defaultValue={v.variants}
+              placeholder="Bosses=2/8 | 39.47 | 2 bosses"
+            />
+          </Field>
         </ActionForm>
         {edit ? (
           <Link href={base} className="text-sm text-link hover:underline">
@@ -157,6 +198,9 @@ export default async function ProductsAdmin({ params, searchParams }: PageProps<
                 <td>{r.categoryName}</td>
                 <td>
                   {r.priceOnRequest ? t("fields.priceOnRequest") : formatUsdt(locale, r.priceUsdtCents)}
+                  {r.optionAxes.length ? (
+                    <span className="text-muted-foreground"> · {r.variants.length}×</span>
+                  ) : null}
                 </td>
                 <td>{r.active ? t("table.active") : t("table.inactive")}</td>
                 <td>

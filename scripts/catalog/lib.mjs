@@ -67,3 +67,52 @@ export function toProducts(items) {
     };
   });
 }
+
+// #100: itens listados em groups.json viram UM produto com variantes (eixos de opção → preço por
+// combinação); o resto continua produto único. O produto guarda o menor preço ("a partir de") e só é
+// "sob consulta" se todas as variantes forem.
+export function toCatalog(items, groups) {
+  const singles = toProducts(items);
+  const byId = new Map(singles.map((p) => [p.externalId, p]));
+  const used = new Set();
+  const grouped = groups.map((g) => {
+    const variants = g.variants.map((v) => {
+      const p = byId.get(v.id);
+      if (!p) throw new Error(`groups.json: id ${v.id} (${g.slug}) não existe no arquivo de produtos`);
+      if (used.has(v.id)) throw new Error(`groups.json: id ${v.id} está em mais de um grupo`);
+      used.add(v.id);
+      for (const a of g.axes)
+        if (!a.values.includes(v.options[a.name]))
+          throw new Error(`groups.json: ${g.slug} id ${v.id} sem valor válido para "${a.name}"`);
+      // ordem: pelos valores dos eixos (o slider anda na ordem cadastrada)
+      const rank = g.axes.reduce((r, a) => r * 100 + a.values.indexOf(v.options[a.name]), 0);
+      return {
+        externalId: v.id,
+        options: v.options,
+        note: (v.note ?? "").slice(0, 160),
+        priceUsdtCents: p.priceUsdtCents,
+        priceOnRequest: p.priceOnRequest,
+        sortOrder: rank,
+        _p: p,
+      };
+    });
+    const priced = variants.filter((v) => !v.priceOnRequest);
+    const first = variants[0]._p;
+    return {
+      slug: g.slug,
+      name: g.name,
+      description: g.description ?? "",
+      categoryRef: Number(g.category),
+      subcategoryRef: g.subcategory === null ? null : Number(g.subcategory),
+      optionAxes: g.axes,
+      addons: first.addons,
+      maxQuantity: first.maxQuantity,
+      hot: variants.some((v) => v._p.hot),
+      sortOrder: Math.min(...variants.map((v) => v._p.sortOrder)),
+      priceUsdtCents: priced.length ? Math.min(...priced.map((v) => v.priceUsdtCents)) : 1,
+      priceOnRequest: priced.length === 0,
+      variants: variants.map((v) => Object.fromEntries(Object.entries(v).filter(([k]) => k !== "_p"))),
+    };
+  });
+  return { singles: singles.filter((p) => !used.has(p.externalId)), groups: grouped, groupedIds: [...used] };
+}

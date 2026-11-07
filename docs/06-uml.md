@@ -63,6 +63,14 @@ classDiagram
     +priceOnRequest: boolean
     +hot: boolean
     +sortOrder: int
+    +optionAxes: name+values+style[]
+    +active: boolean
+  }
+  class ProductVariant {
+    +options: eixo→valor
+    +priceUsdtCents: int
+    +priceOnRequest: boolean
+    +note: string
     +active: boolean
   }
   class Promotion {
@@ -141,6 +149,9 @@ classDiagram
   CartItem "*" --> "1" Product
   CartItem "*" --> "0..1" RaidSlot
   Product "1" *-- "*" RaidSlot
+  Product "1" *-- "0..*" ProductVariant
+  CartItem "*" --> "0..1" ProductVariant
+  OrderItem "*" --> "0..1" ProductVariant
   Promotion "*" --> "*" Product : aplica a
   Promotion "*" --> "*" Category : aplica a
   Coupon "1" *-- "*" CouponRedemption

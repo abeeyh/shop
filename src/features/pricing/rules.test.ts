@@ -124,6 +124,8 @@ describe("item do carrinho conferido de novo contra o produto atual (#94, revis�
     maxQuantity: 3,
     hasSlots: false,
     slotId: null,
+    hasVariants: false,
+    variantOk: false,
   };
   it("válido enquanto o produto não muda", () => {
     expect(itemStillValid(svc, 2, product)).toBe(true);
@@ -141,5 +143,11 @@ describe("item do carrinho conferido de novo contra o produto atual (#94, revis�
     expect(itemStillValid({ kind: "gold", realm: "A", faction: "horde", character: "T" }, 100, product)).toBe(
       false,
     );
+  });
+  it("#100: produto com variantes exige variante válida; variante sumida/sob consulta/de outro produto não vale", () => {
+    expect(itemStillValid(svc, 1, { ...product, hasVariants: true, variantOk: true })).toBe(true);
+    expect(itemStillValid(svc, 1, { ...product, hasVariants: true, variantOk: false })).toBe(false);
+    // produto perdeu os eixos depois que o item entrou: o preço da variante não vale mais
+    expect(itemStillValid(svc, 1, { ...product, hasVariants: false, variantOk: true })).toBe(false);
   });
 });

@@ -18,7 +18,7 @@ import { clientIp, rateLimitKey } from "@/lib/client-ip";
 import { env } from "@/lib/env";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
 import { ensureCart, getCartId } from "./cart";
-import { deleteItem, getSlotForProduct, insertItem, setCartCoupon } from "./queries";
+import { deleteItem, getSlotForProduct, getVariantForProduct, insertItem, setCartCoupon } from "./queries";
 import { parseItem, type ParsedItem } from "./schemas";
 
 export type AddState = { status: "idle" | "ok" | "error"; fields: string[] };
@@ -45,6 +45,26 @@ function formInput(form: FormData, forQuote: boolean) {
   return { ...sent, ...who, addon: form.getAll("addon").map(String) };
 }
 
+// #100: preço da combinação escolhida (e cópia dela nas opções); variante de outro produto, inativa ou
+// sob consulta = null. Sem variante, vale o preço do produto.
+async function variantPrice(
+  item: ParsedItem,
+  product: { id: string; priceUsdtCents: number; optionAxes: { name: string }[] },
+) {
+  if (!item.variantId) return product.priceUsdtCents;
+  const variant = await getVariantForProduct(item.variantId, product.id);
+  if (!variant || item.options.kind !== "service") return null;
+  item.options.variant = product.optionAxes.map((a) => variant.options[a.name] ?? "");
+  return variant.price;
+}
+
+// RN-11: horário escolhido existe, é deste produto e ainda tem vaga
+async function slotOk(slotId: string | undefined, productId: string) {
+  if (!slotId) return true;
+  const slot = await getSlotForProduct(slotId, productId);
+  return !!slot && isBookable(slot);
+}
+
 // Valida tudo no servidor: produto ativo, opções do produto e horário com vaga (RN-11, RN-15 a RN-17).
 // Sob consulta (RN-106) não entra no carrinho.
 
@@ -56,17 +76,17 @@ async function checkItem(form: FormData, forQuote = false): Promise<Checked> {
     addons: product.addons,
     maxQuantity: product.maxQuantity,
     hasSlots: slots.length > 0,
+    hasVariants: product.optionAxes.length > 0,
   });
   if (!parsed.ok) return parsed;
-  if (parsed.item.slotId) {
-    const slot = await getSlotForProduct(parsed.item.slotId, product.id);
-    if (!slot || !isBookable(slot)) return { ok: false, fields: ["slotId"] };
-  }
+  const basePrice = await variantPrice(parsed.item, product);
+  if (basePrice === null) return { ok: false, fields: ["variant"] };
+  if (!(await slotOk(parsed.item.slotId, product.id))) return { ok: false, fields: ["slotId"] };
   return {
     ok: true,
     productId: product.id,
     categoryId: product.categoryId,
-    basePrice: product.priceUsdtCents,
+    basePrice,
     addons: product.addons,
     item: parsed.item,
   };

@@ -25,6 +25,7 @@
   },
   "Catalog": {
     "perK": "pour 1 000 pièces d'or",
+    "from": "à partir de",
     "estimateNote": "Estimation dans votre devise : API pas encore implémentée. Facturé en USDT.",
     "selfPlay": "Self-play : vous jouez votre propre personnage. Nous ne demandons jamais votre mot de passe Battle.net.",
     "empty": "Aucun produit pour le moment.",
@@ -110,6 +111,7 @@
       "product": "Ce produit n'est plus disponible.",
       "faction": "Choisissez une faction.",
       "addon": "Choisissez uniquement les options proposées.",
+      "variant": "Cette option n'est plus disponible. Choisissez-en une autre.",
       "quantityService": "Choisissez une quantité de 1 à {max}."
     },
     "promoEnds": "La promotion se termine dans",
@@ -265,6 +267,8 @@
       "noSubcategory": "— aucune —",
       "priceOnRequest": "Prix sur demande (sans prix, ouvre le chat)",
       "addons": "Options (une par ligne : Nom | %)",
+      "optionAxes": "Options (une par ligne : Nom | slider ou boxes | valeur, valeur…)",
+      "variants": "Combinaisons (une par ligne : Axe=valeur; Axe=valeur | prix ou - | note)",
       "maxQuantity": "Quantité max. par commande",
       "hot": "Populaire (mise en avant)"
     },
@@ -318,6 +322,8 @@
       "minOrder": "Minimum en USDT avec 2 décimales max.",
       "subcategoryId": "Choisissez une sous-catégorie de la même catégorie.",
       "addons": "Une option par ligne au format « Nom | 25 » (1–100 %, sans doublon, 10 max.).",
+      "optionAxes": "Jusqu'à 4 options au format « Bosses | slider | 2/8, 3/8 » (noms et valeurs uniques, 30 valeurs max).",
+      "variants": "Chaque combinaison doit avoir une valeur listée par option, un prix (ou - sur demande) et ne pas se répéter. Sans options, laissez vide.",
       "maxQuantity": "Utilisez 1 à 100."
     },
     "discount": {

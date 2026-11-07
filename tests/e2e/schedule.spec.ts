@@ -48,7 +48,7 @@ test.describe("agenda", () => {
   test("página da raid lista os horários disponíveis", async ({ browser, baseURL }) => {
     const context = await browser.newContext({ timezoneId: "America/New_York", baseURL });
     const page = await context.newPage();
-    await page.goto("/en/wow/raids/venomous-abyss-8-8-saved-heroic");
+    await page.goto("/en/wow/raids/venomous-abyss-heroic");
     // #17: horários viram opções do formulário de compra
     await expect(page.getByRole("group", { name: "Date and time" }).getByRole("radio")).toHaveCount(4);
     await context.close();

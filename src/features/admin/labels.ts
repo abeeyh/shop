@@ -14,6 +14,8 @@ const FIELDS = [
   "categoryId",
   "subcategoryId",
   "addons",
+  "optionAxes",
+  "variants",
   "maxQuantity",
   "price",
   "activeProducts",

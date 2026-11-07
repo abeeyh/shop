@@ -1,7 +1,7 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { and, asc, count, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { cartItems, carts, categories, products, raidSlots } from "@/db/schema";
+import { cartItems, carts, categories, products, productVariants, raidSlots } from "@/db/schema";
 import type { ItemOptions } from "@/features/pricing/rules";
 
 export async function createCart(): Promise<string> {
@@ -16,7 +16,7 @@ export async function cartExists(id: string): Promise<boolean> {
 
 export async function insertItem(
   cartId: string,
-  item: { productId: string; quantity: number; options: ItemOptions; slotId?: string },
+  item: { productId: string; quantity: number; options: ItemOptions; slotId?: string; variantId?: string },
 ) {
   await db.insert(cartItems).values({
     cartId,
@@ -24,6 +24,7 @@ export async function insertItem(
     quantity: item.quantity,
     options: item.options,
     raidSlotId: item.slotId ?? null,
+    variantId: item.variantId ?? null,
   });
 }
 
@@ -67,6 +68,12 @@ export async function listItems(cartId: string) {
       productName: products.name,
       productActive: products.active,
       basePriceCents: products.priceUsdtCents,
+      // #100: preço da variante (quando o produto tem eixos) e se ela ainda vale para este produto
+      hasVariants: sql<boolean>`jsonb_array_length(${products.optionAxes}) > 0`,
+      variantId: cartItems.variantId,
+      variantPriceCents: productVariants.priceUsdtCents,
+      variantOk: sql<boolean>`coalesce(${productVariants.active} and not ${productVariants.priceOnRequest}
+        and ${productVariants.productId} = ${products.id}, false)`,
       addons: products.addons,
       priceOnRequest: products.priceOnRequest,
       maxQuantity: products.maxQuantity,
@@ -86,8 +93,29 @@ export async function listItems(cartId: string) {
     .innerJoin(products, eq(cartItems.productId, products.id))
     .innerJoin(categories, eq(products.categoryId, categories.id))
     .leftJoin(raidSlots, eq(cartItems.raidSlotId, raidSlots.id))
+    .leftJoin(productVariants, eq(cartItems.variantId, productVariants.id))
     .where(eq(cartItems.cartId, cartId))
     .orderBy(asc(cartItems.createdAt));
+}
+
+// #100: variante ativa e com preço DESTE produto (id vindo do formulário não é confiável)
+export async function getVariantForProduct(variantId: string, productId: string) {
+  const [row] = await db
+    .select({
+      id: productVariants.id,
+      options: productVariants.options,
+      price: productVariants.priceUsdtCents,
+    })
+    .from(productVariants)
+    .where(
+      and(
+        eq(productVariants.id, variantId),
+        eq(productVariants.productId, productId),
+        eq(productVariants.active, true),
+        eq(productVariants.priceOnRequest, false),
+      ),
+    );
+  return row ?? null;
 }
 
 export async function getSlotForProduct(slotId: string, productId: string) {

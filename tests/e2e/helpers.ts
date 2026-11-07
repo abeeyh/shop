@@ -27,7 +27,7 @@ const ORDER_LINK_DEV_SECRET = "dev-order-link-secret-only-for-local-and-tests"; 
 const SERVICE = { kind: "service", realm: "Area 52", faction: "horde", character: "Thrall", addons: [] };
 
 // #94: serviço pede o personagem (realm, facção, nome) antes de ir ao carrinho
-export async function addService(page: Page, path = "/en/wow/mythic-plus/mythic-plus-10") {
+export async function addService(page: Page, path = "/en/wow/mythic-plus/mythic-plus-key") {
   await page.goto(path);
   await page.getByLabel("Realm").fill("Area 52");
   await page.getByLabel("Character name").fill("Thrall");
@@ -46,7 +46,7 @@ export async function seedOrder(): Promise<{ id: string; path: string }> {
     await sql`
       insert into order_items (order_id, product_id, product_name, options, unit_price_usdt_cents, quantity)
       select ${order!.id}, id, name, ${sql.json(SERVICE)}, 1200, 1
-      from products where slug = 'mythic-plus-10'`;
+      from products where slug = 'mythic-plus-key'`;
     const t = createHmac("sha256", ORDER_LINK_DEV_SECRET).update(`order:${order!.id}`).digest("base64url");
     return { id: order!.id, path: `/en/pedido/${order!.id}?t=${t}` };
   } finally {

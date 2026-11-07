@@ -14,7 +14,9 @@ export function describeItem(options: ItemOptions | Legacy, quantity: number, t:
     `${x.realm} · ${t(x.faction)} · ${x.character}`;
   if (o.kind === "gold") return `${who(o)} · ${quantity}k`;
   if (o.kind === "service")
-    return [who(o), ...o.addons, quantity > 1 ? `× ${quantity}` : ""].filter(Boolean).join(" · ");
+    return [who(o), ...(o.variant ?? []), ...o.addons, quantity > 1 ? `× ${quantity}` : ""]
+      .filter(Boolean)
+      .join(" · ");
   if (o.kind === "raid") return t(`loot.${o.loot as "none" | "armor" | "full"}`);
   return `+${o.keyLevel} × ${t("runs", { n: quantity })}${o.timed ? ` · ${t("timed")}` : ""}`;
 }

@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { PriceTag } from "@/components/molecules/PriceTag";
 import { GradientCard } from "@/components/molecules/GradientCard";
 import { Countdown } from "@/components/molecules/Countdown";
-import { formatUsdt, promoPrice, type CatalogProduct } from "@/features/catalog";
+import { formatUsdt, listVariants, promoPrice, type CatalogProduct } from "@/features/catalog";
 import { activePromotions } from "@/features/discounts/queries";
 import {
   lineTotalCents,
@@ -28,7 +28,16 @@ type Props = { locale: string; product: CatalogProduct; timeZone: string | null 
 type T = Awaited<ReturnType<typeof getTranslations<"Buy">>>;
 
 const unixNow = () => Math.floor(Date.now() / 1000);
-const ERROR_KEYS = ["realm", "character", "quantity", "slotId", "product", "faction", "addon"] as const;
+const ERROR_KEYS = [
+  "realm",
+  "character",
+  "quantity",
+  "slotId",
+  "product",
+  "faction",
+  "addon",
+  "variant",
+] as const;
 
 // RN-106: sob consulta — sem preço nem carrinho; o cliente pede o orçamento no chat
 function OnRequest({ product, t }: { product: CatalogProduct; t: T }) {
@@ -41,6 +50,51 @@ function OnRequest({ product, t }: { product: CatalogProduct; t: T }) {
   );
 }
 
+// RN-16 (#94): horários com vaga, se o admin cadastrou; senão a run é agendada com o suporte
+async function slotOptions(slug: string, s: Awaited<ReturnType<typeof getTranslations<"Schedule">>>) {
+  return (await listSlotsForProduct(slug)).map((x) => ({
+    id: x.id,
+    startsAt: x.startsAt.toISOString(),
+    bookable: isBookable(x), // RN-11
+    seats: isBookable(x) ? s("seatsLeft", { n: seatsLeft(x) }) : s("soldOut"),
+  }));
+}
+
+// #100: combinações com preço próprio (já com promoção — RN-22); a inicial é a primeira com preço e o
+// "a partir de" fica no topo. Sem eixos: null e vale o preço do produto.
+async function variantOptions(locale: string, product: CatalogProduct, promo: (cents: number) => number) {
+  const rows = product.optionAxes.length ? await listVariants(product.id) : [];
+  const first = rows.find((v) => !v.priceOnRequest) ?? rows[0];
+  if (!first) return { variants: null, base: product.priceUsdtCents };
+  const list = rows.map((v) => ({
+    id: v.id,
+    options: v.options,
+    note: v.note,
+    price: v.priceOnRequest ? null : formatUsdt(locale, promo(v.priceUsdtCents)),
+  }));
+  return {
+    variants: { axes: product.optionAxes, initialId: first.id, list },
+    base: first.priceOnRequest ? product.priceUsdtCents : first.priceUsdtCents,
+  };
+}
+
+function errorLabels(t: T, kind: "gold" | "service", max: number) {
+  const errors: Record<string, string> = Object.fromEntries(ERROR_KEYS.map((k) => [k, t(`errors.${k}`)]));
+  if (kind === "service") errors.quantity = t("errors.quantityService", { max });
+  return errors;
+}
+
+const unitLabel = (
+  product: CatalogProduct,
+  hasVariants: boolean,
+  t: T,
+  c: Awaited<ReturnType<typeof getTranslations<"Catalog">>>,
+) => {
+  if (product.priceOnRequest) return undefined;
+  if (product.categoryKind === "gold") return c("perK");
+  return hasVariants ? c("from") : t("unit.service");
+};
+
 export async function BuyBox({ locale, product, timeZone }: Props) {
   const [t, c, s, promos] = await Promise.all([
     getTranslations({ locale, namespace: "Buy" }),
@@ -48,37 +102,27 @@ export async function BuyBox({ locale, product, timeZone }: Props) {
     getTranslations({ locale, namespace: "Schedule" }),
     activePromotions(),
   ]);
-  if (product.priceOnRequest) return <OnRequest product={product} t={t} />;
+  // produto com opções mostra o seletor mesmo sob consulta: o cliente pergunta pela combinação certa
+  if (product.priceOnRequest && !product.optionAxes.length) return <OnRequest product={product} t={t} />;
   const kind = product.categoryKind === "gold" ? "gold" : "service";
-  // RN-16 (#94): horários com vaga, se o admin cadastrou; senão a run é agendada com o suporte
-  const slots =
-    kind === "service"
-      ? (await listSlotsForProduct(product.slug)).map((x) => ({
-          id: x.id,
-          startsAt: x.startsAt.toISOString(),
-          bookable: isBookable(x), // RN-11
-          seats: isBookable(x) ? s("seatsLeft", { n: seatsLeft(x) }) : s("soldOut"),
-        }))
-      : [];
+  const slots = kind === "service" ? await slotOptions(product.slug, s) : [];
   const d = DEFAULTS[kind];
-  const unitCents = unitPriceCents(product.priceUsdtCents, d.options, product.addons);
+  const promo = (cents: number) =>
+    promoUnitCents({ productId: product.id, categoryId: product.categoryId, unitCents: cents }, promos);
+  const { variants, base } = await variantOptions(locale, product, promo);
   const initial = formatUsdt(
     locale,
-    lineTotalCents(
-      promoUnitCents({ productId: product.id, categoryId: product.categoryId, unitCents }, promos),
-      d.quantity,
-    ),
+    lineTotalCents(promo(unitPriceCents(base, d.options, product.addons)), d.quantity),
   );
   const price = promoPrice(product, promos); // RN-22: riscado + contagem até o fim
-  const errors: Record<string, string> = Object.fromEntries(ERROR_KEYS.map((k) => [k, t(`errors.${k}`)]));
-  if (kind === "service") errors.quantity = t("errors.quantityService", { max: product.maxQuantity });
+  const errors = errorLabels(t, kind, product.maxQuantity);
 
   return (
     <GradientCard tone="solid" className="flex flex-col gap-4 lg:sticky lg:top-24">
       <PriceTag
-        price={formatUsdt(locale, price.cents)}
+        price={product.priceOnRequest ? t("onRequest") : formatUsdt(locale, price.cents)}
         original={price.originalCents ? formatUsdt(locale, price.originalCents) : undefined}
-        unit={kind === "gold" ? c("perK") : t("unit.service")}
+        unit={unitLabel(product, variants !== null, t, c)}
       />
       {price.endsAt ? (
         <p className="flex flex-wrap items-center gap-2 text-sm">
@@ -98,6 +142,8 @@ export async function BuyBox({ locale, product, timeZone }: Props) {
         maxQuantity={product.maxQuantity}
         addons={product.addons.map((a) => ({ name: a.name, label: t("addon", a) }))}
         slots={slots}
+        variants={variants}
+        askPrice={{ label: t("askPrice"), message: t("askPriceMessage", { name: product.name }) }}
         labels={{
           realm: t("realm"),
           faction: t("faction"),
@@ -109,6 +155,7 @@ export async function BuyBox({ locale, product, timeZone }: Props) {
           slot: t("slot"),
           addons: t("addons"),
           scheduleNote: t("scheduleNote"),
+          onRequest: t("onRequest"),
           total: t("total"),
           add: t("add"),
           added: t("added"),

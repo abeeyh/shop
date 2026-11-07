@@ -8,6 +8,7 @@ export { cardLabels, categoryHref, formatUsdt, productHref, promoPrice, toProduc
 export {
   getCategory,
   getProduct,
+  listVariants,
   listCategories,
   listProducts,
   type CatalogCategory,

@@ -20,7 +20,7 @@ describe.skipIf(!process.env.DATABASE_URL)("busca pelo preço final (RN-102, RN-
     const [p] = await db
       .select({ id: s.products.id })
       .from(s.products)
-      .where(eq(s.products.slug, "mythic-plus-10"));
+      .where(eq(s.products.slug, "mythic-plus-key")); // #100: "a partir de" 3,15 (+6)
     productId = p!.id;
     const [promo] = await db
       .insert(s.promotions)
@@ -48,8 +48,8 @@ describe.skipIf(!process.env.DATABASE_URL)("busca pelo preço final (RN-102, RN-
   it("filtro em promoção traz o produto e o limite de preço usa o preço final", async () => {
     const promo = await search.searchProducts(filters({ promo: "1" }));
     expect(promo.items.map((i) => i.id)).toContain(productId);
-    // 12,00 com 50% = 6,00: entra com máximo de 7 USDT, que o preço-base não passaria
-    const cheap = await search.searchProducts(filters({ max: "7", cat: "mythic-plus" }));
+    // 3,15 com 50% = 1,58: entra com máximo de 2 USDT, que o preço-base não passaria
+    const cheap = await search.searchProducts(filters({ max: "2", cat: "mythic-plus" }));
     expect(cheap.items.map((i) => i.id)).toContain(productId);
   });
 

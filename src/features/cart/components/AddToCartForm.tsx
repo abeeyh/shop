@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useState, useTransition } from "react";
+import { useActionState, useEffect, useRef, useState, useTransition } from "react";
 import { buttonVariants } from "@/components/atoms/Button";
 import { Select } from "@/components/atoms/Select";
 import { LocalTime } from "@/components/molecules/LocalTime";
+import { ChatOpenButton } from "@/features/support";
 import { addToCart, quoteItem, type AddState } from "../actions";
+import { VariantPicker, type PickerAxis, type PickerVariant } from "./VariantPicker";
 
 type Slot = { id: string; startsAt: string; seats: string; bookable: boolean };
 type Addon = { name: string; label: string }; // label já traduzido: "Armor Stack (+25%)"
@@ -21,6 +23,7 @@ type Labels = {
   slot: string;
   addons: string;
   scheduleNote: string; // RN-16: sem horário → agendar com o suporte depois do pagamento
+  onRequest: string;
   total: string;
   add: string;
   added: string;
@@ -40,6 +43,9 @@ type Props = {
   maxQuantity: number; // serviço: 1 = sem seletor
   addons: Addon[];
   slots: Slot[];
+  // #100: eixos e combinações (preço por combinação); null = produto sem variantes
+  variants: { axes: PickerAxis[]; list: PickerVariant[]; initialId: string } | null;
+  askPrice: { label: string; message: string }; // combinação sob consulta (RN-106): pedir o preço no chat
   labels: Labels;
 };
 
@@ -51,6 +57,8 @@ const choice =
   "flex min-h-11 cursor-pointer items-center gap-3 rounded-md border border-border bg-input px-4 has-[:checked]:border-primary has-[:checked]:bg-primary/10";
 
 const initial: AddState = { status: "idle", fields: [] };
+
+const initialVariant = (v: Props["variants"]) => v?.list.find((x) => x.id === v.initialId) ?? null;
 
 // RN-16 / RN-17 (#94): quantidade (quando o produto deixa), adicionais e horário — ou o aviso de que a run
 // é agendada com o suporte depois do pagamento
@@ -125,12 +133,56 @@ function ServiceFields({
   );
 }
 
+// total + botão; combinação sob consulta (RN-106) troca os dois por "pedir o preço no chat" com a escolha
+function Submit({
+  p,
+  variant,
+  quote,
+  pending,
+}: {
+  p: Props;
+  variant: PickerVariant | null;
+  quote: string;
+  pending: boolean;
+}) {
+  if (variant && variant.price === null) {
+    const chosen = (p.variants?.axes ?? []).map((a) => variant.options[a.name]).join(" · ");
+    return <ChatOpenButton label={p.askPrice.label} message={`${p.askPrice.message} (${chosen})`} />;
+  }
+  return (
+    <>
+      <div className="flex items-baseline justify-between border-t border-border pt-4">
+        <span>{p.labels.total}</span>
+        <output aria-live="polite" className="font-heading text-xl font-bold text-heading">
+          {quote}
+        </output>
+      </div>
+      <button type="submit" disabled={pending} className={buttonVariants({ variant: "primary", size: "lg" })}>
+        {p.labels.add}
+      </button>
+    </>
+  );
+}
+
 // RN-15 a RN-17: o formulário só coleta; o servidor valida, calcula o preço (RN-20) e confere a vaga (RN-11).
 // Gold e serviço pedem o mesmo personagem (realm, facção, nome); serviço tem adicionais e horário/agendamento.
 export function AddToCartForm(p: Props) {
   const [state, formAction, pending] = useActionState(addToCart, initial);
   const [quote, setQuote] = useState(p.initialQuote);
   const [, startQuote] = useTransition();
+  const form = useRef<HTMLFormElement>(null);
+  const [variant, setVariant] = useState<PickerVariant | null>(() => initialVariant(p.variants));
+
+  const requote = () => {
+    if (!form.current) return;
+    const data = new FormData(form.current);
+    startQuote(async () => {
+      const q = await quoteItem(data);
+      if (q) setQuote(q);
+    });
+  };
+  // a variante muda pelo estado do React: o campo escondido só tem o id novo depois de renderizar
+  useEffect(requote, [variant?.id]);
 
   const invalid = (f: string) => state.status === "error" && state.fields.includes(f);
   const error = (f: string) =>
@@ -141,19 +193,22 @@ export function AddToCartForm(p: Props) {
     ) : null;
 
   return (
-    <form
-      action={formAction}
-      className="grid gap-4"
-      onChange={(e) => {
-        const data = new FormData(e.currentTarget);
-        startQuote(async () => {
-          const q = await quoteItem(data);
-          if (q) setQuote(q);
-        });
-      }}
-    >
+    <form ref={form} action={formAction} className="grid gap-4" onChange={requote}>
       <input type="hidden" name="product" value={p.product} />
       <input type="hidden" name="locale" value={p.locale} />
+
+      {p.variants ? (
+        <>
+          <VariantPicker
+            axes={p.variants.axes}
+            variants={p.variants.list}
+            initialId={p.variants.initialId}
+            onRequestLabel={p.labels.onRequest}
+            onSelect={setVariant}
+          />
+          {error("variant")}
+        </>
+      ) : null}
 
       <label className={fieldCls}>
         <span className={labelCls}>{p.labels.realm}</span>
@@ -225,15 +280,7 @@ export function AddToCartForm(p: Props) {
 
       {p.kind === "service" ? <ServiceFields p={p} invalid={invalid} error={error} /> : null}
 
-      <div className="flex items-baseline justify-between border-t border-border pt-4">
-        <span>{p.labels.total}</span>
-        <output aria-live="polite" className="font-heading text-xl font-bold text-heading">
-          {quote}
-        </output>
-      </div>
-      <button type="submit" disabled={pending} className={buttonVariants({ variant: "primary", size: "lg" })}>
-        {p.labels.add}
-      </button>
+      <Submit p={p} variant={variant} quote={quote} pending={pending} />
       <p role="status" className="min-h-5 text-center text-sm">
         {state.status === "ok" ? (
           <>

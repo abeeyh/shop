@@ -19,6 +19,7 @@ export type NewOrder = {
   items: {
     productId: string;
     raidSlotId: string | null;
+    variantId: string | null;
     productName: string;
     options: unknown;
     unitPriceUsdtCents: number;

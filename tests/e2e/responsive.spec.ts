@@ -6,7 +6,7 @@ const PAGES = [
   "/pt-br/produtos",
   "/en/wow/gold",
   "/en/wow/raids",
-  "/en/wow/mythic-plus/mythic-plus-10",
+  "/en/wow/mythic-plus/mythic-plus-key",
   "/en/wow/pvp/pvp-2v2-0-1600",
   "/en/carrinho",
   "/en/reportar",

@@ -84,6 +84,7 @@ export async function placeOrder(_prev: CheckoutState, form: FormData): Promise<
     items: cart.lines.map((l) => ({
       productId: l.productId,
       raidSlotId: l.slotId,
+      variantId: l.variantId, // #100
       productName: l.name,
       options: l.options,
       unitPriceUsdtCents: l.unitCents,
