@@ -35,7 +35,7 @@ export const accessLogs = pgTable(
 
 // Catálogo (docs/04 — Modelo de dados). Criado pelo admin; texto único para todos os idiomas (RN-84).
 export const categoryKind = pgEnum("category_kind", ["gold", "raid", "dungeon"]); // RN-13
-export const gameRegion = pgEnum("game_region", ["US", "EU"]); // RN-14
+export const gameRegion = pgEnum("game_region", ["US", "EU"]); // RN-14: só US à venda; EU fica no enum (dados antigos)
 
 const timestamps = {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -61,7 +61,7 @@ export const products = pgTable(
     categoryId: uuid("category_id")
       .notNull()
       .references(() => categories.id),
-    region: gameRegion("region").notNull(),
+    region: gameRegion("region").notNull().default("US"), // RN-14: loja só US; coluna mantida para pedidos antigos
     name: text("name").notNull(),
     slug: text("slug").notNull().unique(),
     description: text("description").notNull().default(""),

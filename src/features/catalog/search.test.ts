@@ -43,7 +43,7 @@ describe.skipIf(!process.env.DATABASE_URL)("busca pelo preço final (RN-102, RN-
   });
 
   const filters = (raw: Record<string, string>) =>
-    schemas.parseFilters(raw, { region: "US", categories: ["gold", "raids", "mythic-plus"] });
+    schemas.parseFilters(raw, { categories: ["gold", "raids", "mythic-plus"] });
 
   it("filtro em promoção traz o produto e o limite de preço usa o preço final", async () => {
     const promo = await search.searchProducts(filters({ promo: "1" }));

@@ -113,6 +113,13 @@
       "when": 1794035455720,
       "tag": "0015_shallow_puff_adder",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1794068789788,
+      "tag": "0016_sudden_hercules",
+      "breakpoints": true
     }
   ]
 }

@@ -6,7 +6,7 @@ import { connection } from "next/server";
 import { getCategory, listProducts, ProductCard, toProductCard } from "@/features/catalog";
 import { activePromotions } from "@/features/discounts/queries";
 import { UpcomingRaids } from "@/features/schedule/UpcomingRaids";
-import { getRegion, getTimezone } from "@/lib/preferences";
+import { getTimezone } from "@/lib/preferences";
 
 // Bloqueia até ler o banco para responder 404 de verdade a categoria inexistente
 export const instant = false;
@@ -25,9 +25,9 @@ export default async function CategoryPage({ params }: PageProps<"/[locale]/wow/
   const category = await getCategory(slug);
   if (!category) notFound();
 
-  const [region, timeZone] = await Promise.all([getRegion(), getTimezone()]);
+  const timeZone = await getTimezone();
   const [products, c, promos] = await Promise.all([
-    listProducts({ region, categorySlug: category.slug }),
+    listProducts({ categorySlug: category.slug }),
     getTranslations({ locale, namespace: "Catalog" }),
     activePromotions(),
   ]);
@@ -49,9 +49,6 @@ export default async function CategoryPage({ params }: PageProps<"/[locale]/wow/
           </h1>
           <p className="text-muted-foreground">{category.description}</p>
         </div>
-        <span className="rounded-full bg-link/15 px-3 py-1 font-heading text-xs font-semibold text-link">
-          {c("region", { region })}
-        </span>
       </div>
       {products.length ? (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,260px),1fr))] gap-5">
@@ -63,7 +60,7 @@ export default async function CategoryPage({ params }: PageProps<"/[locale]/wow/
         <p className="text-muted-foreground">{c("empty")}</p>
       )}
       {category.kind === "raid" ? (
-        <UpcomingRaids locale={locale} region={region} timeZone={timeZone} categorySlug={category.slug} />
+        <UpcomingRaids locale={locale} timeZone={timeZone} categorySlug={category.slug} />
       ) : null}
     </div>
   );

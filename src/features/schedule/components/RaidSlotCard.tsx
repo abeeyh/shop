@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 export type RaidSlotCardData = {
   href: string;
   name: string;
-  region: string;
   startsAt: string; // ISO UTC
   seatsLabel: string; // "3 vagas" ou "Esgotado" — decidido no servidor (RN-11, RN-16)
   soldOut: boolean;
@@ -36,9 +35,6 @@ export function RaidSlotCard({ slot, locale, timeZone, serverTimeZone, serverNow
           )}
         >
           {slot.seatsLabel}
-        </span>
-        <span className="rounded-full bg-muted px-3 py-1 font-heading text-xs font-semibold text-muted-foreground">
-          {slot.region}
         </span>
       </div>
       <h3 className="font-heading text-lg font-semibold text-heading">

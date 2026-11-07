@@ -48,7 +48,6 @@ export function toProductCard(
     href: productHref(locale, p),
     name: p.name,
     kind: p.categoryKind,
-    region: p.region,
     price: formatUsdt(locale, price.cents),
     original: price.originalCents ? formatUsdt(locale, price.originalCents) : undefined,
     unit: p.unit ? unitLabel(p.unit) : undefined,

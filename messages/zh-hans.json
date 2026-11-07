@@ -6,7 +6,6 @@
   "Nav": {
     "label": "主菜单",
     "skip": "跳到内容",
-    "region": "地区",
     "language": "语言",
     "timezone": "时区",
     "menu": "打开菜单",
@@ -28,8 +27,7 @@
     "perK": "每 1,000 金币",
     "estimateNote": "本地货币估算：API 尚未实现。按 USDT 收费。",
     "selfPlay": "本人上线：你使用自己的角色游戏。我们绝不索要你的 Battle.net 密码。",
-    "empty": "该地区暂无商品。",
-    "region": "地区：{region}",
+    "empty": "暂无商品。",
     "home": "首页",
     "loading": "加载中…"
   },
@@ -61,7 +59,6 @@
     "min": "请至少输入 2 个字符。",
     "filters": "筛选",
     "category": "分类",
-    "region": "地区",
     "all": "全部",
     "price": "价格（USDT）",
     "minPrice": "最低",

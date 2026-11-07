@@ -10,23 +10,16 @@ import { countItems, getCartId } from "@/features/cart";
 import { ChatLauncher } from "@/features/support/ChatLauncher";
 import { ReportLink } from "@/features/support/components/ReportLink";
 import { categoryHref, listCategories } from "@/features/catalog";
-import {
-  MobileMenu,
-  PreferenceSelects,
-  REGIONS,
-  TimezoneDetector,
-  timezoneOptions,
-} from "@/features/preferences";
+import { MobileMenu, PreferenceSelects, TimezoneDetector, timezoneOptions } from "@/features/preferences";
 import { LOCALE_LABELS } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { getRegion, getTimezone } from "@/lib/preferences";
+import { getTimezone } from "@/lib/preferences";
 
 async function StoreHeader({ locale }: { locale: string }) {
   await connection(); // categorias e preferências vêm do banco/cookie: hora da requisição
   const cartId = await getCartId();
-  const [categories, region, timezone, t, s, cartCount] = await Promise.all([
+  const [categories, timezone, t, s, cartCount] = await Promise.all([
     listCategories(),
-    getRegion(),
     getTimezone(),
     getTranslations({ locale, namespace: "Nav" }),
     getTranslations({ locale, namespace: "Search" }),
@@ -37,14 +30,11 @@ async function StoreHeader({ locale }: { locale: string }) {
   const prefs = {
     locale,
     locales: routing.locales.map((code) => ({ code, label: LOCALE_LABELS[code] ?? code })),
-    region,
-    regions: REGIONS,
     timezone: timezone ?? "",
     detecting: timezone === null,
     timezones: timezoneOptions(timezone),
     labels: {
       language: t("language"),
-      region: t("region"),
       timezone: t("timezone"),
       detecting: t("detecting"),
     },

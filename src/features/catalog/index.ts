@@ -12,5 +12,4 @@ export {
   listProducts,
   type CatalogCategory,
   type CatalogProduct,
-  type Region,
 } from "./queries";

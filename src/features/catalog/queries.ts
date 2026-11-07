@@ -3,14 +3,11 @@ import { and, asc, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { categories, products } from "@/db/schema";
 
-export type Region = "US" | "EU";
-
 const productColumns = {
   id: products.id,
   slug: products.slug,
   name: products.name,
   description: products.description,
-  region: products.region,
   priceUsdtCents: products.priceUsdtCents,
   unit: products.unit,
   salesCount: products.salesCount,
@@ -43,12 +40,11 @@ export async function getCategory(slug: string) {
   return row ?? null;
 }
 
-// RN-19: só produtos ativos de categorias ativas, da região escolhida (RN-14)
-export async function listProducts(filter: { region: Region; categorySlug?: string; limit?: number }) {
+// RN-19: só produtos ativos de categorias ativas (RN-14: loja só US)
+export async function listProducts(filter: { categorySlug?: string; limit?: number }) {
   const conditions = [
     eq(products.active, true),
     eq(categories.active, true),
-    eq(products.region, filter.region),
     ...(filter.categorySlug ? [eq(categories.slug, filter.categorySlug)] : []),
   ];
   const query = db

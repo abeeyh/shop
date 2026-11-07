@@ -46,7 +46,7 @@ gantt
 ## F1 — Vitrine (idiomas, região, fuso)
 
 - [x] next-intl com 6 idiomas, detecção e seletor (RN-80, RN-81); checagem de chaves no CI.
-- [x] Seletores de região US/EU (RN-14) e de fuso com detecção automática (RN-82, RN-83).
+- [x] Seletor de fuso (região: loja só US desde #92 — RN-14), com detecção automática com detecção automática (RN-82, RN-83).
 - [x] Catálogo do banco com preço em USDT e estimativa em moeda local (RN-12, RN-13, RN-18). *Cotações reais: #63.*
 - [x] Agenda de raids com slots em UTC exibidos no fuso escolhido (RN-16, RN-83).
 

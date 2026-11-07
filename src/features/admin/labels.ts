@@ -12,7 +12,6 @@ const FIELDS = [
   "imageUrl",
   "sortOrder",
   "categoryId",
-  "region",
   "price",
   "activeProducts",
   "type",

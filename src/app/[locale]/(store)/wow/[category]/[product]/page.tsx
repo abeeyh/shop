@@ -44,7 +44,7 @@ export default async function ProductPage({ params }: PageProps<"/[locale]/wow/[
       </nav>
       <div className="grid gap-7 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
         <div className="flex flex-col gap-5">
-          <KindThumb kind={product.categoryKind} badge={product.region} />
+          <KindThumb kind={product.categoryKind} />
           <GradientCard tone="solid" className="flex flex-col gap-4">
             <h1 className="font-heading text-[clamp(1.5rem,3vw,2rem)] font-bold text-heading">
               {product.name}
