@@ -1,7 +1,7 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { randomBytes, randomUUID, createHash } from "node:crypto";
 import { hashPassword } from "better-auth/crypto";
-import { and, asc, eq, gt, isNull } from "drizzle-orm";
+import { and, asc, eq, gt, isNotNull, isNull, notExists, or } from "drizzle-orm";
 import { db } from "@/db";
 import { accounts, auditLog, sessions, staffInvites, staffProfiles, users } from "@/db/schema";
 import { saveAudited } from "@/features/admin/audit";
@@ -26,8 +26,16 @@ export const listStaff = () =>
     .innerJoin(users, eq(staffProfiles.userId, users.id))
     .orderBy(asc(users.email));
 
+// Ocupado = equipe ou e-mail verificado. Conta de cliente não verificada (RN-107) não bloqueia convite:
+// senão qualquer um "reservaria" o e-mail de um futuro membro da equipe (revisão de segurança do #101)
 export const emailTaken = async (email: string) =>
-  !!(await db.select({ id: users.id }).from(users).where(eq(users.email, email)))[0];
+  !!(
+    await db
+      .select({ id: users.id })
+      .from(users)
+      .leftJoin(staffProfiles, eq(staffProfiles.userId, users.id))
+      .where(and(eq(users.email, email), or(eq(users.emailVerified, true), isNotNull(staffProfiles.userId))))
+  )[0];
 
 // RN-04: devolve o token uma única vez (vai no link); no banco fica só o hash
 export async function createInvite(
@@ -87,6 +95,17 @@ export async function acceptInvite(token: string, name: string, password: string
         .from(staffProfiles)
         .where(eq(staffProfiles.userId, invite.invitedBy));
       if (inviter?.role !== "admin" || !inviter.active) return false;
+      // conta de cliente não verificada com o mesmo e-mail cai (sessões e personagens em cascata; pedidos
+      // ficam sem o vínculo). NUNCA promover essa conta: a senha e as sessões podem ser de outra pessoa.
+      await tx
+        .delete(users)
+        .where(
+          and(
+            eq(users.email, invite.email),
+            eq(users.emailVerified, false),
+            notExists(tx.select().from(staffProfiles).where(eq(staffProfiles.userId, users.id))),
+          ),
+        );
       const id = randomUUID();
       await tx.insert(users).values({ id, name, email: invite.email, emailVerified: true });
       await tx.insert(accounts).values({

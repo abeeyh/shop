@@ -32,5 +32,8 @@ export const auth = betterAuth({
   session: { expiresIn: 60 * 60 * 24 * 7, updateAge: 60 * 60 * 24 },
   advanced: { ipAddress: { ipAddressHeaders: [env.CLIENT_IP_HEADER ?? "x-forwarded-for"] } },
   telemetry: { enabled: false }, // docs/09: nada para terceiros sem necessidade
+  // o logger do Better Auth não passa pelo redact do pino e, em info, grava o e-mail de cadastro repetido
+  // (revela quem tem conta — docs/16, docs/09 "Nunca"): fica fixo em warn
+  logger: { level: "warn" },
   plugins: [twoFactor({ issuer: "Shop" }), nextCookies()],
 });

@@ -21,9 +21,9 @@ export type AccountState = { error: "" | "invalid" | "limited" | "pwned" | "limi
 const locale = z.enum(routing.locales);
 
 // docs/09 §2: por IP (e por e-mail no login); Valkey fora = bloqueia
-async function limited(scope: "signup" | "login", email?: string): Promise<boolean> {
+async function limited(scope: "signup" | "login", key?: string): Promise<boolean> {
   const ip = clientIp(await headers(), env.CLIENT_IP_HEADER ?? "x-forwarded-for");
-  const keys = [`customer-${scope}:${rateLimitKey(ip)}`, ...(email ? [`login:email:${email}`] : [])];
+  const keys = [`customer-${scope}:${rateLimitKey(ip)}`, ...(key ? [`login:${key}`] : [])];
   for (const key of keys) {
     const r = await rateLimit({ key, ...RATE_LIMITS[scope], failClosed: true });
     if (!r.allowed) return true;
@@ -40,8 +40,8 @@ export async function signUp(_prev: AccountState, form: FormData): Promise<Accou
   if (await limited("signup")) return { error: "limited" };
   if (await isPwnedPassword(password)) return { error: "pwned" };
   try {
+    // sem log de "conta criada": o Better Auth responde igual para e-mail já usado (contaria errado)
     await auth.api.signUpEmail({ body: { email, password, name: "" }, headers: await headers() });
-    logger.info({ event: "account.created" }, "conta de cliente criada"); // sem e-mail no log (docs/16)
   } catch (err) {
     if (!(err instanceof APIError)) throw err; // e-mail já usado: segue igual
   }
@@ -52,7 +52,7 @@ export async function signInCustomer(_prev: AccountState, form: FormData): Promi
   const input = signInInput.safeParse(Object.fromEntries(form));
   if (!input.success) return { error: "invalid" };
   const { email, password, locale: l } = input.data;
-  if (await limited("login", email.toLowerCase())) return { error: "limited" };
+  if (await limited("login", `email:${email.toLowerCase()}`)) return { error: "limited" };
   let twoFactor = false;
   try {
     const r = await auth.api.signInEmail({ body: { email, password }, headers: await headers() });
@@ -96,7 +96,8 @@ export async function deleteAccount(_prev: AccountState, form: FormData): Promis
     .safeParse(Object.fromEntries(form));
   const customer = await getCustomer();
   if (!input.success || !customer || (await isStaff(customer.id))) return { error: "invalid" };
-  if (await limited("login")) return { error: "limited" };
+  // por conta também: sessão roubada trocando de IP não testa a senha à vontade
+  if (await limited("login", `user:${customer.id}`)) return { error: "limited" };
   const h = await headers();
   try {
     await auth.api.verifyPassword({ body: { password: input.data.password }, headers: h });
