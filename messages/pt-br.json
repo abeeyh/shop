@@ -408,10 +408,10 @@
       "intro": "Crie seu acesso para {email}. A autenticação em dois fatores é ativada no primeiro login.",
       "name": "Seu nome",
       "confirm": "Confirme a senha",
-      "hint": "Pelo menos 12 caracteres. Senhas que aparecem em vazamentos conhecidos são recusadas.",
+      "hint": "No mínimo 8 caracteres, com letra maiúscula, letra minúscula e número. Senhas que aparecem em vazamentos conhecidos são recusadas.",
       "submit": "Criar acesso",
       "errors": {
-        "invalid": "Confira o nome e use uma senha com pelo menos 12 caracteres.",
+        "invalid": "Confira o nome e use uma senha com no mínimo 8 caracteres, com maiúscula, minúscula e número.",
         "mismatch": "As senhas não conferem.",
         "pwned": "Esta senha apareceu em um vazamento de dados. Escolha outra.",
         "expired": "Este convite é inválido, já foi usado ou expirou. Peça um novo a um admin."
@@ -499,7 +499,7 @@
     "signup": {
       "title": "Criar conta",
       "intro": "Opcional: dá para comprar sem conta. Com ela, você vê seus pedidos e salva seus personagens.",
-      "passwordHint": "No mínimo 12 caracteres. Senhas vazadas são recusadas.",
+      "passwordHint": "No mínimo 8 caracteres, com letra maiúscula, letra minúscula e número. Senhas vazadas são recusadas.",
       "submit": "Criar conta",
       "done": "Se a conta pôde ser criada, entre com seu e-mail e senha.",
       "hasAccount": "Já tem conta?"
@@ -521,7 +521,7 @@
     },
     "errors": {
       "invalid": "E-mail ou senha incorretos.",
-      "signupInvalid": "Informe um e-mail válido e uma senha com pelo menos 12 caracteres.",
+      "signupInvalid": "Informe um e-mail válido e uma senha com no mínimo 8 caracteres, com maiúscula, minúscula e número.",
       "limited": "Muitas tentativas. Tente de novo em alguns minutos.",
       "pwned": "Esta senha apareceu em um vazamento de dados. Escolha outra.",
       "character": "Informe o realm e um nome com 2 a 12 letras.",

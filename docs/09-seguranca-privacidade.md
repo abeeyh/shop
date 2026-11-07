@@ -63,6 +63,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 
 ### Autenticação e sessão
 - Senhas com scrypt/argon2; nunca em log.
+- Regra de senha (#107, decisão do dono em 2026-11-07): **8+ caracteres com maiúscula, minúscula e número**, para cliente e equipe (`src/lib/password.ts`, conferida no servidor; o `pattern` do navegador só ajuda). Antes: 12+. A equipe compensa com 2FA obrigatório (RN-02).
 - Verificação de e-mail; tokens de uso único com validade curta.
 - Vínculo de contas OAuth ↔ senha só com e-mails verificados.
 - Senhas vazadas recusadas (HIBP por k-anonimato: só 5 caracteres do SHA-1 saem) no aceite do convite; HIBP fora do ar não bloqueia (log `auth.hibp_unavailable`). A conta inicial (`pnpm admin:create`) usa senha gerada.

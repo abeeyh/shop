@@ -408,10 +408,10 @@
       "intro": "Create your access for {email}. You'll turn on two-factor authentication on the first sign-in.",
       "name": "Your name",
       "confirm": "Confirm password",
-      "hint": "At least 12 characters. Passwords found in known leaks are refused.",
+      "hint": "At least 8 characters, with an uppercase letter, a lowercase letter and a number. Passwords found in known leaks are refused.",
       "submit": "Create access",
       "errors": {
-        "invalid": "Check your name and use a password with at least 12 characters.",
+        "invalid": "Check your name and use a password with at least 8 characters, including an uppercase letter, a lowercase letter and a number.",
         "mismatch": "The passwords don't match.",
         "pwned": "This password appeared in a data leak. Choose another one.",
         "expired": "This invite is invalid, already used or expired. Ask an admin for a new one."
@@ -499,7 +499,7 @@
     "signup": {
       "title": "Create account",
       "intro": "Optional: you can buy without an account. With one, you see your orders and save your characters.",
-      "passwordHint": "At least 12 characters. Leaked passwords are refused.",
+      "passwordHint": "At least 8 characters, with an uppercase letter, a lowercase letter and a number. Leaked passwords are refused.",
       "submit": "Create account",
       "done": "If the account could be created, sign in with your email and password.",
       "hasAccount": "Already have an account?"
@@ -521,7 +521,7 @@
     },
     "errors": {
       "invalid": "Email or password incorrect.",
-      "signupInvalid": "Enter a valid email and a password with at least 12 characters.",
+      "signupInvalid": "Enter a valid email and a password with at least 8 characters, including an uppercase letter, a lowercase letter and a number.",
       "limited": "Too many attempts. Try again in a few minutes.",
       "pwned": "This password appeared in a data leak. Choose another one.",
       "character": "Enter the realm and a name with 2–12 letters.",

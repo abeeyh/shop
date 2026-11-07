@@ -408,10 +408,10 @@
       "intro": "Créez votre accès pour {email}. La double authentification est activée à la première connexion.",
       "name": "Votre nom",
       "confirm": "Confirmez le mot de passe",
-      "hint": "Au moins 12 caractères. Les mots de passe présents dans des fuites connues sont refusés.",
+      "hint": "Au moins 8 caractères, avec une majuscule, une minuscule et un chiffre. Les mots de passe présents dans des fuites connues sont refusés.",
       "submit": "Créer l'accès",
       "errors": {
-        "invalid": "Vérifiez le nom et utilisez un mot de passe d'au moins 12 caractères.",
+        "invalid": "Vérifiez le nom et utilisez un mot de passe d'au moins 8 caractères avec une majuscule, une minuscule et un chiffre.",
         "mismatch": "Les mots de passe ne correspondent pas.",
         "pwned": "Ce mot de passe figure dans une fuite de données. Choisissez-en un autre.",
         "expired": "Cette invitation est invalide, déjà utilisée ou expirée. Demandez-en une nouvelle à un admin."
@@ -499,7 +499,7 @@
     "signup": {
       "title": "Créer un compte",
       "intro": "Facultatif : vous pouvez acheter sans compte. Avec un compte, vous voyez vos commandes et enregistrez vos personnages.",
-      "passwordHint": "Au moins 12 caractères. Les mots de passe divulgués sont refusés.",
+      "passwordHint": "Au moins 8 caractères, avec une majuscule, une minuscule et un chiffre. Les mots de passe divulgués sont refusés.",
       "submit": "Créer un compte",
       "done": "Si le compte a pu être créé, connectez-vous avec votre e-mail et votre mot de passe.",
       "hasAccount": "Vous avez déjà un compte ?"
@@ -521,7 +521,7 @@
     },
     "errors": {
       "invalid": "E-mail ou mot de passe incorrect.",
-      "signupInvalid": "Saisissez un e-mail valide et un mot de passe d'au moins 12 caractères.",
+      "signupInvalid": "Saisissez un e-mail valide et un mot de passe d'au moins 8 caractères avec une majuscule, une minuscule et un chiffre.",
       "limited": "Trop de tentatives. Réessayez dans quelques minutes.",
       "pwned": "Ce mot de passe figure dans une fuite de données. Choisissez-en un autre.",
       "character": "Saisissez le royaume et un nom de 2 à 12 lettres.",

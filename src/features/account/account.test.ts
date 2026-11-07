@@ -5,10 +5,11 @@ import { characterInput, signUpInput } from "./schemas";
 type Db = (typeof import("@/db"))["db"];
 
 describe("conta do cliente — entradas (RN-107, RN-108)", () => {
-  it("senha com 12+ caracteres e e-mail válido", () => {
-    const ok = { email: "a@b.co", password: "x".repeat(12), locale: "en" };
+  it("#107: senha 8+ com maiúscula, minúscula e número; e-mail válido", () => {
+    const ok = { email: "a@b.co", password: "Abcdefg1", locale: "en" };
     expect(signUpInput.safeParse(ok).success).toBe(true);
-    expect(signUpInput.safeParse({ ...ok, password: "x".repeat(11) }).success).toBe(false);
+    expect(signUpInput.safeParse({ ...ok, password: "Abcdef1" }).success).toBe(false);
+    expect(signUpInput.safeParse({ ...ok, password: "abcdefg1" }).success).toBe(false);
     expect(signUpInput.safeParse({ ...ok, email: "nope" }).success).toBe(false);
   });
   it("personagem com as regras da compra (RN-15)", () => {

@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { buttonVariants } from "@/components/atoms/Button";
 import { Input } from "@/components/atoms/Input";
 import { Select } from "@/components/atoms/Select";
+import { PASSWORD_MAX, PASSWORD_MIN, PASSWORD_PATTERN } from "@/lib/password";
 import { deleteAccount, saveCharacter, signInCustomer, signUp, type AccountState } from "../actions";
 
 const initial: AccountState = { error: "" };
@@ -33,8 +34,9 @@ function EmailPassword(p: { email: string; password: string; hint?: string; newP
           name="password"
           type="password"
           required
-          minLength={p.newPassword ? 12 : 1}
-          maxLength={128}
+          minLength={p.newPassword ? PASSWORD_MIN : 1}
+          maxLength={PASSWORD_MAX}
+          pattern={p.newPassword ? PASSWORD_PATTERN : undefined}
           autoComplete={p.newPassword ? "new-password" : "current-password"}
           aria-describedby={p.hint ? "hint-password" : undefined}
         />
