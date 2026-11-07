@@ -46,6 +46,9 @@ export async function cartSummary(locale: string, cartId: string | null) {
     const total = lineTotalCents(unit, r.quantity);
     return {
       id: r.id,
+      productId: r.productId,
+      slotId: r.slotId,
+      unitCents: unit,
       name: r.productName,
       href: productHref(locale, { categorySlug: r.categorySlug, slug: r.productSlug }),
       kind: r.categoryKind,

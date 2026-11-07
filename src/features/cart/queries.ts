@@ -36,6 +36,10 @@ export async function deleteItem(cartId: string, itemId: string): Promise<boolea
   return removed.length > 0;
 }
 
+export async function clearCart(cartId: string) {
+  await db.delete(cartItems).where(eq(cartItems.cartId, cartId));
+}
+
 export async function countItems(cartId: string): Promise<number> {
   const [row] = await db.select({ n: count() }).from(cartItems).where(eq(cartItems.cartId, cartId));
   return row?.n ?? 0;
@@ -57,6 +61,7 @@ export async function listItems(cartId: string) {
       unit: products.unit,
       categorySlug: categories.slug,
       categoryKind: categories.kind,
+      slotId: cartItems.raidSlotId,
       slotStartsAt: raidSlots.startsAt,
       slotCapacity: raidSlots.capacity,
       slotReserved: raidSlots.reserved,

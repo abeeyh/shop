@@ -139,5 +139,38 @@
     },
     "runs": "{n} 場",
     "timed": "限時"
+  },
+  "Checkout": {
+    "email": "電子郵件",
+    "emailHint": "訂單連結與交付進度會寄到這裡。",
+    "network": "USDT 網路",
+    "networkWarning": "請只透過所選網路發送 USDT，透過其他網路發送的款項將會遺失。",
+    "pay": "使用 USDT 付款",
+    "errors": {
+      "email": "請輸入有效的電子郵件。",
+      "empty": "你的購物車是空的。",
+      "unavailable": "請移除無法購買的商品以繼續。",
+      "payment": "無法建立付款，請稍後再試。"
+    }
+  },
+  "Order": {
+    "title": "你的訂單",
+    "status": "狀態",
+    "total": "總計",
+    "network": "僅透過 {network} 網路付款",
+    "expiresIn": "剩餘時間",
+    "pay": "開啟付款頁面",
+    "waiting": "等待付款確認，重新整理頁面即可更新。",
+    "partial": "已收到 {paid}，請補足餘額以完成付款。",
+    "statuses": {
+      "pendente": "等待付款",
+      "pagamento_parcial": "部分付款",
+      "pago": "已付款",
+      "em_andamento": "進行中",
+      "concluido": "已完成",
+      "expirado": "已過期",
+      "reembolsado": "已退款",
+      "contestado": "爭議中"
+    }
   }
 }

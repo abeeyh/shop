@@ -37,7 +37,10 @@ test.describe("desktop", () => {
 
   test("RN-82: trocar o fuso manualmente fica salvo", async ({ page }) => {
     await page.goto("/en");
+    await expect(page.locator("#pref-timezone")).toBeEnabled(); // detecção automática gravou
+    const saved = page.waitForResponse((r) => r.request().method() === "POST");
     await page.locator("#pref-timezone").selectOption("Asia/Taipei");
+    await saved; // a action terminou antes do reload (sob carga ela demora)
     await page.reload();
     await expect(page.locator("#pref-timezone")).toHaveValue("Asia/Taipei");
   });

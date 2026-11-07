@@ -139,5 +139,38 @@
     },
     "runs": "{n} 场",
     "timed": "限时"
+  },
+  "Checkout": {
+    "email": "电子邮箱",
+    "emailHint": "订单链接和交付进度会发送到这里。",
+    "network": "USDT 网络",
+    "networkWarning": "请只通过所选网络发送 USDT，通过其他网络发送的款项将会丢失。",
+    "pay": "使用 USDT 付款",
+    "errors": {
+      "email": "请输入有效的电子邮箱。",
+      "empty": "你的购物车是空的。",
+      "unavailable": "请移除无法购买的商品以继续。",
+      "payment": "无法创建付款，请稍后再试。"
+    }
+  },
+  "Order": {
+    "title": "你的订单",
+    "status": "状态",
+    "total": "总计",
+    "network": "仅通过 {network} 网络付款",
+    "expiresIn": "剩余时间",
+    "pay": "打开付款页面",
+    "waiting": "等待付款确认，刷新页面即可更新。",
+    "partial": "已收到 {paid}，请补足余额以完成付款。",
+    "statuses": {
+      "pendente": "等待付款",
+      "pagamento_parcial": "部分付款",
+      "pago": "已付款",
+      "em_andamento": "进行中",
+      "concluido": "已完成",
+      "expirado": "已过期",
+      "reembolsado": "已退款",
+      "contestado": "争议中"
+    }
   }
 }

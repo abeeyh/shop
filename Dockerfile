@@ -10,7 +10,8 @@ RUN pnpm install --frozen-lockfile
 FROM base AS build
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-ENV NEXT_TELEMETRY_DISABLED=1
+# APP_ENV só para o build; o runner não herda — o deploy define o seu (env.ts não sobe sem ele)
+ENV NEXT_TELEMETRY_DISABLED=1 APP_ENV=local
 RUN pnpm build
 
 FROM node:24-alpine AS runner

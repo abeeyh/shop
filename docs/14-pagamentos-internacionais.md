@@ -74,6 +74,7 @@ Duas formas, em ordem de preferência:
 ## 7. Pendências
 
 - [ ] Confirmar por escrito com NOWPayments (ou alternativa) que aceitam venda de gold/boosting.
+- [ ] Abrir conta NOWPayments (sandbox e produção) e preencher `NOWPAYMENTS_API_KEY`/`NOWPAYMENTS_IPN_SECRET`. No sandbox, confirmar se a fatura aceita `price_currency` em USDT; hoje cobra em `usd` com taxa fixa (1 USD ≈ 1 USDT) — `src/lib/payments/crypto.ts`.
 - [ ] Escolher a forma de cartão (on-ramp ou processador high-risk) e confirmar aceitação do setor.
 - [ ] Contador: CNPJ/CNAE, nota fiscal, declaração de cripto.
 - [ ] Advogado: Termos, política de reembolso, lista de países bloqueados.

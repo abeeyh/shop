@@ -5,7 +5,8 @@ import { z } from "zod";
 const schema = z
   .object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
-    APP_ENV: z.enum(["local", "homologacao", "production"]).default("local"),
+    // sem padrão no build de produção: deploy sem APP_ENV não sobe (e nunca cai no pagamento fake)
+    APP_ENV: z.enum(["local", "homologacao", "production"]),
     APP_RELEASE: z.string().default("dev"),
     LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug"]).optional(),
     DATABASE_URL: z.url({ protocol: /^postgres(ql)?$/ }).optional(),
@@ -20,17 +21,45 @@ const schema = z
     RATE_LIMIT_REQUESTS_PER_MIN: z.coerce.number().int().positive().default(300),
     BETTERSTACK_SOURCE_TOKEN: z.string().min(1).optional(),
     BETTERSTACK_INGEST_HOST: z.string().min(1).optional(),
+    // URL pública da loja: callback do IPN e link de volta da fatura (docs/14 §2)
+    APP_URL: z.url().default("http://localhost:3000"),
+    // gateway USDT (docs/14 §2). "fake" só em local/homologação sem conta.
+    PAYMENTS_PROVIDER: z.enum(["fake", "nowpayments"]).default("fake"),
+    NOWPAYMENTS_API_KEY: z.string().min(1).optional(),
+    NOWPAYMENTS_IPN_SECRET: z.string().min(16).optional(),
+    NOWPAYMENTS_SANDBOX: z.stringbool().default(true),
+    // assina o link do pedido (/pedido/[id]?t=) — dono sem conta (RN-01)
+    ORDER_LINK_SECRET: z.string().min(32).optional(),
   })
   .refine((v) => v.APP_ENV !== "production" || v.CLIENT_IP_HEADER, {
     message: "CLIENT_IP_HEADER é obrigatório em production (docs/16 §9)",
     path: ["CLIENT_IP_HEADER"],
   })
+  // RN-32: fake e segredos de desenvolvimento (públicos no repo) só em local
+  .refine((v) => v.APP_ENV === "local" || (v.PAYMENTS_PROVIDER === "nowpayments" && v.ORDER_LINK_SECRET), {
+    message: "fora de local exige PAYMENTS_PROVIDER=nowpayments e ORDER_LINK_SECRET (docs/14, RN-32)",
+    path: ["PAYMENTS_PROVIDER"],
+  })
+  .refine((v) => v.APP_ENV !== "production" || !v.NOWPAYMENTS_SANDBOX, {
+    message: "production não usa o sandbox do NOWPayments (PAYMENTS_PROVIDER)",
+    path: ["PAYMENTS_PROVIDER"],
+  })
+  .refine(
+    (v) => v.PAYMENTS_PROVIDER !== "nowpayments" || (v.NOWPAYMENTS_API_KEY && v.NOWPAYMENTS_IPN_SECRET),
+    {
+      message: "NOWPAYMENTS_API_KEY e NOWPAYMENTS_IPN_SECRET são obrigatórios com o provedor nowpayments",
+      path: ["NOWPAYMENTS_API_KEY"],
+    },
+  )
   .refine((v) => v.APP_ENV !== "production" || v.VALKEY_URL, {
     message: "VALKEY_URL é obrigatório em production: rate limit é controle de segurança (docs/09 §2)",
     path: ["VALKEY_URL"],
   });
 
 // "VAR=" vazio (como vem do .env.example) conta como não definida
-const defined = Object.fromEntries(Object.entries(process.env).filter(([, value]) => value !== ""));
+const defined: Record<string, string | undefined> = Object.fromEntries(
+  Object.entries(process.env).filter(([, value]) => value !== ""),
+);
+if (!defined.APP_ENV && defined.NODE_ENV !== "production") defined.APP_ENV = "local";
 
 export const env = schema.parse(defined);
