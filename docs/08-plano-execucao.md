@@ -35,7 +35,7 @@ gantt
 - [ ] Infra como código (Terraform) do ambiente de homologação.
 - [x] CI (lint, format, typecheck, i18n, testes com cobertura, build, audit, título semântico, coautoria de IA, destino do PR) e back-merge `main` → `hom`.
 - [ ] Build/push da imagem + deploy em homologação a partir de `hom` (depende da hospedagem).
-- [ ] E2E com Playwright (entra com o primeiro fluxo da F1).
+- [x] E2E com Playwright no CI (celular e desktop): idiomas, 404, rolagem horizontal, `x-request-id`, health.
 - [x] release-please (config + manifest; primeira release `0.1.0`), Dependabot (alvo `hom`).
 - [ ] Backup do banco (depende da hospedagem).
 - [x] `logger` pino com mascaramento + envio ao Better Stack quando há token; `/api/health`.
