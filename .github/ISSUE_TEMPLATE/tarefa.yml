@@ -36,4 +36,4 @@ body:
       placeholder: "guardiao-docs, backend-api, qa-testes…"
   - type: markdown
     attributes:
-      value: "Branch: `<tipo>/<nº>-<assunto>` a partir de `dev`. PR para `dev` com `Closes #<nº>`."
+      value: "Branch: `<tipo>/<nº>-<assunto>` a partir de `dev`. PR para `dev` com `Refs #<nº>`. A issue ganha `dev` → `hom` → `prod` e fecha em produção."

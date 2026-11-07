@@ -2,7 +2,7 @@
 
 <!-- Uma ou duas frases. Título do PR em Conventional Commits: feat(escopo): ... -->
 
-Closes #<!-- nº da issue (obrigatório em PR para dev) -->
+Refs #<!-- nº da issue (obrigatório em PR para dev; não use Closes — a issue fecha só em produção) -->
 
 ## Destino
 

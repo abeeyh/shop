@@ -104,7 +104,12 @@ jobs:
         env:
           BODY: ${{ github.event.pull_request.body }}
         run: |
-          if ! printf '%s' "$BODY" | grep -qiE '(closes|fixes|resolves) #[0-9]+'; then
-            echo "::error::PR de tarefa precisa de 'Closes #<nº da issue>' no corpo."
+          # dev é a branch padrão: Closes/Fixes/Resolves fechariam a issue antes de chegar em produção
+          if printf '%s' "$BODY" | grep -qiE '(close[sd]?|fix(e[sd])?|resolve[sd]?) #[0-9]+'; then
+            echo "::error::Use 'Refs #<nº>' (não Closes/Fixes/Resolves): a issue só fecha em produção."
+            exit 1
+          fi
+          if ! printf '%s' "$BODY" | grep -qiE 'refs #[0-9]+'; then
+            echo "::error::PR de tarefa precisa de 'Refs #<nº da issue>' no corpo."
             exit 1
           fi
