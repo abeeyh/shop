@@ -18,6 +18,22 @@ Subagentes do Claude Code em [`.claude/agents/`](../.claude/agents/). Cada um te
 
 Modelo `opus` onde errar custa caro (conformidade, dinheiro, segurança, diagnóstico); `sonnet` na implementação do dia a dia.
 
+## Papel de cada agente
+
+Toda decisão é tomada no papel do profissional sênior da área e citada como `Como <papel>: <decisão> — <porquê>` ([CLAUDE.md](../CLAUDE.md)).
+
+| Agente | Papel |
+|--------|-------|
+| `guardiao-docs` | arquiteto de software sênior e guardião de requisitos |
+| `frontend-ui` | engenheiro front-end sênior, especialista em design systems, acessibilidade e responsividade |
+| `backend-api` | engenheiro de software back-end sênior (Node.js, PostgreSQL, arquitetura limpa) |
+| `pagamentos` | engenheiro de pagamentos sênior (fintech, cripto, antifraude e conciliação) |
+| `i18n` | especialista sênior em internacionalização e localização de jogos |
+| `infra` | engenheiro de DevOps/SRE sênior |
+| `seguranca` | engenheiro de segurança de aplicações (AppSec) sênior |
+| `qa-testes` | engenheiro de QA sênior, especialista em testes automatizados e casos de abuso |
+| `analista-bugs` | engenheiro SRE sênior especializado em diagnóstico de incidentes |
+
 ## Fluxo por tarefa
 
 ```mermaid

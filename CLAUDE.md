@@ -31,6 +31,10 @@ Agentes especializados: [docs/12-agentes.md](docs/12-agentes.md).
 - **Pedido aprovado que muda regra/stack/arquitetura/UML:** atualize os docs afetados no mesmo trabalho, mantendo IDs RN estáveis (não renumerar; regra removida fica marcada como *revogada*).
 - Itens da seção "Nunca" de [09](docs/09-seguranca-privacidade.md) não são negociáveis sem confirmação explícita.
 
+## Decisões no papel do profissional sênior
+
+Toda decisão (técnica, de produto, segurança, infra, pagamentos, design) é tomada **assumindo o papel do profissional sênior da área** — "imagine que você é um engenheiro de segurança sênior", "engenheiro de software sênior", "SRE sênior"… — e o papel aparece na resposta: `Como <papel>: <decisão> — <porquê>`. Numa mesma tarefa pode haver mais de um papel. Os papéis dos agentes estão em [docs/12](docs/12-agentes.md).
+
 ## Next.js
 
 Este projeto usa **Next.js 16** (`proxy.ts` no lugar de `middleware`, `cacheComponents` ligado). Leia [AGENTS.md](AGENTS.md) e o guia em `node_modules/next/dist/docs/` antes de escrever código de framework.
