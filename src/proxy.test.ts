@@ -77,3 +77,23 @@ describe("proxy — rate limit (docs/09 §2, issue #48)", () => {
     vi.doUnmock("./lib/rate-limit");
   });
 });
+
+describe("proxy — idiomas com código composto (issue #59)", () => {
+  it("RN-81: Accept-Language pt-BR, zh-TW e zh-CN redirecionam para o prefixo certo", async () => {
+    const go = async (lang: string) =>
+      (
+        await proxy(new NextRequest("http://localhost/", { headers: { "accept-language": lang } }))
+      ).headers.get("location");
+    expect(await go("pt-BR,pt;q=0.9")).toBe("http://localhost/pt-br");
+    expect(await go("zh-TW,zh;q=0.9")).toBe("http://localhost/zh-hant");
+    expect(await go("zh-CN,zh;q=0.9")).toBe("http://localhost/zh-hans");
+  });
+
+  it("/pt-br, /zh-hant e /zh-hans são atendidos sem reescrita interna (origem do laço)", async () => {
+    for (const p of ["/pt-br", "/zh-hant", "/zh-hans"]) {
+      const res = await proxy(new NextRequest(`http://localhost${p}`));
+      expect(res.status).toBe(200);
+      expect(res.headers.get("x-middleware-rewrite")).toBeNull();
+    }
+  });
+});

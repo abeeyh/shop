@@ -86,6 +86,7 @@ components (Atomic) ◄───────────────────
 - Horários guardados em UTC (`timestamptz`); formatação com `Intl.DateTimeFormat` no fuso escolhido — sem biblioteca de datas.
 - Primeira renderização sem cookie `tz`: horários renderizados no cliente (evita mostrar fuso errado vindo do servidor).
 - URLs: `/en`, `/fr`, `/de`, `/pt-br`, `/zh-hant`, `/zh-hans`; `hreflang` em todas as páginas.
+- Código interno do next-intl **igual ao da URL** (`pt-br`, `zh-hant`, `zh-hans`; arquivos `messages/pt-br.json` etc.). `<html lang>` e `Intl` usam o canônico (`pt-BR`, `zh-Hant`) via `canonicalLocale()`. Não usar prefixo diferente do código: o next-intl reescreve a URL e o Next 16 passa a reescrita pelo proxy de novo → laço de redirecionamento (#59).
 
 ## Rede
 
