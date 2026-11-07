@@ -102,6 +102,8 @@ flowchart LR
 | Rate limit indisponível | `rate_limit.unavailable` (no máximo 1 por minuto por instância) | E-mail/Discord |
 | Requisição sem IP em production | `rate_limit.unknown_ip` (CDN ou `CLIENT_IP_HEADER` errados) | E-mail/Discord |
 | Webhook falhando | `webhook.signature_invalid` ou `webhook.processing_failed` > 3 em 10 min | E-mail/Discord |
+| Pagamento fora do esperado | `webhook.late_payment` (dinheiro chegou num pedido encerrado — crédito/devolução, RN-37) ou `webhook.mismatch` (IPN com outra rede ou outro valor) — 1 já alerta | E-mail/Discord |
+| Fatura não criada | `checkout.invoice_failed` > 3 em 10 min (gateway fora) | E-mail/Discord |
 | Pedido pago sem progresso | `order.paid` sem `order.in_progress` em X horas | E-mail |
 | Conversa sem resposta | Conversa `aberta` há mais de 15 min dentro do horário de atendimento | E-mail/Discord |
 | Release com regressão | Taxa de erro da nova versão > anterior | E-mail |

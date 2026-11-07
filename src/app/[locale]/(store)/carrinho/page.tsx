@@ -7,6 +7,7 @@ import { GradientCard } from "@/components/molecules/GradientCard";
 import { LocalTime } from "@/components/molecules/LocalTime";
 import { cartSummary, getCartId, removeFromCart, type CartLine } from "@/features/cart";
 import { KindThumb } from "@/features/catalog";
+import { CheckoutForm } from "@/features/orders";
 import { canonicalLocale } from "@/i18n/routing";
 import { getTimezone } from "@/lib/preferences";
 
@@ -31,8 +32,9 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
   await connection();
   const { locale } = await params;
   setRequestLocale(locale);
-  const [t, timeZone, cartId] = await Promise.all([
+  const [t, k, timeZone, cartId] = await Promise.all([
     getTranslations({ locale, namespace: "Cart" }),
+    getTranslations({ locale, namespace: "Checkout" }),
     getTimezone(),
     getCartId(),
   ]);
@@ -102,6 +104,23 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
           </div>
           <p className="text-xs text-muted-foreground">{t("note")}</p>
           {cart.hasUnavailable ? <p className="text-sm text-error-text">{t("removeUnavailable")}</p> : null}
+          <CheckoutForm
+            locale={locale}
+            disabled={cart.hasUnavailable}
+            labels={{
+              email: k("email"),
+              emailHint: k("emailHint"),
+              network: k("network"),
+              networkWarning: k("networkWarning"),
+              pay: k("pay"),
+              errors: {
+                email: k("errors.email"),
+                empty: k("errors.empty"),
+                unavailable: k("errors.unavailable"),
+                payment: k("errors.payment"),
+              },
+            }}
+          />
         </GradientCard>
       </div>
     </div>

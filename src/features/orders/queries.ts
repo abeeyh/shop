@@ -1,0 +1,133 @@
+import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
+import { asc, eq } from "drizzle-orm";
+import { db } from "@/db";
+import { orderItems, orders, paymentEvents } from "@/db/schema";
+import { PAY_CURRENCY } from "@/lib/payments/crypto";
+import { nextStatus, settle, type Network, type OrderStatus, type PaymentOutcome } from "./rules";
+
+export type NewOrder = {
+  email: string;
+  locale: string;
+  network: Network;
+  subtotalUsdtCents: number;
+  totalUsdtCents: number;
+  expiresAt: Date;
+  items: {
+    productId: string;
+    raidSlotId: string | null;
+    productName: string;
+    options: unknown;
+    unitPriceUsdtCents: number;
+    quantity: number;
+  }[];
+};
+
+export async function insertOrder({ items, ...order }: NewOrder): Promise<string> {
+  return db.transaction(async (tx) => {
+    const [row] = await tx.insert(orders).values(order).returning({ id: orders.id });
+    await tx.insert(orderItems).values(items.map((i) => ({ ...i, orderId: row!.id })));
+    return row!.id;
+  });
+}
+
+export async function setInvoice(id: string, provider: string, providerPaymentId: string, payUrl: string) {
+  await db
+    .update(orders)
+    .set({ provider, providerPaymentId, payUrl, updatedAt: new Date() })
+    .where(eq(orders.id, id));
+}
+
+export async function markExpired(id: string) {
+  await db.update(orders).set({ status: "expirado", updatedAt: new Date() }).where(eq(orders.id, id));
+}
+
+export async function getOrder(id: string) {
+  const [order] = await db.select().from(orders).where(eq(orders.id, id));
+  if (!order) return null;
+  const items = await db
+    .select()
+    .from(orderItems)
+    .where(eq(orderItems.orderId, id))
+    .orderBy(asc(orderItems.id));
+  return { ...order, items };
+}
+
+export type PaymentEvent = {
+  provider: string;
+  eventId: string;
+  paymentId: string;
+  orderId: string;
+  type: string;
+  outcome: PaymentOutcome | null;
+  priceCents: number; // valor da fatura
+  payCurrency: string;
+  payAmountCents: number; // quanto a fatura pediu na moeda paga
+  paidCents: number; // quanto chegou na moeda paga
+  txHash?: string;
+};
+
+export type ApplyResult =
+  "duplicate" | "unknown_order" | "mismatch" | "late_payment" | "ignored" | OrderStatus;
+
+const OPEN: OrderStatus[] = ["pendente", "pagamento_parcial"];
+
+type LockedOrder = { status: OrderStatus; total: number; network: Network | null; paid: number | null };
+
+// IPN que não bate com o pedido (outra rede ou outro valor) nunca muda o estado
+const matches = (o: LockedOrder, e: PaymentEvent) =>
+  o.network !== null && PAY_CURRENCY[o.network] === e.payCurrency && e.priceCents === o.total;
+
+const eventRow = (e: PaymentEvent) => ({
+  provider: e.provider,
+  providerEventId: e.eventId,
+  orderId: e.orderId,
+  type: e.type,
+  paymentId: e.paymentId,
+  payCurrency: e.payCurrency,
+  paidUsdtCents: e.paidCents,
+  txHash: e.txHash ?? null,
+});
+
+type Decision = Exclude<ApplyResult, OrderStatus> | { status: OrderStatus; paid: number };
+
+// RN-37: pago × parcial compara o que chegou com o que a fatura pediu (mesma moeda)
+function decide(order: LockedOrder, e: PaymentEvent): Decision {
+  if (!matches(order, e)) return "mismatch";
+  if (!e.outcome) return "ignored";
+  if (!OPEN.includes(order.status)) return e.outcome === "expired" ? "ignored" : "late_payment";
+  const next = nextStatus(order.status, settle(e.outcome, e.paidCents, e.payAmountCents));
+  // parcial que cresce continua parcial, mas o valor recebido é atualizado
+  const paid = Math.max(order.paid ?? 0, e.paidCents);
+  if (!next && paid === order.paid) return "ignored";
+  return { status: next ?? order.status, paid };
+}
+
+// RN-32/RN-33: grava o evento (único) e muda o pedido na mesma transação; repetido = sem efeito
+export async function applyPaymentEvent(e: PaymentEvent): Promise<ApplyResult> {
+  return db.transaction(async (tx) => {
+    const [order] = await tx
+      .select({
+        status: orders.status,
+        total: orders.totalUsdtCents,
+        network: orders.network,
+        paid: orders.paidUsdtCents,
+      })
+      .from(orders)
+      .where(eq(orders.id, e.orderId))
+      .for("update");
+    if (!order) return "unknown_order";
+    const inserted = await tx
+      .insert(paymentEvents)
+      .values(eventRow(e))
+      .onConflictDoNothing()
+      .returning({ id: paymentEvents.id });
+    if (inserted.length === 0) return "duplicate";
+    const d = decide(order, e);
+    if (typeof d === "string") return d;
+    await tx
+      .update(orders)
+      .set({ status: d.status, paidUsdtCents: d.paid, txHash: e.txHash ?? null, updatedAt: new Date() })
+      .where(eq(orders.id, e.orderId));
+    return d.status;
+  });
+}

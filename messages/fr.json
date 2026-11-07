@@ -139,5 +139,38 @@
     },
     "runs": "{n, plural, one {# run} other {# runs}}",
     "timed": "dans les temps"
+  },
+  "Checkout": {
+    "email": "E-mail",
+    "emailHint": "Nous envoyons ici le lien de la commande et le suivi de la livraison.",
+    "network": "Réseau USDT",
+    "networkWarning": "Envoyez l'USDT uniquement sur le réseau choisi. Les fonds envoyés sur un autre réseau sont perdus.",
+    "pay": "Payer en USDT",
+    "errors": {
+      "email": "Indiquez un e-mail valide.",
+      "empty": "Votre panier est vide.",
+      "unavailable": "Retirez les articles indisponibles pour continuer.",
+      "payment": "Impossible de créer le paiement. Réessayez dans un instant."
+    }
+  },
+  "Order": {
+    "title": "Votre commande",
+    "status": "Statut",
+    "total": "Total",
+    "network": "Payez uniquement sur le réseau {network}",
+    "expiresIn": "Expire dans",
+    "pay": "Ouvrir le paiement",
+    "waiting": "En attente de la confirmation du paiement. Rechargez la page pour la mettre à jour.",
+    "partial": "Nous avons reçu {paid}. Envoyez le reste pour finaliser le paiement.",
+    "statuses": {
+      "pendente": "En attente de paiement",
+      "pagamento_parcial": "Partiellement payé",
+      "pago": "Payé",
+      "em_andamento": "En cours",
+      "concluido": "Terminé",
+      "expirado": "Expiré",
+      "reembolsado": "Remboursé",
+      "contestado": "Contesté"
+    }
   }
 }

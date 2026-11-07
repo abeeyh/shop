@@ -33,6 +33,7 @@ jobs:
         options: >-
           --health-cmd "valkey-cli ping" --health-interval 5s --health-timeout 5s --health-retries 10
     env:
+      APP_ENV: local # E2E usa o pagamento fake (só permitido em local)
       DATABASE_URL: postgres://shop:shop@localhost:5432/shop
       VALKEY_URL: redis://localhost:6379
     steps:
