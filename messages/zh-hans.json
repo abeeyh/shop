@@ -3,11 +3,84 @@
     "title": "WoW 服务：金币、团队副本与史诗钥石",
     "description": "World of Warcraft 美服与欧服的金币、团队副本与史诗钥石地下城。使用 USDT 或银行卡付款。"
   },
-  "ComingSoon": {
-    "badge": "即将上线",
+  "Nav": {
+    "label": "主菜单",
+    "skip": "跳到内容",
+    "region": "地区",
+    "language": "语言",
+    "timezone": "时区",
+    "menu": "打开菜单",
+    "closeMenu": "关闭菜单",
+    "detecting": "检测中…"
+  },
+  "Home": {
+    "badge": "WoW 正式服 · 美服和欧服",
     "title": "轻松推进你的 WoW 进度",
-    "subtitle": "美服与欧服正式服的金币、团队副本代打与史诗钥石地下城——以 USDT 计价，按你的时区安排。",
-    "tags": ["金币", "团队副本", "地下城"],
-    "payment": "使用 USDT 或银行卡付款"
+    "subtitle": "金币、团队副本代打与史诗钥石地下城。以 USDT 计价，按你的时区安排，使用你的语言。",
+    "ctaGold": "购买金币",
+    "ctaRaid": "预约团队副本",
+    "categories": "分类",
+    "bestSellers": "热销",
+    "viewAll": "查看全部"
+  },
+  "Catalog": {
+    "perK": "每 1,000 金币",
+    "estimateNote": "按你的货币估算；按 USDT 收费。",
+    "selfPlay": "本人上线：你使用自己的角色游戏。我们绝不索要你的 Battle.net 密码。",
+    "empty": "该地区暂无商品。",
+    "region": "地区：{region}",
+    "home": "首页",
+    "loading": "加载中…"
+  },
+  "Footer": {
+    "about": "World of Warcraft 正式服美服和欧服的金币、团队副本与史诗钥石。",
+    "copyright": "© 2026 Shop · 与 Blizzard Entertainment 无关。"
+  },
+  "NotFound": {
+    "title": "找不到页面",
+    "text": "你要找的页面不存在或已不可用。",
+    "back": "返回首页"
+  },
+  "Schedule": {
+    "upcoming": "即将开始的团队副本",
+    "inYourTimezone": "按你的时区显示（{tz}）",
+    "inBrowserTimezone": "按你浏览器的时区显示",
+    "seatsLeft": "剩余 {n} 个名额",
+    "soldOut": "已满",
+    "startsIn": "距离开始",
+    "serverTime": "服务器时间：",
+    "details": "查看时段",
+    "slotsTitle": "可预约时段"
+  },
+  "Search": {
+    "title": "商品",
+    "label": "搜索商品",
+    "placeholder": "搜索金币、团队副本、史诗钥石…",
+    "min": "请至少输入 2 个字符。",
+    "filters": "筛选",
+    "category": "分类",
+    "region": "地区",
+    "all": "全部",
+    "price": "价格（USDT）",
+    "minPrice": "最低",
+    "maxPrice": "最高",
+    "available": "只看可购买",
+    "sort": "排序",
+    "relevance": "相关性",
+    "best": "热销",
+    "priceAsc": "价格从低到高",
+    "priceDesc": "价格从高到低",
+    "apply": "应用",
+    "results": "{n} 件商品",
+    "resultsFor": "“{q}”的结果",
+    "clear": "清除筛选",
+    "noResults": "未找到商品",
+    "noResultsText": "试试其他词、去掉筛选或浏览分类。",
+    "removeFilter": "移除筛选 {f}",
+    "unavailable": "不可购买",
+    "tooMany": "短时间内搜索次数过多，请等待一分钟。",
+    "pagination": "页码",
+    "prev": "上一页",
+    "next": "下一页"
   }
 }

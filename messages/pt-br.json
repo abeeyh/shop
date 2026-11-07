@@ -3,11 +3,84 @@
     "title": "Serviços de WoW: gold, raids e Mítica+",
     "description": "Gold, raids e masmorras Mítica+ para World of Warcraft US e EU. Pague em USDT ou cartão."
   },
-  "ComingSoon": {
-    "badge": "Em breve",
+  "Nav": {
+    "label": "Principal",
+    "skip": "Pular para o conteúdo",
+    "region": "Região",
+    "language": "Idioma",
+    "timezone": "Fuso horário",
+    "menu": "Abrir menu",
+    "closeMenu": "Fechar menu",
+    "detecting": "Detectando…"
+  },
+  "Home": {
+    "badge": "WoW Retail · US e EU",
     "title": "Seu progresso no WoW, sem o grind",
-    "subtitle": "Gold, raids e masmorras Mítica+ para Retail US e EU — preço em USDT, horários no seu fuso.",
-    "tags": ["Gold", "Raids", "Masmorras"],
-    "payment": "Pague em USDT ou cartão"
+    "subtitle": "Gold, raids e masmorras Mítica+. Preço em USDT, horários no seu fuso, no seu idioma.",
+    "ctaGold": "Comprar gold",
+    "ctaRaid": "Agendar raid",
+    "categories": "Categorias",
+    "bestSellers": "Mais vendidos",
+    "viewAll": "Ver todos"
+  },
+  "Catalog": {
+    "perK": "por 1.000 de gold",
+    "estimateNote": "Estimativa na sua moeda; a cobrança é em USDT.",
+    "selfPlay": "Self-play: você joga com o seu personagem. Nunca pedimos sua senha da Battle.net.",
+    "empty": "Ainda não há produtos nesta região.",
+    "region": "Região: {region}",
+    "home": "Início",
+    "loading": "Carregando…"
+  },
+  "Footer": {
+    "about": "Gold, raids e Mítica+ para World of Warcraft Retail US e EU.",
+    "copyright": "© 2026 Shop · Sem afiliação com a Blizzard Entertainment."
+  },
+  "NotFound": {
+    "title": "Página não encontrada",
+    "text": "A página que você procura não existe ou não está mais disponível.",
+    "back": "Voltar ao início"
+  },
+  "Schedule": {
+    "upcoming": "Próximas raids",
+    "inYourTimezone": "Horários no seu fuso ({tz})",
+    "inBrowserTimezone": "Horários no fuso do seu navegador",
+    "seatsLeft": "{n, plural, one {# vaga} other {# vagas}}",
+    "soldOut": "Esgotado",
+    "startsIn": "Começa em",
+    "serverTime": "Horário do servidor:",
+    "details": "Ver horários",
+    "slotsTitle": "Horários disponíveis"
+  },
+  "Search": {
+    "title": "Produtos",
+    "label": "Buscar produtos",
+    "placeholder": "Buscar gold, raids, Mítica+…",
+    "min": "Digite pelo menos 2 caracteres.",
+    "filters": "Filtros",
+    "category": "Categoria",
+    "region": "Região",
+    "all": "Todas",
+    "price": "Preço (USDT)",
+    "minPrice": "Mín.",
+    "maxPrice": "Máx.",
+    "available": "Só disponíveis",
+    "sort": "Ordenar por",
+    "relevance": "Relevância",
+    "best": "Mais vendidos",
+    "priceAsc": "Menor preço",
+    "priceDesc": "Maior preço",
+    "apply": "Aplicar",
+    "results": "{n, plural, one {# produto} other {# produtos}}",
+    "resultsFor": "para “{q}”",
+    "clear": "Limpar filtros",
+    "noResults": "Nenhum produto encontrado",
+    "noResultsText": "Tente outra palavra, tire um filtro ou veja uma categoria.",
+    "removeFilter": "Remover filtro {f}",
+    "unavailable": "Indisponível",
+    "tooMany": "Muitas buscas em pouco tempo. Aguarde um minuto.",
+    "pagination": "Páginas",
+    "prev": "Anterior",
+    "next": "Próxima"
   }
 }

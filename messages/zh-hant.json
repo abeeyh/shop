@@ -3,11 +3,84 @@
     "title": "WoW 服務：金幣、團隊副本與傳奇+",
     "description": "World of Warcraft 美服與歐服的金幣、團隊副本與傳奇+地城。以 USDT 或信用卡付款。"
   },
-  "ComingSoon": {
-    "badge": "即將推出",
+  "Nav": {
+    "label": "主選單",
+    "skip": "跳至內容",
+    "region": "地區",
+    "language": "語言",
+    "timezone": "時區",
+    "menu": "開啟選單",
+    "closeMenu": "關閉選單",
+    "detecting": "偵測中…"
+  },
+  "Home": {
+    "badge": "WoW 正式版 · 美服與歐服",
     "title": "輕鬆推進你的 WoW 進度",
-    "subtitle": "美服與歐服正式版的金幣、團隊副本代打與傳奇+地城——以 USDT 計價，依你的時區排程。",
-    "tags": ["金幣", "團隊副本", "地城"],
-    "payment": "以 USDT 或信用卡付款"
+    "subtitle": "金幣、團隊副本代打與傳奇+地城。以 USDT 計價，依你的時區排程，使用你的語言。",
+    "ctaGold": "購買金幣",
+    "ctaRaid": "預約團隊副本",
+    "categories": "分類",
+    "bestSellers": "熱銷",
+    "viewAll": "查看全部"
+  },
+  "Catalog": {
+    "perK": "每 1,000 金幣",
+    "estimateNote": "以你的貨幣估算；以 USDT 收費。",
+    "selfPlay": "親自上線：你使用自己的角色遊玩。我們絕不索取你的 Battle.net 密碼。",
+    "empty": "此地區暫無商品。",
+    "region": "地區：{region}",
+    "home": "首頁",
+    "loading": "載入中…"
+  },
+  "Footer": {
+    "about": "World of Warcraft 正式版美服與歐服的金幣、團隊副本與傳奇+。",
+    "copyright": "© 2026 Shop · 與 Blizzard Entertainment 無關。"
+  },
+  "NotFound": {
+    "title": "找不到頁面",
+    "text": "你要找的頁面不存在或已無法使用。",
+    "back": "返回首頁"
+  },
+  "Schedule": {
+    "upcoming": "即將開始的團隊副本",
+    "inYourTimezone": "以你的時區顯示（{tz}）",
+    "inBrowserTimezone": "以你瀏覽器的時區顯示",
+    "seatsLeft": "剩 {n} 個名額",
+    "soldOut": "已額滿",
+    "startsIn": "距離開始",
+    "serverTime": "伺服器時間：",
+    "details": "查看時段",
+    "slotsTitle": "可預約時段"
+  },
+  "Search": {
+    "title": "商品",
+    "label": "搜尋商品",
+    "placeholder": "搜尋金幣、團隊副本、傳奇+…",
+    "min": "請至少輸入 2 個字元。",
+    "filters": "篩選",
+    "category": "分類",
+    "region": "地區",
+    "all": "全部",
+    "price": "價格（USDT）",
+    "minPrice": "最低",
+    "maxPrice": "最高",
+    "available": "只顯示可購買",
+    "sort": "排序",
+    "relevance": "相關性",
+    "best": "熱銷",
+    "priceAsc": "價格由低到高",
+    "priceDesc": "價格由高到低",
+    "apply": "套用",
+    "results": "{n} 項商品",
+    "resultsFor": "「{q}」的結果",
+    "clear": "清除篩選",
+    "noResults": "找不到商品",
+    "noResultsText": "試試其他字詞、移除篩選或瀏覽分類。",
+    "removeFilter": "移除篩選 {f}",
+    "unavailable": "無法購買",
+    "tooMany": "短時間內搜尋次數過多，請稍候一分鐘。",
+    "pagination": "頁數",
+    "prev": "上一頁",
+    "next": "下一頁"
   }
 }

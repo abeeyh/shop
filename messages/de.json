@@ -3,11 +3,84 @@
     "title": "WoW-Services: Gold, Raids und Mythisch+",
     "description": "Gold, Raids und Mythisch+-Dungeons für World of Warcraft US und EU. Bezahlung in USDT oder per Karte."
   },
-  "ComingSoon": {
-    "badge": "Demnächst verfügbar",
+  "Nav": {
+    "label": "Hauptmenü",
+    "skip": "Zum Inhalt springen",
+    "region": "Region",
+    "language": "Sprache",
+    "timezone": "Zeitzone",
+    "menu": "Menü öffnen",
+    "closeMenu": "Menü schließen",
+    "detecting": "Wird erkannt…"
+  },
+  "Home": {
+    "badge": "WoW Retail · US & EU",
     "title": "Dein WoW-Fortschritt, ohne Grind",
-    "subtitle": "Gold, Raids und Mythisch+-Dungeons für Retail US und EU – Preise in USDT, Termine in deiner Zeitzone.",
-    "tags": ["Gold", "Raids", "Dungeons"],
-    "payment": "Bezahlung in USDT oder per Karte"
+    "subtitle": "Gold, Raids und Mythisch+-Dungeons. Preise in USDT, Termine in deiner Zeitzone, in deiner Sprache.",
+    "ctaGold": "Gold kaufen",
+    "ctaRaid": "Raid buchen",
+    "categories": "Kategorien",
+    "bestSellers": "Bestseller",
+    "viewAll": "Alle anzeigen"
+  },
+  "Catalog": {
+    "perK": "pro 1.000 Gold",
+    "estimateNote": "Schätzung in deiner Währung; Abrechnung in USDT.",
+    "selfPlay": "Self-Play: Du spielst deinen eigenen Charakter. Wir fragen nie nach deinem Battle.net-Passwort.",
+    "empty": "In dieser Region gibt es noch keine Produkte.",
+    "region": "Region: {region}",
+    "home": "Start",
+    "loading": "Wird geladen…"
+  },
+  "Footer": {
+    "about": "Gold, Raids und Mythisch+ für World of Warcraft Retail US und EU.",
+    "copyright": "© 2026 Shop · Nicht mit Blizzard Entertainment verbunden."
+  },
+  "NotFound": {
+    "title": "Seite nicht gefunden",
+    "text": "Die gesuchte Seite existiert nicht oder ist nicht mehr verfügbar.",
+    "back": "Zurück zur Startseite"
+  },
+  "Schedule": {
+    "upcoming": "Kommende Raids",
+    "inYourTimezone": "Zeiten in deiner Zeitzone ({tz})",
+    "inBrowserTimezone": "Zeiten in der Zeitzone deines Browsers",
+    "seatsLeft": "{n, plural, one {# Platz frei} other {# Plätze frei}}",
+    "soldOut": "Ausgebucht",
+    "startsIn": "Beginnt in",
+    "serverTime": "Serverzeit:",
+    "details": "Termine ansehen",
+    "slotsTitle": "Verfügbare Termine"
+  },
+  "Search": {
+    "title": "Produkte",
+    "label": "Produkte suchen",
+    "placeholder": "Gold, Raids, Mythisch+ suchen…",
+    "min": "Mindestens 2 Zeichen eingeben.",
+    "filters": "Filter",
+    "category": "Kategorie",
+    "region": "Region",
+    "all": "Alle",
+    "price": "Preis (USDT)",
+    "minPrice": "Min.",
+    "maxPrice": "Max.",
+    "available": "Nur verfügbare",
+    "sort": "Sortieren nach",
+    "relevance": "Relevanz",
+    "best": "Bestseller",
+    "priceAsc": "Niedrigster Preis",
+    "priceDesc": "Höchster Preis",
+    "apply": "Anwenden",
+    "results": "{n, plural, one {# Produkt} other {# Produkte}}",
+    "resultsFor": "für „{q}“",
+    "clear": "Filter zurücksetzen",
+    "noResults": "Keine Produkte gefunden",
+    "noResultsText": "Versuche ein anderes Wort, entferne einen Filter oder sieh dir eine Kategorie an.",
+    "removeFilter": "Filter {f} entfernen",
+    "unavailable": "Nicht verfügbar",
+    "tooMany": "Zu viele Suchen in kurzer Zeit. Bitte warte eine Minute.",
+    "pagination": "Seiten",
+    "prev": "Zurück",
+    "next": "Weiter"
   }
 }

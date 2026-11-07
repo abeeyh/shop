@@ -8,6 +8,34 @@
       "when": 1794012552741,
       "tag": "0000_flowery_excalibur",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794024598838,
+      "tag": "0001_absurd_inhumans",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794026132715,
+      "tag": "0002_slow_mockingbird",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794026621403,
+      "tag": "0003_pg_trgm",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794026627610,
+      "tag": "0004_misty_demogoblin",
+      "breakpoints": true
     }
   ]
 }

@@ -81,7 +81,7 @@ components (Atomic) ◄───────────────────
 |-------------|---------------------|-----------|-------|
 | Idioma | `Accept-Language` no middleware do next-intl | Segmento da URL `/[locale]` + cookie `NEXT_LOCALE` | Seletor no cabeçalho |
 | Fuso | `Intl.DateTimeFormat().resolvedOptions().timeZone` no navegador | Cookie `tz` (+ perfil, se logado) | Seletor no cabeçalho (lista IANA) |
-| Região do jogo | Sugestão pelo fuso (Américas → US, Europa → EU) | Cookie `region` | Seletor no cabeçalho |
+| Região do jogo | Sugestão pelo fuso na 1ª visita: Europa, África e Atlântico → EU; o resto → US (padrão da RN-14; Oceania e Sudeste Asiático jogam nos servidores US/Oceanic) | Cookie `region` | Seletor no cabeçalho |
 
 - Horários guardados em UTC (`timestamptz`); formatação com `Intl.DateTimeFormat` no fuso escolhido — sem biblioteca de datas.
 - Primeira renderização sem cookie `tz`: horários renderizados no cliente (evita mostrar fuso errado vindo do servidor).
@@ -164,8 +164,8 @@ sequenceDiagram
 | Rota | Tipo | Acesso |
 |------|------|--------|
 | `/[locale]` | Página | Público |
-| `/[locale]/wow/produtos?q=&cat=&region=&min=&max=&promo=1&disponivel=1&sort=&page=` | Página (busca e filtros — RN-100 a RN-103) | Público |
-| `/[locale]/wow/gold`, `/[locale]/wow/raids`, `/[locale]/wow/dungeons`, `/[locale]/wow/<categoria>/[slug]` | Página | Público |
+| `/[locale]/produtos?q=&cat=&region=&min=&max=&disponivel=1&sort=&page=` | Página (busca e filtros — RN-100 a RN-103). Fora de `/wow/` para não colidir com o slug de uma categoria; `promo=1` entra com as promoções (#21) | Público |
+| `/[locale]/wow/[categoria]`, `/[locale]/wow/[categoria]/[produto]` (slugs criados pelo admin — RN-13, RN-19; rotas no grupo `app/[locale]/(store)`). Inexistente → página "não encontrada" com `noindex` (status 200 por causa do streaming) | Página | Público |
 | `/[locale]/carrinho`, `/[locale]/checkout` | Página + Server Actions | Público (visitante — RN-01) |
 | `/[locale]/pedido/[id]` | Página | Dono do pedido (sessão ou link assinado) |
 | `/[locale]/admin/*` | Página | Admin com 2FA (RN-02) |
