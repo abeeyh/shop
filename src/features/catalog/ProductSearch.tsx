@@ -53,6 +53,7 @@ function buildChips(
     ...(f.min !== undefined ? [{ label: `≥ ${f.min} USDT`, href: href({ ...reset, min: undefined }) }] : []),
     ...(f.max !== undefined ? [{ label: `≤ ${f.max} USDT`, href: href({ ...reset, max: undefined }) }] : []),
     ...(f.available ? [{ label: t("available"), href: href({ ...reset, available: false }) }] : []),
+    ...(f.promo ? [{ label: t("promo"), href: href({ ...reset, promo: false }) }] : []),
   ];
 }
 
@@ -155,6 +156,7 @@ function filterLabels(t: T) {
     min: t("minPrice"),
     max: t("maxPrice"),
     available: t("available"),
+    promo: t("promo"),
     sort: t("sort"),
     sorts: {
       relevance: t("relevance"),

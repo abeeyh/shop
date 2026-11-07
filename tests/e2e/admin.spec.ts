@@ -118,6 +118,9 @@ test.describe("admin", () => {
     await expect(page.locator("s").getByText("9.99 USDT")).toBeVisible();
     await expect(page.getByText("8.99 USDT").first()).toBeVisible();
     await expect(page.getByRole("timer", { name: "Promotion ends in" })).toBeVisible();
+    // RN-22/RN-102: aparece no filtro "em promoção" da busca
+    await page.goto("/en/produtos?promo=1");
+    await expect(page.getByRole("link", { name: `E2E Key Product ${id}` })).toBeVisible();
 
     // RN-25/RN-26: cupom de 50% vence a promoção; código inválido tem mensagem genérica
     await page.goto("/en/admin/cupons");
