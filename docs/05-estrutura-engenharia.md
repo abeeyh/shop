@@ -57,7 +57,7 @@ Regras:
 
 Pipeline completo em [13](13-padroes-qualidade.md#7-cicd). Resumo:
 
-1. PR para `dev` (com `Closes #N`): lint, typecheck, testes com cobertura, build, E2E, audit, título semântico.
+1. PR para `dev` (com `Refs #N`; a issue fecha só em produção): lint, typecheck, testes com cobertura, build, E2E, audit, título semântico.
 2. PR de promoção `dev` → `hom` (merge commit).
 3. Merge em `hom`: build da imagem → registry → deploy em homologação → migrações → smoke test.
 4. PR de promoção `hom` → `main` (merge commit) → release-please atualiza o Release PR.

@@ -1,0 +1,46 @@
+# docs/13 §5: issue ganha dev → hom → prod conforme o push e só fecha em main
+name: Rastreamento de issues
+
+on:
+  push:
+    branches: [dev, hom, main]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: issues-${{ github.ref }}
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Atualizar labels das issues que chegaram nesta branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.event.after }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then range="$AFTER"; else range="$BEFORE..$AFTER"; fi
+          plan=$(node -e 'import("./scripts/issue-refs.mjs").then(m=>console.log(JSON.stringify(m.labelPlan(process.argv[1]))))' "$BRANCH")
+          add=$(echo "$plan" | jq -r .add)
+          close=$(echo "$plan" | jq -r .close)
+          for n in $(git log --format=%B "$range" | node scripts/issue-refs.mjs); do
+            info=$(gh api "repos/$GITHUB_REPOSITORY/issues/$n" --jq '{pr: has("pull_request"), state}' 2>/dev/null) || continue
+            # PR não é issue; issue fechada já está em produção (ex.: back-merge main → dev)
+            [ "$(echo "$info" | jq -r .pr)" = "true" ] && continue
+            [ "$(echo "$info" | jq -r .state)" = "closed" ] && continue
+            gh issue edit "$n" --repo "$GITHUB_REPOSITORY" --add-label "$add"
+            for old in $(echo "$plan" | jq -r '.remove[]'); do
+              gh issue edit "$n" --repo "$GITHUB_REPOSITORY" --remove-label "$old" || true
+            done
+            if [ "$close" = "true" ]; then
+              gh issue close "$n" --repo "$GITHUB_REPOSITORY" --comment "Em produção: main @ ${AFTER:0:7}."
+            fi
+            echo "#$n → $add"
+          done

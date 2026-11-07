@@ -29,7 +29,7 @@ flowchart LR
   I --> T[i18n<br/>se houver texto]
   T --> Q[qa-testes]
   Q --> S[seguranca<br/>se tocar auth, dinheiro, dados, logs, infra]
-  S --> PR[PR para dev<br/>Closes #N]
+  S --> PR[PR para dev<br/>Refs #N]
   PR --> D[dev] --> H[hom / homologação] --> M[main / produção]
 ```
 

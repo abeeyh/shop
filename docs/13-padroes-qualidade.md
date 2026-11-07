@@ -131,6 +131,15 @@ O CI repete tudo; `--no-verify` não fura a regra.
 - Criada com o template `tarefa` (ou `bug`), com marco da fase (`F0`…`F5`), regras RN e critério "pronto quando".
 - Sem issue, não há branch nem PR. Exceções automáticas: Dependabot, release-please e back-merge.
 - Tarefa que depende de decisão do dono recebe a label `decisao` e não começa antes da resposta.
+- **A issue acompanha o código até produção** (workflow `issues.yml`, a cada push):
+
+| O trabalho chegou em | Label da issue | Issue |
+|----------------------|----------------|-------|
+| `dev` | `dev` | aberta |
+| `hom` | `hom` (sai `dev`) | aberta |
+| `main` | `prod` (saem `dev` e `hom`) | **fechada** |
+
+  O workflow acha a issue pelos `Refs #<nº>` nas mensagens dos commits que chegaram na branch. Issue já fechada (em produção) não é remarcada pelos back-merges.
 
 ### Branches
 
@@ -166,7 +175,7 @@ gitGraph
 
 ### Regras
 
-- PR para `dev`: corpo com **`Closes #<nº>`** (checado no CI). Como `dev` é a branch padrão, a issue fecha no merge.
+- PR para `dev`: corpo com **`Refs #<nº>`** (checado no CI). **Proibido `Closes`/`Fixes`/`Resolves`**: como `dev` é a branch padrão, o GitHub fecharia a issue antes de ela chegar em produção.
 - PR para `hom`: só de `dev` (ou back-merge vindo de `main`). PR para `main`: só de `hom`, `hotfix/*` ou release-please (checado no CI).
 - Promoções (`dev → hom`, `hom → main`) e back-merges usam **merge commit**, nunca squash: o changelog depende dos commits semânticos de cada tarefa.
 - Depois de toda release ou hotfix, **back-merge automático**: PRs `main → hom` e `main → dev`.
@@ -186,7 +195,7 @@ gitGraph
 ```mermaid
 flowchart LR
   I[Issue #N] --> BR[branch tipo/N-assunto]
-  BR -- PR + Closes #N --> CI
+  BR -- PR + Refs #N --> CI
   subgraph CI["CI (todo PR)"]
     A[install<br/>frozen lockfile] --> B[lint + format]
     B --> C[typecheck]
@@ -211,8 +220,9 @@ flowchart LR
 
 | Gatilho | Jobs | Bloqueia merge? |
 |---------|------|-----------------|
-| PR para `dev` | install, lint, format, typecheck, traduções, testes, cobertura, build, E2E, audit, título semântico, `Closes #N`, commits sem coautoria de IA | Sim |
+| PR para `dev` | install, lint, format, typecheck, traduções, testes, cobertura, build, E2E, audit, título semântico, `Refs #N` (sem palavra que fecha issue), commits sem coautoria de IA | Sim |
 | PR `dev` → `hom` | mesmos jobs + destino permitido | Sim |
+| Push em `dev`, `hom` ou `main` | label `dev`/`hom`/`prod` nas issues; fecha em `main` | — |
 | Merge em `hom` | imagem, deploy em homologação, migrações, smoke | — |
 | PR `hom` → `main` | mesmos jobs + destino permitido + smoke de homologação verde | Sim |
 | Merge do Release PR na `main` | tag, produção com aprovação manual (promove a imagem testada em hom), smoke, back-merge para `hom` e `dev` | — |
@@ -245,7 +255,7 @@ Rollback: redeploy da tag anterior. Produção só recebe imagem que passou por 
 - [ ] Acessível e responsivo
 - [ ] Textos em todos os idiomas
 - [ ] Título semântico; nenhum commit com IA coautora
-- [ ] Issue linkada (`Closes #N`); PR para `dev` (ou `hom`/`main` só em promoção/hotfix)
+- [ ] Issue linkada (`Refs #N`); PR para `dev` (ou `hom`/`main` só em promoção/hotfix)
 
 ## 10. Ferramentas (versões fixadas)
 

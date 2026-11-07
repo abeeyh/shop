@@ -7,7 +7,7 @@ Regras completas em [docs/13-padroes-qualidade.md](docs/13-padroes-qualidade.md)
 1. Faça a checagem de conformidade do [CLAUDE.md](CLAUDE.md) contra `docs/`.
 2. **Toda tarefa tem uma issue** ([template `tarefa`](.github/ISSUE_TEMPLATE/tarefa.yml)). Sem issue, sem branch.
 3. Crie a branch a partir de `dev`: `<tipo>/<nº-da-issue>-<assunto>`, ex.: `feat/14-seletor-de-fuso`.
-4. Fluxo: **issue → branch → PR para `dev` com `Closes #<nº>` (squash) → PR `dev` → `hom` (merge commit) → PR `hom` → `main` (merge commit) → release**. Urgência: `hotfix/<nº>-<assunto>` a partir de `main`, depois back-merge em `hom` e `dev`. Detalhes em [docs/13 §5](docs/13-padroes-qualidade.md#5-tarefas-branches-e-prs).
+4. Fluxo: **issue → branch → PR para `dev` com `Refs #<nº>` (squash) → PR `dev` → `hom` (merge commit) → PR `hom` → `main` (merge commit) → release**. Urgência: `hotfix/<nº>-<assunto>` a partir de `main`, depois back-merge em `hom` e `dev`. Detalhes em [docs/13 §5](docs/13-padroes-qualidade.md#5-tarefas-branches-e-prs).
 
 ## Código
 
@@ -40,7 +40,7 @@ Escopos: definidos em [docs/13](docs/13-padroes-qualidade.md#3-commits-semântic
 
 ## Pull Request
 
-- PR da tarefa para `dev`, merge por **squash**; título do PR semântico; corpo com `Closes #<nº>`.
+- PR da tarefa para `dev`, merge por **squash**; título do PR semântico; corpo com `Refs #<nº>` (nunca `Closes`: a issue só fecha em produção, com a label `prod`).
 - Promoções `dev` → `hom` e `hom` → `main` por **merge commit**, nunca squash (o changelog depende dos commits).
 - Preencha o [template](.github/pull_request_template.md).
 - CI verde obrigatório.

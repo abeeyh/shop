@@ -38,7 +38,7 @@ Este projeto usa **Next.js 16** (`proxy.ts` no lugar de `middleware`, `cacheComp
 ## Git
 
 - Conventional Commits (ver [CONTRIBUTING.md](CONTRIBUTING.md)).
-- **Toda tarefa tem uma issue** no [GitHub](https://github.com/abeeyh/shop/issues). Fluxo: issue → branch `<tipo>/<nº>-<assunto>` a partir de `dev` → PR para `dev` com `Closes #<nº>` → `hom` → `main` (prod). Nunca commitar direto em `dev`, `hom` ou `main`.
+- **Toda tarefa tem uma issue** no [GitHub](https://github.com/abeeyh/shop/issues). Fluxo: issue → branch `<tipo>/<nº>-<assunto>` a partir de `dev` → PR para `dev` com `Refs #<nº>` (nunca `Closes`) → `hom` → `main` (prod). A issue ganha a label `dev`/`hom`/`prod` sozinha e só fecha em produção. Nunca commitar direto em `dev`, `hom` ou `main`.
 - GitHub CLI no Windows: `"C:\Program Files\GitHub CLI\gh.exe"` (fora do PATH do bash).
 - **Nunca** incluir o Claude ou outra IA como coautor: sem `Co-Authored-By` e sem linhas de atribuição em commits ou PRs.
 - Só commitar ou dar push quando o usuário pedir.
