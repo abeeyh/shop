@@ -15,6 +15,9 @@ const schema = z
     CRON_SECRET: z.string().min(32).optional(),
     // rate limit compartilhado e pub/sub do chat (docs/03). Obrigatório em production (docs/09 §2).
     VALKEY_URL: z.url({ protocol: /^(redis|rediss|valkey|valkeys)$/ }).optional(),
+    // docs/09 §2: requisições por minuto por IP no proxy (padrão 300). O E2E sobe o valor: todas as
+    // requisições dele saem do mesmo IP. O comportamento do limite é coberto pelos testes de integração.
+    RATE_LIMIT_REQUESTS_PER_MIN: z.coerce.number().int().positive().default(300),
     BETTERSTACK_SOURCE_TOKEN: z.string().min(1).optional(),
     BETTERSTACK_INGEST_HOST: z.string().min(1).optional(),
   })

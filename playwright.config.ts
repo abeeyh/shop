@@ -30,7 +30,7 @@ export default defineConfig({
   webServer: {
     command: "node scripts/serve-standalone.mjs",
     url: `http://127.0.0.1:${PORT}/api/health`,
-    env: { PORT: String(PORT), HOSTNAME: "127.0.0.1" },
+    env: { PORT: String(PORT), HOSTNAME: "127.0.0.1", RATE_LIMIT_REQUESTS_PER_MIN: "100000" },
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
   },

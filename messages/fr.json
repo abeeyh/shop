@@ -6,7 +6,12 @@
   "Nav": {
     "label": "Principal",
     "skip": "Aller au contenu",
-    "region": "Région"
+    "region": "Région",
+    "language": "Langue",
+    "timezone": "Fuseau horaire",
+    "menu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "detecting": "Détection…"
   },
   "Home": {
     "badge": "WoW Retail · US et EU",

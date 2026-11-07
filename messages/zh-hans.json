@@ -6,7 +6,12 @@
   "Nav": {
     "label": "主菜单",
     "skip": "跳到内容",
-    "region": "地区"
+    "region": "地区",
+    "language": "语言",
+    "timezone": "时区",
+    "menu": "打开菜单",
+    "closeMenu": "关闭菜单",
+    "detecting": "检测中…"
   },
   "Home": {
     "badge": "WoW 正式服 · 美服和欧服",
