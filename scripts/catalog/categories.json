@@ -75,5 +75,13 @@
       "name": "Normal",
       "sortOrder": 3
     }
-  }
+  },
+  "hot": [
+    "mythic-plus-key",
+    "keystone-achievement",
+    "mythic-plus-bundle-4-keys",
+    "venomous-abyss-heroic",
+    "venomous-abyss-fp-mythic"
+  ],
+  "_hot": "#102: destaque \"Popular\" só nestes (o JSON de origem marca tudo como hotItem). O admin muda depois."
 }

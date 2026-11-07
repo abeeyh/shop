@@ -26,6 +26,14 @@ export const ipn = (request: APIRequestContext, body: Record<string, unknown>, s
 const ORDER_LINK_DEV_SECRET = "dev-order-link-secret-only-for-local-and-tests"; // src/features/orders/link.ts
 const SERVICE = { kind: "service", realm: "Area 52", faction: "horde", character: "Thrall", addons: [] };
 
+// #102: idioma e fuso ficam atrás do globo no cabeçalho
+export async function openPreferences(page: Page) {
+  // fuso detectado = página hidratada (clique antes disso some no refresh da detecção)
+  await expect(page.locator("#pref-timezone")).toBeEnabled();
+  const prefs = page.locator("details", { has: page.locator("#pref-timezone") });
+  if (!(await prefs.evaluate((d: HTMLDetailsElement) => d.open))) await prefs.locator("summary").click();
+}
+
 // #94: serviço pede o personagem (realm, facção, nome) antes de ir ao carrinho
 export async function addService(page: Page, path = "/en/wow/mythic-plus/mythic-plus-key") {
   await page.goto(path);

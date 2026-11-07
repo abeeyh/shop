@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "WoW-Services: Gold, Raids und Mythisch+",
-    "description": "Gold, Raids und Mythisch+-Dungeons für World of Warcraft US und EU. Bezahlung in USDT oder per Karte."
+    "description": "Gold, Raids, Mythisch+ und Erfolge für World of Warcraft US. Bezahlung in USDT."
   },
   "Nav": {
     "label": "Hauptmenü",
@@ -12,10 +12,11 @@
     "closeMenu": "Menü schließen",
     "detecting": "Wird erkannt…",
     "cart": "Warenkorb ({n} Artikel)",
-    "account": "Mein Konto"
+    "account": "Mein Konto",
+    "preferences": "Sprache und Zeitzone"
   },
   "Home": {
-    "badge": "WoW Retail · US & EU",
+    "badge": "WoW Retail · US",
     "title": "Dein WoW-Fortschritt, ohne Grind",
     "subtitle": "Gold, Raids und Mythisch+-Dungeons. Preise in USDT, Termine in deiner Zeitzone, in deiner Sprache.",
     "ctaGold": "Gold kaufen",
@@ -33,10 +34,13 @@
     "home": "Start",
     "loading": "Wird geladen…",
     "onRequest": "Preis auf Anfrage",
-    "hot": "Beliebt"
+    "hot": "Beliebt",
+    "buy": "Kaufen",
+    "subcategories": "Unterkategorien",
+    "close": "Schließen"
   },
   "Footer": {
-    "about": "Gold, Raids und Mythisch+ für World of Warcraft Retail US und EU.",
+    "about": "Gold, Raids, Mythisch+ und Erfolge für World of Warcraft Retail US.",
     "copyright": "© 2026 Shop · Nicht mit Blizzard Entertainment verbunden.",
     "report": "Problem melden"
   },
@@ -127,7 +131,8 @@
     "askPriceMessage": "Hallo! Ich hätte gern ein Angebot für: {name}",
     "savedCharacter": "Gespeicherter Charakter",
     "savedNone": "— neuen eingeben —",
-    "saveCharacter": "Diesen Charakter in meinem Konto speichern"
+    "saveCharacter": "Diesen Charakter in meinem Konto speichern",
+    "buyNow": "Jetzt kaufen"
   },
   "Cart": {
     "title": "Warenkorb",
@@ -345,7 +350,11 @@
         "product": "Produkt",
         "promotion": "Aktion",
         "coupon": "Gutschein",
-        "subcategory": "Unterkategorie"
+        "subcategory": "Unterkategorie",
+        "order": "Bestellung",
+        "bug_report": "Fehlermeldung",
+        "staff": "Teammitglied",
+        "support_hours": "Support-Zeiten"
       },
       "actions": {
         "create": "Erstellt",

@@ -1,16 +1,19 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ShoppingCart, UserRound } from "lucide-react";
+import { Globe, ShoppingCart, UserRound } from "lucide-react";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { SiteFooter } from "@/components/organisms/SiteFooter";
+import { NavTabs } from "@/components/molecules/NavTabs";
+import { Popover } from "@/components/molecules/Popover";
 import { SearchField } from "@/components/molecules/SearchField";
+import { SpotlightTracker } from "@/components/molecules/SpotlightTracker";
 import { SiteHeader } from "@/components/organisms/SiteHeader";
 import { countItems, getCartId } from "@/features/cart";
 import { ChatLauncher } from "@/features/support/ChatLauncher";
 import { ReportLink } from "@/features/support/components/ReportLink";
 import { categoryHref, listCategories } from "@/features/catalog";
-import { MobileMenu, PreferenceSelects, TimezoneDetector, timezoneOptions } from "@/features/preferences";
+import { PreferenceSelects, TimezoneDetector, timezoneOptions } from "@/features/preferences";
 import { LOCALE_LABELS } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { getTimezone } from "@/lib/preferences";
@@ -39,62 +42,40 @@ async function StoreHeader({ locale }: { locale: string }) {
       detecting: t("detecting"),
     },
   };
+  const iconLink =
+    "relative grid size-11 place-items-center rounded-full border border-border text-heading hover:bg-accent";
   return (
     <SiteHeader
       homeHref={`/${locale}`}
-      navLabel={t("label")}
-      nav={nav}
       search={<SearchField id="busca" {...searchProps} />}
+      mobileSearch={<SearchField id="busca-m" {...searchProps} />}
+      tabs={<NavTabs items={nav} label={t("label")} />}
       tools={
         <>
           <TimezoneDetector hasTimezone={timezone !== null} />
-          <Link
-            href={`/${locale}/carrinho`}
-            aria-label={t("cart", { n: cartCount })}
-            className="relative grid size-11 place-items-center rounded-full border border-border text-heading hover:bg-accent"
-          >
+          {/* idioma e fuso já vêm detectados: ficam guardados atrás do globo (#102) */}
+          <Popover label={t("preferences")} icon={<Globe aria-hidden="true" className="size-5" />}>
+            <PreferenceSelects idPrefix="pref" stacked {...prefs} />
+          </Popover>
+          {/* RN-107: a página decide entre "Minha conta" e o login */}
+          <Link href={`/${locale}/conta`} aria-label={t("account")} className={iconLink}>
+            <UserRound aria-hidden="true" className="size-5" />
+          </Link>
+          <Link href={`/${locale}/carrinho`} aria-label={t("cart", { n: cartCount })} className={iconLink}>
             <ShoppingCart aria-hidden="true" className="size-5" />
             {cartCount ? (
-              <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-gradient-from px-1.5 text-center font-heading text-[11px] leading-5 font-bold text-white">
+              <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-primary px-1.5 text-center font-heading text-[11px] leading-5 font-bold text-white">
                 {cartCount}
               </span>
             ) : null}
           </Link>
-          {/* RN-107: a página decide entre "Minha conta" e o login */}
-          <Link
-            href={`/${locale}/conta`}
-            aria-label={t("account")}
-            className="grid size-11 place-items-center rounded-full border border-border text-heading hover:bg-accent"
-          >
-            <UserRound aria-hidden="true" className="size-5" />
-          </Link>
-          <div className="hidden lg:flex">
-            <PreferenceSelects idPrefix="pref" {...prefs} />
-          </div>
-          <MobileMenu openLabel={t("menu")} closeLabel={t("closeMenu")}>
-            <div className="mb-4">
-              <SearchField id="busca-m" {...searchProps} />
-            </div>
-            <nav aria-label={t("label")} className="mb-4 grid gap-1">
-              {nav.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="rounded-md px-2 py-3 font-heading text-base font-semibold text-heading hover:bg-accent"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-            <PreferenceSelects idPrefix="pref-m" stacked {...prefs} />
-          </MobileMenu>
         </>
       }
     />
   );
 }
 
-export default async function StoreLayout({ children, params }: LayoutProps<"/[locale]">) {
+export default async function StoreLayout({ children, modal, params }: LayoutProps<"/[locale]">) {
   const { locale } = await params;
   setRequestLocale(locale);
   const [nav, footer] = await Promise.all([
@@ -110,12 +91,15 @@ export default async function StoreLayout({ children, params }: LayoutProps<"/[l
       >
         {nav("skip")}
       </a>
-      <Suspense fallback={<SiteHeader homeHref={`/${locale}`} navLabel={nav("label")} nav={[]} />}>
+      <Suspense fallback={<SiteHeader homeHref={`/${locale}`} />}>
         <StoreHeader locale={locale} />
       </Suspense>
+      <SpotlightTracker />
       <main id="conteudo" className="flex-1">
         {children}
       </main>
+      {/* #102: gaveta do produto aberta pela lista (lê o banco: Suspense próprio, não segura a página) */}
+      <Suspense fallback={null}>{modal}</Suspense>
       <SiteFooter
         about={footer("about")}
         columns={[]}

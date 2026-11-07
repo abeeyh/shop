@@ -96,3 +96,17 @@ test.describe("carrinho", () => {
     );
   });
 });
+
+// #102: da lista ao pagamento em poucos cliques — gaveta da compra + "Comprar agora"
+test("#102: lista → gaveta → Comprar agora cai no pagamento com o item", async ({ page }) => {
+  await page.goto("/en/wow/mythic-plus");
+  await page.getByRole("link", { name: "Mythic+ Key" }).click();
+  const drawer = page.getByRole("dialog");
+  await drawer.getByLabel("Realm").fill("Area 52");
+  await drawer.getByLabel("Character name").fill("Thrall");
+  await drawer.getByRole("button", { name: "Buy now" }).click();
+  await expect(page).toHaveURL(/\/en\/carrinho#pagar$/, { timeout: 15_000 });
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByText("Area 52 · Alliance · Thrall · +6")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Pay with USDT" })).toBeVisible();
+});

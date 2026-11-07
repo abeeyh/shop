@@ -158,16 +158,14 @@ export async function ProductSearch({ locale, raw }: Props) {
         <div>
           <ActiveFilters chips={buildChips(f, categories, t, href)} clearHref={base} t={t} />
           {items.length ? (
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,240px),1fr))] gap-5">
+            <div className="grid gap-2">
               {items.map((p) => (
-                <div key={p.id} className="relative">
-                  {p.available ? null : (
-                    <span className="absolute top-7 right-7 z-10 rounded-full bg-destructive px-3 py-1 font-heading text-xs font-semibold text-destructive-foreground">
-                      {t("unavailable")}
-                    </span>
-                  )}
-                  <ProductCard p={toProductCard(locale, p, labels, promos)} />
-                </div>
+                <ProductCard
+                  key={p.id}
+                  p={toProductCard(locale, p, labels, promos)}
+                  cta={c("buy")}
+                  flag={p.available ? undefined : t("unavailable")}
+                />
               ))}
             </div>
           ) : allowed ? (

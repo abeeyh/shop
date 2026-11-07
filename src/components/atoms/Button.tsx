@@ -10,7 +10,9 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-primary text-primary-foreground hover:bg-primary-hover",
+        // #102: brilho que atravessa no hover + halo violeta (efeito some com movimento reduzido)
+        primary:
+          "shine bg-primary text-primary-foreground shadow-[0_8px_30px_-10px_var(--primary)] hover:bg-primary-hover",
         // borda em gradiente: fundo sólido no padding-box + gradiente no border-box
         "gradient-outline":
           "border border-transparent text-heading " +

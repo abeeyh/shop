@@ -7,12 +7,8 @@ const titles = (page: import("@playwright/test").Page) =>
 const results = (page: import("@playwright/test").Page) =>
   expect(page.getByText(/\d+ products?/).first()).toBeVisible();
 
-test("RN-100: busca do cabeçalho tolera erro de digitação e ordena por relevância", async ({
-  page,
-  isMobile,
-}) => {
+test("RN-100: busca do cabeçalho tolera erro de digitação e ordena por relevância", async ({ page }) => {
   await page.goto("/en");
-  if (isMobile) await page.getByRole("button", { name: "Open menu" }).click();
   const box = page.getByRole("searchbox", { name: "Search products" }).filter({ visible: true });
   await box.fill("mithic");
   await box.press("Enter");
@@ -71,7 +67,7 @@ test("RN-101/RN-103: filtro de categoria vai para a URL, vira chip e o chip remo
 test("RN-102: ordenação por menor preço", async ({ page }) => {
   await page.goto("/en/produtos?sort=price-asc");
   await results(page);
-  const prices = await page.locator("main .text-xl").filter({ visible: true }).allTextContents();
+  const prices = await page.locator("main .text-gold").filter({ visible: true }).allTextContents();
   const values = prices.map((p) => Number(p.replace(/[^\d.]/g, "")));
   expect(values.length).toBeGreaterThan(5);
   expect(values).toEqual([...values].sort((a, b) => a - b));

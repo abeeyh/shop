@@ -15,16 +15,11 @@ export function KindIcon({ kind, className }: { kind: keyof typeof ICONS; classN
   return <Icon aria-hidden="true" className={className} strokeWidth={1.6} />;
 }
 
-// Miniatura em gradiente (docs/15: arte final própria ou licenciada; por ora gradiente + ícone)
-export function KindThumb({ kind, badge }: { kind: keyof typeof ICONS; badge?: string }) {
+// #102: ícone em quadradinho com gradiente suave (linhas de produto, carrinho, categorias)
+export function KindTile({ kind }: { kind: keyof typeof ICONS }) {
   return (
-    <div className="relative mb-3.5 grid aspect-[16/10] place-items-center rounded-md bg-linear-[116.85deg] from-gradient-from to-gradient-to text-white">
-      <KindIcon kind={kind} className="size-14" />
-      {badge ? (
-        <span className="absolute top-2.5 left-2.5 rounded-full bg-background/85 px-3 py-1 font-heading text-xs font-semibold text-white">
-          {badge}
-        </span>
-      ) : null}
-    </div>
+    <span className="grid size-11 shrink-0 place-items-center rounded-md bg-linear-[135deg] from-gradient-from/25 to-gradient-to/15 text-heading ring-1 ring-white/10">
+      <KindIcon kind={kind} className="size-5" />
+    </span>
   );
 }
