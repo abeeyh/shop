@@ -28,6 +28,16 @@ describe("access-log rules (docs/16 §9)", () => {
     expect(shouldRecordAccess("/en")).toBe(true);
   });
 
+  it("mascara segmento com cara de token e mantém rotas normais", () => {
+    expect(sanitizeRoute("/api/auth/reset-password/Xk9aP2qL7mN4vB8cR1tY6wZ3sD5fG0hJ")).toBe(
+      "/api/auth/reset-password/:token",
+    );
+    expect(sanitizeRoute("/en/wow/gold")).toBe("/en/wow/gold");
+    expect(sanitizeRoute("/pt-br/wow/raids/manaforge-omega-heroic")).toBe(
+      "/pt-br/wow/raids/manaforge-omega-heroic",
+    );
+  });
+
   it("limita o tamanho da rota", () => {
     expect(sanitizeRoute("/a".repeat(2000))).toHaveLength(2048);
   });

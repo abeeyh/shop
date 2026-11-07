@@ -18,6 +18,8 @@ describe.skipIf(!process.env.DATABASE_URL)("access-log (banco real)", () => {
   afterAll(async () => {
     await db?.execute(sql`delete from access_logs where request_id like 'teste-%'`);
     await db?.$client.end();
+    const { accessLogDb } = await import("@/db/access-log-client");
+    await accessLogDb.$client.end();
   });
 
   it("grava IP do header confiável e rota sem query string", async () => {

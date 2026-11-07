@@ -148,7 +148,10 @@ O Marco Civil (art. 15) obriga guardar por **6 meses** os registros de acesso à
 
 - Gravado em `src/proxy.ts` para páginas e chamadas de API (não para assets estáticos nem `/api/health`), com `event.waitUntil` depois da resposta, para não atrasar o usuário. Código em `src/features/access-log`.
 - Sem código HTTP: o proxy roda antes da página e ainda não sabe o status final. O Marco Civil exige data/hora e IP.
-- IP lido do header definido em `CLIENT_IP_HEADER` (padrão `x-forwarded-for`, primeiro valor). *Definir o header confiável da CDN junto com a hospedagem (#2): sem CDN na frente, o cliente pode forjar esse header.*
+- IP lido do header em `CLIENT_IP_HEADER`, que deve ser um header que a CDN/proxy **sobrescreve** (ex.: `cf-connecting-ip`). **Obrigatório em `production`** (o app não sobe sem ele): `x-forwarded-for` vindo direto do cliente é forjável, e o registro legal poderia incriminar outra pessoa. Em local/homologação, vazio = `x-forwarded-for`. Definir com a hospedagem (#2).
+- Rota gravada sem query string e com segmentos que parecem token (≥ 32 caracteres, letras e números) trocados por `:token` — ex.: link de redefinir senha.
+- Pool de conexões próprio (2 conexões, timeout de 3 s) e no máximo 50 gravações pendentes: com o banco lento ou fora, o log de acesso falha rápido e não disputa conexões com checkout e webhooks. Erro logado só com nome/código (a mensagem do banco traz os parâmetros: IP e rota).
+- *Pendente:* rate limit compartilhado no proxy (Valkey) contra flood de requisições — entra com a integração do Valkey.
 - Cron diário `/api/cron/purge-access-logs` (`Authorization: Bearer <CRON_SECRET>`) apaga registros com mais de 6 meses — o corte ajusta fim de mês (31/ago → 28/fev) para nunca apagar antes do prazo (RN de retenção em [09 §4](09-seguranca-privacidade.md#4-lgpd)).
 - Índice em `occurred_at`. *shortcut: DELETE diário simples; trocar por partição mensal se a tabela passar de alguns milhões de linhas.*
 - Acesso restrito: sem tela no admin; consulta só por pedido formal (ordem judicial), registrada no log de auditoria.

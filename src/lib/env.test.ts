@@ -13,11 +13,24 @@ describe("env", () => {
     const { env } = await import("./env");
     expect(env.LOG_LEVEL).toBeUndefined();
     expect(env.CRON_SECRET).toBeUndefined();
-    expect(env.CLIENT_IP_HEADER).toBe("x-forwarded-for");
+    expect(env.CLIENT_IP_HEADER).toBeUndefined();
   });
 
   it("valor inválido continua sendo recusado", async () => {
     vi.stubEnv("LOG_LEVEL", "verbose");
     await expect(import("./env")).rejects.toThrow();
+  });
+
+  it("production sem CLIENT_IP_HEADER não sobe (IP forjável — docs/16 §9)", async () => {
+    vi.stubEnv("APP_ENV", "production");
+    vi.stubEnv("CLIENT_IP_HEADER", "");
+    await expect(import("./env")).rejects.toThrow(/CLIENT_IP_HEADER/);
+  });
+
+  it("production com header da CDN sobe", async () => {
+    vi.stubEnv("APP_ENV", "production");
+    vi.stubEnv("CLIENT_IP_HEADER", "cf-connecting-ip");
+    const { env } = await import("./env");
+    expect(env.CLIENT_IP_HEADER).toBe("cf-connecting-ip");
   });
 });

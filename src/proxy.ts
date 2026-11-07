@@ -25,7 +25,7 @@ export default function proxy(request: NextRequest, event?: NextFetchEvent) {
       method: request.method,
       pathname: request.nextUrl.pathname,
       requestId,
-    }),
+    }).catch(() => undefined), // última barreira: nada aqui pode virar rejeição sem tratamento
   );
   return response;
 }

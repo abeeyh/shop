@@ -26,7 +26,15 @@ export function shouldRecordAccess(pathname: string): boolean {
   return !NOT_RECORDED.has(pathname);
 }
 
-// Só o caminho: query string pode conter dados pessoais (docs/16 §9).
+// Segmento com cara de token (>= 32 caracteres, com letras e números): ex. link de redefinir senha.
+// Falso positivo só deixa o registro menos legível; nunca guarda um token por 6 meses.
+const TOKEN_SEGMENT = /^(?=.*\d)(?=.*[A-Za-z])[A-Za-z0-9._~-]{32,}$/;
+
+// Só o caminho (query string pode ter dados pessoais) e sem tokens (docs/16 §9).
 export function sanitizeRoute(pathname: string): string {
-  return pathname.slice(0, MAX_ROUTE_LENGTH);
+  return pathname
+    .split("/")
+    .map((segment) => (TOKEN_SEGMENT.test(segment) ? ":token" : segment))
+    .join("/")
+    .slice(0, MAX_ROUTE_LENGTH);
 }
