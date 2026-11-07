@@ -17,7 +17,10 @@ test.describe("conta do cliente", () => {
     await field(page, "Password").fill(password);
     await page.getByRole("button", { name: "Create account" }).click();
     // docs/09: mesma resposta para conta nova e e-mail já usado — o próximo passo é o login
-    await expect(page.getByRole("status")).toContainText("If the account could be created");
+    // o esqueleto de carregamento também é role=status: filtra pelo texto
+    await expect(
+      page.getByRole("status").filter({ hasText: "If the account could be created" }),
+    ).toBeVisible();
 
     await field(page, "Email").fill(email);
     await field(page, "Password").fill(password);
@@ -64,7 +67,10 @@ test.describe("conta do cliente", () => {
       await field(page, "Password").fill(password);
       await page.getByRole("button", { name: "Create account" }).click();
       await expect(page).toHaveURL(/\/en\/entrar\?novo=1$/);
-      await expect(page.getByRole("status")).toContainText("If the account could be created");
+      // o esqueleto de carregamento também é role=status: filtra pelo texto
+      await expect(
+        page.getByRole("status").filter({ hasText: "If the account could be created" }),
+      ).toBeVisible();
     }
   });
 });

@@ -41,7 +41,7 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 
 | ID | Regra |
 |----|-------|
-| RN-100 | Campo de **busca por produto** no cabeçalho de todas as páginas da loja. Busca em nome e descrição de produtos e categorias ativos (texto único, RN-84), tolerante a erro de digitação; mínimo de 2 caracteres. *(aprovada em 2026-11-06)* |
+| RN-100 | Campo de **busca por produto** no cabeçalho de todas as páginas da loja. Busca em nome e descrição de produtos e categorias ativos (texto único, RN-84), tolerante a erro de digitação; mínimo de 2 caracteres. *(aprovada em 2026-11-06)* **Sugestões enquanto digita** (#110, a partir de 2 caracteres): até 3 categorias e 6 produtos — começo do nome primeiro ("ven" → Venomous Abyss), depois "contém" e parecidos; setas + Enter abrem a sugestão, Enter sem escolher abre a página de resultados. |
 | RN-101 | **Página de produtos com filtros**: categoria, faixa de preço em USDT, "em promoção" (com as promoções — #21) e "só disponíveis" (com estoque ou vaga — RN-11). *(aprovada em 2026-11-06; lista de filtros: proposta — confirmar)* |
 | RN-102 | Ordenação: relevância (com busca), mais vendidos (padrão sem busca), menor preço e maior preço — preço sempre o **final**, já com promoção ativa (RN-21). *(proposta — confirmar)* |
 | RN-103 | Busca, filtros, ordenação e página ficam na URL (link compartilhável) e são **aplicados no servidor**; valor inválido na URL é ignorado (volta ao padrão). 24 produtos por página. *(proposta — confirmar)* |

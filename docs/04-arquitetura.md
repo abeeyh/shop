@@ -183,6 +183,7 @@ sequenceDiagram
 | `/[locale]/admin/categorias`, `/[locale]/admin/produtos`, `/[locale]/admin/promocoes`, `/[locale]/admin/cupons` | Página + Server Actions | Admin com 2FA (RN-70) |
 | `/api/webhooks/crypto`, `/api/webhooks/card` | API | Só assinatura do provedor |
 | `/api/cron/expire-orders`, `/api/cron/refresh-fx`, `/api/cron/purge-access-logs` | API | Segredo do cron |
+| `/api/search/suggest?q=&locale=` | API (GET) | Público (#110): sugestões da busca, 2+ caracteres, só catálogo ativo; 120/min por IP; `Cache-Control: no-store`; `%` e `_` do termo tratados como texto |
 | `/api/health` | API | Público; só status (sem versão de dependências nem dados) — usado pelo Better Stack Uptime |
 | `/[locale]/reportar?pagina=&erro=` | Página + Server Action | Público (RN-91): 5/h por IP (`failClosed`) + campo-isca; CAPTCHA entra com a decisão do Turnstile. Link no rodapé e na tela de erro |
 | `/[locale]/admin/reportes` | Página + Server Action | Suporte e admin (RN-06); "resolvido" entra na auditoria (RN-07) |
