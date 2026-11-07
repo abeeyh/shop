@@ -90,7 +90,12 @@
     "pagination": "Pages",
     "prev": "Précédent",
     "next": "Suivant",
-    "promo": "En promotion"
+    "promo": "En promotion",
+    "suggestCategories": "Catégories",
+    "suggestProducts": "Produits",
+    "seeAll": "Voir tous les résultats pour « {q} »",
+    "suggestEmpty": "Aucune suggestion — appuyez sur Entrée pour rechercher.",
+    "onRequest": "Prix sur demande"
   },
   "Buy": {
     "realm": "Royaume",

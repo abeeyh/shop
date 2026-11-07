@@ -7,6 +7,7 @@ import { readyValkey } from "./valkey";
 export const RATE_LIMITS = {
   request: { limit: env.RATE_LIMIT_REQUESTS_PER_MIN, windowMs: 60_000 }, // por IP, toda página/API no proxy
   search: { limit: 30, windowMs: 60_000 }, // RN-105
+  suggest: { limit: 120, windowMs: 60_000 }, // #110: sugestões da busca (uma por tecla, com espera)
   coupon: { limit: 10, windowMs: 60 * 60_000 }, // RN-28: por IP
   report: { limit: 5, windowMs: 60 * 60_000 }, // RN-91: por IP
   chatStart: { limit: 5, windowMs: 60 * 60_000 }, // RN-97: conversas novas por IP

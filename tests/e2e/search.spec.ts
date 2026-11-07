@@ -9,7 +9,7 @@ const results = (page: import("@playwright/test").Page) =>
 
 test("RN-100: busca do cabeçalho tolera erro de digitação e ordena por relevância", async ({ page }) => {
   await page.goto("/en");
-  const box = page.getByRole("searchbox", { name: "Search products" }).filter({ visible: true });
+  const box = page.getByRole("combobox", { name: "Search products" }).filter({ visible: true });
   await box.fill("mithic");
   await box.press("Enter");
   await expect(page).toHaveURL(/\/en\/produtos\?q=mithic$/);
@@ -84,4 +84,20 @@ test("RN-104: sem resultado mostra o estado vazio e limpar filtros", async ({ pa
   await expect(page.getByRole("heading", { name: "Nenhum produto encontrado" })).toBeVisible();
   await page.getByRole("link", { name: "Limpar filtros" }).last().click();
   await expect(page).toHaveURL(/\/pt-br\/produtos$/);
+});
+
+// #110: sugestões enquanto digita — "ven" mostra Venomous Abyss; setas + Enter abrem; Esc fecha
+test("#110: sugestões de produtos e categorias na busca do cabeçalho", async ({ page }) => {
+  await page.goto("/en");
+  const box = page.getByRole("combobox", { name: "Search products" }).filter({ visible: true });
+  await box.fill("ven");
+  const list = page.getByRole("listbox").filter({ visible: true });
+  await expect(list.getByRole("option").first()).toContainText("Venomous Abyss");
+  await box.press("Escape");
+  await expect(list).toHaveCount(0);
+  await box.fill("raid");
+  await expect(list.getByRole("group", { name: "Categories" })).toContainText("Raids");
+  await box.press("ArrowDown");
+  await box.press("Enter");
+  await expect(page).toHaveURL(/\/en\/wow\/raids/);
 });

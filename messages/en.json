@@ -90,7 +90,12 @@
     "pagination": "Pages",
     "prev": "Previous",
     "next": "Next",
-    "promo": "On sale"
+    "promo": "On sale",
+    "suggestCategories": "Categories",
+    "suggestProducts": "Products",
+    "seeAll": "See all results for “{q}”",
+    "suggestEmpty": "No suggestions — press Enter to search.",
+    "onRequest": "Price on request"
   },
   "Buy": {
     "realm": "Realm",

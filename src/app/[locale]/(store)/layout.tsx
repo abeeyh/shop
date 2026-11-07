@@ -6,13 +6,12 @@ import { Suspense } from "react";
 import { SiteFooter } from "@/components/organisms/SiteFooter";
 import { NavTabs } from "@/components/molecules/NavTabs";
 import { Popover } from "@/components/molecules/Popover";
-import { SearchField } from "@/components/molecules/SearchField";
 import { SpotlightTracker } from "@/components/molecules/SpotlightTracker";
 import { SiteHeader } from "@/components/organisms/SiteHeader";
 import { countItems, getCartId } from "@/features/cart";
 import { ChatLauncher } from "@/features/support/ChatLauncher";
 import { ReportLink } from "@/features/support/components/ReportLink";
-import { categoryHref, listCategories } from "@/features/catalog";
+import { categoryHref, listCategories, SearchBox } from "@/features/catalog";
 import { PreferenceSelects, TimezoneDetector, timezoneOptions } from "@/features/preferences";
 import { LOCALE_LABELS } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -28,7 +27,20 @@ async function StoreHeader({ locale }: { locale: string }) {
     getTranslations({ locale, namespace: "Search" }),
     cartId ? countItems(cartId) : 0,
   ]);
-  const searchProps = { action: `/${locale}/produtos`, label: s("label"), placeholder: s("placeholder") };
+  // #110: busca com sugestões de produtos e categorias enquanto digita
+  const searchProps = {
+    action: `/${locale}/produtos`,
+    locale,
+    labels: {
+      label: s("label"),
+      placeholder: s("placeholder"),
+      categories: s("suggestCategories"),
+      products: s("suggestProducts"),
+      seeAll: s("seeAll"),
+      empty: s("suggestEmpty"),
+      onRequest: s("onRequest"),
+    },
+  };
   const nav = categories.map((c) => ({ href: categoryHref(locale, c.slug), label: c.name }));
   const prefs = {
     locale,
@@ -47,8 +59,8 @@ async function StoreHeader({ locale }: { locale: string }) {
   return (
     <SiteHeader
       homeHref={`/${locale}`}
-      search={<SearchField id="busca" {...searchProps} />}
-      mobileSearch={<SearchField id="busca-m" {...searchProps} />}
+      search={<SearchBox id="busca" {...searchProps} />}
+      mobileSearch={<SearchBox id="busca-m" {...searchProps} />}
       tabs={<NavTabs items={nav} label={t("label")} />}
       tools={
         <>

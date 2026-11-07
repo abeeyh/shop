@@ -81,6 +81,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
   Risco aceito: pedido em `pagamento_parcial` não expira e segura vaga e uso de cupom até o admin resolver (fluxo do admin em #23).
   Risco aceito: quem sabe o e-mail de um admin consegue travar o login dele por 10 min de cada vez (limite por e-mail). Monitorar `auth.login_failed`; se virar problema, contar só falhas no balde por e-mail.
   | Cupom (RN-28), por IP | 10/hora | **bloqueia** (`failClosed`) |
+  | Sugestões da busca (#110), por IP | 120/min | deixa passar (`failClosed: false` — só leitura do catálogo público) |
   | Cadastro de cliente (RN-107), por IP | 5/hora | **bloqueia** (`failClosed`) |
   | Checkout (cada um reserva vaga e cupom), por IP | 10 a cada 10 min | **bloqueia** (`failClosed`) |
   | Reporte, chat (quando existirem) | definir na issue | **bloqueia** (`failClosed`) |

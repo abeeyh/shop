@@ -90,7 +90,12 @@
     "pagination": "頁數",
     "prev": "上一頁",
     "next": "下一頁",
-    "promo": "促銷中"
+    "promo": "促銷中",
+    "suggestCategories": "分類",
+    "suggestProducts": "商品",
+    "seeAll": "查看「{q}」的所有結果",
+    "suggestEmpty": "沒有建議 — 按 Enter 搜尋。",
+    "onRequest": "價格另洽"
   },
   "Buy": {
     "realm": "伺服器",
