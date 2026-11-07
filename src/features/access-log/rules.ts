@@ -1,5 +1,4 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
-import { isIP } from "node:net";
 
 export const RETENTION_MONTHS = 6; // Marco Civil art. 15
 const MAX_ROUTE_LENGTH = 2048;
@@ -15,12 +14,6 @@ export function accessLogCutoff(now: Date, months = RETENTION_MONTHS): Date {
   const lastDay = new Date(Date.UTC(cutoff.getUTCFullYear(), cutoff.getUTCMonth() + 1, 0)).getUTCDate();
   cutoff.setUTCDate(Math.min(day, lastDay));
   return cutoff;
-}
-
-// IP do cliente a partir do header confiável da CDN/proxy (CLIENT_IP_HEADER). Valor inválido → null.
-export function clientIp(headers: Headers, headerName: string): string | null {
-  const first = headers.get(headerName)?.split(",")[0]?.trim() ?? "";
-  return isIP(first) ? first : null;
 }
 
 export function shouldRecordAccess(pathname: string): boolean {
