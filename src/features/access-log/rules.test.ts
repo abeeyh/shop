@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { accessLogCutoff, clientIp, sanitizeRoute, shouldRecordAccess } from "./rules";
+import { clientIp } from "@/lib/client-ip";
+import { accessLogCutoff, sanitizeRoute, shouldRecordAccess } from "./rules";
 
 describe("access-log rules (docs/16 §9)", () => {
   it("corte é exatamente 6 meses antes", () => {

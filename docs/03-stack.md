@@ -15,7 +15,7 @@ Princípio: o menor número de peças que resolve o problema. A tabela abaixo é
 | Banco | **PostgreSQL** | Relacional, padrão de mercado |
 | ORM | **Drizzle ORM** + driver `postgres` (postgres.js); migrações com `drizzle-kit` em `src/db/migrations` | Tipado, migrações SQL simples |
 | Busca de produtos | **PostgreSQL + `pg_trgm`** (similaridade, tolera erro de digitação) | Catálogo pequeno (dezenas de itens); sem serviço externo — RN-100 |
-| Cache / rate limit | **Valkey** (ou Redis) | Rate limit compartilhado entre instâncias; **pub/sub do chat** entre instâncias |
+| Cache / rate limit | **Valkey** (ou Redis), cliente **`iovalkey`** (mantido pelo projeto Valkey; `ioredis` hoje é da Redis) | Rate limit compartilhado entre instâncias; **pub/sub do chat** entre instâncias |
 | Chat em tempo real | **SSE** (Route Handler com `ReadableStream`) + PostgreSQL + pub/sub do Valkey — sem serviço novo | Mensagem gravada no banco, aviso via Valkey, entregue por SSE (RN-92 a RN-99) |
 | Validação | **zod** | Em toda fronteira de entrada |
 | Testes | **Vitest** + Testing Library + **Playwright** | Unitário, integração, E2E |

@@ -1,7 +1,8 @@
 // API pública da feature. Sem import estático do banco: o proxy importa este arquivo
 // e precisa funcionar mesmo sem DATABASE_URL (local, testes, build).
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
-import { accessLogCutoff, clientIp, sanitizeRoute, shouldRecordAccess } from "./rules";
+import { clientIp } from "@/lib/client-ip";
+import { accessLogCutoff, sanitizeRoute, shouldRecordAccess } from "./rules";
 
 export { accessLogCutoff, shouldRecordAccess };
 

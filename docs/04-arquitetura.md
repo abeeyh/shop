@@ -65,6 +65,7 @@ components (Atomic) ◄───────────────────
 | `features/<x>/rules.ts` | Regras RN puras: preço por região, **preço final com promoção/cupom (`pricing/rules.ts`)**, cálculo de M+, vagas, transições do pedido, conversão de fuso | Banco, rede ou framework |
 | `features/<x>/queries.ts` | Leitura e escrita no banco da feature | Decidir regra |
 | `lib/payments/crypto` e `lib/payments/card` | Adapters `PaymentProvider` (`createCheckout`, `verifyWebhook`, `refund`) | Mudar estado do pedido |
+| `lib/rate-limit` + `lib/valkey` | Rate limit compartilhado por IP no proxy e por rota sensível (docs/09 §2) | Guardar estado em memória do processo |
 | `lib/fx` | Busca cotação USDT→USD/EUR/moeda local, com cache | Cobrar |
 | `lib/logger` | Log JSON com `requestId` e mascaramento ([16 §3](16-observabilidade.md#3-padrão-de-log)) | Decidir o que é dado pessoal na hora: a lista de chaves proibidas é fixa |
 | Provedores de pagamento | Fatura cripto, cartão, 3-D Secure, antifraude | — (a loja nunca vê cartão nem chave de carteira — RN-30) |

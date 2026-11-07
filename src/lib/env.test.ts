@@ -30,7 +30,15 @@ describe("env", () => {
   it("production com header da CDN sobe", async () => {
     vi.stubEnv("APP_ENV", "production");
     vi.stubEnv("CLIENT_IP_HEADER", "cf-connecting-ip");
+    vi.stubEnv("VALKEY_URL", "redis://cache:6379");
     const { env } = await import("./env");
     expect(env.CLIENT_IP_HEADER).toBe("cf-connecting-ip");
+  });
+
+  it("production sem VALKEY_URL não sobe (rate limit é controle de segurança)", async () => {
+    vi.stubEnv("APP_ENV", "production");
+    vi.stubEnv("CLIENT_IP_HEADER", "cf-connecting-ip");
+    vi.stubEnv("VALKEY_URL", "");
+    await expect(import("./env")).rejects.toThrow(/VALKEY_URL/);
   });
 });

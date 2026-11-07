@@ -99,6 +99,7 @@ flowchart LR
 |--------|----------|-------|
 | Erro novo em produção | Primeiro evento de um grupo novo no Sentry | E-mail/Discord |
 | Pico de erros | > N erros em 5 min (N em configuração) | E-mail/Discord |
+| Rate limit indisponível | `rate_limit.unavailable` (no máximo 1 por minuto por instância) | E-mail/Discord |
 | Webhook falhando | `webhook.signature_invalid` ou `webhook.processing_failed` > 3 em 10 min | E-mail/Discord |
 | Pedido pago sem progresso | `order.paid` sem `order.in_progress` em X horas | E-mail |
 | Conversa sem resposta | Conversa `aberta` há mais de 15 min dentro do horário de atendimento | E-mail/Discord |

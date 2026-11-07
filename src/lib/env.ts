@@ -13,12 +13,18 @@ const schema = z
     // Obrigatório em production: x-forwarded-for vindo direto do cliente é forjável (docs/16 §9).
     CLIENT_IP_HEADER: z.string().min(1).optional(),
     CRON_SECRET: z.string().min(32).optional(),
+    // rate limit compartilhado e pub/sub do chat (docs/03). Obrigatório em production (docs/09 §2).
+    VALKEY_URL: z.url({ protocol: /^(redis|rediss|valkey|valkeys)$/ }).optional(),
     BETTERSTACK_SOURCE_TOKEN: z.string().min(1).optional(),
     BETTERSTACK_INGEST_HOST: z.string().min(1).optional(),
   })
   .refine((v) => v.APP_ENV !== "production" || v.CLIENT_IP_HEADER, {
     message: "CLIENT_IP_HEADER é obrigatório em production (docs/16 §9)",
     path: ["CLIENT_IP_HEADER"],
+  })
+  .refine((v) => v.APP_ENV !== "production" || v.VALKEY_URL, {
+    message: "VALKEY_URL é obrigatório em production: rate limit é controle de segurança (docs/09 §2)",
+    path: ["VALKEY_URL"],
   });
 
 // "VAR=" vazio (como vem do .env.example) conta como não definida
