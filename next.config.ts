@@ -8,6 +8,15 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // RN-06: forbidden() → 403 para suporte em tela só de admin (experimental; rever quando estabilizar)
   experimental: { authInterrupts: true },
+  // o token do convite está na URL: nunca vai em Referer (docs/09)
+  async headers() {
+    return [
+      {
+        source: "/:locale/admin/convite/:token",
+        headers: [{ key: "Referrer-Policy", value: "no-referrer" }],
+      },
+    ];
+  },
   // transport do pino carregado por string num worker: precisa ficar fora do bundle
   serverExternalPackages: ["@logtail/pino"],
   // RN-74: /admin/docs lê os arquivos de docs/ do próprio build (fonte única, sem cópia)

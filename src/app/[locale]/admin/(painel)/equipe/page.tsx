@@ -28,6 +28,7 @@ export default async function TeamAdmin({ params }: PageProps<"/[locale]/admin/e
     email: t("team.errors.email"),
     emailTaken: t("team.errors.emailTaken"),
     self: t("team.errors.self"),
+    lastAdmin: t("team.errors.lastAdmin"),
   };
 
   return (

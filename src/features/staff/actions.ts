@@ -7,7 +7,7 @@ import { requireStaff } from "@/features/auth/staff";
 import { routing } from "@/i18n/routing";
 import { env } from "@/lib/env";
 import { isPwnedPassword } from "./hibp";
-import { acceptInvite, createInvite, emailTaken, updateStaff } from "./queries";
+import { acceptInvite, createInvite, emailTaken, LastAdminError, openInvite, updateStaff } from "./queries";
 
 export type InviteState = { status: "idle" | "ok" | "error"; fields: string[]; link?: string };
 export type StaffState = { status: "idle" | "ok" | "error"; fields: string[] };
@@ -47,11 +47,16 @@ export async function saveStaffMember(_prev: StaffState, form: FormData): Promis
   const admin = await requireStaff(input.data.locale);
   if (input.data.id === admin.user.id && (!input.data.active || input.data.role !== "admin"))
     return { status: "error", fields: ["self"] };
-  await updateStaff(admin.user.id, input.data.id, {
-    role: input.data.role,
-    active: input.data.active,
-    languages: languages(form),
-  });
+  try {
+    await updateStaff(admin.user.id, input.data.id, {
+      role: input.data.role,
+      active: input.data.active,
+      languages: languages(form),
+    });
+  } catch (err) {
+    if (err instanceof LastAdminError) return { status: "error", fields: ["lastAdmin"] };
+    throw err;
+  }
   refresh();
   return { status: "ok", fields: [] };
 }
@@ -70,6 +75,7 @@ export async function acceptStaffInvite(_prev: AcceptState, form: FormData): Pro
   if (!input.success) return { error: "invalid" };
   const { token, name, password, confirm, locale: l } = input.data;
   if (password !== confirm) return { error: "mismatch" };
+  if (!(await openInvite(token))) return { error: "expired" }; // token inventado não chega ao HIBP nem ao scrypt
   if (await isPwnedPassword(password)) return { error: "pwned" };
   if (!(await acceptInvite(token, name, password))) return { error: "expired" };
   redirect(`/${l}/admin/entrar`);

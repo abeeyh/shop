@@ -357,7 +357,8 @@
       "errors": {
         "email": "Indiquez un e-mail valide.",
         "emailTaken": "Cet e-mail a déjà un compte.",
-        "self": "Vous ne pouvez pas désactiver ni rétrograder votre propre compte."
+        "self": "Vous ne pouvez pas désactiver ni rétrograder votre propre compte.",
+        "lastAdmin": "Il doit rester au moins un admin actif."
       }
     },
     "accept": {

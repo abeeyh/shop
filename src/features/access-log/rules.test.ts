@@ -34,6 +34,9 @@ describe("access-log rules (docs/16 §9)", () => {
       "/api/auth/reset-password/:token",
     );
     expect(sanitizeRoute("/en/wow/gold")).toBe("/en/wow/gold");
+    expect(sanitizeRoute("/en/admin/convite/abcdefghijklmnopqrstuvwxyzABCDEFGHIJ")).toBe(
+      "/en/admin/convite/:token",
+    );
     expect(sanitizeRoute("/pt-br/wow/raids/manaforge-omega-heroic")).toBe(
       "/pt-br/wow/raids/manaforge-omega-heroic",
     );

@@ -357,7 +357,8 @@
       "errors": {
         "email": "Informe um e-mail válido.",
         "emailTaken": "Este e-mail já tem uma conta.",
-        "self": "Você não pode desativar nem rebaixar a própria conta."
+        "self": "Você não pode desativar nem rebaixar a própria conta.",
+        "lastAdmin": "Precisa sobrar pelo menos um admin ativo."
       }
     },
     "accept": {

@@ -211,10 +211,20 @@ test.describe("admin", () => {
     const supportEmail = `e2e-support-${id}@shop.test`;
     await page.goto("/en/admin/equipe");
     await page.getByLabel("Email").fill(supportEmail);
+    await page.locator('select[name="role"]').first().selectOption("admin"); // convite errado (admin)…
+    await page.getByRole("button", { name: "Create invite link" }).click();
+    const wrongLink = (await page.getByTestId("invite-link").textContent())!.trim();
+    await page.goto("/en/admin/equipe"); // …e o certo (suporte) para o mesmo e-mail invalida o primeiro
+    await page.getByLabel("Email").fill(supportEmail);
     await page.getByRole("button", { name: "Create invite link" }).click();
     const link = (await page.getByTestId("invite-link").textContent())!.trim();
+    expect(link).not.toBe(wrongLink);
     const support = await browser.newContext({ baseURL });
     const sp = await support.newPage();
+    await sp.goto(new URL(wrongLink).pathname);
+    await expect(
+      sp.getByText("This invite is invalid, already used or expired.", { exact: false }),
+    ).toBeVisible();
     await sp.goto(new URL(link).pathname);
     await sp.getByLabel("Your name").fill("Suporte E2E");
     const supportPassword = `Sup0rt-${id}-${Math.random().toString(36).slice(2)}`;

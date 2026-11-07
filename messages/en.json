@@ -357,7 +357,8 @@
       "errors": {
         "email": "Enter a valid email.",
         "emailTaken": "This email already has an account.",
-        "self": "You can't deactivate or demote your own account."
+        "self": "You can't deactivate or demote your own account.",
+        "lastAdmin": "There must be at least one active admin."
       }
     },
     "accept": {

@@ -357,7 +357,8 @@
       "errors": {
         "email": "Gib eine gültige E-Mail an.",
         "emailTaken": "Für diese E-Mail gibt es schon ein Konto.",
-        "self": "Du kannst dein eigenes Konto nicht deaktivieren oder herabstufen."
+        "self": "Du kannst dein eigenes Konto nicht deaktivieren oder herabstufen.",
+        "lastAdmin": "Mindestens ein aktiver Admin muss bleiben."
       }
     },
     "accept": {
