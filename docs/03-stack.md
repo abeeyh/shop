@@ -13,7 +13,7 @@ Princípio: o menor número de peças que resolve o problema. A tabela abaixo é
 | Fuso horário | **API `Intl` nativa** (sem biblioteca) | Detecta e formata fuso IANA (RN-82, RN-83) |
 | Autenticação | **Better Auth** | Dados no próprio banco, e-mail+senha com verificação, OAuth, 2FA |
 | Banco | **PostgreSQL** | Relacional, padrão de mercado |
-| ORM | **Drizzle ORM** | Tipado, migrações SQL simples |
+| ORM | **Drizzle ORM** + driver `postgres` (postgres.js); migrações com `drizzle-kit` em `src/db/migrations` | Tipado, migrações SQL simples |
 | Cache / rate limit | **Valkey** (ou Redis) | Rate limit compartilhado entre instâncias; **pub/sub do chat** entre instâncias |
 | Chat em tempo real | **SSE** (Route Handler com `ReadableStream`) + PostgreSQL + pub/sub do Valkey — sem serviço novo | Mensagem gravada no banco, aviso via Valkey, entregue por SSE (RN-92 a RN-99) |
 | Validação | **zod** | Em toda fronteira de entrada |

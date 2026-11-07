@@ -55,7 +55,7 @@ Regras obrigatórias para todo código. Valem para pessoas e agentes. O que dá 
 ### Regra de dependência
 
 ```
-app (rotas) ──► features ──► lib
+app (rotas) ──► features ──► db ──► lib
                    │
 components ◄───────┘   (components nunca importam features)
 ```
