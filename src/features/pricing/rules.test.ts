@@ -5,6 +5,7 @@ import {
   couponDiscountCents,
   discountCents,
   isCurrentOptions,
+  itemStillValid,
   lineTotalCents,
   unitPriceCents,
   type Promotion,
@@ -112,5 +113,33 @@ describe("descontos (RN-21 a RN-26)", () => {
     expect(chooseDiscount(300, 400)).toEqual({ source: "coupon", discountCents: 400 });
     expect(chooseDiscount(400, 400)).toEqual({ source: "promotion", discountCents: 400 });
     expect(chooseDiscount(0, 0)).toEqual({ source: "none", discountCents: 0 });
+  });
+});
+
+describe("item do carrinho conferido de novo contra o produto atual (#94, revisão de segurança)", () => {
+  const svc = { kind: "service", realm: "A", faction: "horde", character: "T", addons: ["Armor Stack"] };
+  const product = {
+    isGold: false,
+    addons: [{ name: "Armor Stack", percent: 25 }],
+    maxQuantity: 3,
+    hasSlots: false,
+    slotId: null,
+  };
+  it("válido enquanto o produto não muda", () => {
+    expect(itemStillValid(svc, 2, product)).toBe(true);
+  });
+  it("adicional removido ou renomeado deixa o item indisponível (não cobra 0%)", () => {
+    expect(itemStillValid(svc, 1, { ...product, addons: [{ name: "Armor stack", percent: 25 }] })).toBe(
+      false,
+    );
+  });
+  it("quantidade acima do novo limite, horário novo ou tipo trocado também", () => {
+    expect(itemStillValid(svc, 3, { ...product, maxQuantity: 1 })).toBe(false);
+    expect(itemStillValid(svc, 1, { ...product, hasSlots: true })).toBe(false);
+    expect(itemStillValid(svc, 1, { ...product, hasSlots: true, slotId: "s" })).toBe(true);
+    expect(itemStillValid(svc, 1, { ...product, isGold: true })).toBe(false);
+    expect(itemStillValid({ kind: "gold", realm: "A", faction: "horde", character: "T" }, 100, product)).toBe(
+      false,
+    );
   });
 });
