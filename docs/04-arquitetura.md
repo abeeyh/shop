@@ -165,7 +165,7 @@ sequenceDiagram
 |------|------|--------|
 | `/[locale]` | Página | Público |
 | `/[locale]/wow/produtos?q=&cat=&region=&min=&max=&promo=1&disponivel=1&sort=&page=` | Página (busca e filtros — RN-100 a RN-103) | Público |
-| `/[locale]/wow/gold`, `/[locale]/wow/raids`, `/[locale]/wow/dungeons`, `/[locale]/wow/<categoria>/[slug]` | Página | Público |
+| `/[locale]/wow/[categoria]`, `/[locale]/wow/[categoria]/[produto]` (slugs criados pelo admin — RN-13, RN-19; rotas no grupo `app/[locale]/(store)`). Inexistente → página "não encontrada" com `noindex` (status 200 por causa do streaming) | Página | Público |
 | `/[locale]/carrinho`, `/[locale]/checkout` | Página + Server Actions | Público (visitante — RN-01) |
 | `/[locale]/pedido/[id]` | Página | Dono do pedido (sessão ou link assinado) |
 | `/[locale]/admin/*` | Página | Admin com 2FA (RN-02) |

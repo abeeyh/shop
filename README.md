@@ -15,6 +15,7 @@ pnpm install
 cp .env.example .env.local
 docker compose up -d     # Postgres em 5433 e Valkey em 6380 (portas mudáveis por SHOP_DB_PORT / SHOP_CACHE_PORT)
 pnpm db:migrate
+pnpm db:seed
 pnpm dev                 # http://localhost:3000 → redireciona para /<idioma>
 ```
 
@@ -25,6 +26,7 @@ pnpm dev                 # http://localhost:3000 → redireciona para /<idioma>
 | `pnpm test` / `pnpm test:coverage` | Vitest |
 | `pnpm e2e` | Playwright contra o build de produção, em 390×844 e 1440×900 (rode `pnpm build` antes; `PW_CHANNEL=chrome` usa o Chrome instalado) |
 | `pnpm i18n:check` | Confere as chaves nos 6 idiomas |
+| `pnpm db:seed` | Catálogo inicial (categorias e produtos de exemplo; idempotente) |
 | `pnpm db:generate` / `pnpm db:migrate` | Gera migração a partir de `src/db/schema.ts` / aplica no banco de `DATABASE_URL` |
 | `pnpm db:studio` | Drizzle Studio (navegar no banco local) |
 | `pnpm build` / `pnpm start` | Build `standalone` / servidor de produção (copia `public` e `.next/static`) |

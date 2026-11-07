@@ -3,11 +3,37 @@
     "title": "Services WoW : or, raids et Mythique+",
     "description": "Or, raids et donjons Mythique+ pour World of Warcraft US et EU. Paiement en USDT ou par carte."
   },
-  "ComingSoon": {
-    "badge": "Bientôt disponible",
+  "Nav": {
+    "label": "Principal",
+    "skip": "Aller au contenu",
+    "region": "Région"
+  },
+  "Home": {
+    "badge": "WoW Retail · US et EU",
     "title": "Progressez dans WoW, sans le farm",
-    "subtitle": "Or, raids et donjons Mythique+ pour Retail US et EU — prix en USDT, horaires dans votre fuseau.",
-    "tags": ["Or", "Raids", "Donjons"],
-    "payment": "Paiement en USDT ou par carte"
+    "subtitle": "Or, raids et donjons Mythique+. Prix en USDT, horaires dans votre fuseau, dans votre langue.",
+    "ctaGold": "Acheter de l'or",
+    "ctaRaid": "Réserver un raid",
+    "categories": "Catégories",
+    "bestSellers": "Meilleures ventes",
+    "viewAll": "Tout voir"
+  },
+  "Catalog": {
+    "perK": "pour 1 000 pièces d'or",
+    "estimateNote": "Estimation dans votre devise ; facturé en USDT.",
+    "selfPlay": "Self-play : vous jouez votre propre personnage. Nous ne demandons jamais votre mot de passe Battle.net.",
+    "empty": "Aucun produit dans cette région pour le moment.",
+    "region": "Région : {region}",
+    "home": "Accueil",
+    "loading": "Chargement…"
+  },
+  "Footer": {
+    "about": "Or, raids et Mythique+ pour World of Warcraft Retail US et EU.",
+    "copyright": "© 2026 Shop · Non affilié à Blizzard Entertainment."
+  },
+  "NotFound": {
+    "title": "Page introuvable",
+    "text": "La page que vous cherchez n'existe pas ou n'est plus disponible.",
+    "back": "Retour à l'accueil"
   }
 }

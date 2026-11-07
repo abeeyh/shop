@@ -3,11 +3,37 @@
     "title": "WoW 服務：金幣、團隊副本與傳奇+",
     "description": "World of Warcraft 美服與歐服的金幣、團隊副本與傳奇+地城。以 USDT 或信用卡付款。"
   },
-  "ComingSoon": {
-    "badge": "即將推出",
+  "Nav": {
+    "label": "主選單",
+    "skip": "跳至內容",
+    "region": "地區"
+  },
+  "Home": {
+    "badge": "WoW 正式版 · 美服與歐服",
     "title": "輕鬆推進你的 WoW 進度",
-    "subtitle": "美服與歐服正式版的金幣、團隊副本代打與傳奇+地城——以 USDT 計價，依你的時區排程。",
-    "tags": ["金幣", "團隊副本", "地城"],
-    "payment": "以 USDT 或信用卡付款"
+    "subtitle": "金幣、團隊副本代打與傳奇+地城。以 USDT 計價，依你的時區排程，使用你的語言。",
+    "ctaGold": "購買金幣",
+    "ctaRaid": "預約團隊副本",
+    "categories": "分類",
+    "bestSellers": "熱銷",
+    "viewAll": "查看全部"
+  },
+  "Catalog": {
+    "perK": "每 1,000 金幣",
+    "estimateNote": "以你的貨幣估算；以 USDT 收費。",
+    "selfPlay": "親自上線：你使用自己的角色遊玩。我們絕不索取你的 Battle.net 密碼。",
+    "empty": "此地區暫無商品。",
+    "region": "地區：{region}",
+    "home": "首頁",
+    "loading": "載入中…"
+  },
+  "Footer": {
+    "about": "World of Warcraft 正式版美服與歐服的金幣、團隊副本與傳奇+。",
+    "copyright": "© 2026 Shop · 與 Blizzard Entertainment 無關。"
+  },
+  "NotFound": {
+    "title": "找不到頁面",
+    "text": "你要找的頁面不存在或已無法使用。",
+    "back": "返回首頁"
   }
 }

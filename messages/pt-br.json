@@ -3,11 +3,37 @@
     "title": "Serviços de WoW: gold, raids e Mítica+",
     "description": "Gold, raids e masmorras Mítica+ para World of Warcraft US e EU. Pague em USDT ou cartão."
   },
-  "ComingSoon": {
-    "badge": "Em breve",
+  "Nav": {
+    "label": "Principal",
+    "skip": "Pular para o conteúdo",
+    "region": "Região"
+  },
+  "Home": {
+    "badge": "WoW Retail · US e EU",
     "title": "Seu progresso no WoW, sem o grind",
-    "subtitle": "Gold, raids e masmorras Mítica+ para Retail US e EU — preço em USDT, horários no seu fuso.",
-    "tags": ["Gold", "Raids", "Masmorras"],
-    "payment": "Pague em USDT ou cartão"
+    "subtitle": "Gold, raids e masmorras Mítica+. Preço em USDT, horários no seu fuso, no seu idioma.",
+    "ctaGold": "Comprar gold",
+    "ctaRaid": "Agendar raid",
+    "categories": "Categorias",
+    "bestSellers": "Mais vendidos",
+    "viewAll": "Ver todos"
+  },
+  "Catalog": {
+    "perK": "por 1.000 de gold",
+    "estimateNote": "Estimativa na sua moeda; a cobrança é em USDT.",
+    "selfPlay": "Self-play: você joga com o seu personagem. Nunca pedimos sua senha da Battle.net.",
+    "empty": "Ainda não há produtos nesta região.",
+    "region": "Região: {region}",
+    "home": "Início",
+    "loading": "Carregando…"
+  },
+  "Footer": {
+    "about": "Gold, raids e Mítica+ para World of Warcraft Retail US e EU.",
+    "copyright": "© 2026 Shop · Sem afiliação com a Blizzard Entertainment."
+  },
+  "NotFound": {
+    "title": "Página não encontrada",
+    "text": "A página que você procura não existe ou não está mais disponível.",
+    "back": "Voltar ao início"
   }
 }

@@ -48,6 +48,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm i18n:check
       - run: pnpm db:migrate
+      - run: pnpm db:seed
       - run: pnpm test:coverage
       - run: pnpm build
       - name: E2E (Playwright, celular e desktop)

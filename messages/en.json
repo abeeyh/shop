@@ -3,11 +3,37 @@
     "title": "WoW services: gold, raids and Mythic+",
     "description": "Gold, raids and Mythic+ dungeons for World of Warcraft US and EU. Pay in USDT or by card."
   },
-  "ComingSoon": {
-    "badge": "Coming soon",
+  "Nav": {
+    "label": "Main",
+    "skip": "Skip to content",
+    "region": "Region"
+  },
+  "Home": {
+    "badge": "WoW Retail · US & EU",
     "title": "Your WoW progress, without the grind",
-    "subtitle": "Gold, raid carries and Mythic+ dungeons for Retail US and EU — priced in USDT, scheduled in your time zone.",
-    "tags": ["Gold", "Raids", "Dungeons"],
-    "payment": "Pay in USDT or by card"
+    "subtitle": "Gold, raid carries and Mythic+ dungeons. Priced in USDT, scheduled in your time zone, in your language.",
+    "ctaGold": "Buy gold",
+    "ctaRaid": "Book a raid",
+    "categories": "Categories",
+    "bestSellers": "Best sellers",
+    "viewAll": "View all"
+  },
+  "Catalog": {
+    "perK": "per 1,000 gold",
+    "estimateNote": "Estimate in your currency; you are charged in USDT.",
+    "selfPlay": "Self-play: you play your own character. We never ask for your Battle.net password.",
+    "empty": "No products in this region yet.",
+    "region": "Region: {region}",
+    "home": "Home",
+    "loading": "Loading…"
+  },
+  "Footer": {
+    "about": "Gold, raids and Mythic+ for World of Warcraft Retail US and EU.",
+    "copyright": "© 2026 Shop · Not affiliated with Blizzard Entertainment."
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "text": "The page you are looking for does not exist or is no longer available.",
+    "back": "Back to home"
   }
 }
