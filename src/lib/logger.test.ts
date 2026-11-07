@@ -1,7 +1,7 @@
 import pino from "pino";
 import { Writable } from "node:stream";
 import { describe, expect, it } from "vitest";
-import { maskEmail, REDACT_PATHS } from "./logger";
+import { errorSummary, maskEmail, REDACT_PATHS } from "./logger";
 
 function capture() {
   const lines: string[] = [];
@@ -31,5 +31,15 @@ describe("logger", () => {
     expect(maskEmail("joao.silva@dominio.com.br")).toBe("j***@d***.com.br");
     expect(maskEmail("invalido")).toBe("***");
     expect(maskEmail("@x.com")).toBe("***");
+  });
+
+  it("errorSummary não leva a mensagem do erro (que pode ter IP/parâmetros)", () => {
+    const err = Object.assign(new Error("Failed query: insert ... params: 203.0.113.9,GET,/en"), {
+      cause: { code: "57P01" },
+    });
+    const summary = errorSummary(err);
+    expect(summary).toEqual({ errName: "Error", errCode: "57P01" });
+    expect(JSON.stringify(summary)).not.toContain("203.0.113.9");
+    expect(errorSummary(null)).toEqual({ errName: "UnknownError" });
   });
 });
