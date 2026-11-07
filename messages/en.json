@@ -185,7 +185,9 @@
       "reembolsado": "Refunded",
       "contestado": "Disputed"
     },
-    "discount": "Coupon discount"
+    "discount": "Coupon discount",
+    "delivered": "Delivered — thank you!",
+    "proof": "See the delivery proof"
   },
   "Admin": {
     "title": "Admin",
@@ -196,7 +198,8 @@
       "signOut": "Sign out",
       "promotions": "Promotions",
       "coupons": "Coupons",
-      "audit": "Audit log"
+      "audit": "Audit log",
+      "orders": "Orders"
     },
     "login": {
       "title": "Staff sign in",
@@ -313,6 +316,19 @@
         "create": "Created",
         "update": "Updated"
       }
+    },
+    "orders": {
+      "todo": "To do",
+      "all": "All",
+      "order": "Order",
+      "tx": "Transaction",
+      "proof": "Delivery proof",
+      "start": "Start delivery",
+      "complete": "Mark as completed",
+      "proofUrl": "Delivery proof link (https — screenshot or log)",
+      "note": "Note for the customer",
+      "proofError": "Add an https link to the delivery proof.",
+      "stale": "This order was already moved by someone else. Reload the page."
     }
   }
 }

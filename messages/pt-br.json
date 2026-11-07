@@ -185,7 +185,9 @@
       "reembolsado": "Reembolsado",
       "contestado": "Contestado"
     },
-    "discount": "Desconto do cupom"
+    "discount": "Desconto do cupom",
+    "delivered": "Entregue — obrigado!",
+    "proof": "Ver a prova de entrega"
   },
   "Admin": {
     "title": "Admin",
@@ -196,7 +198,8 @@
       "signOut": "Sair",
       "promotions": "Promoções",
       "coupons": "Cupons",
-      "audit": "Auditoria"
+      "audit": "Auditoria",
+      "orders": "Pedidos"
     },
     "login": {
       "title": "Entrar (equipe)",
@@ -313,6 +316,19 @@
         "create": "Criou",
         "update": "Alterou"
       }
+    },
+    "orders": {
+      "todo": "A fazer",
+      "all": "Todos",
+      "order": "Pedido",
+      "tx": "Transação",
+      "proof": "Prova de entrega",
+      "start": "Iniciar entrega",
+      "complete": "Marcar como concluído",
+      "proofUrl": "Link da prova de entrega (https — print ou log)",
+      "note": "Observação para o cliente",
+      "proofError": "Informe um link https para a prova de entrega.",
+      "stale": "Outra pessoa já moveu este pedido. Recarregue a página."
     }
   }
 }

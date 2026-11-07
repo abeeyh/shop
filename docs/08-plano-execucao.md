@@ -65,7 +65,7 @@ gantt
 - [ ] Dashboard admin com 2FA (RN-02, RN-70): **categorias e produtos** (RN-13, RN-19, RN-72, RN-73), preços, slots, pedidos. *Feito: login com 2FA, categorias, produtos e preços (#20). Faltam slots e pedidos (#23).*
 - [x] **Promoções por tempo** (RN-21 a RN-24) e **cupons** (RN-25 a RN-29) com regra "vale o maior" (RN-26). *Datas digitadas em UTC no admin. Ordenação por preço final e filtro "em promoção": #74.*
 - [x] Auditoria de alterações de preço, promoção e cupom (RN-71). *Pedidos entram com o fluxo de entrega (#23 — RN-07).*
-- [ ] Fluxo `pago → em_andamento → concluido` com prova de entrega (RN-50, RN-52).
+- [x] Fluxo `pago → em_andamento → concluido` com prova de entrega (RN-50, RN-52). *Prova como link https até existir o storage de arquivos.*
 - [ ] "Reportar problema" e lista de reportes no admin (RN-90, RN-91).
 
 **Pronto quando:** admin cria categoria, produto, promoção e cupom pelo dashboard; um pedido de teste recebe o maior desconto correto; e o admin conclui o pedido com prova anexada, visível ao cliente no idioma dele.

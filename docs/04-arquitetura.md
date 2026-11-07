@@ -149,7 +149,7 @@ sequenceDiagram
 - `carts` (id, created_at, updated_at) + `cart_items` (id, cart_id, product_id, raid_slot_id?, quantity > 0, options jsonb) — carrinho do visitante, id em cookie httpOnly (30 dias); **sem preço gravado**: o total é recalculado a cada leitura (RN-20). Tabela de preço (faixas de M+, multiplicador de loot, passo do gold) em `src/features/pricing/rules.ts` (RN-15 a RN-17)
 - `orders` (id, email, locale, status, subtotal_usdt_cents (original), discount_usdt_cents, discount_source `promotion|coupon|none`, discount_ref (id do cupom), total_usdt_cents, payment_method `usdt|card`, network `trc20|erc20`, provider, provider_payment_id, pay_url, paid_usdt_cents, tx_hash, expires_at, created_at, updated_at). Com o cartão (#26) entram quote_rate, charged_amount, charged_currency
 - `order_items` (order_id, product_id, raid_slot_id?, product_name (cópia), options jsonb — realm, facção e personagem do gold, loot da raid, nível e timed do M+ —, unit_price_usdt_cents (original), discount_usdt_cents (promoção da linha), promotion_id?, quantity). Preços e descontos congelados no checkout (RN-29)
-- `deliveries` (order_id, proof_url, note, delivered_at, admin_id) — RN-52
+- `deliveries` (order_id, staff_id, proof_url (https — print/log; upload de arquivo entra com o storage), note, delivered_at) — RN-52; `orders.assigned_to` = quem iniciou a entrega
 - `payment_events` (provider, provider_event_id **único** = `payment_id:status:valor pago`, order_id, type, payment_id, pay_currency, paid_usdt_cents, tx_hash, received_at) — idempotência (RN-33) e conciliação; IPN que não bate com o pedido (rede/valor) fica registrado e sem efeito
 - `users`, `sessions`, `accounts` (hash scrypt da senha), `verifications`, `two_factors` (segredo TOTP criptografado) — Better Auth, só equipe no MVP (cliente compra sem conta — RN-01). Sem rota `/api/auth`: login e 2FA rodam em Server Actions via `auth.api`; telemetria do Better Auth desligada
 - `access_logs` (occurred_at, ip, port?, user_id?, session_id?, method, route, request_id) — log de acesso legal, 6 meses ([16 §9](16-observabilidade.md#9-log-de-acesso-obrigação-legal))
@@ -170,6 +170,7 @@ sequenceDiagram
 | `/[locale]/carrinho` (carrinho e checkout na mesma página: e-mail, rede e "Pagar com USDT") | Página + Server Actions | Público (visitante — RN-01) |
 | `/[locale]/pedido/[id]?t=` | Página | Dono do pedido: link assinado (HMAC do id com `ORDER_LINK_SECRET`); token errado = "não encontrado". Não mostra o e-mail |
 | `/[locale]/admin/entrar`, `/[locale]/admin/entrar/codigo`, `/[locale]/admin/2fa` | Página + Server Actions | Login da equipe (senha → código TOTP); primeiro acesso ativa o 2FA. Conta inicial: `pnpm admin:create <email>` |
+| `/[locale]/admin/pedidos`, `/[locale]/admin/pedidos/[id]` | Página + Server Action | Suporte e admin (RN-06): fila "a fazer" (pago, em andamento), iniciar e concluir com prova (RN-52); suporte vê e-mail mascarado e hash curto |
 | `/[locale]/admin/*` | Página | Equipe ativa com 2FA (RN-02); permissão conferida em cada página e action (`requireStaff`), não no layout |
 | `/[locale]/admin/categorias`, `/[locale]/admin/produtos`, `/[locale]/admin/promocoes`, `/[locale]/admin/cupons` | Página + Server Actions | Admin com 2FA (RN-70) |
 | `/api/webhooks/crypto`, `/api/webhooks/card` | API | Só assinatura do provedor |
