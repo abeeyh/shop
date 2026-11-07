@@ -4,10 +4,10 @@ import { getTranslations } from "next-intl/server";
 import { KindTile, type CatalogProduct } from "@/features/catalog";
 import { BuyBox } from "./BuyBox";
 
-type Props = { locale: string; product: CatalogProduct; timeZone: string | null; compact?: boolean };
+type Props = { locale: string; product: CatalogProduct; timeZone: string | null };
 
-// #102: o produto e a compra — a mesma peça na página do produto e na gaveta aberta pela lista
-export async function ProductPanel({ locale, product, timeZone, compact }: Props) {
+// Página do produto: informações à esquerda, compra (opções, personagem, total) à direita — #102/#109
+export async function ProductPanel({ locale, product, timeZone }: Props) {
   const c = await getTranslations({ locale, namespace: "Catalog" });
   const info = (
     <div className="flex flex-col gap-3">
@@ -17,9 +17,7 @@ export async function ProductPanel({ locale, product, timeZone, compact }: Props
           <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
             {[product.categoryName, product.subcategoryName].filter(Boolean).join(" · ")}
           </p>
-          <h1
-            className={`font-heading font-bold tracking-tight text-heading ${compact ? "text-xl" : "text-[clamp(1.5rem,3vw,2rem)]"}`}
-          >
+          <h1 className="font-heading text-[clamp(1.5rem,3vw,2rem)] font-bold tracking-tight text-heading">
             {product.name}
           </h1>
         </div>
@@ -31,13 +29,6 @@ export async function ProductPanel({ locale, product, timeZone, compact }: Props
       </p>
     </div>
   );
-  if (compact)
-    return (
-      <div className="flex flex-col gap-5">
-        {info}
-        <BuyBox locale={locale} product={product} timeZone={timeZone} bare />
-      </div>
-    );
   return (
     <div className="grid gap-7 lg:grid-cols-[1fr_26rem] lg:items-start">
       {info}

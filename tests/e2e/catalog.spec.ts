@@ -26,7 +26,7 @@ test("categoria mostra produtos com preço em USDT (sem estimativa fake na moeda
   await expect(card).not.toContainText("≈"); // RN-18: só com a API de cotação (#86, #63)
 });
 
-test("#102: produto abre numa gaveta por cima da lista; fechar volta para a lista", async ({ page }) => {
+test("#109: produto abre na página dele, com as opções", async ({ page }) => {
   await page.goto("/en/wow/raids");
   // #94: produtos agrupados por subcategoria, na ordem do admin
   await expect(page.getByRole("heading", { level: 2, name: "Heroic", exact: true })).toBeVisible();
@@ -34,19 +34,12 @@ test("#102: produto abre numa gaveta por cima da lista; fechar volta para a list
   // #100: a raid aparece uma vez por dificuldade; as runs viram opções dentro do produto
   await page.getByRole("link", { name: "Venomous Abyss" }).first().click();
   await expect(page).toHaveURL(/\/en\/wow\/raids\/venomous-abyss-heroic$/);
-  const drawer = page.getByRole("dialog");
-  await expect(drawer.getByRole("heading", { level: 1 })).toHaveText("Venomous Abyss");
-  await expect(drawer.getByText("5.18 USDT", { exact: true }).first()).toBeVisible();
-  await expect(drawer.getByText(/never ask for your Battle\.net password/)).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(page).toHaveURL(/\/en\/wow\/raids$/);
-  await expect(drawer).toHaveCount(0);
-});
-
-test("#102: link direto do produto abre a página inteira (sem gaveta)", async ({ page }) => {
-  await page.goto("/en/wow/raids/venomous-abyss-heroic");
   await expect(page.getByRole("dialog")).toHaveCount(0);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Venomous Abyss");
+  // com cacheComponents a página anterior fica escondida no DOM (React Activity): filtrar o visível
+  const h1 = page.getByRole("heading", { level: 1 }).filter({ visible: true });
+  await expect(h1).toHaveText("Venomous Abyss");
+  await expect(page.getByText("5.18 USDT", { exact: true }).filter({ visible: true }).first()).toBeVisible();
+  await expect(page.getByText(/never ask for your Battle\.net password/)).toBeVisible();
 });
 
 // Com streaming, o esqueleto já saiu com 200 quando a página descobre que não existe: o Next mostra a

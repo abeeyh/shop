@@ -2,6 +2,7 @@
 
 import { refresh } from "next/cache";
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { formatUsdt, getProduct } from "@/features/catalog";
@@ -20,11 +21,13 @@ import { routing } from "@/i18n/routing";
 import { clientIp, rateLimitKey } from "@/lib/client-ip";
 import { env } from "@/lib/env";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
-import { ensureCart, getCartId } from "./cart";
+import { cartSummary, ensureCart, getCartId } from "./cart";
+import type { MiniCart } from "./components/CartSheet";
+import { describeItem } from "./describe";
 import { deleteItem, getSlotForProduct, getVariantForProduct, insertItem, setCartCoupon } from "./queries";
 import { parseItem, type ParsedItem } from "./schemas";
 
-export type AddState = { status: "idle" | "ok" | "error"; fields: string[] };
+export type AddState = { status: "idle" | "ok" | "error"; fields: string[]; cart?: MiniCart };
 
 type Checked =
   | {
@@ -102,10 +105,28 @@ export async function addToCart(_prev: AddState, form: FormData): Promise<AddSta
   await insertItem(cartId, { productId: checked.productId, ...checked.item });
   if (form.get("saveCharacter") === "on") await rememberCharacter(checked.item);
   // #102: "Comprar agora" pula o carrinho e cai direto no pagamento (carrinho e checkout na mesma página)
-  const locale = routing.locales.find((l) => l === form.get("locale"));
-  if (form.get("intent") === "buy" && locale) redirect(`/${locale}/carrinho#pagar`);
+  const locale = routing.locales.find((l) => l === form.get("locale")) ?? routing.defaultLocale;
+  if (form.get("intent") === "buy") redirect(`/${locale}/carrinho#pagar`);
   refresh(); // contador do carrinho no cabeçalho
-  return { status: "ok", fields: [] };
+  return { status: "ok", fields: [], cart: await miniCart(locale, cartId) }; // #109: barra lateral
+}
+
+// #109: o carrinho como a barra lateral mostra — itens, detalhes no idioma de quem compra e total
+async function miniCart(locale: string, cartId: string): Promise<MiniCart> {
+  const [cart, t] = await Promise.all([
+    cartSummary(locale, cartId),
+    getTranslations({ locale, namespace: "Cart" }),
+  ]);
+  return {
+    lines: cart.lines.map((l) => ({
+      id: l.id,
+      name: l.name,
+      detail: describeItem(l.options, l.quantity, t),
+      total: l.total,
+      available: l.available,
+    })),
+    total: cart.total,
+  };
 }
 
 // RN-108: "salvar este personagem" (só logado; repetido ou acima do limite é ignorado em silêncio — a

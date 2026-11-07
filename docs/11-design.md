@@ -100,7 +100,7 @@ Se o componente **conhece o domínio**, fica na feature; se é genérico, em `sr
 | Átomo | `Button` (variantes `primary`, `gradient-outline`, `ghost`, `destructive`), `IconButton`, `Input`, `Label`, `Avatar`, `Badge`, `Switch`, `Tooltip`, `Separator`, `Skeleton`, `Spinner` | `components/atoms` |
 | Molécula | `FormField`, `PasswordField`, `CopyField`, `Toast`, `LocaleSwitcher`, `TimezoneSwitcher`, `PriceTag` (USDT + estimativa; preço original riscado em promoção) | `components/molecules` |
 | Molécula | `Collapsible` (expandir/recolher com `<details>`; aberto a partir de `lg`), `Pagination` (página na URL), `LoadingRegion` + `CardGridSkeleton` / `TableSkeleton` / `TitleSkeleton` (esqueletos com a forma do conteúdo, `role="status"` com texto para leitor de tela; `Skeleton` sem animação com `prefers-reduced-motion`) | `components/molecules` |
-| Molécula | `NavTabs` (abas de categoria; aba atual por `usePathname` em `Suspense`), `Popover` (`<details>` com estado no React; Esc e clique fora fecham), `Drawer` (`<dialog>` modal: foco preso, Esc fecha, fechar = voltar no histórico), `SpotlightTracker` (um ouvinte para a luz do cursor) — #102 |
+| Molécula | `NavTabs` (abas de categoria; aba atual por `usePathname` em `Suspense`), `Popover` (`<details>` com estado no React; Esc e clique fora fecham), `Drawer` (barra lateral em `<dialog>` modal: foco preso, Esc e clique no fundo fecham; base do `CartSheet` — #109), `SpotlightTracker` (um ouvinte para a luz do cursor) — #102 |
 | Molécula | `SearchField` (busca no cabeçalho, `role="search"`), `FilterChip` (filtro ativo removível), `SectionHeading` (título + link "ver todos"), `FilterTabs`, `Countdown`, `GradientCard` (moldura com gradiente) | `components/molecules` |
 | Organismo | `Header` (uma linha: logo, busca, globo com idioma/fuso, conta, carrinho; abas de categoria embaixo — #102; sem região — loja só US), `Footer` (4 colunas + newsletter), `Carousel` (CSS scroll-snap, sem biblioteca) | `components/organisms` |
 | Template | `MarketingTemplate`, `AuthTemplate`, `AppTemplate` | `components/templates` |
@@ -170,13 +170,13 @@ Garantia: revisão de PR, agente `frontend-ui` e checagem no CI de classes visua
 - **Cabeçalho em uma linha:** logo · busca · globo (idioma e fuso, já detectados) · conta · carrinho; logo abaixo, **abas das categorias** (rolam de lado no celular, aba atual marcada). Sem menu escondido.
 - **Produtos em lista densa** (`ProductCard` em linha): ícone · nome + etiquetas (subcategoria, "Popular") + descrição curta · preço em **ouro** ("a partir de" quando tem opções) · "Comprar". A linha inteira é o link. Nada de imagem decorativa repetida.
 - **Subcategorias** como atalhos fixos no topo da lista (âncoras).
-- **Compra numa gaveta:** da lista, o produto abre por cima (rota interceptada — doc 04); link direto abre a página. "Comprar agora" adiciona e vai direto ao pagamento; "Adicionar ao carrinho" continua comprando.
+- **Compra:** da lista, o produto abre na **página dele**, com as opções (#109). "Comprar agora" adiciona e vai direto ao pagamento; "Adicionar ao carrinho" abre o **carrinho na barra lateral** (itens, total, ir ao pagamento ou continuar comprando).
 - **"Popular"** só nos destaques escolhidos (borda em gradiente girando) — selo em tudo não destaca nada.
 - **Efeitos** (todos desligados com `prefers-reduced-motion`):
   - aurora violeta/ciano desfocada no topo da página, andando devagar;
   - luz que segue o cursor em linhas e blocos (`data-spotlight` + `SpotlightTracker`; só mouse);
   - brilho que atravessa o botão principal no hover + halo violeta;
-  - gaveta entra deslizando (de baixo no celular);
+  - barra lateral do carrinho entra deslizando (de baixo no celular);
   - slider de opções com trilho em gradiente.
 - Uma ação principal por tela continua valendo (botão violeta); a secundária usa `gradient-outline`.
 - Imagens: arte **própria ou licenciada**; nada de arte oficial da Blizzard.

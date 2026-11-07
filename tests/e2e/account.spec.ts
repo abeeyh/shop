@@ -6,6 +6,7 @@ const field = (page: Page, label: string) => page.getByLabel(label).filter({ vis
 // RN-107 a RN-109 (#101): cadastro opcional, personagens salvos e exclusão da conta
 test.describe("conta do cliente", () => {
   test("cadastro → login → personagem salvo preenche a compra → excluir a conta", async ({ page }, info) => {
+    test.setTimeout(60_000); // cadastro + HIBP + login + compra + exclusão
     const email = `e2e-${info.project.name}-${Date.now()}@example.com`;
     const password = `Shop-e2e-${Date.now()}-x9!Q`; // longa e aleatória: não está em vazamento (HIBP)
 
@@ -19,7 +20,7 @@ test.describe("conta do cliente", () => {
     await field(page, "Email").fill(email);
     await field(page, "Password").fill(password);
     await page.getByRole("button", { name: "Sign in" }).click();
-    await expect(page).toHaveURL(/\/en\/conta$/);
+    await expect(page).toHaveURL(/\/en\/conta$/, { timeout: 15_000 }); // sob a suíte em paralelo o login demora
     await expect(page.getByText(email)).toBeVisible();
 
     // RN-108: salvar personagem na conta

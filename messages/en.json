@@ -132,7 +132,9 @@
     "savedCharacter": "Saved character",
     "savedNone": "— type a new one —",
     "saveCharacter": "Save this character to my account",
-    "buyNow": "Buy now"
+    "buyNow": "Buy now",
+    "goToPayment": "Go to payment",
+    "keepShopping": "Keep shopping"
   },
   "Cart": {
     "title": "Cart",

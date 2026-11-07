@@ -75,7 +75,7 @@ async function StoreHeader({ locale }: { locale: string }) {
   );
 }
 
-export default async function StoreLayout({ children, modal, params }: LayoutProps<"/[locale]">) {
+export default async function StoreLayout({ children, params }: LayoutProps<"/[locale]">) {
   const { locale } = await params;
   setRequestLocale(locale);
   const [nav, footer] = await Promise.all([
@@ -98,8 +98,6 @@ export default async function StoreLayout({ children, modal, params }: LayoutPro
       <main id="conteudo" className="flex-1">
         {children}
       </main>
-      {/* #102: gaveta do produto aberta pela lista (lê o banco: Suspense próprio, não segura a página) */}
-      <Suspense fallback={null}>{modal}</Suspense>
       <SiteFooter
         about={footer("about")}
         columns={[]}

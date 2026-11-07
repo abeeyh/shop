@@ -132,7 +132,9 @@
     "savedCharacter": "Personnage enregistré",
     "savedNone": "— en saisir un autre —",
     "saveCharacter": "Enregistrer ce personnage dans mon compte",
-    "buyNow": "Acheter maintenant"
+    "buyNow": "Acheter maintenant",
+    "goToPayment": "Passer au paiement",
+    "keepShopping": "Continuer mes achats"
   },
   "Cart": {
     "title": "Panier",
