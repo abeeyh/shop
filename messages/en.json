@@ -7,11 +7,7 @@
     "badge": "Coming soon",
     "title": "Your WoW progress, without the grind",
     "subtitle": "Gold, raid carries and Mythic+ dungeons for Retail US and EU — priced in USDT, scheduled in your time zone.",
-    "categories": {
-      "gold": "Gold",
-      "raids": "Raids",
-      "dungeons": "Dungeons"
-    },
+    "tags": ["Gold", "Raids", "Dungeons"],
     "payment": "Pay in USDT or by card"
   }
 }

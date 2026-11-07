@@ -1,3 +1,4 @@
+import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { lt } from "drizzle-orm";
 import { accessLogDb } from "@/db/access-log-client";
 import { accessLogs } from "@/db/schema";

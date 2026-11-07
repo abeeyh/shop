@@ -26,6 +26,28 @@ Dentro do próprio Next.js: Server Actions para formulários e Route Handlers pa
 
 Regra de ouro: **toda decisão de negócio e de permissão acontece no backend.** Preço vem do banco em USDT (RN-12, RN-20); cotação para cartão é travada no servidor (RN-36); pagamento só é confirmado por webhook (RN-32).
 
+### Garantia técnica
+
+- `rules.ts`, `queries.ts`, `src/db/*`, `src/lib/env.ts`, `logger.ts` e `cron.ts` começam com `import "server-only"`: **o build quebra** se um componente de cliente importar qualquer um deles.
+- ESLint: arquivos em `src/components/**` e `src/features/*/components/**` não importam `rules`, `queries`, `@/db`, `env`, `logger` nem `cron`. Componente recebe o resultado pronto por props, vindo da página (servidor).
+
+### O front só exibe
+
+Regras com lado visual: **o servidor decide e manda o resultado; o front mostra; o servidor confere de novo na ação** (carrinho, checkout, cupom).
+
+| Regra | Servidor decide | Front só mostra | Servidor confere de novo em |
+|-------|-----------------|-----------------|-----------------------------|
+| RN-11 esgotado | se o produto/slot tem estoque | botão desabilitado, selo "esgotado" | adicionar ao carrinho e criar o checkout |
+| RN-13 / RN-19 catálogo | categorias e produtos ativos | lista vinda do banco | carrinho (produto inativo é recusado) |
+| RN-18 estimativa em moeda local | valor ≈ com a cotação em cache (`lib/fx`) | texto "≈" já calculado | — (nunca usada para cobrar) |
+| RN-21–RN-23 promoção | se está ativa agora e o preço final | preço riscado + contagem até `endsAt` enviado pelo servidor | carrinho e checkout (promoção vencida não vale) |
+| RN-26 promoção × cupom | qual desconto é maior | "desconto aplicado: …" | checkout (recalcula) |
+| RN-36 cotação do cartão | taxa travada por 15 min | contagem de validade | criação do pagamento (cotação vencida é recusada) |
+| RN-82 / RN-83 fuso | valida o cookie `tz` (lista IANA) | detecta o fuso no navegador e formata horários com `Intl` | gravação da preferência |
+| RN-90 erro | código estável + `requestId` | mensagem traduzida pelo código | — |
+
+Validação no formulário (zod no cliente) é só conveniência: o mesmo `schemas.ts` roda de novo no servidor.
+
 ## Camadas (regra de dependência — [13 §2](13-padroes-qualidade.md#2-padrões-de-projeto))
 
 ```

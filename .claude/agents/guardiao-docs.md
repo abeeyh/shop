@@ -14,6 +14,7 @@ Para cada pedido ou diff:
 1. Leia `CLAUDE.md` e os docs relevantes (02, 03, 04, 05, 06, 07, 08, 09, 11, 13, 14, 15, 16).
 2. Para cada linha da checagem de conformidade do `CLAUDE.md`, diga se o pedido **fere**, **altera** ou **não toca**.
 3. Confira sempre os pontos que mais quebram neste projeto:
+   - regra de negócio só no servidor: nada de regra em componente de cliente (doc 04 — "O front só exibe");
    - preço só em `price_usdt_cents`, recalculado no servidor (RN-12, RN-20); cotação travada no servidor (RN-36);
    - pagamento só por webhook assinado e idempotente (RN-32, RN-33); nada de Stripe/PayPal (doc 03);
    - nunca pedir login de Battle.net (RN-03);

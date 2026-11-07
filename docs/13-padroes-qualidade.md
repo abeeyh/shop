@@ -60,7 +60,8 @@ app (rotas) ──► features ──► db ──► lib
 components ◄───────┘   (components nunca importam features)
 ```
 
-- `rules.ts` não importa framework, banco nem rede.
+- `rules.ts` não importa framework, banco nem rede, e começa com `import "server-only"` (assim como `queries.ts` e `src/db`): o build quebra se um componente de cliente importar uma regra ([04 — Garantia técnica](04-arquitetura.md#garantia-técnica)).
+- Componentes não importam `rules`, `queries`, `@/db` nem segredos (ESLint): recebem o resultado por props.
 - Feature importa outra só por `index.ts`.
 - Garantido por **eslint-plugin-boundaries**.
 

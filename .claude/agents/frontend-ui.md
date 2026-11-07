@@ -24,6 +24,7 @@ Regras:
 - Nome e descrição de categorias e produtos vêm do banco e **não são traduzidos** (RN-84); só os rótulos da interface passam pelo next-intl.
 - Chat: mensagens renderizadas como texto (nunca HTML), `aria-live="polite"` nas novas, aviso fixo de credenciais (RN-95) traduzido, reconexão automática do SSE.
 - Dashboard admin: formulários de categoria, produto, promoção e cupom com datas no fuso do admin (gravadas em UTC pelo backend).
+- **Componente nunca decide regra de negócio**: não importa `rules`, `queries`, `@/db` nem segredos (ESLint + `server-only` quebram o build). Recebe o resultado por props; ver a tabela "O front só exibe" no doc 04.
 - Validação no front é conveniência; a regra real fica no backend. Nunca `dangerouslySetInnerHTML` com dado de usuário.
 - Ao terminar, liste os componentes criados com o nível atômico de cada um.
 - Não faça commit sem pedido; commits nunca têm IA como coautora.
