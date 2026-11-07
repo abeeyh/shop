@@ -201,7 +201,8 @@
       "coupons": "Cupons",
       "audit": "Auditoria",
       "orders": "Pedidos",
-      "reports": "Reportes de problema"
+      "reports": "Reportes de problema",
+      "docs": "Documentação interna"
     },
     "login": {
       "title": "Entrar (equipe)",

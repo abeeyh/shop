@@ -201,7 +201,8 @@
       "coupons": "Gutscheine",
       "audit": "Änderungsprotokoll",
       "orders": "Bestellungen",
-      "reports": "Problemmeldungen"
+      "reports": "Problemmeldungen",
+      "docs": "Interne Dokumentation"
     },
     "login": {
       "title": "Anmeldung (Team)",

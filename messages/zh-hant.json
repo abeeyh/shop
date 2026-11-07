@@ -201,7 +201,8 @@
       "coupons": "優惠碼",
       "audit": "稽核紀錄",
       "orders": "訂單",
-      "reports": "問題回報"
+      "reports": "問題回報",
+      "docs": "內部文件"
     },
     "login": {
       "title": "團隊登入",

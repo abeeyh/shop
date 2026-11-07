@@ -3,7 +3,6 @@ node_modules
 .git
 .husky
 coverage
-docs
 .claude
 .env
 .env.*

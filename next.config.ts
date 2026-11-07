@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // transport do pino carregado por string num worker: precisa ficar fora do bundle
   serverExternalPackages: ["@logtail/pino"],
+  // RN-74: /admin/docs lê os arquivos de docs/ do próprio build (fonte única, sem cópia)
+  outputFileTracingIncludes: { "/**": ["./docs/*.md"] },
   turbopack: {
     rules: {
       "*.css": {

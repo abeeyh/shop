@@ -83,7 +83,7 @@ gantt
 - [ ] Chat próprio: SSE + PostgreSQL + pub/sub do Valkey; widget em todas as páginas; fila no dashboard (RN-92, RN-93, RN-98).
 - [ ] E-mail de mensagem nova com link assinado (RN-94); aviso de credenciais e mascaramento (RN-95); anexos de imagem (RN-96); limites e CAPTCHA (RN-97).
 - [ ] Horário de atendimento e modo offline (RN-99).
-- [ ] Documentação interna `/admin/docs` para admin e suporte (RN-74).
+- [x] Documentação interna `/admin/docs` para admin e suporte (RN-74). *Texto puro; renderizar Markdown/Mermaid pede uma dependência (decisão de stack).*
 
 **Pronto quando:** um visitante em `zh-Hant` abre conversa, um atendente de suporte responde em tempo real pelo dashboard, o visitante fecha a aba e recebe o e-mail com o link, retoma a conversa; e o suporte não consegue abrir a tela de preços ou cupons (403).
 
