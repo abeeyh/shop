@@ -78,3 +78,26 @@ export const products = pgTable(
     check("products_price_positive", sql`${t.priceUsdtCents} > 0`),
   ],
 );
+
+// Agenda de raids (RN-16): horário em UTC (RN-83), vagas limitadas; reserved sobe na reserva do checkout (RN-34)
+export const raidSlots = pgTable(
+  "raid_slots",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id),
+    startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
+    capacity: integer("capacity").notNull(),
+    reserved: integer("reserved").notNull().default(0),
+    active: boolean("active").notNull().default(true),
+    ...timestamps,
+  },
+  (t) => [
+    index("raid_slots_product_starts_idx").on(t.productId, t.startsAt),
+    check(
+      "raid_slots_capacity",
+      sql`${t.capacity} > 0 and ${t.reserved} >= 0 and ${t.reserved} <= ${t.capacity}`,
+    ),
+  ],
+);

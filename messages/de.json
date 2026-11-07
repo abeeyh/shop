@@ -40,5 +40,16 @@
     "title": "Seite nicht gefunden",
     "text": "Die gesuchte Seite existiert nicht oder ist nicht mehr verfügbar.",
     "back": "Zurück zur Startseite"
+  },
+  "Schedule": {
+    "upcoming": "Kommende Raids",
+    "inYourTimezone": "Zeiten in deiner Zeitzone ({tz})",
+    "inBrowserTimezone": "Zeiten in der Zeitzone deines Browsers",
+    "seatsLeft": "{n, plural, one {# Platz frei} other {# Plätze frei}}",
+    "soldOut": "Ausgebucht",
+    "startsIn": "Beginnt in",
+    "serverTime": "Serverzeit:",
+    "details": "Termine ansehen",
+    "slotsTitle": "Verfügbare Termine"
   }
 }

@@ -40,5 +40,16 @@
     "title": "Página não encontrada",
     "text": "A página que você procura não existe ou não está mais disponível.",
     "back": "Voltar ao início"
+  },
+  "Schedule": {
+    "upcoming": "Próximas raids",
+    "inYourTimezone": "Horários no seu fuso ({tz})",
+    "inBrowserTimezone": "Horários no fuso do seu navegador",
+    "seatsLeft": "{n, plural, one {# vaga} other {# vagas}}",
+    "soldOut": "Esgotado",
+    "startsIn": "Começa em",
+    "serverTime": "Horário do servidor:",
+    "details": "Ver horários",
+    "slotsTitle": "Horários disponíveis"
   }
 }

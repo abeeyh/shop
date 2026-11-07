@@ -40,5 +40,16 @@
     "title": "Page introuvable",
     "text": "La page que vous cherchez n'existe pas ou n'est plus disponible.",
     "back": "Retour à l'accueil"
+  },
+  "Schedule": {
+    "upcoming": "Prochains raids",
+    "inYourTimezone": "Horaires dans votre fuseau ({tz})",
+    "inBrowserTimezone": "Horaires dans le fuseau de votre navigateur",
+    "seatsLeft": "{n, plural, one {# place} other {# places}}",
+    "soldOut": "Complet",
+    "startsIn": "Commence dans",
+    "serverTime": "Heure du serveur :",
+    "details": "Voir les horaires",
+    "slotsTitle": "Créneaux disponibles"
   }
 }

@@ -25,11 +25,11 @@ test("categoria mostra produtos com preço em USDT e estimativa na moeda local",
 
 test("produto abre pelo card e mostra o aviso de self-play", async ({ page }) => {
   await page.goto("/en/wow/raids");
-  await page.getByRole("link", { name: "Current raid — Heroic" }).click();
+  await page.getByRole("link", { name: "Current raid — Heroic" }).first().click();
   await expect(page).toHaveURL(/\/en\/wow\/raids\/raid-heroic-us$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Current raid — Heroic");
   // com cacheComponents a página anterior fica escondida no DOM (React Activity): filtrar o visível
-  await expect(page.getByText("79.00 USDT", { exact: true }).filter({ visible: true })).toBeVisible();
+  await expect(page.getByText("79.00 USDT", { exact: true }).filter({ visible: true }).first()).toBeVisible();
   await expect(page.getByText(/never ask for your Battle\.net password/)).toBeVisible();
 });
 

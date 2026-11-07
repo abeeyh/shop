@@ -40,5 +40,16 @@
     "title": "找不到页面",
     "text": "你要找的页面不存在或已不可用。",
     "back": "返回首页"
+  },
+  "Schedule": {
+    "upcoming": "即将开始的团队副本",
+    "inYourTimezone": "按你的时区显示（{tz}）",
+    "inBrowserTimezone": "按你浏览器的时区显示",
+    "seatsLeft": "剩余 {n} 个名额",
+    "soldOut": "已满",
+    "startsIn": "距离开始",
+    "serverTime": "服务器时间：",
+    "details": "查看时段",
+    "slotsTitle": "可预约时段"
   }
 }
