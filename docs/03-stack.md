@@ -14,6 +14,7 @@ Princípio: o menor número de peças que resolve o problema. A tabela abaixo é
 | Autenticação | **Better Auth** | Dados no próprio banco, e-mail+senha com verificação, OAuth, 2FA |
 | Banco | **PostgreSQL** | Relacional, padrão de mercado |
 | ORM | **Drizzle ORM** + driver `postgres` (postgres.js); migrações com `drizzle-kit` em `src/db/migrations` | Tipado, migrações SQL simples |
+| Busca de produtos | **PostgreSQL + `pg_trgm`** (similaridade, tolera erro de digitação) | Catálogo pequeno (dezenas de itens); sem serviço externo — RN-100 |
 | Cache / rate limit | **Valkey** (ou Redis) | Rate limit compartilhado entre instâncias; **pub/sub do chat** entre instâncias |
 | Chat em tempo real | **SSE** (Route Handler com `ReadableStream`) + PostgreSQL + pub/sub do Valkey — sem serviço novo | Mensagem gravada no banco, aviso via Valkey, entregue por SSE (RN-92 a RN-99) |
 | Validação | **zod** | Em toda fronteira de entrada |
@@ -52,5 +53,6 @@ Princípio: o menor número de peças que resolve o problema. A tabela abaixo é
 | jQuery + Slick (do template de referência) | Fora da stack; carrossel com CSS scroll-snap |
 | Crisp, Tawk.to, Chatwoot (chat) | Escolhido chat próprio em 2026-11-06: dados com a loja, visual e 6 idiomas sob controle, custo R$ 0; SaaS pode recusar o setor |
 | WebSocket | SSE basta (servidor → cliente); cliente envia por POST. Menos peças e funciona atrás de qualquer proxy HTTP |
+| Meilisearch, Algolia, Elasticsearch (busca) | Exagero para um catálogo de dezenas de produtos; rever se passar de alguns milhares |
 | Axiom, Grafana Loki (logs) | Better Stack escolhido em 2026-11-06: logs + uptime no mesmo serviço, sem servidor próprio |
 | Biblioteca de datas (date-fns-tz, Luxon) | `Intl` nativo resolve detecção e formatação de fuso |

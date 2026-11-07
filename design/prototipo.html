@@ -160,6 +160,27 @@ table.table { width: 100%; border-collapse: collapse; font-size: 14px; }
   .mobile-panel { display: none !important; }
 }
 
+/* Busca e filtros (RN-100 a RN-104) */
+.search { position: relative; flex: 1; max-width: 360px; display: none; }
+.search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted-foreground); pointer-events: none; }
+.search .input { min-height: 40px; padding-left: 40px; border-radius: 999px; }
+.mobile-panel .search { display: block; max-width: none; }
+@media (min-width: 768px) { .header-inner > .search { display: block; } }
+.catalog { display: grid; gap: 24px; align-items: start; }
+@media (min-width: 1024px) { .catalog { grid-template-columns: 280px 1fr; } .filters { position: sticky; top: 96px; } }
+.filters summary { cursor: pointer; font: 700 16px var(--font-heading); color: var(--heading); list-style: none; display: flex; justify-content: space-between; align-items: center; }
+.filters summary::-webkit-details-marker { display: none; }
+.filters .group { border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px; display: grid; gap: 8px; }
+.filters .group > strong { color: var(--heading); font-size: 14px; }
+.check { display: flex; gap: 10px; align-items: center; min-height: 36px; cursor: pointer; font-size: 14px; }
+.check input { accent-color: var(--primary); width: 18px; height: 18px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px 4px 12px; border-radius: 999px; background: var(--accent); color: var(--heading); font-size: 13px; }
+.chip button { width: 24px; height: 24px; border-radius: 50%; border: 0; background: transparent; color: var(--heading); cursor: pointer; }
+.chip button:hover { background: var(--muted); }
+.toolbar { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 16px; }
+.toolbar .select { width: auto; min-height: 40px; }
+.empty { text-align: center; padding: 48px 20px; display: grid; gap: 12px; justify-items: center; }
+
 /* Hero */
 .hero { padding-block: 56px 32px; display: grid; gap: 32px; align-items: center; }
 @media (min-width: 1024px) { .hero { grid-template-columns: 1.1fr .9fr; padding-block: 88px 48px; } }
@@ -231,6 +252,11 @@ body.clean .proto-index { display: none; }
   <div class="container header-inner">
     <a class="logo" href="#/" aria-label="Shop — home"><span class="logo-mark" aria-hidden="true">S</span>Shop</a>
     <nav class="main-nav" aria-label="Main" id="main-nav"></nav>
+    <form class="search" role="search" data-action="search">
+      <label class="sr-only" for="q" data-i18n="searchLabel">Search products</label>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input class="input" id="q" name="q" type="search" autocomplete="off" data-search-input />
+    </form>
     <div class="header-tools">
       <div class="pref">
         <label class="sr-only" for="sel-region" data-i18n="region">Region</label>
@@ -272,6 +298,9 @@ body.clean .proto-index { display: none; }
     <summary>Páginas do protótipo</summary>
     <ul>
       <li><a href="#/">Home</a></li>
+      <li><a href="#/products">Produtos (busca e filtros)</a></li>
+      <li><a href="#/products?q=mithic">Busca com erro de digitação</a></li>
+      <li><a href="#/products?q=zzz">Busca sem resultado</a></li>
       <li><a href="#/c/gold">Categoria — Gold</a></li>
       <li><a href="#/c/raids">Categoria — Raids</a></li>
       <li><a href="#/p/gold-us">Produto — Gold</a></li>
@@ -351,6 +380,11 @@ const I18N = {
     newsletter: "Newsletter", newsletterText: "Promotions and new raid slots.", subscribe: "Subscribe",
     footerCopy: "Not affiliated with Blizzard Entertainment.", showingIn: "Times shown in {tz}",
     errNote: "Error code {c} · ID {id}",
+    searchLabel: "Search products", searchPh: "Search gold, raids, Mythic+…", searchMin: "Type at least 2 characters.",
+    products: "Products", filters: "Filters", fCategory: "Category", fRegion: "Region", fAll: "All", fPrice: "Price (USDT)", fMin: "Min", fMax: "Max",
+    fPromo: "On sale", fAvail: "Available only", sort: "Sort by", sRelevance: "Relevance", sBest: "Best sellers", sPriceAsc: "Lowest price", sPriceDesc: "Highest price",
+    results: "{n} products", resultsFor: "for “{q}”", clearAll: "Clear filters", noResults: "No products found",
+    noResultsText: "Try another word, remove a filter or browse a category.", removeFilter: "Remove filter {f}", unavailable: "Unavailable",
   },
   "pt-BR": {
     skip: "Pular para o conteúdo", region: "Região", language: "Idioma", timezone: "Fuso horário", signIn: "Entrar", cart: "Carrinho",
@@ -402,6 +436,11 @@ const I18N = {
     newsletter: "Newsletter", newsletterText: "Promoções e novos horários de raid.", subscribe: "Assinar",
     footerCopy: "Sem afiliação com a Blizzard Entertainment.", showingIn: "Horários em {tz}",
     errNote: "Código do erro {c} · ID {id}",
+    searchLabel: "Buscar produtos", searchPh: "Buscar gold, raids, Mítica+…", searchMin: "Digite pelo menos 2 caracteres.",
+    products: "Produtos", filters: "Filtros", fCategory: "Categoria", fRegion: "Região", fAll: "Todas", fPrice: "Preço (USDT)", fMin: "Mín.", fMax: "Máx.",
+    fPromo: "Em promoção", fAvail: "Só disponíveis", sort: "Ordenar por", sRelevance: "Relevância", sBest: "Mais vendidos", sPriceAsc: "Menor preço", sPriceDesc: "Maior preço",
+    results: "{n} produtos", resultsFor: "para “{q}”", clearAll: "Limpar filtros", noResults: "Nenhum produto encontrado",
+    noResultsText: "Tente outra palavra, tire um filtro ou veja uma categoria.", removeFilter: "Remover filtro {f}", unavailable: "Indisponível",
     // admin / suporte
     aDashboard: "Painel", aOrders: "Pedidos", aCategories: "Categorias", aProducts: "Produtos", aPromotions: "Promoções", aCoupons: "Cupons",
     aSupport: "Suporte", aTeam: "Equipe", aDocs: "Documentação", aRole: "Papel", aRoleAdmin: "Admin", aRoleSupport: "Suporte",
@@ -435,6 +474,7 @@ const I18N = {
     serverTime: "Heure du serveur : {time}", chooseSlot: "Choisir un créneau", details: "Détails", add: "Ajouter au panier", added: "Ajouté au panier",
     promo: "-{p}% · durée limitée", estimateNote: "≈ {v} (estimation ; facturé en USDT)", total: "Total", checkout: "Commander", pay: "Payer {v}",
     footerCopy: "Non affilié à Blizzard Entertainment.", showingIn: "Horaires en {tz}", chatWarn: "Nous ne demanderons jamais votre mot de passe Battle.net ni vos données de carte.",
+    searchLabel: "Rechercher des produits", searchPh: "Rechercher or, raids, Mythique+…", searchMin: "Saisissez au moins 2 caractères.",
     chatHello: "Bonjour ! Comment pouvons-nous aider ?", supportTitle: "Assistance", online: "En ligne · réponse en quelques minutes",
   },
   de: {
@@ -455,6 +495,7 @@ const I18N = {
     serverTime: "Serverzeit: {time}", chooseSlot: "Termin wählen", details: "Details", add: "In den Warenkorb", added: "Zum Warenkorb hinzugefügt",
     promo: "-{p}% · nur für kurze Zeit", estimateNote: "≈ {v} (Schätzung; Abrechnung in USDT)", total: "Gesamt", checkout: "Zur Kasse", pay: "{v} bezahlen",
     footerCopy: "Nicht mit Blizzard Entertainment verbunden.", showingIn: "Zeiten in {tz}", chatWarn: "Wir fragen nie nach deinem Battle.net-Passwort oder deinen Kartendaten.",
+    searchLabel: "Produkte suchen", searchPh: "Gold, Raids, Mythisch+ suchen…", searchMin: "Mindestens 2 Zeichen eingeben.",
     chatHello: "Hallo! Wie können wir helfen?", supportTitle: "Support", online: "Online · Antwort in wenigen Minuten",
   },
   "zh-Hant": {
@@ -474,6 +515,7 @@ const I18N = {
     serverTime: "伺服器時間：{time}", chooseSlot: "選擇時段", details: "詳情", add: "加入購物車", added: "已加入購物車",
     promo: "-{p}% · 限時", estimateNote: "≈ {v}（估計值；以 USDT 收費）", total: "總計", checkout: "結帳", pay: "付款 {v}",
     footerCopy: "與 Blizzard Entertainment 無關。", showingIn: "時間以 {tz} 顯示", chatWarn: "我們絕不會索取你的 Battle.net 密碼或信用卡資料。",
+    searchLabel: "搜尋商品", searchPh: "搜尋金幣、團隊副本、傳奇+…", searchMin: "請至少輸入 2 個字元。",
     chatHello: "你好！需要什麼協助？", supportTitle: "客服", online: "線上 · 幾分鐘內回覆",
   },
   "zh-Hans": {
@@ -493,6 +535,7 @@ const I18N = {
     serverTime: "服务器时间：{time}", chooseSlot: "选择时段", details: "详情", add: "加入购物车", added: "已加入购物车",
     promo: "-{p}% · 限时", estimateNote: "≈ {v}（估算；按 USDT 收费）", total: "总计", checkout: "结算", pay: "支付 {v}",
     footerCopy: "与 Blizzard Entertainment 无关。", showingIn: "时间按 {tz} 显示", chatWarn: "我们绝不会索要你的 Battle.net 密码或银行卡信息。",
+    searchLabel: "搜索商品", searchPh: "搜索金币、团队副本、史诗钥石…", searchMin: "请至少输入 2 个字符。",
     chatHello: "你好！需要什么帮助？", supportTitle: "客服", online: "在线 · 几分钟内回复",
   },
 };
@@ -544,7 +587,12 @@ const PRODUCTS = [
   { id: "raid-normal-eu", cat: "raids", region: "EU", name: "Current raid — Normal", price: 3700 },
   { id: "mplus-us", cat: "mythic-plus", region: "US", name: "Mythic+ key", price: 1200, best: true },
   { id: "mplus-eu", cat: "mythic-plus", region: "EU", name: "Mythic+ key", price: 1100, best: true },
+  { id: "gold-us-express", cat: "gold", region: "US", name: "Gold — US express", price: 55, unit: "perK", desc: "Delivery within 1 hour." },
+  { id: "mplus-bundle-us", cat: "mythic-plus", region: "US", name: "Mythic+ — 4 keys bundle", price: 4200, desc: "Four keys of the same level, best value." },
+  { id: "mplus-15-us", cat: "mythic-plus", region: "US", name: "Mythic+ +15 timed", price: 2900, desc: "High key, timed, for the seasonal achievement." },
+  { id: "mplus-bundle-eu", cat: "mythic-plus", region: "EU", name: "Mythic+ — 4 keys bundle", price: 3900, desc: "Four keys of the same level, best value." },
 ];
+const SALES = { "gold-us": 980, "gold-eu": 870, "raid-heroic-us": 640, "raid-heroic-eu": 590, "mplus-us": 520, "mplus-eu": 470, "mplus-bundle-us": 260 };
 const SLOTS = [
   { id: "s1", product: "raid-heroic-us", startsAt: now + 5 * H, seats: 3 },
   { id: "s2", product: "raid-heroic-us", startsAt: now + D + 3 * H, seats: 8 },
@@ -674,7 +722,7 @@ function pageHome() {
     <div class="grid">${slots.map(slotCard).join("")}</div>
   </section>
   <section class="container section">
-    <div class="section-head"><h2>${t("services")}</h2>
+    <div class="section-head"><div class="row"><h2>${t("services")}</h2><a href="#/products">${t("viewAll")} →</a></div>
       <div class="tabs" role="tablist">${[["all", t("tabAll")], ...CATEGORIES.map((c) => [c.slug, c.name])].map(([k, l]) =>
         `<button class="tab" role="tab" aria-selected="${state.filter === k}" data-action="filter" data-v="${k}">${esc(l)}</button>`).join("")}</div></div>
     <div class="grid">${prods.map(productCard).join("")}</div>
@@ -692,6 +740,118 @@ function pageHome() {
       ${["USDT · TRC-20", "USDT · ERC-20", "Visa", "Mastercard"].map((x) => `<span class="badge">${x}</span>`).join("")}</div>
   </section>`;
 }
+// RN-100: busca tolerante a erro de digitação. No app real: pg_trgm no PostgreSQL (doc 03).
+const norm = (x) => x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+function lev(a, b) {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  return d[a.length][b.length];
+}
+function searchScore(p, q) {
+  const c = catOf(p);
+  const words = (x) => norm(x).split(/[^a-z0-9]+/).filter(Boolean);
+  const nameW = words(`${p.name} ${c.name}`), bodyW = words(`${p.desc || ""} ${c.desc}`);
+  const near = (list, w) => w.length >= 4 && list.some((x) => lev(x, w) <= 1);
+  let score = 0;
+  for (const w of words(q)) {
+    // nome pesa mais que descrição; erro de digitação pesa menos que acerto exato
+    if (nameW.some((x) => x.startsWith(w))) score += 4;
+    else if (near(nameW, w)) score += 3;
+    else if (bodyW.some((x) => x.startsWith(w))) score += 1;
+    else if (near(bodyW, w)) score += 0.5;
+    else return 0;
+  }
+  return score;
+}
+const available = (p) => catOf(p).kind !== "raid" || SLOTS.some((s) => s.product === p.id && s.seats > 0); // RN-11
+const SORTS = ["relevance", "best", "price-asc", "price-desc"];
+function readFilters(qp) {
+  // RN-103: valor inválido na URL é ignorado
+  const num = (k) => { const n = Number(qp.get(k)); return qp.get(k) !== null && qp.get(k) !== "" && Number.isFinite(n) && n >= 0 ? n : null; };
+  const q = (qp.get("q") || "").trim();
+  return {
+    q: q.length >= 2 ? q : "",
+    cats: (qp.get("cat") || "").split(",").filter((x) => CATEGORIES.some((c) => c.slug === x)),
+    region: ["US", "EU"].includes(qp.get("region")) ? qp.get("region") : qp.get("region") === "all" ? "all" : state.region,
+    min: num("min"), max: num("max"), promo: qp.get("promo") === "1", avail: qp.get("disponivel") === "1",
+    sort: SORTS.includes(qp.get("sort")) && !(qp.get("sort") === "relevance" && q.length < 2) ? qp.get("sort") : q.length >= 2 ? "relevance" : "best",
+  };
+}
+function filterProducts(f) {
+  return PRODUCTS.map((p) => ({ p, score: f.q ? searchScore(p, f.q) : 1, price: finalPrice(p) }))
+    .filter(({ p, score, price }) => score > 0
+      && (!f.cats.length || f.cats.includes(p.cat))
+      && (f.region === "all" || p.region === f.region)
+      && (f.min === null || price >= f.min * 100) && (f.max === null || price <= f.max * 100)
+      && (!f.promo || promoFor(p) > 0) && (!f.avail || available(p)))
+    .sort((a, b) => f.sort === "relevance" ? b.score - a.score
+      : f.sort === "price-asc" ? a.price - b.price : f.sort === "price-desc" ? b.price - a.price
+      : (SALES[b.p.id] || 0) - (SALES[a.p.id] || 0))
+    .map((x) => x.p);
+}
+function pageProducts(qp) {
+  const f = readFilters(qp);
+  const list = filterProducts(f);
+  const chips = [
+    ...(f.q ? [["q", f.q, `“${f.q}”`]] : []),
+    ...f.cats.map((c) => ["cat", c, CATEGORIES.find((x) => x.slug === c).name]),
+    ...(f.region !== state.region ? [["region", f.region, `${t("fRegion")}: ${f.region === "all" ? t("fAll") : f.region}`]] : []),
+    ...(f.min !== null ? [["min", "", `≥ ${f.min} USDT`]] : []), ...(f.max !== null ? [["max", "", `≤ ${f.max} USDT`]] : []),
+    ...(f.promo ? [["promo", "", t("fPromo")]] : []), ...(f.avail ? [["disponivel", "", t("fAvail")]] : []),
+  ];
+  const isDesktop = window.matchMedia?.("(min-width: 1024px)").matches ?? true;
+  const opt = (v, cur, label) => `<option value="${v}" ${v === cur ? "selected" : ""}>${label}</option>`;
+  return `<div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="#/">Home</a><span>/</span><span>${t("products")}</span></nav>
+    <div class="section-head" style="margin-bottom:20px"><div><h1 style="font-size:clamp(1.75rem,4vw,2.5rem)">${t("products")}</h1>
+      <p class="muted" role="status">${t("results", { n: list.length })}${f.q ? ` ${esc(t("resultsFor", { q: f.q }))}` : ""}</p></div></div>
+    <div class="catalog">
+      <details class="filters card-solid" ${isDesktop ? "open" : ""}>
+        <summary>${t("filters")}${chips.length ? ` <span class="badge badge-info">${chips.length}</span>` : ""}</summary>
+        <form data-action="filters" class="stack" style="gap:0">
+          <label class="field" style="margin-top:14px"><span>${t("searchLabel")}</span><input class="input" type="search" name="q" value="${esc(f.q)}" placeholder="${t("searchPh")}"></label>
+          <div class="group"><strong>${t("fCategory")}</strong>${CATEGORIES.map((c) => `<label class="check"><input type="checkbox" name="cat" value="${c.slug}" ${f.cats.includes(c.slug) ? "checked" : ""}>${esc(c.name)}</label>`).join("")}</div>
+          <div class="group"><strong>${t("fRegion")}</strong>${[["US", "US"], ["EU", "EU"], ["all", t("fAll")]].map(([v, l]) => `<label class="check"><input type="radio" name="region" value="${v}" ${f.region === v ? "checked" : ""}>${l}</label>`).join("")}</div>
+          <div class="group"><strong>${t("fPrice")}</strong><div class="row" style="flex-wrap:nowrap">
+            <label class="sr-only" for="fmin">${t("fMin")}</label><input class="input" id="fmin" name="min" type="number" min="0" step="1" placeholder="${t("fMin")}" value="${f.min ?? ""}">
+            <span class="muted">–</span><label class="sr-only" for="fmax">${t("fMax")}</label><input class="input" id="fmax" name="max" type="number" min="0" step="1" placeholder="${t("fMax")}" value="${f.max ?? ""}"></div></div>
+          <div class="group"><label class="check"><input type="checkbox" name="promo" value="1" ${f.promo ? "checked" : ""}>${t("fPromo")}</label>
+            <label class="check"><input type="checkbox" name="disponivel" value="1" ${f.avail ? "checked" : ""}>${t("fAvail")}</label></div>
+        </form>
+      </details>
+      <div>
+        <div class="toolbar"><div class="row">${chips.map(([k, v, label]) => `<span class="chip">${esc(label)}<button type="button" data-action="unfilter" data-k="${k}" data-v="${esc(v)}" aria-label="${esc(t("removeFilter", { f: label }))}">✕</button></span>`).join("")}
+          ${chips.length ? `<button class="btn btn-ghost btn-sm" data-action="clear-filters">${t("clearAll")}</button>` : ""}</div>
+          <label class="row" style="gap:8px"><span class="small muted">${t("sort")}</span><select class="select" data-action="sort">
+            ${f.q ? opt("relevance", f.sort, t("sRelevance")) : ""}${opt("best", f.sort, t("sBest"))}${opt("price-asc", f.sort, t("sPriceAsc"))}${opt("price-desc", f.sort, t("sPriceDesc"))}</select></label></div>
+        ${list.length ? `<div class="grid">${list.map((p) => available(p) ? productCard(p) : productCard(p).replace(`<span class="tag badge`, `<span class="tag badge badge-err">${t("unavailable")}</span><span hidden class="tag badge`)).join("")}</div>`
+          : `<div class="card-solid empty"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <h2>${t("noResults")}</h2><p class="muted">${t("noResultsText")}</p>
+            <div class="row" style="justify-content:center">${CATEGORIES.map((c) => `<a class="btn btn-outline btn-sm" href="#/c/${c.slug}">${esc(c.name)}</a>`).join("")}</div>
+            <button class="btn btn-primary" data-action="clear-filters">${t("clearAll")}</button></div>`}
+      </div>
+    </div></div>`;
+}
+const hashParams = () => new URLSearchParams(location.hash.split("?")[1] || "");
+function goProducts(params) {
+  params.delete("page");
+  const qs = params.toString();
+  location.hash = `#/products${qs ? `?${qs}` : ""}`;
+}
+function filtersFromForm(form) {
+  const p = new URLSearchParams();
+  const q = val(form, "q").trim(); if (q) p.set("q", q);
+  const cats = [...form.querySelectorAll("input[name=cat]:checked")].map((x) => x.value); if (cats.length) p.set("cat", cats.join(","));
+  const region = form.querySelector("input[name=region]:checked")?.value; if (region && region !== state.region) p.set("region", region);
+  for (const k of ["min", "max"]) if (val(form, k) !== "") p.set(k, val(form, k));
+  if (form.querySelector("input[name=promo]:checked")) p.set("promo", "1");
+  if (form.querySelector("input[name=disponivel]:checked")) p.set("disponivel", "1");
+  const sort = hashParams().get("sort"); if (sort) p.set("sort", sort);
+  return p;
+}
+
 function pageCategory(slug) {
   const c = CATEGORIES.find((x) => x.slug === slug) || CATEGORIES[0];
   const prods = regionProducts().filter((p) => p.cat === c.slug);
@@ -937,12 +1097,18 @@ function renderChrome() {
   $("#sel-region").innerHTML = opts(["US", "EU"], state.region);
   $("#sel-lang").innerHTML = opts(Object.keys(LANGS), state.lang, (k) => LANGS[k]);
   $("#sel-tz").innerHTML = opts(TZS, state.tz, (z) => `${tzLabel(z)}${z === detectedTz ? " ✓" : ""}`);
-  $("#mobile-panel").innerHTML = nav.map(([h, k]) => `<a href="${h}">${t(k)}</a>`).join("") +
+  $("#mobile-panel").innerHTML = `<form class="search" role="search" data-action="search">
+      <label class="sr-only" for="q-m" data-i18n="searchLabel">Search products</label>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input class="input" id="q-m" name="q" type="search" autocomplete="off" data-search-input />
+    </form>` + nav.map(([h, k]) => `<a href="${h}">${t(k)}</a>`).join("") +
     `<div class="row">${["region", "lang", "tz"].map((p) => `<label class="field" style="flex:1;min-width:140px"><span>${t(p === "lang" ? "language" : p === "tz" ? "timezone" : "region")}</span><select class="select" data-pref="${p}">${p === "region" ? opts(["US", "EU"], state.region) : p === "lang" ? opts(Object.keys(LANGS), state.lang, (k) => LANGS[k]) : opts(TZS, state.tz, tzLabel)}</select></label>`).join("")}</div>`;
   const n = state.cart.reduce((s, i) => s + 1, 0);
   const c = $("#cart-count"); c.hidden = !n; c.textContent = n;
   $("#cart-btn").setAttribute("aria-label", `${t("cart")} (${n})`);
   document.querySelectorAll("[data-i18n]").forEach((el) => (el.textContent = t(el.dataset.i18n)));
+  const current = new URLSearchParams(location.hash.split("?")[1] || "").get("q") || "";
+  document.querySelectorAll("[data-search-input]").forEach((el) => { el.placeholder = t("searchPh"); if (document.activeElement !== el) el.value = current; });
   $("#footer-grid").innerHTML = `
     <div><a class="logo" href="#/"><span class="logo-mark">S</span>Shop</a><p class="small muted" style="margin-top:12px">${t("heroText")}</p></div>
     <div><h4>${t("footerServices")}</h4><ul>${CATEGORIES.map((c2) => `<li><a href="#/c/${c2.slug}">${esc(c2.name)}</a></li>`).join("")}</ul></div>
@@ -953,10 +1119,11 @@ function renderChrome() {
   $("#footer-tz").textContent = t("showingIn", { tz: `${tzLabel(state.tz)} (${state.tz})` });
 }
 function route() {
-  const [, a, b] = (location.hash.slice(1) || "/").split("/");
+  const [path, qs = ""] = location.hash.slice(1).split("?");
+  const [, a, b] = (path || "/").split("/");
   const isAdmin = a === "admin";
   document.querySelector("footer").hidden = isAdmin;
-  const html = a === "c" ? pageCategory(b) : a === "p" ? pageProduct(b) : a === "cart" ? pageCart() : a === "checkout" ? pageCheckout()
+  const html = a === "products" ? pageProducts(new URLSearchParams(qs)) : a === "c" ? pageCategory(b) : a === "p" ? pageProduct(b) : a === "cart" ? pageCart() : a === "checkout" ? pageCheckout()
     : a === "invoice" ? pageInvoice() : a === "order" ? pageOrder() : isAdmin ? pageAdmin(b || "") : pageHome();
   $("#app").innerHTML = html;
   renderChrome();
@@ -975,6 +1142,8 @@ document.addEventListener("change", (e) => {
   if (el.dataset.action === "method") { state.method = el.value; rerender(); }
   if (el.dataset.action === "network") { state.network = el.value; }
   if (el.dataset.action === "role") { state.role = el.value; rerender(); }
+  if (el.form?.dataset.action === "filters" && el.name !== "q") goProducts(filtersFromForm(el.form)); // RN-103: filtro vai para a URL
+  if (el.dataset.action === "sort") { const p = hashParams(); p.set("sort", el.value); goProducts(p); }
 });
 document.addEventListener("click", (e) => {
   const el = e.target.closest("[data-action]");
@@ -1000,6 +1169,13 @@ document.addEventListener("click", (e) => {
   if (a === "assign") { ORDERS.find((o) => o.id === el.dataset.id).status = "progress"; rerender(); }
   if (a === "conv") { state.chatSel = Number(el.dataset.id); rerender(); }
   if (a === "resolve") { toast(`${t("aResolve")} ✓`); }
+  if (a === "clear-filters") { location.hash = "#/products"; }
+  if (a === "unfilter") {
+    const p = hashParams(), k = el.dataset.k;
+    if (k === "cat") { const rest = (p.get("cat") || "").split(",").filter((x) => x && x !== el.dataset.v); if (rest.length) p.set("cat", rest.join(",")); else p.delete("cat"); }
+    else p.delete(k);
+    goProducts(p);
+  }
 });
 document.addEventListener("submit", (e) => {
   const f = e.target, a = f.dataset.action;
@@ -1030,6 +1206,13 @@ document.addEventListener("submit", (e) => {
   if (a === "staff-reply") { const m = val(f, "m").trim(); if (m) { CHATS.find((c) => c.id === state.chatSel).msgs.push(["me", m]); rerender(); } }
   if (a === "save-modal") { $("#modal-root").innerHTML = ""; toast(`${t("aSave")} ✓ · ${t("aAudit")}`); }
   if (a === "newsletter") { toast(`${t("subscribe")} ✓`); }
+  if (a === "search") {
+    const q = val(f, "q").trim();
+    if (q.length === 1) { toast(t("searchMin")); return; } // RN-100: mínimo de 2 caracteres
+    const p = new URLSearchParams(); if (q) p.set("q", q);
+    goProducts(p);
+  }
+  if (a === "filters") { goProducts(filtersFromForm(f)); }
 });
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") { if ($("#modal-root").innerHTML) $("#modal-root").innerHTML = ""; else if (state.chatOpen) { state.chatOpen = false; renderChat(); } }
