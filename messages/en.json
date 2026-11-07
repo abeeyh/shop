@@ -322,7 +322,9 @@
       "actions": {
         "create": "Created",
         "update": "Updated"
-      }
+      },
+      "older": "Older",
+      "newest": "Most recent"
     },
     "orders": {
       "todo": "To do",

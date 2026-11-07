@@ -1,10 +1,12 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 import { connection } from "next/server";
+import { Pagination } from "@/components/molecules/Pagination";
 import { tableCls } from "@/features/admin/fields";
 import { requireStaff } from "@/features/auth/staff";
 import { formatUsdt } from "@/features/catalog";
 import { listOrdersForStaff } from "@/features/orders/staff";
+import { pageCount, pageParam } from "@/lib/pagination";
 
 export const instant = false;
 
@@ -14,16 +16,20 @@ const TODO = ["pago", "em_andamento"] as const;
 // RN-06: suporte e admin veem a fila de pedidos
 export default async function OrdersAdmin({ params, searchParams }: PageProps<"/[locale]/admin/pedidos">) {
   await connection();
-  const [{ locale }, { todos }] = await Promise.all([params, searchParams]);
+  const [{ locale }, { todos, pagina }] = await Promise.all([params, searchParams]);
   setRequestLocale(locale);
   await requireStaff(locale, ["admin", "suporte"]);
   const all = todos === "1";
-  const [t, o, rows] = await Promise.all([
+  const page = pageParam(pagina);
+  const [t, o, s, { rows, total }] = await Promise.all([
     getTranslations({ locale, namespace: "Admin" }),
     getTranslations({ locale, namespace: "Order" }),
-    listOrdersForStaff(all ? null : [...TODO]),
+    getTranslations({ locale, namespace: "Search" }),
+    listOrdersForStaff(all ? null : [...TODO], page),
   ]);
   const base = `/${locale}/admin/pedidos`;
+  const pageHref = (p: number) =>
+    `${base}?${new URLSearchParams({ ...(all ? { todos: "1" } : {}), pagina: String(p) })}`;
   const tab = "rounded-full px-3 py-1.5 text-sm font-semibold";
 
   return (
@@ -73,6 +79,12 @@ export default async function OrdersAdmin({ params, searchParams }: PageProps<"/
           </tbody>
         </table>
       </div>
+      <Pagination
+        page={page}
+        pages={pageCount(total)}
+        href={pageHref}
+        labels={{ nav: s("pagination"), prev: s("prev"), next: s("next") }}
+      />
     </>
   );
 }

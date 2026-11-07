@@ -1,6 +1,7 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { X } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { Pagination } from "@/components/molecules/Pagination";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { buttonVariants } from "@/components/atoms/Button";
@@ -112,38 +113,6 @@ function EmptyState({
   );
 }
 
-function Pagination({
-  page,
-  pages,
-  href,
-  t,
-}: {
-  page: number;
-  pages: number;
-  href: (p: Partial<Filters>) => string;
-  t: T;
-}) {
-  if (pages <= 1) return null;
-  const link = buttonVariants({ variant: "ghost", size: "sm" });
-  return (
-    <nav aria-label={t("pagination")} className="mt-8 flex items-center justify-center gap-3">
-      {page > 1 ? (
-        <Link href={href({ page: page - 1 })} className={link}>
-          {t("prev")}
-        </Link>
-      ) : null}
-      <span className="text-sm text-muted-foreground">
-        {page} / {pages}
-      </span>
-      {page < pages ? (
-        <Link href={href({ page: page + 1 })} className={link}>
-          {t("next")}
-        </Link>
-      ) : null}
-    </nav>
-  );
-}
-
 function filterLabels(t: T) {
   return {
     title: t("filters"),
@@ -220,7 +189,12 @@ export async function ProductSearch({ locale, region, raw }: Props) {
           ) : allowed ? (
             <EmptyState locale={locale} categories={categories} clearHref={base} t={t} />
           ) : null}
-          <Pagination page={f.page} pages={Math.max(1, Math.ceil(total / PAGE_SIZE))} href={href} t={t} />
+          <Pagination
+            page={f.page}
+            pages={Math.max(1, Math.ceil(total / PAGE_SIZE))}
+            href={(page) => href({ page })}
+            labels={{ nav: t("pagination"), prev: t("prev"), next: t("next") }}
+          />
         </div>
       </div>
     </>

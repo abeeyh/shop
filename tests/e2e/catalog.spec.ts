@@ -41,7 +41,10 @@ test("categoria ou produto inexistente, ou na categoria errada → página não 
   for (const path of ["/en/wow/nao-existe", "/en/wow/gold/nao-existe", "/en/wow/raids/gold-us"]) {
     await page.goto(path);
     await expect(page.getByRole("heading", { level: 1, name: "Page not found" })).toBeVisible();
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+    // com loading.tsx (#88) o Next põe o noindex no head e de novo no corpo transmitido: todos noindex
+    const robots = page.locator('meta[name="robots"]');
+    await expect(robots.first()).toHaveAttribute("content", /noindex/);
+    for (const m of await robots.all()) await expect(m).toHaveAttribute("content", /noindex/);
   }
 });
 
