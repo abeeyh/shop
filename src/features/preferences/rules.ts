@@ -16,9 +16,10 @@ export function isTimezone(v: unknown): v is string {
   }
 }
 
-// RN-14: sugestão de região pelo fuso (doc 04): Américas e Pacífico → US; o resto → EU
+// RN-14: sugestão de região pelo fuso (doc 04): Europa, África e Atlântico → EU; o resto → US
+// (padrão da RN-14; Oceania e Sudeste Asiático jogam nos servidores US/Oceanic; UTC desconhecido → US)
 export const regionForTimezone = (tz: string): GameRegion =>
-  /^(America|Pacific|US|Canada)\//.test(tz) ? "US" : "EU";
+  /^(Europe|Africa|Atlantic)\//.test(tz) ? "EU" : "US";
 
 // Lista para o seletor, com o fuso atual garantido mesmo se for um alias fora da lista oficial
 export function timezoneOptions(current: string | null): string[] {

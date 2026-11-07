@@ -21,8 +21,12 @@ describe("preferências (RN-14, RN-82)", () => {
   it("RN-14: sugere a região pelo fuso", () => {
     expect(regionForTimezone("America/Sao_Paulo")).toBe("US");
     expect(regionForTimezone("Pacific/Auckland")).toBe("US");
+    expect(regionForTimezone("Australia/Sydney")).toBe("US"); // Oceanic
+    expect(regionForTimezone("Asia/Singapore")).toBe("US");
+    expect(regionForTimezone("UTC")).toBe("US"); // desconhecido → padrão da RN-14
     expect(regionForTimezone("Europe/Berlin")).toBe("EU");
-    expect(regionForTimezone("Asia/Taipei")).toBe("EU");
+    expect(regionForTimezone("Africa/Johannesburg")).toBe("EU");
+    expect(regionForTimezone("Atlantic/Canary")).toBe("EU");
   });
 
   it("lista de fusos inclui o atual mesmo fora da lista oficial", () => {
