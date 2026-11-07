@@ -20,9 +20,10 @@ describe.skipIf(!process.env.DATABASE_URL)("variantes no admin (#100)", () => {
     s = await import("@/db/schema");
     q = await import("./queries");
     schemas = await import("./schemas");
-    const [u] = await db.select({ id: s.users.id }).from(s.users).limit(1);
+    // usuário próprio do teste (o banco do CI não tem equipe); a auditoria exige um usuário real
+    staffId = `test-variants-${Date.now()}`;
+    await db.insert(s.users).values({ id: staffId, name: "test", email: `${staffId}@example.com` });
     const [c] = await db.select({ id: s.categories.id }).from(s.categories).limit(1);
-    staffId = u!.id;
     categoryId = c!.id;
   });
 
@@ -31,6 +32,7 @@ describe.skipIf(!process.env.DATABASE_URL)("variantes no admin (#100)", () => {
       await db.delete(s.auditLog).where(eq(s.auditLog.entityId, productId));
       await db.delete(s.products).where(eq(s.products.id, productId)); // variantes saem em cascata
     }
+    if (staffId) await db.delete(s.users).where(eq(s.users.id, staffId));
     await db?.$client.end();
   });
 
