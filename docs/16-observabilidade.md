@@ -56,7 +56,7 @@ Todo log é uma linha JSON:
 | Regra | Detalhe |
 |-------|---------|
 | Níveis | `fatal` (app caiu) · `error` (falhou, precisa de ação) · `warn` (anormal, mas tratado) · `info` (evento de negócio) · `debug` (só local/homologação) |
-| `requestId` | Gerado no middleware em toda requisição, devolvido no header `x-request-id`, presente em todo log e evento do Sentry |
+| `requestId` | Gerado em `src/proxy.ts` em toda requisição (o `x-request-id` vindo do cliente é ignorado), repassado à app e devolvido no header `x-request-id`. No servidor: `logger.child({ requestId: getRequestId(await headers()) })` (`src/lib/request-id.ts`). Presente em todo log e evento do Sentry |
 | `event` | Nome estável `dominio.acao_resultado` (ex.: `order.paid`, `checkout.quote_expired`) — dá para buscar e criar alerta |
 | Eventos obrigatórios (`info`) | pedido criado/pago/expirado/concluído, webhook recebido/duplicado/inválido, cotação travada, login de admin, mudança de preço, promoção criada/alterada, cupom criado/aplicado/rejeitado, conversa aberta/assumida/resolvida, convite de equipe enviado/aceito, conta de equipe desativada |
 | Proibido logar | **corpo de mensagem do chat**, senha, token, cookie, header `Authorization`, dados de cartão, chave/seed de carteira, e-mail completo, IP fora do log de acesso (ver [09](09-seguranca-privacidade.md)) |
