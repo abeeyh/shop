@@ -8,10 +8,11 @@ type SiteHeaderProps = {
   nav: NavItem[];
   navLabel: string;
   tools?: ReactNode; // seletores de região/idioma/fuso, carrinho (#13, #14, #17)
+  search?: ReactNode; // RN-100: busca de produtos
 };
 
 // docs/15 §3 item 1: logo, menu de categorias e ferramentas à direita
-export function SiteHeader({ homeHref, nav, navLabel, tools }: SiteHeaderProps) {
+export function SiteHeader({ homeHref, nav, navLabel, tools, search }: SiteHeaderProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur">
       <div className="mx-auto flex min-h-18 w-full max-w-[1350px] items-center gap-4 px-4 sm:px-5">
@@ -38,7 +39,12 @@ export function SiteHeader({ homeHref, nav, navLabel, tools }: SiteHeaderProps) 
             </Link>
           ))}
         </nav>
-        <div className="ml-auto flex items-center gap-2">{tools}</div>
+        {search ? <div className="ml-auto hidden w-full max-w-xs md:block">{search}</div> : null}
+        <div
+          className={search ? "ml-auto flex items-center gap-2 md:ml-0" : "ml-auto flex items-center gap-2"}
+        >
+          {tools}
+        </div>
       </div>
     </header>
   );

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { SiteFooter } from "@/components/organisms/SiteFooter";
+import { SearchField } from "@/components/molecules/SearchField";
 import { SiteHeader } from "@/components/organisms/SiteHeader";
 import { categoryHref, listCategories } from "@/features/catalog";
 import {
@@ -18,12 +19,14 @@ import { getRegion, getTimezone } from "@/lib/preferences";
 
 async function StoreHeader({ locale }: { locale: string }) {
   await connection(); // categorias e preferências vêm do banco/cookie: hora da requisição
-  const [categories, region, timezone, t] = await Promise.all([
+  const [categories, region, timezone, t, s] = await Promise.all([
     listCategories(),
     getRegion(),
     getTimezone(),
     getTranslations({ locale, namespace: "Nav" }),
+    getTranslations({ locale, namespace: "Search" }),
   ]);
+  const searchProps = { action: `/${locale}/produtos`, label: s("label"), placeholder: s("placeholder") };
   const nav = categories.map((c) => ({ href: categoryHref(locale, c.slug), label: c.name }));
   const prefs = {
     locale,
@@ -45,6 +48,7 @@ async function StoreHeader({ locale }: { locale: string }) {
       homeHref={`/${locale}`}
       navLabel={t("label")}
       nav={nav}
+      search={<SearchField id="busca" {...searchProps} />}
       tools={
         <>
           <TimezoneDetector hasTimezone={timezone !== null} />
@@ -52,6 +56,9 @@ async function StoreHeader({ locale }: { locale: string }) {
             <PreferenceSelects idPrefix="pref" {...prefs} />
           </div>
           <MobileMenu openLabel={t("menu")} closeLabel={t("closeMenu")}>
+            <div className="mb-4">
+              <SearchField id="busca-m" {...searchProps} />
+            </div>
             <nav aria-label={t("label")} className="mb-4 grid gap-1">
               {nav.map((item) => (
                 <Link

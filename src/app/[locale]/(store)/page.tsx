@@ -81,6 +81,12 @@ async function HomeCatalog({ locale }: { locale: string }) {
         >
           {t("bestSellers")}
         </h2>
+        <Link
+          href={`/${locale}/produtos`}
+          className="-mt-3 mb-6 inline-block text-sm text-link hover:underline"
+        >
+          {t("viewAll")} →
+        </Link>
         {products.length ? (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,260px),1fr))] gap-5">
             {products.map((p) => (

@@ -22,6 +22,20 @@
       "when": 1794026132715,
       "tag": "0002_slow_mockingbird",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794026621403,
+      "tag": "0003_pg_trgm",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794026627610,
+      "tag": "0004_misty_demogoblin",
+      "breakpoints": true
     }
   ]
 }
