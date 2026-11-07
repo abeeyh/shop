@@ -35,3 +35,8 @@ next-env.d.ts
 .pnp.*
 *.pem
 .vercel
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
