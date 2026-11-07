@@ -15,6 +15,7 @@ import {
 import { isBookable, listSlotsForProduct, seatsLeft } from "@/features/schedule";
 import { ChatOpenButton } from "@/features/support";
 import { canonicalLocale } from "@/i18n/routing";
+import { getCustomer, listCharacters } from "@/features/account";
 import { AddToCartForm } from "./components/AddToCartForm";
 
 // opções iniciais do formulário — a prévia inicial usa as mesmas (RN-20: calculada aqui)
@@ -48,6 +49,14 @@ function OnRequest({ product, t }: { product: CatalogProduct; t: T }) {
       <ChatOpenButton label={t("askPrice")} message={t("askPriceMessage", { name: product.name })} />
     </GradientCard>
   );
+}
+
+// RN-108: personagens salvos de quem está logado (null = visitante; a compra segue sem conta, RN-01)
+async function accountCharacters() {
+  const customer = await getCustomer();
+  if (!customer) return null;
+  const list = await listCharacters(customer.id);
+  return list.map((x) => ({ realm: x.realm, faction: x.faction as "alliance" | "horde", name: x.name }));
 }
 
 // RN-16 (#94): horários com vaga, se o admin cadastrou; senão a run é agendada com o suporte
@@ -96,11 +105,12 @@ const unitLabel = (
 };
 
 export async function BuyBox({ locale, product, timeZone }: Props) {
-  const [t, c, s, promos] = await Promise.all([
+  const [t, c, s, promos, account] = await Promise.all([
     getTranslations({ locale, namespace: "Buy" }),
     getTranslations({ locale, namespace: "Catalog" }),
     getTranslations({ locale, namespace: "Schedule" }),
     activePromotions(),
+    accountCharacters(),
   ]);
   // produto com opções mostra o seletor mesmo sob consulta: o cliente pergunta pela combinação certa
   if (product.priceOnRequest && !product.optionAxes.length) return <OnRequest product={product} t={t} />;
@@ -144,6 +154,7 @@ export async function BuyBox({ locale, product, timeZone }: Props) {
         slots={slots}
         variants={variants}
         askPrice={{ label: t("askPrice"), message: t("askPriceMessage", { name: product.name }) }}
+        account={account}
         labels={{
           realm: t("realm"),
           faction: t("faction"),
@@ -156,6 +167,9 @@ export async function BuyBox({ locale, product, timeZone }: Props) {
           addons: t("addons"),
           scheduleNote: t("scheduleNote"),
           onRequest: t("onRequest"),
+          savedCharacter: t("savedCharacter"),
+          savedNone: t("savedNone"),
+          saveCharacter: t("saveCharacter"),
           total: t("total"),
           add: t("add"),
           added: t("added"),

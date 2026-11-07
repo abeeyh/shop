@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, UserRound } from "lucide-react";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -59,6 +59,14 @@ async function StoreHeader({ locale }: { locale: string }) {
                 {cartCount}
               </span>
             ) : null}
+          </Link>
+          {/* RN-107: a página decide entre "Minha conta" e o login */}
+          <Link
+            href={`/${locale}/conta`}
+            aria-label={t("account")}
+            className="grid size-11 place-items-center rounded-full border border-border text-heading hover:bg-accent"
+          >
+            <UserRound aria-hidden="true" className="size-5" />
           </Link>
           <div className="hidden lg:flex">
             <PreferenceSelects idPrefix="pref" {...prefs} />

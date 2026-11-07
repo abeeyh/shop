@@ -16,6 +16,7 @@ describe.skipIf(!process.env.DATABASE_URL)("limite de uso do cupom (RN-25, RN-27
 
   const order = (email: string) => ({
     email,
+    userId: null,
     locale: "en",
     network: "trc20" as const,
     subtotalUsdtCents: 1000,

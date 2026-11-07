@@ -14,7 +14,7 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 
 | ID | Regra |
 |----|-------|
-| RN-01 | Comprar não exige conta: checkout como visitante com e-mail. *(proposta — confirmar)* |
+| RN-01 | Comprar não exige conta: checkout como visitante com e-mail. A conta é opcional (RN-107). *(proposta — confirmar)* |
 | RN-02 | Admin acessa o painel só com 2FA ativo. *(proposta — confirmar)* |
 | RN-03 | A loja **nunca** pede, recebe ou guarda login/senha de Battle.net do cliente. No MVP todo serviço é *self-play* (o cliente joga junto). *(proposta — confirmar)* |
 | RN-04 | Papéis: `cliente`, `suporte` e `admin`. Contas de **suporte** e **admin** só são criadas por um admin, por convite de e-mail; nunca pelo cadastro público. *(aprovada em 2026-11-06)* |
@@ -48,6 +48,9 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 | RN-104 | Sem resultado: mensagem no idioma do usuário, botão "limpar filtros" e sugestão das categorias; produto inativo nunca aparece. *(proposta — confirmar)* |
 | RN-105 | Busca com rate limit compartilhado (#48): 30 buscas por minuto por IP. *(proposta — confirmar)* |
 | RN-106 | **Sob consulta:** produto marcado pelo admin mostra "Sob consulta" no lugar do preço e o botão "Consultar preço", que abre o chat com o nome do produto; **nunca vai ao carrinho** (o servidor recusa). Filtro e ordenação por preço ignoram esses produtos (ficam no fim). Na importação, `price` ≤ 1 (e valores claramente provisórios, abaixo de 1.000) vira sob consulta. Conversão da importação: 1.000.000 do preço de origem = 45 USDT. *(aprovada em 2026-11-07 — #94)* |
+| RN-107 | **Conta de cliente (opcional):** cadastro com e-mail e senha (12+ caracteres; senha vazada recusada). Comprar **continua sem conta** (RN-01). Logado, o e-mail já vem preenchido no checkout e o pedido fica em "Minhas compras" (só os feitos logado — o e-mail da conta não é verificado). O cadastro **nunca revela** se o e-mail já existe: conta nova e e-mail já usado têm a mesma resposta e o próximo passo é sempre o login. "Esqueci a senha" e confirmação de e-mail ficam **bloqueados ("API ainda não implementada")** até o e-mail transacional (#29); até lá, o suporte ajuda no chat. *(aprovada em 2026-11-07 — #101)* |
+| RN-108 | **Personagens salvos:** o cliente logado salva até **10** personagens (realm, facção, nome — regras da RN-15) na conta ou marcando "salvar este personagem" na compra; o mesmo realm + nome não repete. Na compra, escolher um personagem salvo preenche o formulário. Editar = remover e salvar de novo. *(aprovada em 2026-11-07 — #101)* |
+| RN-109 | **Excluir a conta:** o cliente exclui a própria conta confirmando a senha; some a conta, as sessões e os personagens salvos. Os pedidos ficam guardados por 5 anos (obrigação fiscal) sem o vínculo com a conta. Conta de equipe não se exclui por aí (RN-04). *(aprovada em 2026-11-07 — #101)* |
 
 ## Carrinho
 

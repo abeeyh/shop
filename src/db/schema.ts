@@ -1,6 +1,7 @@
 // Tabelas do banco (docs/04 — Modelo de dados). Cada feature acrescenta as suas aqui
 // e gera a migração com `pnpm db:generate`.
 import {
+  type AnyPgColumn,
   bigserial,
   boolean,
   check,
@@ -215,6 +216,8 @@ export const orders = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     email: text("email").notNull(), // RN-01; dado pessoal — nunca em log (docs/16)
+    // RN-107: conta que fez o pedido (logado); null = visitante ou conta excluída (RN-109)
+    userId: text("user_id").references((): AnyPgColumn => users.id, { onDelete: "set null" }),
     locale: text("locale").notNull(),
     status: orderStatus("status").notNull().default("pendente"),
     subtotalUsdtCents: integer("subtotal_usdt_cents").notNull(),
@@ -235,6 +238,7 @@ export const orders = pgTable(
   },
   (t) => [
     index("orders_status_expires_idx").on(t.status, t.expiresAt),
+    index("orders_user_idx").on(t.userId), // RN-107: "meus pedidos"
     check("orders_amounts", sql`${t.totalUsdtCents} > 0 and ${t.subtotalUsdtCents} >= ${t.totalUsdtCents}`),
   ],
 );
@@ -279,8 +283,8 @@ export const paymentEvents = pgTable("payment_events", {
   receivedAt: timestamp("received_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
-// Autenticação (Better Auth — docs/03). Só equipe no MVP: cliente compra sem conta (RN-01).
-// Ids em texto: gerados pelo Better Auth.
+// Autenticação (Better Auth — docs/03). Equipe (convite, RN-04) e cliente com cadastro opcional (RN-107);
+// comprar continua sem conta (RN-01). Ids em texto: gerados pelo Better Auth.
 export const users = pgTable("users", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -558,5 +562,25 @@ export const supportHours = pgTable(
       "support_hours_range",
       sql`${t.weekday} between 0 and 6 and ${t.startMin} between 0 and 1439 and ${t.endMin} between 0 and 1439`,
     ),
+  ],
+);
+
+// RN-108: personagens salvos pelo cliente para compras futuras (opcional; até 10 por conta). Dado pessoal
+// (docs/09): some com a conta (RN-109). Mesmo realm + nome não repete na conta (sem diferenciar maiúsculas).
+export const characters = pgTable(
+  "characters",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    realm: text("realm").notNull(),
+    faction: text("faction").notNull(),
+    name: text("name").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("characters_user_realm_name_idx").on(t.userId, sql`lower(${t.realm})`, sql`lower(${t.name})`),
+    check("characters_faction", sql`${t.faction} in ('alliance', 'horde')`),
   ],
 );

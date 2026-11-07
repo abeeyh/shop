@@ -11,7 +11,8 @@
     "menu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
     "detecting": "Détection…",
-    "cart": "Panier ({n} articles)"
+    "cart": "Panier ({n} articles)",
+    "account": "Mon compte"
   },
   "Home": {
     "badge": "WoW Retail · US et EU",
@@ -123,7 +124,10 @@
     "onRequest": "Prix sur demande",
     "onRequestNote": "Contactez le support pour obtenir un devis pour ce service.",
     "askPrice": "Demander le prix",
-    "askPriceMessage": "Bonjour ! Je voudrais un devis pour : {name}"
+    "askPriceMessage": "Bonjour ! Je voudrais un devis pour : {name}",
+    "savedCharacter": "Personnage enregistré",
+    "savedNone": "— en saisir un autre —",
+    "saveCharacter": "Enregistrer ce personnage dans mon compte"
   },
   "Cart": {
     "title": "Panier",
@@ -471,5 +475,49 @@
     "offlineTitle": "Nous sommes hors ligne — laissez un message, nous répondrons par e-mail ou ici.",
     "offlineStart": "Laisser un message",
     "backAt": "De retour le"
+  },
+  "Account": {
+    "title": "Mon compte",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "signOut": "Se déconnecter",
+    "login": {
+      "title": "Se connecter",
+      "submit": "Se connecter",
+      "forgot": "Mot de passe oublié ? La réinitialisation n'est pas encore disponible (API pas encore implémentée). Contactez le support dans le chat.",
+      "noAccount": "Pas encore de compte ?"
+    },
+    "signup": {
+      "title": "Créer un compte",
+      "intro": "Facultatif : vous pouvez acheter sans compte. Avec un compte, vous voyez vos commandes et enregistrez vos personnages.",
+      "passwordHint": "Au moins 12 caractères. Les mots de passe divulgués sont refusés.",
+      "submit": "Créer un compte",
+      "done": "Si le compte a pu être créé, connectez-vous avec votre e-mail et votre mot de passe.",
+      "hasAccount": "Vous avez déjà un compte ?"
+    },
+    "orders": {
+      "title": "Mes commandes",
+      "empty": "Aucune commande passée avec ce compte pour l'instant."
+    },
+    "characters": {
+      "title": "Mes personnages",
+      "intro": "Les personnages enregistrés remplissent le formulaire d'achat pour vous (10 max).",
+      "add": "Enregistrer le personnage",
+      "remove": "Supprimer"
+    },
+    "delete": {
+      "title": "Supprimer le compte",
+      "intro": "Supprime votre compte et vos personnages enregistrés. Les commandes sont conservées 5 ans (loi fiscale), sans lien avec le compte.",
+      "submit": "Supprimer mon compte"
+    },
+    "errors": {
+      "invalid": "E-mail ou mot de passe incorrect.",
+      "signupInvalid": "Saisissez un e-mail valide et un mot de passe d'au moins 12 caractères.",
+      "limited": "Trop de tentatives. Réessayez dans quelques minutes.",
+      "pwned": "Ce mot de passe figure dans une fuite de données. Choisissez-en un autre.",
+      "character": "Saisissez le royaume et un nom de 2 à 12 lettres.",
+      "characterLimit": "Vous pouvez enregistrer jusqu'à 10 personnages.",
+      "characterDuplicate": "Ce personnage est déjà enregistré."
+    }
   }
 }

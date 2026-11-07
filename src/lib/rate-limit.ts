@@ -14,6 +14,7 @@ export const RATE_LIMITS = {
   sse: { limit: 30, windowMs: 60_000 }, // aberturas de SSE do chat por IP
   checkout: { limit: 10, windowMs: 10 * 60_000 }, // por IP: cada checkout reserva vaga e cupom
   login: { limit: 10, windowMs: 10 * 60_000 }, // por IP e por e-mail: senha e código do 2FA (docs/09 §2)
+  signup: { limit: 5, windowMs: 60 * 60_000 }, // RN-107: contas novas por IP (sem CAPTCHA até o #29)
 } as const;
 
 export type RateLimitResult = { allowed: boolean; remaining: number; resetMs: number };

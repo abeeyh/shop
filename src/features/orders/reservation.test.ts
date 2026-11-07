@@ -15,6 +15,7 @@ describe.skipIf(!process.env.DATABASE_URL)("reserva de vaga (RN-34)", () => {
 
   const order = (raidSlotId: string) => ({
     email: "test@example.com",
+    userId: null,
     locale: "en",
     network: "trc20" as const,
     subtotalUsdtCents: 100,

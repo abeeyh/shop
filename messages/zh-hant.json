@@ -11,7 +11,8 @@
     "menu": "開啟選單",
     "closeMenu": "關閉選單",
     "detecting": "偵測中…",
-    "cart": "購物車（{n} 項）"
+    "cart": "購物車（{n} 項）",
+    "account": "我的帳號"
   },
   "Home": {
     "badge": "WoW 正式版 · 美服與歐服",
@@ -123,7 +124,10 @@
     "onRequest": "價格另洽",
     "onRequestNote": "請聯絡客服取得此服務的報價。",
     "askPrice": "詢問價格",
-    "askPriceMessage": "你好！我想詢問以下服務的報價：{name}"
+    "askPriceMessage": "你好！我想詢問以下服務的報價：{name}",
+    "savedCharacter": "已儲存的角色",
+    "savedNone": "— 輸入其他角色 —",
+    "saveCharacter": "將此角色儲存到我的帳號"
   },
   "Cart": {
     "title": "購物車",
@@ -471,5 +475,49 @@
     "offlineTitle": "目前不在服務時間 — 請留言，我們會以電子郵件或在此回覆。",
     "offlineStart": "留言",
     "backAt": "恢復服務時間"
+  },
+  "Account": {
+    "title": "我的帳號",
+    "email": "電子郵件",
+    "password": "密碼",
+    "signOut": "登出",
+    "login": {
+      "title": "登入",
+      "submit": "登入",
+      "forgot": "忘記密碼？重設密碼尚未提供（API 尚未實作）。請在聊天中聯絡客服。",
+      "noAccount": "還沒有帳號？"
+    },
+    "signup": {
+      "title": "建立帳號",
+      "intro": "可選：不需帳號也能購買。有帳號就能查看訂單並儲存角色。",
+      "passwordHint": "至少 12 個字元。外洩過的密碼會被拒絕。",
+      "submit": "建立帳號",
+      "done": "若帳號已成功建立，請用電子郵件與密碼登入。",
+      "hasAccount": "已有帳號？"
+    },
+    "orders": {
+      "title": "我的訂單",
+      "empty": "此帳號尚未下過訂單。"
+    },
+    "characters": {
+      "title": "我的角色",
+      "intro": "已儲存的角色會自動填入購買表單（最多 10 個）。",
+      "add": "儲存角色",
+      "remove": "移除"
+    },
+    "delete": {
+      "title": "刪除帳號",
+      "intro": "刪除你的帳號與已儲存的角色。訂單依稅法保存 5 年，但不再連結帳號。",
+      "submit": "刪除我的帳號"
+    },
+    "errors": {
+      "invalid": "電子郵件或密碼錯誤。",
+      "signupInvalid": "請輸入有效的電子郵件與至少 12 個字元的密碼。",
+      "limited": "嘗試次數過多，請幾分鐘後再試。",
+      "pwned": "此密碼曾出現在資料外洩中，請改用其他密碼。",
+      "character": "請輸入伺服器與 2–12 個字母的名稱。",
+      "characterLimit": "最多可儲存 10 個角色。",
+      "characterDuplicate": "此角色已儲存。"
+    }
   }
 }

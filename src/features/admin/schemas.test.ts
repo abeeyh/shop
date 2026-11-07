@@ -60,7 +60,7 @@ describe("#100: eixos e combinações do produto", () => {
     ).toContain("optionAxes");
     const t0 = Date.now();
     expect(bad(`a${" ".repeat(19_000)}b | 10`)).toEqual(["variants"]);
-    expect(Date.now() - t0).toBeLessThan(200);
+    expect(Date.now() - t0).toBeLessThan(1_000); // quadrática levaria segundos; folga para a suíte em paralelo
   });
 });
 

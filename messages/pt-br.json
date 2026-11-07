@@ -11,7 +11,8 @@
     "menu": "Abrir menu",
     "closeMenu": "Fechar menu",
     "detecting": "Detectando…",
-    "cart": "Carrinho ({n} itens)"
+    "cart": "Carrinho ({n} itens)",
+    "account": "Minha conta"
   },
   "Home": {
     "badge": "WoW Retail · US e EU",
@@ -123,7 +124,10 @@
     "onRequest": "Sob consulta",
     "onRequestNote": "Fale com o suporte para receber o orçamento deste serviço.",
     "askPrice": "Consultar preço",
-    "askPriceMessage": "Olá! Quero um orçamento de: {name}"
+    "askPriceMessage": "Olá! Quero um orçamento de: {name}",
+    "savedCharacter": "Personagem salvo",
+    "savedNone": "— digitar outro —",
+    "saveCharacter": "Salvar este personagem na minha conta"
   },
   "Cart": {
     "title": "Carrinho",
@@ -471,5 +475,49 @@
     "offlineTitle": "Estamos fora do horário agora — deixe sua mensagem e respondemos por e-mail ou aqui.",
     "offlineStart": "Deixar mensagem",
     "backAt": "Voltamos em"
+  },
+  "Account": {
+    "title": "Minha conta",
+    "email": "E-mail",
+    "password": "Senha",
+    "signOut": "Sair",
+    "login": {
+      "title": "Entrar",
+      "submit": "Entrar",
+      "forgot": "Esqueceu a senha? A troca de senha ainda não está disponível (API ainda não implementada). Fale com o suporte no chat.",
+      "noAccount": "Ainda não tem conta?"
+    },
+    "signup": {
+      "title": "Criar conta",
+      "intro": "Opcional: dá para comprar sem conta. Com ela, você vê seus pedidos e salva seus personagens.",
+      "passwordHint": "No mínimo 12 caracteres. Senhas vazadas são recusadas.",
+      "submit": "Criar conta",
+      "done": "Se a conta pôde ser criada, entre com seu e-mail e senha.",
+      "hasAccount": "Já tem conta?"
+    },
+    "orders": {
+      "title": "Meus pedidos",
+      "empty": "Nenhum pedido feito com esta conta ainda."
+    },
+    "characters": {
+      "title": "Meus personagens",
+      "intro": "Personagens salvos preenchem o formulário de compra para você (até 10).",
+      "add": "Salvar personagem",
+      "remove": "Remover"
+    },
+    "delete": {
+      "title": "Excluir conta",
+      "intro": "Apaga sua conta e os personagens salvos. Os pedidos ficam guardados por 5 anos (lei fiscal), sem o vínculo com a conta.",
+      "submit": "Excluir minha conta"
+    },
+    "errors": {
+      "invalid": "E-mail ou senha incorretos.",
+      "signupInvalid": "Informe um e-mail válido e uma senha com pelo menos 12 caracteres.",
+      "limited": "Muitas tentativas. Tente de novo em alguns minutos.",
+      "pwned": "Esta senha apareceu em um vazamento de dados. Escolha outra.",
+      "character": "Informe o realm e um nome com 2 a 12 letras.",
+      "characterLimit": "Você pode salvar até 10 personagens.",
+      "characterDuplicate": "Este personagem já está salvo."
+    }
   }
 }

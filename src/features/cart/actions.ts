@@ -13,6 +13,8 @@ import {
   type Addon,
 } from "@/features/pricing/rules";
 import { isBookable, listSlotsForProduct } from "@/features/schedule";
+import { addCharacter } from "@/features/account/queries";
+import { getCustomer } from "@/features/account/session";
 import { routing } from "@/i18n/routing";
 import { clientIp, rateLimitKey } from "@/lib/client-ip";
 import { env } from "@/lib/env";
@@ -97,8 +99,18 @@ export async function addToCart(_prev: AddState, form: FormData): Promise<AddSta
   if (!checked.ok) return { status: "error", fields: checked.fields };
   const cartId = await ensureCart();
   await insertItem(cartId, { productId: checked.productId, ...checked.item });
+  if (form.get("saveCharacter") === "on") await rememberCharacter(checked.item);
   refresh(); // contador do carrinho no cabeçalho
   return { status: "ok", fields: [] };
+}
+
+// RN-108: "salvar este personagem" (só logado; repetido ou acima do limite é ignorado em silêncio — a
+// compra não depende disso)
+async function rememberCharacter(item: ParsedItem) {
+  const customer = await getCustomer();
+  if (!customer) return;
+  const { realm, faction, character: name } = item.options;
+  await addCharacter(customer.id, { realm, faction, name });
 }
 
 // Prévia do total no formulário: calculada aqui (o navegador não calcula preço — docs/04)

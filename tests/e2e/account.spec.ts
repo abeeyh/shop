@@ -1,0 +1,67 @@
+import { expect, test, type Page } from "@playwright/test";
+
+// com cacheComponents a página anterior fica escondida no DOM (React Activity): só o campo visível
+const field = (page: Page, label: string) => page.getByLabel(label).filter({ visible: true });
+
+// RN-107 a RN-109 (#101): cadastro opcional, personagens salvos e exclusão da conta
+test.describe("conta do cliente", () => {
+  test("cadastro → login → personagem salvo preenche a compra → excluir a conta", async ({ page }, info) => {
+    const email = `e2e-${info.project.name}-${Date.now()}@example.com`;
+    const password = `Shop-e2e-${Date.now()}-x9!Q`; // longa e aleatória: não está em vazamento (HIBP)
+
+    await page.goto("/en/cadastro");
+    await field(page, "Email").fill(email);
+    await field(page, "Password").fill(password);
+    await page.getByRole("button", { name: "Create account" }).click();
+    // docs/09: mesma resposta para conta nova e e-mail já usado — o próximo passo é o login
+    await expect(page.getByRole("status")).toContainText("If the account could be created");
+
+    await field(page, "Email").fill(email);
+    await field(page, "Password").fill(password);
+    await page.getByRole("button", { name: "Sign in" }).click();
+    await expect(page).toHaveURL(/\/en\/conta$/);
+    await expect(page.getByText(email)).toBeVisible();
+
+    // RN-108: salvar personagem na conta
+    await field(page, "Realm").fill("Area 52");
+    await field(page, "Faction").selectOption("horde");
+    await field(page, "Character name").fill("Thrall");
+    await page.getByRole("button", { name: "Save character" }).click();
+    await expect(page.getByText("Thrall · Area 52 · Horde")).toBeVisible();
+
+    // na compra, o personagem salvo preenche o formulário
+    await page.goto("/en/wow/mythic-plus/mythic-plus-key");
+    await field(page, "Saved character").selectOption({ label: "Thrall · Area 52" });
+    await expect(field(page, "Realm")).toHaveValue("Area 52");
+    await expect(field(page, "Character name")).toHaveValue("Thrall");
+    await expect(field(page, "Horde")).toBeChecked();
+
+    // RN-109: excluir a conta pede a senha; depois a área da conta volta para o login
+    await page.goto("/en/conta");
+    await field(page, "Password").fill("wrong-password-123");
+    await page.getByRole("button", { name: "Delete my account" }).click();
+    await expect(page.getByRole("alert").filter({ hasText: "incorrect" })).toBeVisible();
+    await field(page, "Password").fill(password);
+    await page.getByRole("button", { name: "Delete my account" }).click();
+    await expect(page).toHaveURL(/\/en$/);
+    await page.goto("/en/conta");
+    await expect(page).toHaveURL(/\/en\/entrar$/);
+  });
+
+  test("docs/09: cadastro com e-mail já usado dá a mesma resposta (não revela a conta)", async ({
+    page,
+  }, info) => {
+    // limite de 5 cadastros/h por IP (RN-107): roda num projeto só para a suíte caber no limite
+    test.skip(info.project.name !== "desktop", "um projeto basta");
+    const email = `e2e-dup-${info.project.name}-${Date.now()}@example.com`;
+    const password = `Shop-e2e-${Date.now()}-k7!Z`;
+    for (let i = 0; i < 2; i++) {
+      await page.goto("/en/cadastro");
+      await field(page, "Email").fill(email);
+      await field(page, "Password").fill(password);
+      await page.getByRole("button", { name: "Create account" }).click();
+      await expect(page).toHaveURL(/\/en\/entrar\?novo=1$/);
+      await expect(page.getByRole("status")).toContainText("If the account could be created");
+    }
+  });
+});
