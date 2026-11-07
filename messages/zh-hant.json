@@ -11,7 +11,8 @@
     "timezone": "時區",
     "menu": "開啟選單",
     "closeMenu": "關閉選單",
-    "detecting": "偵測中…"
+    "detecting": "偵測中…",
+    "cart": "購物車（{n} 項）"
   },
   "Home": {
     "badge": "WoW 正式版 · 美服與歐服",
@@ -82,5 +83,94 @@
     "pagination": "頁數",
     "prev": "上一頁",
     "next": "下一頁"
+  },
+  "Buy": {
+    "realm": "伺服器",
+    "faction": "陣營",
+    "alliance": "聯盟",
+    "horde": "部落",
+    "character": "角色名稱",
+    "characterHint": "接收金幣的角色（僅限文字）。",
+    "quantity": "數量（千金幣）",
+    "slot": "日期與時間",
+    "loot": "戰利品選項",
+    "lootNone": "僅通關",
+    "lootArmor": "依護甲類型優先（+30%）",
+    "lootFull": "完整戰利品（+80%）",
+    "keyLevel": "鑰石等級",
+    "runs": "場數",
+    "timed": "限時完成（+20%）",
+    "total": "總計",
+    "add": "加入購物車",
+    "added": "已加入購物車",
+    "viewCart": "查看購物車",
+    "unit": {
+      "raid": "每次團隊副本",
+      "dungeon": "每場，最高 +10",
+      "gold": "每 1,000 金幣"
+    },
+    "errors": {
+      "realm": "請輸入伺服器名稱。",
+      "character": "請使用 2–12 個文字，不含空格或符號。",
+      "quantity": "請選擇 50k 至 5,000k，以 50k 為單位。",
+      "slotId": "此時段已無法預約，請選擇其他時段。",
+      "product": "此商品已無法購買。",
+      "faction": "請選擇陣營。",
+      "keyLevel": "請選擇 +2 至 +15 的等級。",
+      "runs": "請選擇 1 至 10 場。",
+      "loot": "請選擇戰利品選項。"
+    }
+  },
+  "Cart": {
+    "title": "購物車",
+    "empty": "你的購物車是空的。",
+    "browse": "瀏覽商品",
+    "remove": "移除",
+    "subtotal": "小計",
+    "note": "折扣與優惠碼在結帳時套用。",
+    "unavailable": "已無法購買 — 不計入總額。",
+    "removeUnavailable": "請移除無法購買的商品以繼續。",
+    "alliance": "聯盟",
+    "horde": "部落",
+    "loot": {
+      "none": "僅通關",
+      "armor": "依護甲類型優先",
+      "full": "完整戰利品"
+    },
+    "runs": "{n} 場",
+    "timed": "限時"
+  },
+  "Checkout": {
+    "email": "電子郵件",
+    "emailHint": "訂單連結與交付進度會寄到這裡。",
+    "network": "USDT 網路",
+    "networkWarning": "請只透過所選網路發送 USDT，透過其他網路發送的款項將會遺失。",
+    "pay": "使用 USDT 付款",
+    "errors": {
+      "email": "請輸入有效的電子郵件。",
+      "empty": "你的購物車是空的。",
+      "unavailable": "請移除無法購買的商品以繼續。",
+      "payment": "無法建立付款，請稍後再試。"
+    }
+  },
+  "Order": {
+    "title": "你的訂單",
+    "status": "狀態",
+    "total": "總計",
+    "network": "僅透過 {network} 網路付款",
+    "expiresIn": "剩餘時間",
+    "pay": "開啟付款頁面",
+    "waiting": "等待付款確認，重新整理頁面即可更新。",
+    "partial": "已收到 {paid}，請補足餘額以完成付款。",
+    "statuses": {
+      "pendente": "等待付款",
+      "pagamento_parcial": "部分付款",
+      "pago": "已付款",
+      "em_andamento": "進行中",
+      "concluido": "已完成",
+      "expirado": "已過期",
+      "reembolsado": "已退款",
+      "contestado": "爭議中"
+    }
   }
 }

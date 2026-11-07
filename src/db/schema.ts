@@ -104,3 +104,103 @@ export const raidSlots = pgTable(
     ),
   ],
 );
+
+// Carrinho (RN-01 visitante, RN-20 total recalculado no servidor). Identificado por cookie httpOnly.
+export const carts = pgTable("carts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  ...timestamps,
+});
+
+export const cartItems = pgTable(
+  "cart_items",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    cartId: uuid("cart_id")
+      .notNull()
+      .references(() => carts.id, { onDelete: "cascade" }),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id),
+    raidSlotId: uuid("raid_slot_id").references(() => raidSlots.id),
+    quantity: integer("quantity").notNull(), // gold: milhares; M+: runs; raid: 1
+    options: jsonb("options").notNull().default({}), // validado por tipo (features/cart/schemas.ts)
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("cart_items_cart_idx").on(t.cartId), check("cart_items_quantity", sql`${t.quantity} > 0`)],
+);
+
+// Pedido (RN-50). Preços congelados no checkout; só o IPN assinado muda para pago (RN-32).
+export const orderStatus = pgEnum("order_status", [
+  "pendente",
+  "pagamento_parcial",
+  "pago",
+  "em_andamento",
+  "concluido",
+  "expirado",
+  "reembolsado",
+  "contestado",
+]);
+export const paymentNetwork = pgEnum("payment_network", ["trc20", "erc20"]); // RN-37
+
+export const orders = pgTable(
+  "orders",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    email: text("email").notNull(), // RN-01; dado pessoal — nunca em log (docs/16)
+    locale: text("locale").notNull(),
+    status: orderStatus("status").notNull().default("pendente"),
+    subtotalUsdtCents: integer("subtotal_usdt_cents").notNull(),
+    discountUsdtCents: integer("discount_usdt_cents").notNull().default(0),
+    totalUsdtCents: integer("total_usdt_cents").notNull(),
+    paymentMethod: text("payment_method").notNull().default("usdt"), // RN-35
+    network: paymentNetwork("network"),
+    provider: text("provider"),
+    providerPaymentId: text("provider_payment_id"),
+    payUrl: text("pay_url"),
+    paidUsdtCents: integer("paid_usdt_cents"), // valor recebido segundo o IPN (RN-37)
+    txHash: text("tx_hash"),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(), // RN-34
+    ...timestamps,
+  },
+  (t) => [
+    index("orders_status_expires_idx").on(t.status, t.expiresAt),
+    check("orders_amounts", sql`${t.totalUsdtCents} > 0 and ${t.subtotalUsdtCents} >= ${t.totalUsdtCents}`),
+  ],
+);
+
+export const orderItems = pgTable(
+  "order_items",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    orderId: uuid("order_id")
+      .notNull()
+      .references(() => orders.id, { onDelete: "cascade" }),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id),
+    raidSlotId: uuid("raid_slot_id").references(() => raidSlots.id),
+    productName: text("product_name").notNull(), // cópia: o admin pode renomear depois
+    options: jsonb("options").notNull(), // realm/facção/personagem, loot, nível… (RN-15 a RN-17)
+    unitPriceUsdtCents: integer("unit_price_usdt_cents").notNull(),
+    quantity: integer("quantity").notNull(),
+  },
+  (t) => [
+    index("order_items_order_idx").on(t.orderId),
+    check("order_items_quantity", sql`${t.quantity} > 0`),
+  ],
+);
+
+// Idempotência do IPN (RN-33): o mesmo evento chega mais de uma vez e só vale na primeira
+export const paymentEvents = pgTable("payment_events", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  provider: text("provider").notNull(),
+  providerEventId: text("provider_event_id").notNull().unique(),
+  orderId: uuid("order_id").references(() => orders.id),
+  type: text("type").notNull(),
+  // conciliação e crédito/devolução (RN-37): o que o provedor disse que chegou
+  paymentId: text("payment_id"),
+  payCurrency: text("pay_currency"),
+  paidUsdtCents: integer("paid_usdt_cents"),
+  txHash: text("tx_hash"),
+  receivedAt: timestamp("received_at", { withTimezone: true }).notNull().defaultNow(),
+});

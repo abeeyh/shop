@@ -1,10 +1,12 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { SiteFooter } from "@/components/organisms/SiteFooter";
 import { SearchField } from "@/components/molecules/SearchField";
 import { SiteHeader } from "@/components/organisms/SiteHeader";
+import { countItems, getCartId } from "@/features/cart";
 import { categoryHref, listCategories } from "@/features/catalog";
 import {
   MobileMenu,
@@ -19,12 +21,14 @@ import { getRegion, getTimezone } from "@/lib/preferences";
 
 async function StoreHeader({ locale }: { locale: string }) {
   await connection(); // categorias e preferências vêm do banco/cookie: hora da requisição
-  const [categories, region, timezone, t, s] = await Promise.all([
+  const cartId = await getCartId();
+  const [categories, region, timezone, t, s, cartCount] = await Promise.all([
     listCategories(),
     getRegion(),
     getTimezone(),
     getTranslations({ locale, namespace: "Nav" }),
     getTranslations({ locale, namespace: "Search" }),
+    cartId ? countItems(cartId) : 0,
   ]);
   const searchProps = { action: `/${locale}/produtos`, label: s("label"), placeholder: s("placeholder") };
   const nav = categories.map((c) => ({ href: categoryHref(locale, c.slug), label: c.name }));
@@ -52,6 +56,18 @@ async function StoreHeader({ locale }: { locale: string }) {
       tools={
         <>
           <TimezoneDetector hasTimezone={timezone !== null} />
+          <Link
+            href={`/${locale}/carrinho`}
+            aria-label={t("cart", { n: cartCount })}
+            className="relative grid size-11 place-items-center rounded-full border border-border text-heading hover:bg-accent"
+          >
+            <ShoppingCart aria-hidden="true" className="size-5" />
+            {cartCount ? (
+              <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-gradient-from px-1.5 text-center font-heading text-[11px] leading-5 font-bold text-white">
+                {cartCount}
+              </span>
+            ) : null}
+          </Link>
           <div className="hidden lg:flex">
             <PreferenceSelects idPrefix="pref" {...prefs} />
           </div>

@@ -100,7 +100,7 @@ components (Atomic) ◄───────────────────
 1. Cliente escolhe região, produto e opções (realm/facção para gold, slot para raid, chave para M+), e opcionalmente um cupom.
 2. O servidor recalcula o total em USDT a partir do banco (RN-20) e aplica o maior desconto entre promoção e cupom (RN-23, RN-26).
 3. "Finalizar": escolhe **USDT** ou **cartão** (RN-35). A action cria o pedido `pendente`, reserva gold/vaga (RN-34) e:
-   - USDT: cria fatura no gateway (rede escolhida — RN-37);
+   - USDT: cria fatura no gateway (rede escolhida — RN-37), esvazia o carrinho e redireciona para a fatura; falha do gateway → pedido `expirado` e carrinho intacto;
    - Cartão: trava a cotação por 15 min e cria o checkout (RN-36, RN-38).
 4. Webhook/IPN assinado → evento gravado em `payment_events` (RN-33) → pedido `pago` (RN-32) ou `pagamento_parcial` (RN-37).
 5. Admin atribui o pedido à equipe → `em_andamento` → registra a prova de entrega → `concluido` (RN-52).
@@ -146,10 +146,11 @@ sequenceDiagram
 - `coupon_redemptions` (coupon_id, order_id, email, status `reserved|used|released`) — RN-27
 - `audit_log` (id, admin_id, entity, entity_id, action, before jsonb, after jsonb, created_at) — RN-71
 - `raid_slots` (id, product_id, region, starts_at timestamptz, capacity, reserved)
-- `orders` (id, email, locale, timezone, region, status, subtotal_usdt_cents, discount_usdt_cents, discount_source `promotion|coupon|none`, discount_ref, total_usdt_cents, payment_method `usdt|card`, network, tx_hash, quote_rate, charged_amount, charged_currency, provider_payment_id, created_at)
-- `order_items` (order_id, product_id, options jsonb, unit_price_usdt_cents, discount_usdt_cents, quantity, raid_slot_id, character_name, realm, faction)
+- `carts` (id, created_at, updated_at) + `cart_items` (id, cart_id, product_id, raid_slot_id?, quantity > 0, options jsonb) — carrinho do visitante, id em cookie httpOnly (30 dias); **sem preço gravado**: o total é recalculado a cada leitura (RN-20). Tabela de preço (faixas de M+, multiplicador de loot, passo do gold) em `src/features/pricing/rules.ts` (RN-15 a RN-17)
+- `orders` (id, email, locale, status, subtotal_usdt_cents, discount_usdt_cents, total_usdt_cents, payment_method `usdt|card`, network `trc20|erc20`, provider, provider_payment_id, pay_url, paid_usdt_cents, tx_hash, expires_at, created_at, updated_at). Com o cartão (#26) entram quote_rate, charged_amount, charged_currency; com os cupons (#21) discount_source e discount_ref
+- `order_items` (order_id, product_id, raid_slot_id?, product_name (cópia), options jsonb — realm, facção e personagem do gold, loot da raid, nível e timed do M+ —, unit_price_usdt_cents, quantity). Preços congelados no checkout
 - `deliveries` (order_id, proof_url, note, delivered_at, admin_id) — RN-52
-- `payment_events` (provider, provider_event_id **único**, type, received_at) — idempotência
+- `payment_events` (provider, provider_event_id **único** = `payment_id:status:valor pago`, order_id, type, payment_id, pay_currency, paid_usdt_cents, tx_hash, received_at) — idempotência (RN-33) e conciliação; IPN que não bate com o pedido (rede/valor) fica registrado e sem efeito
 - `users` / `sessions` (Better Auth), com `locale` e `timezone`
 - `access_logs` (occurred_at, ip, port?, user_id?, session_id?, method, route, request_id) — log de acesso legal, 6 meses ([16 §9](16-observabilidade.md#9-log-de-acesso-obrigação-legal))
 - `staff_profiles` (user_id, role `suporte|admin`, languages text[], active, invited_by, created_at) — RN-04 a RN-06; clientes não têm linha aqui
@@ -166,8 +167,8 @@ sequenceDiagram
 | `/[locale]` | Página | Público |
 | `/[locale]/produtos?q=&cat=&region=&min=&max=&disponivel=1&sort=&page=` | Página (busca e filtros — RN-100 a RN-103). Fora de `/wow/` para não colidir com o slug de uma categoria; `promo=1` entra com as promoções (#21) | Público |
 | `/[locale]/wow/[categoria]`, `/[locale]/wow/[categoria]/[produto]` (slugs criados pelo admin — RN-13, RN-19; rotas no grupo `app/[locale]/(store)`). Inexistente → página "não encontrada" com `noindex` (status 200 por causa do streaming) | Página | Público |
-| `/[locale]/carrinho`, `/[locale]/checkout` | Página + Server Actions | Público (visitante — RN-01) |
-| `/[locale]/pedido/[id]` | Página | Dono do pedido (sessão ou link assinado) |
+| `/[locale]/carrinho` (carrinho e checkout na mesma página: e-mail, rede e "Pagar com USDT") | Página + Server Actions | Público (visitante — RN-01) |
+| `/[locale]/pedido/[id]?t=` | Página | Dono do pedido: link assinado (HMAC do id com `ORDER_LINK_SECRET`); token errado = "não encontrado". Não mostra o e-mail |
 | `/[locale]/admin/*` | Página | Admin com 2FA (RN-02) |
 | `/[locale]/admin/categorias`, `/[locale]/admin/produtos`, `/[locale]/admin/promocoes`, `/[locale]/admin/cupons` | Página + Server Actions | Admin com 2FA (RN-70) |
 | `/api/webhooks/crypto`, `/api/webhooks/card` | API | Só assinatura do provedor |

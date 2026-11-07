@@ -11,7 +11,8 @@
     "timezone": "时区",
     "menu": "打开菜单",
     "closeMenu": "关闭菜单",
-    "detecting": "检测中…"
+    "detecting": "检测中…",
+    "cart": "购物车（{n} 件）"
   },
   "Home": {
     "badge": "WoW 正式服 · 美服和欧服",
@@ -82,5 +83,94 @@
     "pagination": "页码",
     "prev": "上一页",
     "next": "下一页"
+  },
+  "Buy": {
+    "realm": "服务器",
+    "faction": "阵营",
+    "alliance": "联盟",
+    "horde": "部落",
+    "character": "角色名称",
+    "characterHint": "接收金币的角色（仅限文字）。",
+    "quantity": "数量（千金币）",
+    "slot": "日期和时间",
+    "loot": "战利品选项",
+    "lootNone": "仅通关",
+    "lootArmor": "按护甲类型优先（+30%）",
+    "lootFull": "完整战利品（+80%）",
+    "keyLevel": "钥石等级",
+    "runs": "场数",
+    "timed": "限时完成（+20%）",
+    "total": "总计",
+    "add": "加入购物车",
+    "added": "已加入购物车",
+    "viewCart": "查看购物车",
+    "unit": {
+      "raid": "每次团队副本",
+      "dungeon": "每场，最高 +10",
+      "gold": "每 1,000 金币"
+    },
+    "errors": {
+      "realm": "请输入服务器名称。",
+      "character": "请使用 2–12 个文字，不含空格或符号。",
+      "quantity": "请选择 50k 至 5,000k，以 50k 为单位。",
+      "slotId": "该时段已无法预约，请选择其他时段。",
+      "product": "该商品已无法购买。",
+      "faction": "请选择阵营。",
+      "keyLevel": "请选择 +2 至 +15 的等级。",
+      "runs": "请选择 1 至 10 场。",
+      "loot": "请选择战利品选项。"
+    }
+  },
+  "Cart": {
+    "title": "购物车",
+    "empty": "你的购物车是空的。",
+    "browse": "浏览商品",
+    "remove": "移除",
+    "subtotal": "小计",
+    "note": "折扣和优惠码在结算时使用。",
+    "unavailable": "已无法购买 — 不计入总额。",
+    "removeUnavailable": "请移除无法购买的商品以继续。",
+    "alliance": "联盟",
+    "horde": "部落",
+    "loot": {
+      "none": "仅通关",
+      "armor": "按护甲类型优先",
+      "full": "完整战利品"
+    },
+    "runs": "{n} 场",
+    "timed": "限时"
+  },
+  "Checkout": {
+    "email": "电子邮箱",
+    "emailHint": "订单链接和交付进度会发送到这里。",
+    "network": "USDT 网络",
+    "networkWarning": "请只通过所选网络发送 USDT，通过其他网络发送的款项将会丢失。",
+    "pay": "使用 USDT 付款",
+    "errors": {
+      "email": "请输入有效的电子邮箱。",
+      "empty": "你的购物车是空的。",
+      "unavailable": "请移除无法购买的商品以继续。",
+      "payment": "无法创建付款，请稍后再试。"
+    }
+  },
+  "Order": {
+    "title": "你的订单",
+    "status": "状态",
+    "total": "总计",
+    "network": "仅通过 {network} 网络付款",
+    "expiresIn": "剩余时间",
+    "pay": "打开付款页面",
+    "waiting": "等待付款确认，刷新页面即可更新。",
+    "partial": "已收到 {paid}，请补足余额以完成付款。",
+    "statuses": {
+      "pendente": "等待付款",
+      "pagamento_parcial": "部分付款",
+      "pago": "已付款",
+      "em_andamento": "进行中",
+      "concluido": "已完成",
+      "expirado": "已过期",
+      "reembolsado": "已退款",
+      "contestado": "争议中"
+    }
   }
 }

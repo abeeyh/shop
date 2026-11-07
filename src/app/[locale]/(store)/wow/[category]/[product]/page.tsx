@@ -5,9 +5,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { GradientCard } from "@/components/molecules/GradientCard";
-import { PriceTag } from "@/components/molecules/PriceTag";
-import { categoryHref, formatEstimate, formatUsdt, getProduct, KindThumb } from "@/features/catalog";
-import { UpcomingRaids } from "@/features/schedule/UpcomingRaids";
+import { BuyBox } from "@/features/cart/BuyBox";
+import { categoryHref, getProduct, KindThumb } from "@/features/catalog";
 import { getTimezone } from "@/lib/preferences";
 
 export const instant = false;
@@ -28,11 +27,7 @@ export default async function ProductPage({ params }: PageProps<"/[locale]/wow/[
   const product = await getProduct(slug);
   // produto inexistente, inativo ou em outra categoria → 404 (RN-19)
   if (!product || product.categorySlug !== category) notFound();
-  const [c, s, timeZone] = await Promise.all([
-    getTranslations({ locale, namespace: "Catalog" }),
-    getTranslations({ locale, namespace: "Schedule" }),
-    getTimezone(),
-  ]);
+  const [c, timeZone] = await Promise.all([getTranslations({ locale, namespace: "Catalog" }), getTimezone()]);
 
   return (
     <div className="mx-auto w-full max-w-[1350px] px-4 pb-14 sm:px-5">
@@ -61,24 +56,8 @@ export default async function ProductPage({ params }: PageProps<"/[locale]/wow/[
             </p>
           </GradientCard>
         </div>
-        <GradientCard tone="solid" className="flex flex-col gap-3 lg:sticky lg:top-24">
-          <PriceTag
-            price={formatUsdt(locale, product.priceUsdtCents)}
-            estimate={formatEstimate(locale, product.priceUsdtCents)}
-            unit={product.unit === "per_1k_gold" ? c("perK") : undefined}
-          />
-          <p className="text-xs text-muted-foreground">{c("estimateNote")}</p>
-        </GradientCard>
+        <BuyBox locale={locale} product={product} timeZone={timeZone} />
       </div>
-      {product.categoryKind === "raid" ? (
-        <UpcomingRaids
-          locale={locale}
-          region={product.region}
-          timeZone={timeZone}
-          productSlug={product.slug}
-          title={s("slotsTitle")}
-        />
-      ) : null}
     </div>
   );
 }

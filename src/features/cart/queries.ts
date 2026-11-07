@@ -1,0 +1,83 @@
+import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
+import { and, asc, count, eq } from "drizzle-orm";
+import { db } from "@/db";
+import { cartItems, carts, categories, products, raidSlots } from "@/db/schema";
+import type { ItemOptions } from "@/features/pricing/rules";
+
+export async function createCart(): Promise<string> {
+  const [row] = await db.insert(carts).values({}).returning({ id: carts.id });
+  return row!.id;
+}
+
+export async function cartExists(id: string): Promise<boolean> {
+  const [row] = await db.select({ id: carts.id }).from(carts).where(eq(carts.id, id));
+  return !!row;
+}
+
+export async function insertItem(
+  cartId: string,
+  item: { productId: string; quantity: number; options: ItemOptions; slotId?: string },
+) {
+  await db.insert(cartItems).values({
+    cartId,
+    productId: item.productId,
+    quantity: item.quantity,
+    options: item.options,
+    raidSlotId: item.slotId ?? null,
+  });
+}
+
+// IDOR: só remove item do carrinho do próprio cookie (docs/09 caso 2)
+export async function deleteItem(cartId: string, itemId: string): Promise<boolean> {
+  const removed = await db
+    .delete(cartItems)
+    .where(and(eq(cartItems.id, itemId), eq(cartItems.cartId, cartId)))
+    .returning({ id: cartItems.id });
+  return removed.length > 0;
+}
+
+export async function clearCart(cartId: string) {
+  await db.delete(cartItems).where(eq(cartItems.cartId, cartId));
+}
+
+export async function countItems(cartId: string): Promise<number> {
+  const [row] = await db.select({ n: count() }).from(cartItems).where(eq(cartItems.cartId, cartId));
+  return row?.n ?? 0;
+}
+
+// RN-20: preço atual do produto, lido do banco a cada exibição (o pedido congela no checkout)
+export async function listItems(cartId: string) {
+  return db
+    .select({
+      id: cartItems.id,
+      quantity: cartItems.quantity,
+      options: cartItems.options,
+      productId: products.id,
+      productSlug: products.slug,
+      productName: products.name,
+      productActive: products.active,
+      region: products.region,
+      basePriceCents: products.priceUsdtCents,
+      unit: products.unit,
+      categorySlug: categories.slug,
+      categoryKind: categories.kind,
+      slotId: cartItems.raidSlotId,
+      slotStartsAt: raidSlots.startsAt,
+      slotCapacity: raidSlots.capacity,
+      slotReserved: raidSlots.reserved,
+    })
+    .from(cartItems)
+    .innerJoin(products, eq(cartItems.productId, products.id))
+    .innerJoin(categories, eq(products.categoryId, categories.id))
+    .leftJoin(raidSlots, eq(cartItems.raidSlotId, raidSlots.id))
+    .where(eq(cartItems.cartId, cartId))
+    .orderBy(asc(cartItems.createdAt));
+}
+
+export async function getSlotForProduct(slotId: string, productId: string) {
+  const [row] = await db
+    .select({ startsAt: raidSlots.startsAt, capacity: raidSlots.capacity, reserved: raidSlots.reserved })
+    .from(raidSlots)
+    .where(and(eq(raidSlots.id, slotId), eq(raidSlots.productId, productId), eq(raidSlots.active, true)));
+  return row ?? null;
+}
