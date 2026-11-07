@@ -35,7 +35,6 @@ export async function listAllProducts() {
       categoryName: categories.name,
       name: products.name,
       slug: products.slug,
-      region: products.region,
       description: products.description,
       imageUrl: products.imageUrl,
       priceUsdtCents: products.priceUsdtCents,

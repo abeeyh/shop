@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 // docs/11 §7 (#90): toda tela de 360 px a 1920 px sem rolagem horizontal
 const PAGES = [
   "/en",
-  "/pt-br/produtos?region=all",
+  "/pt-br/produtos",
   "/en/wow/gold",
   "/en/wow/raids",
   "/en/wow/mythic-plus/mplus-us",

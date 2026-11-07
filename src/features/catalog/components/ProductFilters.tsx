@@ -9,8 +9,6 @@ type Labels = {
   search: string;
   placeholder: string;
   category: string;
-  region: string;
-  all: string;
   price: string;
   min: string;
   max: string;
@@ -26,7 +24,6 @@ type Props = {
   values: {
     q: string;
     categories: string[];
-    region: string;
     min?: number;
     max?: number;
     available: boolean;
@@ -88,25 +85,6 @@ export function ProductFilters({ action, values, categories, sorts, labels }: Pr
                   className="size-4.5 accent-primary"
                 />
                 {c.name}
-              </label>
-            ))}
-          </fieldset>
-          <fieldset className={group}>
-            <legend className="mb-1 text-sm font-semibold text-heading">{labels.region}</legend>
-            {[
-              ["US", "US"],
-              ["EU", "EU"],
-              ["all", labels.all],
-            ].map(([v, l]) => (
-              <label key={v} className={check}>
-                <input
-                  type="radio"
-                  name="region"
-                  value={v}
-                  defaultChecked={values.region === v}
-                  className="size-4.5 accent-primary"
-                />
-                {l}
               </label>
             ))}
           </fieldset>

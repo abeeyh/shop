@@ -29,7 +29,6 @@ export const productInput = z.object({
   categoryId: z.uuid(),
   name: text(80).min(2),
   slug,
-  region: z.enum(["US", "EU"]),
   description: text(1000),
   imageUrl,
   price: z

@@ -41,7 +41,7 @@ test("#90: filtros começam recolhidos no celular e abertos no desktop; o botão
   page,
   isMobile,
 }) => {
-  await page.goto("/en/produtos?region=all&promo=1");
+  await page.goto("/en/produtos?promo=1");
   await results(page);
   const panel = filters(page);
   const gold = page.getByRole("checkbox", { name: "Gold", exact: true });
@@ -57,7 +57,7 @@ test("RN-101/RN-103: filtro de categoria vai para a URL, vira chip e o chip remo
   page,
   isMobile,
 }) => {
-  await page.goto("/en/produtos?region=all");
+  await page.goto("/en/produtos");
   await results(page);
   await openFilters(page, isMobile);
   await page.getByRole("checkbox", { name: "Gold", exact: true }).check();
@@ -68,7 +68,7 @@ test("RN-101/RN-103: filtro de categoria vai para a URL, vira chip e o chip remo
 });
 
 test("RN-102: ordenação por menor preço", async ({ page }) => {
-  await page.goto("/en/produtos?region=all&sort=price-asc");
+  await page.goto("/en/produtos?sort=price-asc");
   await results(page);
   const prices = await page.locator("main .text-xl").filter({ visible: true }).allTextContents();
   const values = prices.map((p) => Number(p.replace(/[^\d.]/g, "")));
@@ -77,7 +77,7 @@ test("RN-102: ordenação por menor preço", async ({ page }) => {
 });
 
 test("RN-103: parâmetros inválidos na URL são ignorados", async ({ page }) => {
-  await page.goto("/en/produtos?min=abc&max=-1&sort=hack&cat=nope&page=0&region=BR");
+  await page.goto("/en/produtos?min=abc&max=-1&sort=hack&cat=nope&page=0&region=EU");
   await results(page);
   expect((await titles(page)).length).toBeGreaterThan(0);
 });

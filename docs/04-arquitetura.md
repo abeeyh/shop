@@ -76,13 +76,13 @@ components (Atomic) ◄───────────────────
 
 `catalog` (categorias e produtos), `pricing` (promoções, cupons e cálculo do preço final — RN-21 a RN-29), `schedule` (slots de raid), `cart`, `checkout`, `payments`, `orders`, `admin`, `auth`, `preferences` (região, idioma, fuso), `support` (chat de suporte e reportes de bug), `staff` (contas de suporte/admin, papéis, idiomas e horário de atendimento) — os mesmos nomes dos escopos de commit.
 
-## Idioma, região e fuso (RN-14, RN-80 a RN-83)
+## Idioma, fuso e região (RN-14, RN-80 a RN-83)
 
 | Preferência | Detecção automática | Onde fica | Troca |
 |-------------|---------------------|-----------|-------|
 | Idioma | `Accept-Language` no middleware do next-intl | Segmento da URL `/[locale]` + cookie `NEXT_LOCALE` | Seletor no cabeçalho |
 | Fuso | `Intl.DateTimeFormat().resolvedOptions().timeZone` no navegador | Cookie `tz` (+ perfil, se logado) | Seletor no cabeçalho (lista IANA) |
-| Região do jogo | Sugestão pelo fuso na 1ª visita: Europa, África e Atlântico → EU; o resto → US (padrão da RN-14; Oceania e Sudeste Asiático jogam nos servidores US/Oceanic) | Cookie `region` | Seletor no cabeçalho |
+| Região do jogo | — (loja só US, RN-14 / #92) | `products.region` com padrão `US` | Sem seletor |
 
 - Horários guardados em UTC (`timestamptz`); formatação com `Intl.DateTimeFormat` no fuso escolhido — sem biblioteca de datas.
 - Primeira renderização sem cookie `tz`: horários renderizados no cliente (evita mostrar fuso errado vindo do servidor).

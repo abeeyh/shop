@@ -39,7 +39,6 @@ const CATEGORIES = [
 // [slug, categoria, região, nome, centavos de USDT, unidade, vendas, descrição]
 const PRODUCTS = [
   ["gold-us", "gold", "US", "Gold — US realms", 45, "per_1k_gold", 980, "Delivered by mail within 2 hours."],
-  ["gold-eu", "gold", "EU", "Gold — EU realms", 38, "per_1k_gold", 870, "Delivered by mail within 2 hours."],
   ["gold-us-express", "gold", "US", "Gold — US express", 55, "per_1k_gold", 120, "Delivery within 1 hour."],
   ["raid-normal-us", "raids", "US", "Current raid — Normal", 3900, null, 310, "Full clear, self-play."],
   ["raid-heroic-us", "raids", "US", "Current raid — Heroic", 7900, null, 640, "Full clear, self-play."],
@@ -53,8 +52,6 @@ const PRODUCTS = [
     90,
     "One Mythic boss, self-play.",
   ],
-  ["raid-normal-eu", "raids", "EU", "Current raid — Normal", 3700, null, 280, "Full clear, self-play."],
-  ["raid-heroic-eu", "raids", "EU", "Current raid — Heroic", 7500, null, 590, "Full clear, self-play."],
   ["mplus-us", "mythic-plus", "US", "Mythic+ key", 1200, null, 520, "One key, level of your choice."],
   [
     "mplus-bundle-us",
@@ -75,17 +72,6 @@ const PRODUCTS = [
     null,
     75,
     "High key, timed, for the seasonal achievement.",
-  ],
-  ["mplus-eu", "mythic-plus", "EU", "Mythic+ key", 1100, null, 470, "One key, level of your choice."],
-  [
-    "mplus-bundle-eu",
-    "mythic-plus",
-    "EU",
-    "Mythic+ — 4 keys bundle",
-    3900,
-    null,
-    210,
-    "Four keys of the same level, best value.",
   ],
 ];
 

@@ -108,7 +108,6 @@ export async function cartSummary(locale: string, cartId: string | null) {
       name: r.productName,
       href: productHref(locale, { categorySlug: r.categorySlug, slug: r.productSlug }),
       kind: r.categoryKind,
-      region: r.region,
       options: r.options as ItemOptions,
       slotStartsAt: r.slotStartsAt?.toISOString() ?? null,
       totalCents,

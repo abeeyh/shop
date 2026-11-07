@@ -1,9 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 // #15: vitrine com catálogo do banco (seed: scripts/seed.mjs). RN-13, RN-14, RN-18, RN-19.
-test("home lista categorias e mais vendidos da região US", async ({ browser, baseURL }) => {
-  // região sugerida pelo fuso na 1ª visita (RN-14): fixa um fuso das Américas
-  const context = await browser.newContext({ timezoneId: "America/New_York", baseURL });
+test("home lista categorias e mais vendidos (loja só US — #92)", async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ timezoneId: "Europe/Paris", baseURL });
   const page = await context.newPage();
   await page.goto("/en");
   await expect(page.getByRole("heading", { level: 2, name: "Categories" })).toBeVisible();
@@ -11,7 +10,7 @@ test("home lista categorias e mais vendidos da região US", async ({ browser, ba
     await expect(page.getByRole("heading", { level: 3, name, exact: true })).toBeVisible();
   }
   await expect(page.getByRole("link", { name: "Gold — US realms" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Gold — EU realms" })).toHaveCount(0); // RN-14: só a região escolhida
+  await expect(page.getByRole("link", { name: "Gold — EU realms" })).toHaveCount(0); // RN-14: EU desativado
   await context.close();
 });
 

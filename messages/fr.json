@@ -6,7 +6,6 @@
   "Nav": {
     "label": "Principal",
     "skip": "Aller au contenu",
-    "region": "Région",
     "language": "Langue",
     "timezone": "Fuseau horaire",
     "menu": "Ouvrir le menu",
@@ -28,8 +27,7 @@
     "perK": "pour 1 000 pièces d'or",
     "estimateNote": "Estimation dans votre devise : API pas encore implémentée. Facturé en USDT.",
     "selfPlay": "Self-play : vous jouez votre propre personnage. Nous ne demandons jamais votre mot de passe Battle.net.",
-    "empty": "Aucun produit dans cette région pour le moment.",
-    "region": "Région : {region}",
+    "empty": "Aucun produit pour le moment.",
     "home": "Accueil",
     "loading": "Chargement…"
   },
@@ -61,7 +59,6 @@
     "min": "Saisissez au moins 2 caractères.",
     "filters": "Filtres",
     "category": "Catégorie",
-    "region": "Région",
     "all": "Toutes",
     "price": "Prix (USDT)",
     "minPrice": "Min",

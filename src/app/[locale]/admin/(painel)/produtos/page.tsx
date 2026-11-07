@@ -31,7 +31,6 @@ export default async function ProductsAdmin({ params, searchParams }: PageProps<
   const v = {
     id: "",
     categoryId: cats[0]?.id ?? "",
-    region: "US",
     name: "",
     slug: "",
     description: "",
@@ -68,12 +67,6 @@ export default async function ProductsAdmin({ params, searchParams }: PageProps<
                 ))}
               </Select>
             </Field>
-            <Field label={t("fields.region")}>
-              <Select name="region" defaultValue={v.region}>
-                <option value="US">US</option>
-                <option value="EU">EU</option>
-              </Select>
-            </Field>
             <Field label={t("fields.name")}>
               <Input name="name" required maxLength={80} defaultValue={v.name} />
             </Field>
@@ -105,7 +98,6 @@ export default async function ProductsAdmin({ params, searchParams }: PageProps<
             <tr>
               <th>{t("fields.name")}</th>
               <th>{t("fields.category")}</th>
-              <th>{t("fields.region")}</th>
               <th>{t("fields.price")}</th>
               <th>{t("table.status")}</th>
               <th>
@@ -120,7 +112,6 @@ export default async function ProductsAdmin({ params, searchParams }: PageProps<
                   {r.name} <span className="text-muted-foreground">/{r.slug}</span>
                 </td>
                 <td>{r.categoryName}</td>
-                <td>{r.region}</td>
                 <td>{formatUsdt(locale, r.priceUsdtCents)}</td>
                 <td>{r.active ? t("table.active") : t("table.inactive")}</td>
                 <td>

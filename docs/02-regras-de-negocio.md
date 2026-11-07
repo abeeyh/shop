@@ -30,11 +30,11 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 | RN-11 | Serviço indisponível (sem estoque de gold ou sem vaga na raid) não pode ir ao carrinho. *(proposta — confirmar)* |
 | RN-12 | Todo preço é definido em **USDT**, guardado como inteiro em centésimos de USDT (`price_usdt_cents`); nunca `float`. *(aprovada em 2026-11-06)* |
 | RN-13 | **Categorias são criadas, editadas, ordenadas e desativadas pelo admin** (nome, slug, imagem, ordem, ativa). Nome e descrição são **os mesmos em todos os idiomas** (RN-84). Cada categoria tem um **tipo** fixo — `gold`, `raid` ou `dungeon` — que define os campos do pedido (RN-15 a RN-17). O negócio continua só de World of Warcraft. *(alterada em 2026-11-06; tipo por categoria: proposta — confirmar)* |
-| RN-14 | Região do jogo: **US** ou **EU** (Retail). O visitante escolhe a região; preço, disponibilidade e horários podem variar por região. *(aprovada em 2026-11-06)* |
+| RN-14 | Região do jogo: **somente US** (Retail). Não há opção de EU nem seletor de região; produtos EU antigos ficam desativados (não apagados — podem estar em pedidos). *(alterada em 2026-11-07 — #92; antes: US ou EU à escolha do visitante)* |
 | RN-15 | Gold: preço por unidade de 1.000 gold, definido por região (e opcionalmente por realm/facção); pedido exige realm, facção e nome do personagem. *(proposta — confirmar)* |
 | RN-16 | Raid: tem raid, dificuldade (Normal/Heroic/Mythic), opção de loot e um **horário (slot)**; o slot tem vagas limitadas. *(proposta — confirmar)* |
 | RN-17 | Dungeon: nível da chave Mythic+, quantidade de runs e opção "timed"; preço calculado por tabela de configuração. *(proposta — confirmar)* |
-| RN-19 | **Produtos são criados pelo admin dentro de uma categoria**: nome, descrição, imagem, região (US/EU), preço-base em USDT (RN-12), opções do tipo da categoria e ativo. Textos iguais em todos os idiomas (RN-84). Produto desativado sai da vitrine, mas continua visível nos pedidos antigos. *(aprovada em 2026-11-06)* |
+| RN-19 | **Produtos são criados pelo admin dentro de uma categoria**: nome, descrição, imagem, preço-base em USDT (RN-12), opções do tipo da categoria e ativo. Textos iguais em todos os idiomas (RN-84). Produto desativado sai da vitrine, mas continua visível nos pedidos antigos. *(aprovada em 2026-11-06)* |
 | RN-18 | Preço em outra moeda (EUR, BRL, TWD, CNY…) é só **estimativa** exibida com "≈"; a cobrança é sempre pelo valor em USDT (RN-35). Sem API de cotação (#63) a estimativa não aparece — só o aviso "API ainda não implementada" na página do produto; nada de cotação fixa (#86). *(proposta — confirmar)* |
 
 ## Busca e filtros
@@ -42,7 +42,7 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 | ID | Regra |
 |----|-------|
 | RN-100 | Campo de **busca por produto** no cabeçalho de todas as páginas da loja. Busca em nome e descrição de produtos e categorias ativos (texto único, RN-84), tolerante a erro de digitação; mínimo de 2 caracteres. *(aprovada em 2026-11-06)* |
-| RN-101 | **Página de produtos com filtros**: categoria, região (US/EU), faixa de preço em USDT, "em promoção" (com as promoções — #21) e "só disponíveis" (com estoque ou vaga — RN-11). *(aprovada em 2026-11-06; lista de filtros: proposta — confirmar)* |
+| RN-101 | **Página de produtos com filtros**: categoria, faixa de preço em USDT, "em promoção" (com as promoções — #21) e "só disponíveis" (com estoque ou vaga — RN-11). *(aprovada em 2026-11-06; lista de filtros: proposta — confirmar)* |
 | RN-102 | Ordenação: relevância (com busca), mais vendidos (padrão sem busca), menor preço e maior preço — preço sempre o **final**, já com promoção ativa (RN-21). *(proposta — confirmar)* |
 | RN-103 | Busca, filtros, ordenação e página ficam na URL (link compartilhável) e são **aplicados no servidor**; valor inválido na URL é ignorado (volta ao padrão). 24 produtos por página. *(proposta — confirmar)* |
 | RN-104 | Sem resultado: mensagem no idioma do usuário, botão "limpar filtros" e sugestão das categorias; produto inativo nunca aparece. *(proposta — confirmar)* |
@@ -113,7 +113,7 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 | RN-81 | Primeiro acesso: idioma detectado pelo navegador (`Accept-Language`); se não for um dos 6, usa `en`. A escolha manual fica salva e tem prioridade. *(aprovada em 2026-11-06)* |
 | RN-82 | Fuso horário detectado automaticamente pelo navegador (IANA, ex.: `America/Sao_Paulo`) e **alterável** pelo usuário; a escolha fica salva (cookie e, se logado, perfil). *(aprovada em 2026-11-06)* |
 | RN-84 | Conteúdo do catálogo cadastrado pelo admin (nome e descrição de categorias e produtos) é **o mesmo em todos os idiomas**; só os textos fixos da interface são traduzidos (RN-80). *(aprovada em 2026-11-06)* |
-| RN-83 | Todo horário é guardado em **UTC**; exibido no fuso escolhido (RN-82), com o horário do servidor da região (US/EU) disponível como referência. *(proposta — confirmar)* |
+| RN-83 | Todo horário é guardado em **UTC**; exibido no fuso escolhido (RN-82), com o horário do servidor US (`America/New_York`) disponível como referência. *(proposta — confirmar)* |
 
 ## Suporte e erros
 

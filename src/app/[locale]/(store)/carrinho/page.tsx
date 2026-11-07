@@ -112,7 +112,7 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
                         ·{" "}
                       </>
                     ) : null}
-                    {describeItem(line.options, line.quantity, t)} · {line.region}
+                    {describeItem(line.options, line.quantity, t)}
                   </p>
                   {line.available ? null : <p className="text-sm text-error-text">{t("unavailable")}</p>}
                 </div>

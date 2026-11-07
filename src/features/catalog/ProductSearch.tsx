@@ -28,13 +28,7 @@ async function searchAllowed(f: Filters): Promise<boolean> {
 }
 
 // RN-101: filtros ativos viram chips que levam à mesma busca sem aquele filtro
-function buildChips(
-  f: Filters,
-  region: string,
-  categories: Category[],
-  t: T,
-  href: (p: Partial<Filters>) => string,
-): Chip[] {
+function buildChips(f: Filters, categories: Category[], t: T, href: (p: Partial<Filters>) => string): Chip[] {
   const name = (slug: string) => categories.find((x) => x.slug === slug)?.name ?? slug;
   const reset = { page: 1 };
   return [
@@ -43,14 +37,6 @@ function buildChips(
       label: name(slug),
       href: href({ ...reset, categories: f.categories.filter((x) => x !== slug) }),
     })),
-    ...(f.region !== region
-      ? [
-          {
-            label: `${t("region")}: ${f.region === "all" ? t("all") : f.region}`,
-            href: href({ ...reset, region: region as "US" }),
-          },
-        ]
-      : []),
     ...(f.min !== undefined ? [{ label: `≥ ${f.min} USDT`, href: href({ ...reset, min: undefined }) }] : []),
     ...(f.max !== undefined ? [{ label: `≤ ${f.max} USDT`, href: href({ ...reset, max: undefined }) }] : []),
     ...(f.available ? [{ label: t("available"), href: href({ ...reset, available: false }) }] : []),
@@ -119,8 +105,6 @@ function filterLabels(t: T) {
     search: t("label"),
     placeholder: t("placeholder"),
     category: t("category"),
-    region: t("region"),
-    all: t("all"),
     price: t("price"),
     min: t("minPrice"),
     max: t("maxPrice"),
@@ -137,19 +121,19 @@ function filterLabels(t: T) {
   };
 }
 
-type Props = { locale: string; region: "US" | "EU"; raw: Record<string, string | string[] | undefined> };
+type Props = { locale: string; raw: Record<string, string | string[] | undefined> };
 
 // RN-100 a RN-105: busca e filtros na URL, aplicados no servidor
-export async function ProductSearch({ locale, region, raw }: Props) {
+export async function ProductSearch({ locale, raw }: Props) {
   const [categories, t, c, promos] = await Promise.all([
     listCategories(),
     getTranslations({ locale, namespace: "Search" }),
     getTranslations({ locale, namespace: "Catalog" }),
     activePromotions(),
   ]);
-  const f = parseFilters(raw, { region, categories: categories.map((x) => x.slug) });
+  const f = parseFilters(raw, { categories: categories.map((x) => x.slug) });
   const base = `/${locale}/produtos`;
-  const href = (patch: Partial<Filters>) => base + filtersToQuery(f, region, patch);
+  const href = (patch: Partial<Filters>) => base + filtersToQuery(f, patch);
   const allowed = await searchAllowed(f);
   const { items, total } = allowed ? await searchProducts(f) : { items: [], total: 0 };
   const unit = (u: string) => (u === "per_1k_gold" ? c("perK") : u);
@@ -172,7 +156,7 @@ export async function ProductSearch({ locale, region, raw }: Props) {
           labels={filterLabels(t)}
         />
         <div>
-          <ActiveFilters chips={buildChips(f, region, categories, t, href)} clearHref={base} t={t} />
+          <ActiveFilters chips={buildChips(f, categories, t, href)} clearHref={base} t={t} />
           {items.length ? (
             <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,240px),1fr))] gap-5">
               {items.map((p) => (

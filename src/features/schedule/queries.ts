@@ -12,7 +12,6 @@ const slotColumns = {
   productSlug: products.slug,
   productName: products.name,
   priceUsdtCents: products.priceUsdtCents,
-  region: products.region,
   categorySlug: categories.slug,
 };
 
@@ -26,24 +25,14 @@ const upcoming = () =>
     eq(categories.active, true),
   );
 
-// RN-16: próximos horários da região (RN-14), do mais cedo ao mais tarde
-export async function listUpcomingSlots(filter: {
-  region: "US" | "EU";
-  categorySlug?: string;
-  limit?: number;
-}) {
+// RN-16: próximos horários, do mais cedo ao mais tarde
+export async function listUpcomingSlots(filter: { categorySlug?: string; limit?: number }) {
   const query = db
     .select(slotColumns)
     .from(raidSlots)
     .innerJoin(products, eq(raidSlots.productId, products.id))
     .innerJoin(categories, eq(products.categoryId, categories.id))
-    .where(
-      and(
-        upcoming(),
-        eq(products.region, filter.region),
-        ...(filter.categorySlug ? [eq(categories.slug, filter.categorySlug)] : []),
-      ),
-    )
+    .where(and(upcoming(), ...(filter.categorySlug ? [eq(categories.slug, filter.categorySlug)] : [])))
     .orderBy(asc(raidSlots.startsAt));
   return filter.limit ? query.limit(filter.limit) : query;
 }

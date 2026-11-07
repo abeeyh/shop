@@ -14,7 +14,7 @@ import {
 } from "@/features/catalog";
 import { activePromotions } from "@/features/discounts/queries";
 import { UpcomingRaids } from "@/features/schedule/UpcomingRaids";
-import { getRegion, getTimezone } from "@/lib/preferences";
+import { getTimezone } from "@/lib/preferences";
 
 const BEST_SELLERS = 8;
 
@@ -76,15 +76,13 @@ async function HomeCategories({ locale }: { locale: string }) {
 
 async function HomeRaids({ locale }: { locale: string }) {
   await connection();
-  const [region, timeZone] = await Promise.all([getRegion(), getTimezone()]);
-  return <UpcomingRaids locale={locale} region={region} timeZone={timeZone} limit={3} />;
+  return <UpcomingRaids locale={locale} timeZone={await getTimezone()} limit={3} />;
 }
 
 async function HomeBestSellers({ locale }: { locale: string }) {
   await connection();
-  const region = await getRegion();
   const [products, t, c, promos] = await Promise.all([
-    listProducts({ region, limit: BEST_SELLERS }),
+    listProducts({ limit: BEST_SELLERS }),
     getTranslations({ locale, namespace: "Home" }),
     getTranslations({ locale, namespace: "Catalog" }),
     activePromotions(),

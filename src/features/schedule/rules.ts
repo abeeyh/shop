@@ -1,7 +1,7 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 
 // RN-83: horário de referência do servidor de cada região
-export const SERVER_TIMEZONE = { US: "America/New_York", EU: "Europe/Paris" } as const;
+export const SERVER_TIMEZONE = "America/New_York"; // horário dos servidores US (RN-14: loja só US)
 
 // RN-16 / RN-11: vagas restantes; sem vaga = esgotado (não pode ir ao carrinho)
 export function seatsLeft(slot: { capacity: number; reserved: number }): number {

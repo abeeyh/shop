@@ -8,7 +8,7 @@ Jogadores de **World of Warcraft** querem gold, itens de raid e progresso em Myt
 
 ## Proposta
 
-Loja de serviços de WoW (Retail US e EU) com preço-base em **USDT**, pagamento em **cripto (USDT) ou cartão**, site em **6 idiomas** e horários de raid mostrados automaticamente no **fuso do cliente**, com opção de trocar. Referência de mercado: [blazingboost.com](https://blazingboost.com/) (só como referência de funcionalidades — nada de copiar marca, textos ou visual).
+Loja de serviços de WoW (Retail US) com preço-base em **USDT**, pagamento em **cripto (USDT) ou cartão**, site em **6 idiomas** e horários de raid mostrados automaticamente no **fuso do cliente**, com opção de trocar. Referência de mercado: [blazingboost.com](https://blazingboost.com/) (só como referência de funcionalidades — nada de copiar marca, textos ou visual).
 
 ## Público
 
@@ -26,8 +26,8 @@ Loja de serviços de WoW (Retail US e EU) com preço-base em **USDT**, pagamento
 
 | Dentro | Fora (backlog) |
 |--------|----------------|
-| Catálogo com categorias e produtos criados pelo admin (tipos gold, raid, dungeon) — só WoW Retail US/EU (RN-13, RN-14, RN-19) | Outros jogos; Classic/MoP/Hardcore; servidores TW/CN |
-| Seletor de região, idioma e fuso no cabeçalho | Serviços *piloted* (login na conta do cliente) — RN-03 |
+| Catálogo com categorias e produtos criados pelo admin (tipos gold, raid, dungeon) — só WoW Retail US (RN-13, RN-14, RN-19) | Outros jogos; Classic/MoP/Hardcore; servidores TW/CN |
+| Seletor de idioma e fuso no cabeçalho (loja só US — RN-14) | Serviços *piloted* (login na conta do cliente) — RN-03 |
 | Agenda de raids com vagas por horário | Chat direto com booster; tradução automática no chat |
 | **Chat de suporte** para qualquer visitante, com contas de suporte (RN-04 a RN-07, RN-92 a RN-99) | |
 | Checkout em USDT (gateway cripto) e cartão | Programa de fidelidade/cashback |

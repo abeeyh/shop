@@ -28,7 +28,6 @@ const finalPrice = sql<number>`(${products.priceUsdtCents} - coalesce((
 const filterConditions = (f: Filters): (SQL | undefined)[] => [
   eq(products.active, true),
   eq(categories.active, true),
-  f.region === "all" ? undefined : eq(products.region, f.region),
   f.categories.length ? inArray(categories.slug, f.categories) : undefined,
   f.min !== undefined ? gte(finalPrice, f.min * 100) : undefined,
   f.max !== undefined ? lte(finalPrice, f.max * 100) : undefined,
@@ -56,7 +55,6 @@ export async function searchProducts(f: Filters) {
       slug: products.slug,
       name: products.name,
       description: products.description,
-      region: products.region,
       priceUsdtCents: products.priceUsdtCents,
       unit: products.unit,
       salesCount: products.salesCount,
