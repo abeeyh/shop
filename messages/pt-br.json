@@ -83,7 +83,8 @@
     "tooMany": "Muitas buscas em pouco tempo. Aguarde um minuto.",
     "pagination": "Páginas",
     "prev": "Anterior",
-    "next": "Próxima"
+    "next": "Próxima",
+    "promo": "Em promoção"
   },
   "Buy": {
     "realm": "Realm",
@@ -202,7 +203,9 @@
       "audit": "Auditoria",
       "orders": "Pedidos",
       "reports": "Reportes de problema",
-      "docs": "Documentação interna"
+      "docs": "Documentação interna",
+      "team": "Equipe",
+      "support": "Suporte"
     },
     "login": {
       "title": "Entrar (equipe)",
@@ -342,6 +345,57 @@
       "context": "Idioma · região · fuso · versão",
       "browser": "Navegador",
       "resolve": "Marcar como resolvido"
+    },
+    "team": {
+      "role": "Papel",
+      "admin": "Admin",
+      "support": "Suporte",
+      "languages": "Idiomas que atende",
+      "invite": "Convidar para a equipe",
+      "sendInvite": "Gerar link de convite",
+      "link": "Link do convite (vale 7 dias — envie para a pessoa; aparece só agora)",
+      "twoFactorOn": "2FA ativo",
+      "twoFactorOff": "2FA ainda não ativado",
+      "errors": {
+        "email": "Informe um e-mail válido.",
+        "emailTaken": "Este e-mail já tem uma conta.",
+        "self": "Você não pode desativar nem rebaixar a própria conta.",
+        "lastAdmin": "Precisa sobrar pelo menos um admin ativo."
+      }
+    },
+    "accept": {
+      "title": "Entrar para a equipe",
+      "intro": "Crie seu acesso para {email}. A autenticação em dois fatores é ativada no primeiro login.",
+      "name": "Seu nome",
+      "confirm": "Confirme a senha",
+      "hint": "Pelo menos 12 caracteres. Senhas que aparecem em vazamentos conhecidos são recusadas.",
+      "submit": "Criar acesso",
+      "errors": {
+        "invalid": "Confira o nome e use uma senha com pelo menos 12 caracteres.",
+        "mismatch": "As senhas não conferem.",
+        "pwned": "Esta senha apareceu em um vazamento de dados. Escolha outra.",
+        "expired": "Este convite é inválido, já foi usado ou expirou. Peça um novo a um admin."
+      }
+    },
+    "support": {
+      "customer": "Cliente",
+      "language": "Idioma",
+      "statuses": {
+        "aberta": "Aberta",
+        "em_atendimento": "Em atendimento",
+        "resolvida": "Resolvida"
+      },
+      "assume": "Assumir conversa",
+      "resolve": "Marcar como resolvida",
+      "you": "Você"
+    },
+    "hours": {
+      "title": "Horário de atendimento (UTC)",
+      "hint": "O cliente vê este horário no fuso dele. Fora dele, o chat vira formulário de mensagem.",
+      "open": "Aberto",
+      "start": "Das",
+      "end": "Até",
+      "error": "Cada dia aberto precisa de horário de início e fim, diferentes."
     }
   },
   "Errors": {
@@ -363,5 +417,32 @@
     "sent": "Obrigado! Seu reporte foi enviado para a equipe.",
     "invalid": "Descreva o problema com pelo menos 10 caracteres e confira o e-mail.",
     "limited": "Muitos reportes da sua conexão. Tente de novo em uma hora."
+  },
+  "Forbidden": {
+    "title": "Sem acesso",
+    "message": "Sua conta não tem permissão para esta tela.",
+    "back": "Voltar ao admin"
+  },
+  "Chat": {
+    "open": "Falar com o suporte",
+    "close": "Fechar chat",
+    "title": "Suporte",
+    "notice": "Nunca pediremos sua senha da Battle.net nem dados do cartão.",
+    "email": "E-mail",
+    "name": "Nome (opcional)",
+    "message": "Como podemos ajudar?",
+    "start": "Iniciar conversa",
+    "you": "Você",
+    "team": "Suporte",
+    "placeholder": "Escreva uma mensagem",
+    "send": "Enviar",
+    "errors": {
+      "error": "Confira os campos e tente de novo.",
+      "limited": "Muitas mensagens ou conversas. Aguarde um pouco e tente de novo.",
+      "closed": "Esta conversa foi encerrada há mais de 7 dias. Abra uma nova."
+    },
+    "offlineTitle": "Estamos fora do horário agora — deixe sua mensagem e respondemos por e-mail ou aqui.",
+    "offlineStart": "Deixar mensagem",
+    "backAt": "Voltamos em"
   }
 }

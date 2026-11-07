@@ -2,7 +2,8 @@ import "server-only"; // regra de negócio, banco e segredos só no servidor (do
 import { db } from "@/db";
 import { auditLog } from "@/db/schema";
 
-export type Entity = "category" | "product" | "promotion" | "coupon" | "order" | "bug_report";
+export type Entity =
+  "category" | "product" | "promotion" | "coupon" | "order" | "bug_report" | "staff" | "support_hours";
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
 // RN-71: a alteração e o registro de auditoria entram juntos (ou nenhum dos dois)

@@ -7,12 +7,14 @@ import { requireStaff } from "@/features/auth/staff";
 export const instant = false;
 
 const SECTIONS = [
+  ["suporte", "support"],
   ["pedidos", "orders"],
   ["reportes", "reports"],
   ["categorias", "categories"],
   ["produtos", "products"],
   ["promocoes", "promotions"],
   ["cupons", "coupons"],
+  ["equipe", "team"],
   ["auditoria", "audit"],
   ["docs", "docs"],
 ] as const;

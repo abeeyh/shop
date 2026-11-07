@@ -83,7 +83,8 @@
     "tooMany": "Too many searches in a short time. Please wait a minute.",
     "pagination": "Pages",
     "prev": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "promo": "On sale"
   },
   "Buy": {
     "realm": "Realm",
@@ -202,7 +203,9 @@
       "audit": "Audit log",
       "orders": "Orders",
       "reports": "Problem reports",
-      "docs": "Internal docs"
+      "docs": "Internal docs",
+      "team": "Team",
+      "support": "Support"
     },
     "login": {
       "title": "Staff sign in",
@@ -342,6 +345,57 @@
       "context": "Language · region · time zone · version",
       "browser": "Browser",
       "resolve": "Mark as resolved"
+    },
+    "team": {
+      "role": "Role",
+      "admin": "Admin",
+      "support": "Support",
+      "languages": "Languages served",
+      "invite": "Invite to the team",
+      "sendInvite": "Create invite link",
+      "link": "Invite link (valid for 7 days — send it to the person; shown only once)",
+      "twoFactorOn": "2FA on",
+      "twoFactorOff": "2FA not set up yet",
+      "errors": {
+        "email": "Enter a valid email.",
+        "emailTaken": "This email already has an account.",
+        "self": "You can't deactivate or demote your own account.",
+        "lastAdmin": "There must be at least one active admin."
+      }
+    },
+    "accept": {
+      "title": "Join the team",
+      "intro": "Create your access for {email}. You'll turn on two-factor authentication on the first sign-in.",
+      "name": "Your name",
+      "confirm": "Confirm password",
+      "hint": "At least 12 characters. Passwords found in known leaks are refused.",
+      "submit": "Create access",
+      "errors": {
+        "invalid": "Check your name and use a password with at least 12 characters.",
+        "mismatch": "The passwords don't match.",
+        "pwned": "This password appeared in a data leak. Choose another one.",
+        "expired": "This invite is invalid, already used or expired. Ask an admin for a new one."
+      }
+    },
+    "support": {
+      "customer": "Customer",
+      "language": "Language",
+      "statuses": {
+        "aberta": "Open",
+        "em_atendimento": "In progress",
+        "resolvida": "Resolved"
+      },
+      "assume": "Take this chat",
+      "resolve": "Mark as resolved",
+      "you": "You"
+    },
+    "hours": {
+      "title": "Support hours (UTC)",
+      "hint": "Customers see these hours in their own time zone. Outside them, the chat becomes a message form.",
+      "open": "Open",
+      "start": "From",
+      "end": "To",
+      "error": "Each open day needs a start and an end time, and they can't be equal."
     }
   },
   "Errors": {
@@ -363,5 +417,32 @@
     "sent": "Thanks! Your report was sent to our team.",
     "invalid": "Describe the problem in at least 10 characters and check the email.",
     "limited": "Too many reports from your connection. Try again in an hour."
+  },
+  "Forbidden": {
+    "title": "No access",
+    "message": "Your account doesn't have permission for this screen.",
+    "back": "Back to the admin"
+  },
+  "Chat": {
+    "open": "Chat with support",
+    "close": "Close chat",
+    "title": "Support",
+    "notice": "We will never ask for your Battle.net password or card details.",
+    "email": "Email",
+    "name": "Name (optional)",
+    "message": "How can we help?",
+    "start": "Start chat",
+    "you": "You",
+    "team": "Support",
+    "placeholder": "Write a message",
+    "send": "Send",
+    "errors": {
+      "error": "Check the fields and try again.",
+      "limited": "Too many messages or chats. Wait a moment and try again.",
+      "closed": "This chat was closed more than 7 days ago. Start a new one."
+    },
+    "offlineTitle": "We're offline right now — leave a message and we'll reply by email or here.",
+    "offlineStart": "Leave a message",
+    "backAt": "We're back at"
   }
 }

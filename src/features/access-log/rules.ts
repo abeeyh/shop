@@ -26,9 +26,14 @@ const TOKEN_SEGMENT = /^(?=.*\d)(?=.*[A-Za-z])[A-Za-z0-9._~-]{32,}$/;
 
 // Só o caminho (query string pode ter dados pessoais) e sem tokens (docs/16 §9).
 export function sanitizeRoute(pathname: string): string {
-  return pathname
-    .split("/")
-    .map((segment) => (TOKEN_SEGMENT.test(segment) ? ":token" : segment))
-    .join("/")
-    .slice(0, MAX_ROUTE_LENGTH);
+  return (
+    pathname
+      .split("/")
+      // segmento depois de /convite/ é sempre token, mesmo sem dígito (base64url)
+      .map((segment, i, all) =>
+        TOKEN_SEGMENT.test(segment) || all[i - 1] === "convite" ? ":token" : segment,
+      )
+      .join("/")
+      .slice(0, MAX_ROUTE_LENGTH)
+  );
 }

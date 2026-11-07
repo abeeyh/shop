@@ -417,3 +417,78 @@ export const bugReports = pgTable(
   },
   (t) => [index("bug_reports_status_created_idx").on(t.status, t.createdAt)],
 );
+
+// Convite de equipe (RN-04): só admin cria; o link leva um token que só existe aqui como hash
+export const staffInvites = pgTable("staff_invites", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  email: text("email").notNull(),
+  role: staffRole("role").notNull(),
+  languages: text("languages")
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
+  tokenHash: text("token_hash").notNull().unique(), // sha-256 do token do link
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  usedAt: timestamp("used_at", { withTimezone: true }),
+  invitedBy: text("invited_by")
+    .notNull()
+    .references(() => users.id),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// Chat de suporte (RN-92 a RN-98). Visitante identificado por cookie com token (só o hash aqui).
+export const conversationStatus = pgEnum("conversation_status", ["aberta", "em_atendimento", "resolvida"]);
+export const supportConversations = pgTable(
+  "support_conversations",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    guestEmail: text("guest_email").notNull(), // dado pessoal — nunca em log
+    guestName: text("guest_name"),
+    orderId: uuid("order_id").references(() => orders.id),
+    locale: text("locale").notNull(), // RN-98
+    status: conversationStatus("status").notNull().default("aberta"),
+    assignedTo: text("assigned_to").references(() => users.id),
+    guestTokenHash: text("guest_token_hash").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    lastMessageAt: timestamp("last_message_at", { withTimezone: true }).notNull().defaultNow(),
+    resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("support_conversations_status_idx").on(t.status, t.createdAt),
+    index("support_conversations_email_idx").on(t.guestEmail, t.status),
+  ],
+);
+
+export const messageAuthor = pgEnum("message_author", ["customer", "staff", "system"]);
+// id sequencial: o cliente busca "o que perdeu" a partir do último id (retomada do SSE)
+export const supportMessages = pgTable(
+  "support_messages",
+  {
+    id: bigserial("id", { mode: "number" }).primaryKey(),
+    conversationId: uuid("conversation_id")
+      .notNull()
+      .references(() => supportConversations.id, { onDelete: "cascade" }),
+    authorType: messageAuthor("author_type").notNull(),
+    authorId: text("author_id").references(() => users.id),
+    body: text("body").notNull(), // já mascarado (RN-95)
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("support_messages_conversation_idx").on(t.conversationId, t.id)],
+);
+
+// Horário de atendimento (RN-99): minutos UTC por dia da semana (0 = domingo)
+export const supportHours = pgTable(
+  "support_hours",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    weekday: integer("weekday").notNull(),
+    startMin: integer("start_min").notNull(),
+    endMin: integer("end_min").notNull(),
+  },
+  (t) => [
+    check(
+      "support_hours_range",
+      sql`${t.weekday} between 0 and 6 and ${t.startMin} between 0 and 1439 and ${t.endMin} between 0 and 1439`,
+    ),
+  ],
+);

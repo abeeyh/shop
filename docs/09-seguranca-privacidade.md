@@ -65,7 +65,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 - Senhas com scrypt/argon2; nunca em log.
 - Verificação de e-mail; tokens de uso único com validade curta.
 - Vínculo de contas OAuth ↔ senha só com e-mails verificados.
-- Senhas vazadas recusadas (HIBP por k-anonimato). *Entra com o convite da equipe (#27), quando a pessoa define a própria senha; hoje a conta inicial sai de `pnpm admin:create` com senha gerada.*
+- Senhas vazadas recusadas (HIBP por k-anonimato: só 5 caracteres do SHA-1 saem) no aceite do convite; HIBP fora do ar não bloqueia (log `auth.hibp_unavailable`). A conta inicial (`pnpm admin:create`) usa senha gerada.
 - Rate limit em store compartilhado (não em memória): Valkey, janela fixa atômica (`src/lib/rate-limit.ts`, limites em `RATE_LIMITS`):
 
   | Onde | Limite | Se o Valkey cair |
@@ -75,6 +75,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
   | Login da equipe: senha por IP e por e-mail; código do 2FA por IP (o Better Auth ainda limita a 5 tentativas por desafio e bloqueia a conta por 15 min após 10 falhas) | 10 a cada 10 min | **bloqueia** (`failClosed`) |
 
   Risco aceito: o limite de cupom "por cliente" (RN-25) conta o e-mail normalizado (sem `+tag`, sem pontos no Gmail), mas sem conta nem verificação de e-mail é só uma barreira leve.
+  Pendente antes de produção: CAPTCHA no chat e no reporte (Turnstile, #29) — sem ele, e-mail não verificado permite abrir muitas conversas (o limite por IP segura parte). Expurgo de conversas 1 ano depois de resolvidas (cron).
   Risco aceito: pedido em `pagamento_parcial` não expira e segura vaga e uso de cupom até o admin resolver (fluxo do admin em #23).
   Risco aceito: quem sabe o e-mail de um admin consegue travar o login dele por 10 min de cada vez (limite por e-mail). Monitorar `auth.login_failed`; se virar problema, contar só falhas no balde por e-mail.
   | Cupom (RN-28), por IP | 10/hora | **bloqueia** (`failClosed`) |

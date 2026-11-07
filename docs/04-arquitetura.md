@@ -153,8 +153,9 @@ sequenceDiagram
 - `payment_events` (provider, provider_event_id **único** = `payment_id:status:valor pago`, order_id, type, payment_id, pay_currency, paid_usdt_cents, tx_hash, received_at) — idempotência (RN-33) e conciliação; IPN que não bate com o pedido (rede/valor) fica registrado e sem efeito
 - `users`, `sessions`, `accounts` (hash scrypt da senha), `verifications`, `two_factors` (segredo TOTP criptografado) — Better Auth, só equipe no MVP (cliente compra sem conta — RN-01). Sem rota `/api/auth`: login e 2FA rodam em Server Actions via `auth.api`; telemetria do Better Auth desligada
 - `access_logs` (occurred_at, ip, port?, user_id?, session_id?, method, route, request_id) — log de acesso legal, 6 meses ([16 §9](16-observabilidade.md#9-log-de-acesso-obrigação-legal))
-- `staff_profiles` (user_id, role `suporte|admin`, languages text[], active, invited_by, created_at) — RN-04 a RN-06; clientes não têm linha aqui
-- `support_hours` (weekday, starts_at_utc, ends_at_utc) — RN-99
+- `staff_profiles` (user_id, role `suporte|admin`, languages text[], active, invited_by, created_at) — RN-04 a RN-06; clientes não têm linha aqui. Desativar apaga as sessões na hora (RN-05)
+- `staff_invites` (id, email, role, languages, token_hash (sha-256), expires_at (7 dias), used_at, invited_by) — RN-04: o link do convite é mostrado uma vez ao admin (e-mail entra com o provedor)
+- `support_hours` (weekday 0=domingo, start_min, end_min — minutos UTC; fim < início atravessa a meia-noite) — RN-99; sem linhas = sempre aberto; editado em `/admin/equipe` com auditoria
 - `support_conversations` (id, user_id?, guest_email?, guest_name?, order_id?, locale, status `aberta|em_atendimento|resolvida`, assigned_to?, guest_token_hash?, created_at, last_message_at, resolved_at) — RN-92, RN-93
 - `support_messages` (id, conversation_id, author_type `customer|staff|system`, author_id?, body, created_at, read_at) — corpo já mascarado (RN-95)
 - `support_attachments` (id, message_id, storage_key, mime, size_bytes) — RN-96
@@ -165,7 +166,7 @@ sequenceDiagram
 | Rota | Tipo | Acesso |
 |------|------|--------|
 | `/[locale]` | Página | Público |
-| `/[locale]/produtos?q=&cat=&region=&min=&max=&disponivel=1&sort=&page=` | Página (busca e filtros — RN-100 a RN-103). Fora de `/wow/` para não colidir com o slug de uma categoria; `promo=1` e ordenação pelo preço final entram com #74 | Público |
+| `/[locale]/produtos?q=&cat=&region=&min=&max=&disponivel=1&sort=&page=` | Página (busca e filtros — RN-100 a RN-103). Fora de `/wow/` para não colidir com o slug de uma categoria; `promo=1` filtra produtos com promoção valendo; preço mínimo/máximo e ordenação usam o **preço final** (SQL em `catalog/search.ts`, mesma regra de `pricing/rules.ts`) | Público |
 | `/[locale]/wow/[categoria]`, `/[locale]/wow/[categoria]/[produto]` (slugs criados pelo admin — RN-13, RN-19; rotas no grupo `app/[locale]/(store)`). Inexistente → página "não encontrada" com `noindex` (status 200 por causa do streaming) | Página | Público |
 | `/[locale]/carrinho` (carrinho e checkout na mesma página: e-mail, rede e "Pagar com USDT") | Página + Server Actions | Público (visitante — RN-01) |
 | `/[locale]/pedido/[id]?t=` | Página | Dono do pedido: link assinado (HMAC do id com `ORDER_LINK_SECRET`); token errado = "não encontrado". Não mostra o e-mail |
@@ -178,11 +179,12 @@ sequenceDiagram
 | `/api/health` | API | Público; só status (sem versão de dependências nem dados) — usado pelo Better Stack Uptime |
 | `/[locale]/reportar?pagina=&erro=` | Página + Server Action | Público (RN-91): 5/h por IP (`failClosed`) + campo-isca; CAPTCHA entra com a decisão do Turnstile. Link no rodapé e na tela de erro |
 | `/[locale]/admin/reportes` | Página + Server Action | Suporte e admin (RN-06); "resolvido" entra na auditoria (RN-07) |
-| `/api/support/conversations` | API (POST) | Público, CAPTCHA para visitante, rate limit (RN-92, RN-97) |
-| `/api/support/conversations/[id]/messages` | API (GET/POST) | Dono da conversa (sessão ou cookie da conversa) ou equipe |
+| Abrir conversa e mandar mensagem | Server Actions (`startChat`, `sendChatMessage`, `staffReply`) | Público com rate limit (RN-92, RN-97: 5 conversas/h por IP, 3 abertas por e-mail, 20 mensagens/min por conversa); CAPTCHA com a decisão do Turnstile (#29) |
+| `/api/support/conversations/[id]/messages?after=` | API (GET) | Dono da conversa (cookie `chat` com token; só o hash no banco) ou equipe com 2FA — retomada pelo último `id` |
 | `/api/support/conversations/[id]/stream` | API (SSE) | Idem; ping a cada 25 s |
-| `/api/support/stream` | API (SSE) | Equipe — avisos da fila |
+| `/api/support/stream` | — | *Ainda não: a fila `/admin/suporte` atualiza a cada 15 s* |
 | `/[locale]/admin/suporte` | Página | Suporte e admin com 2FA (fila, conversa, dados do pedido) |
-| `/[locale]/admin/equipe` | Página | Só admin (convidar, desativar, papéis, idiomas, horário) |
+| `/[locale]/admin/equipe` | Página + Server Actions | Só admin (convidar, desativar, papéis, idiomas); horário com #30 |
+| `/[locale]/admin/convite/[token]` | Página + Server Action | Quem tem o link: cria nome e senha (12+, recusa senha vazada — HIBP); 2FA no primeiro login |
 | `/[locale]/admin/docs`, `/[locale]/admin/docs/[slug]` | Página | Admin e suporte com 2FA (RN-74); lê `docs/*.md` incluídos no build (`outputFileTracingIncludes`) — sem cópia; visitante e cliente recebem 404; Markdown mostrado como texto (renderizar exige dependência nova) |
 | `/[locale]/admin/bug-reports` | Página | Admin com 2FA |

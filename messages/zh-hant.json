@@ -83,7 +83,8 @@
     "tooMany": "短時間內搜尋次數過多，請稍候一分鐘。",
     "pagination": "頁數",
     "prev": "上一頁",
-    "next": "下一頁"
+    "next": "下一頁",
+    "promo": "促銷中"
   },
   "Buy": {
     "realm": "伺服器",
@@ -202,7 +203,9 @@
       "audit": "稽核紀錄",
       "orders": "訂單",
       "reports": "問題回報",
-      "docs": "內部文件"
+      "docs": "內部文件",
+      "team": "團隊",
+      "support": "客服"
     },
     "login": {
       "title": "團隊登入",
@@ -342,6 +345,57 @@
       "context": "語言 · 地區 · 時區 · 版本",
       "browser": "瀏覽器",
       "resolve": "標記為已解決"
+    },
+    "team": {
+      "role": "角色",
+      "admin": "管理員",
+      "support": "客服",
+      "languages": "服務語言",
+      "invite": "邀請加入團隊",
+      "sendInvite": "產生邀請連結",
+      "link": "邀請連結（7 天內有效 — 請傳給對方；只會顯示這一次）",
+      "twoFactorOn": "已啟用 2FA",
+      "twoFactorOff": "尚未設定 2FA",
+      "errors": {
+        "email": "請輸入有效的電子郵件。",
+        "emailTaken": "此電子郵件已有帳號。",
+        "self": "你不能停用或降級自己的帳號。",
+        "lastAdmin": "至少要保留一位啟用中的管理員。"
+      }
+    },
+    "accept": {
+      "title": "加入團隊",
+      "intro": "為 {email} 建立存取權限。首次登入時會啟用雙重驗證。",
+      "name": "你的名字",
+      "confirm": "確認密碼",
+      "hint": "至少 12 個字元。出現在已知外洩資料中的密碼會被拒絕。",
+      "submit": "建立存取權限",
+      "errors": {
+        "invalid": "請確認名字，並使用至少 12 個字元的密碼。",
+        "mismatch": "兩次輸入的密碼不一致。",
+        "pwned": "此密碼曾出現在資料外洩中，請換一個。",
+        "expired": "此邀請無效、已使用或已過期，請向管理員索取新的邀請。"
+      }
+    },
+    "support": {
+      "customer": "客戶",
+      "language": "語言",
+      "statuses": {
+        "aberta": "待處理",
+        "em_atendimento": "處理中",
+        "resolvida": "已解決"
+      },
+      "assume": "接手此對話",
+      "resolve": "標記為已解決",
+      "you": "你"
+    },
+    "hours": {
+      "title": "客服時間（UTC）",
+      "hint": "客戶會以自己的時區看到這些時間。非服務時間時，聊天會變成留言表單。",
+      "open": "營業",
+      "start": "從",
+      "end": "到",
+      "error": "每個營業日都需要不同的開始與結束時間。"
     }
   },
   "Errors": {
@@ -363,5 +417,32 @@
     "sent": "謝謝！你的回報已送達團隊。",
     "invalid": "請至少用 10 個字描述問題，並確認電子郵件。",
     "limited": "你的網路連線回報次數過多，請一小時後再試。"
+  },
+  "Forbidden": {
+    "title": "沒有權限",
+    "message": "你的帳號沒有此頁面的權限。",
+    "back": "返回管理後台"
+  },
+  "Chat": {
+    "open": "聯絡客服",
+    "close": "關閉聊天",
+    "title": "客服",
+    "notice": "我們絕不會向你索取 Battle.net 密碼或信用卡資料。",
+    "email": "電子郵件",
+    "name": "名字（選填）",
+    "message": "需要什麼協助？",
+    "start": "開始對話",
+    "you": "你",
+    "team": "客服",
+    "placeholder": "輸入訊息",
+    "send": "送出",
+    "errors": {
+      "error": "請檢查欄位後再試一次。",
+      "limited": "訊息或對話太多，請稍候再試。",
+      "closed": "此對話已結束超過 7 天，請開啟新的對話。"
+    },
+    "offlineTitle": "目前不在服務時間 — 請留言，我們會以電子郵件或在此回覆。",
+    "offlineStart": "留言",
+    "backAt": "恢復服務時間"
   }
 }

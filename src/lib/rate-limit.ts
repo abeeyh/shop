@@ -9,6 +9,9 @@ export const RATE_LIMITS = {
   search: { limit: 30, windowMs: 60_000 }, // RN-105
   coupon: { limit: 10, windowMs: 60 * 60_000 }, // RN-28: por IP
   report: { limit: 5, windowMs: 60 * 60_000 }, // RN-91: por IP
+  chatStart: { limit: 5, windowMs: 60 * 60_000 }, // RN-97: conversas novas por IP
+  chatMessage: { limit: 20, windowMs: 60_000 }, // RN-97: por conversa e por lado (cliente/equipe)
+  sse: { limit: 30, windowMs: 60_000 }, // aberturas de SSE do chat por IP
   checkout: { limit: 10, windowMs: 10 * 60_000 }, // por IP: cada checkout reserva vaga e cupom
   login: { limit: 10, windowMs: 10 * 60_000 }, // por IP e por e-mail: senha e código do 2FA (docs/09 §2)
 } as const;

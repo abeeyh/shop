@@ -14,6 +14,7 @@ type Labels = {
   min: string;
   max: string;
   available: string;
+  promo: string;
   sort: string;
   sorts: Record<string, string>;
   apply: string;
@@ -28,6 +29,7 @@ type Props = {
     min?: number;
     max?: number;
     available: boolean;
+    promo: boolean;
     sort: string;
   };
   categories: { slug: string; name: string }[];
@@ -120,6 +122,16 @@ export function ProductFilters({ action, values, categories, sorts, labels }: Pr
               className="size-4.5 accent-primary"
             />
             {labels.available}
+          </label>
+          <label className={check}>
+            <input
+              type="checkbox"
+              name="promo"
+              value="1"
+              defaultChecked={values.promo}
+              className="size-4.5 accent-primary"
+            />
+            {labels.promo}
           </label>
         </div>
         <label className={group}>

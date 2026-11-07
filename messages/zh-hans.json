@@ -83,7 +83,8 @@
     "tooMany": "短时间内搜索次数过多，请等待一分钟。",
     "pagination": "页码",
     "prev": "上一页",
-    "next": "下一页"
+    "next": "下一页",
+    "promo": "促销中"
   },
   "Buy": {
     "realm": "服务器",
@@ -202,7 +203,9 @@
       "audit": "审计日志",
       "orders": "订单",
       "reports": "问题反馈",
-      "docs": "内部文档"
+      "docs": "内部文档",
+      "team": "团队",
+      "support": "客服"
     },
     "login": {
       "title": "团队登录",
@@ -342,6 +345,57 @@
       "context": "语言 · 地区 · 时区 · 版本",
       "browser": "浏览器",
       "resolve": "标记为已解决"
+    },
+    "team": {
+      "role": "角色",
+      "admin": "管理员",
+      "support": "客服",
+      "languages": "服务语言",
+      "invite": "邀请加入团队",
+      "sendInvite": "生成邀请链接",
+      "link": "邀请链接（7 天内有效 — 请发给对方；只显示这一次）",
+      "twoFactorOn": "已启用 2FA",
+      "twoFactorOff": "尚未设置 2FA",
+      "errors": {
+        "email": "请输入有效的电子邮箱。",
+        "emailTaken": "该电子邮箱已有账号。",
+        "self": "你不能停用或降级自己的账号。",
+        "lastAdmin": "至少要保留一位启用中的管理员。"
+      }
+    },
+    "accept": {
+      "title": "加入团队",
+      "intro": "为 {email} 创建访问权限。首次登录时会启用双重验证。",
+      "name": "你的名字",
+      "confirm": "确认密码",
+      "hint": "至少 12 个字符。出现在已知泄露数据中的密码会被拒绝。",
+      "submit": "创建访问权限",
+      "errors": {
+        "invalid": "请检查名字，并使用至少 12 个字符的密码。",
+        "mismatch": "两次输入的密码不一致。",
+        "pwned": "该密码曾出现在数据泄露中，请换一个。",
+        "expired": "此邀请无效、已使用或已过期，请向管理员索取新的邀请。"
+      }
+    },
+    "support": {
+      "customer": "客户",
+      "language": "语言",
+      "statuses": {
+        "aberta": "待处理",
+        "em_atendimento": "处理中",
+        "resolvida": "已解决"
+      },
+      "assume": "接手此对话",
+      "resolve": "标记为已解决",
+      "you": "你"
+    },
+    "hours": {
+      "title": "客服时间（UTC）",
+      "hint": "客户会以自己的时区看到这些时间。非服务时间时，聊天会变成留言表单。",
+      "open": "营业",
+      "start": "从",
+      "end": "到",
+      "error": "每个营业日都需要不同的开始和结束时间。"
     }
   },
   "Errors": {
@@ -363,5 +417,32 @@
     "sent": "谢谢！你的反馈已发送给团队。",
     "invalid": "请至少用 10 个字描述问题，并检查电子邮箱。",
     "limited": "你的网络连接反馈次数过多，请一小时后再试。"
+  },
+  "Forbidden": {
+    "title": "没有权限",
+    "message": "你的账号没有此页面的权限。",
+    "back": "返回管理后台"
+  },
+  "Chat": {
+    "open": "联系客服",
+    "close": "关闭聊天",
+    "title": "客服",
+    "notice": "我们绝不会向你索取 Battle.net 密码或银行卡信息。",
+    "email": "电子邮箱",
+    "name": "名字（选填）",
+    "message": "需要什么帮助？",
+    "start": "开始对话",
+    "you": "你",
+    "team": "客服",
+    "placeholder": "输入消息",
+    "send": "发送",
+    "errors": {
+      "error": "请检查字段后再试一次。",
+      "limited": "消息或对话太多，请稍后再试。",
+      "closed": "此对话已结束超过 7 天，请开启新的对话。"
+    },
+    "offlineTitle": "目前不在服务时间 — 请留言，我们会通过电子邮件或在这里回复。",
+    "offlineStart": "留言",
+    "backAt": "恢复服务时间"
   }
 }

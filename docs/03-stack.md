@@ -11,7 +11,7 @@ Princípio: o menor número de peças que resolve o problema. A tabela abaixo é
 | UI | **Tailwind CSS + shadcn/ui** + lucide-react | Componentes acessíveis, sem lib pesada |
 | Idiomas | **next-intl** — `en` (padrão), `fr`, `de`, `pt-BR`, `zh-Hant`, `zh-Hans` | Feito para o App Router; detecção por `Accept-Language` (RN-80, RN-81) |
 | Fuso horário | **API `Intl` nativa** (sem biblioteca) | Detecta e formata fuso IANA (RN-82, RN-83) |
-| Autenticação | **Better Auth** 1.7.12 | Dados no próprio banco, e-mail+senha, 2FA TOTP; telemetria desligada |
+| Autenticação | **Better Auth** 1.7.12 | Dados no próprio banco, e-mail+senha, 2FA TOTP; telemetria desligada. `experimental.authInterrupts` do Next ligado para `forbidden()` (403 por papel) — rever quando estabilizar |
 | Banco | **PostgreSQL** | Relacional, padrão de mercado |
 | ORM | **Drizzle ORM** + driver `postgres` (postgres.js); migrações com `drizzle-kit` em `src/db/migrations` | Tipado, migrações SQL simples |
 | Busca de produtos | **PostgreSQL + `pg_trgm`** (similaridade, tolera erro de digitação) | Catálogo pequeno (dezenas de itens); sem serviço externo — RN-100 |

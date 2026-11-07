@@ -83,7 +83,8 @@
     "tooMany": "Zu viele Suchen in kurzer Zeit. Bitte warte eine Minute.",
     "pagination": "Seiten",
     "prev": "Zurück",
-    "next": "Weiter"
+    "next": "Weiter",
+    "promo": "Im Angebot"
   },
   "Buy": {
     "realm": "Realm",
@@ -202,7 +203,9 @@
       "audit": "Änderungsprotokoll",
       "orders": "Bestellungen",
       "reports": "Problemmeldungen",
-      "docs": "Interne Dokumentation"
+      "docs": "Interne Dokumentation",
+      "team": "Team",
+      "support": "Support"
     },
     "login": {
       "title": "Anmeldung (Team)",
@@ -342,6 +345,57 @@
       "context": "Sprache · Region · Zeitzone · Version",
       "browser": "Browser",
       "resolve": "Als erledigt markieren"
+    },
+    "team": {
+      "role": "Rolle",
+      "admin": "Admin",
+      "support": "Support",
+      "languages": "Betreute Sprachen",
+      "invite": "Ins Team einladen",
+      "sendInvite": "Einladungslink erstellen",
+      "link": "Einladungslink (7 Tage gültig — schick ihn der Person; wird nur jetzt angezeigt)",
+      "twoFactorOn": "2FA aktiv",
+      "twoFactorOff": "2FA noch nicht eingerichtet",
+      "errors": {
+        "email": "Gib eine gültige E-Mail an.",
+        "emailTaken": "Für diese E-Mail gibt es schon ein Konto.",
+        "self": "Du kannst dein eigenes Konto nicht deaktivieren oder herabstufen.",
+        "lastAdmin": "Mindestens ein aktiver Admin muss bleiben."
+      }
+    },
+    "accept": {
+      "title": "Dem Team beitreten",
+      "intro": "Erstelle deinen Zugang für {email}. Die Zwei-Faktor-Authentifizierung wird bei der ersten Anmeldung aktiviert.",
+      "name": "Dein Name",
+      "confirm": "Passwort bestätigen",
+      "hint": "Mindestens 12 Zeichen. Passwörter aus bekannten Datenlecks werden abgelehnt.",
+      "submit": "Zugang erstellen",
+      "errors": {
+        "invalid": "Prüfe den Namen und nutze ein Passwort mit mindestens 12 Zeichen.",
+        "mismatch": "Die Passwörter stimmen nicht überein.",
+        "pwned": "Dieses Passwort ist in einem Datenleck aufgetaucht. Wähle ein anderes.",
+        "expired": "Diese Einladung ist ungültig, schon benutzt oder abgelaufen. Bitte einen Admin um eine neue."
+      }
+    },
+    "support": {
+      "customer": "Kunde",
+      "language": "Sprache",
+      "statuses": {
+        "aberta": "Offen",
+        "em_atendimento": "In Bearbeitung",
+        "resolvida": "Gelöst"
+      },
+      "assume": "Chat übernehmen",
+      "resolve": "Als gelöst markieren",
+      "you": "Du"
+    },
+    "hours": {
+      "title": "Supportzeiten (UTC)",
+      "hint": "Kunden sehen diese Zeiten in ihrer Zeitzone. Außerhalb wird der Chat zum Nachrichtenformular.",
+      "open": "Geöffnet",
+      "start": "Von",
+      "end": "Bis",
+      "error": "Jeder geöffnete Tag braucht eine Start- und Endzeit, die sich unterscheiden."
     }
   },
   "Errors": {
@@ -363,5 +417,32 @@
     "sent": "Danke! Deine Meldung ist beim Team angekommen.",
     "invalid": "Beschreibe das Problem mit mindestens 10 Zeichen und prüfe die E-Mail.",
     "limited": "Zu viele Meldungen von deiner Verbindung. Versuche es in einer Stunde erneut."
+  },
+  "Forbidden": {
+    "title": "Kein Zugriff",
+    "message": "Dein Konto hat keine Berechtigung für diese Seite.",
+    "back": "Zurück zum Admin"
+  },
+  "Chat": {
+    "open": "Mit dem Support chatten",
+    "close": "Chat schließen",
+    "title": "Support",
+    "notice": "Wir fragen nie nach deinem Battle.net-Passwort oder deinen Kartendaten.",
+    "email": "E-Mail",
+    "name": "Name (optional)",
+    "message": "Wie können wir helfen?",
+    "start": "Chat starten",
+    "you": "Du",
+    "team": "Support",
+    "placeholder": "Nachricht schreiben",
+    "send": "Senden",
+    "errors": {
+      "error": "Prüfe die Felder und versuche es erneut.",
+      "limited": "Zu viele Nachrichten oder Chats. Warte kurz und versuche es erneut.",
+      "closed": "Dieser Chat wurde vor mehr als 7 Tagen geschlossen. Starte einen neuen."
+    },
+    "offlineTitle": "Wir sind gerade offline — hinterlass eine Nachricht, wir antworten per E-Mail oder hier.",
+    "offlineStart": "Nachricht hinterlassen",
+    "backAt": "Wir sind zurück am"
   }
 }
