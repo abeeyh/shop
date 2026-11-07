@@ -24,11 +24,14 @@ test("categoria mostra produtos com preço em USDT (sem estimativa fake na moeda
 
 test("produto abre pelo card e mostra o aviso de self-play", async ({ page }) => {
   await page.goto("/en/wow/raids");
-  await page.getByRole("link", { name: "Current raid — Heroic" }).first().click();
-  await expect(page).toHaveURL(/\/en\/wow\/raids\/raid-heroic-us$/);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Current raid — Heroic");
+  // #94: produtos agrupados por subcategoria, na ordem do admin
+  await expect(page.getByRole("heading", { level: 2, name: "Heroic", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 2, name: "Normal", exact: true })).toBeVisible();
+  await page.getByRole("link", { name: "Venomous Abyss 8/8 SAVED HEROIC" }).first().click();
+  await expect(page).toHaveURL(/\/en\/wow\/raids\/venomous-abyss-8-8-saved-heroic$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Venomous Abyss 8/8 SAVED HEROIC");
   // com cacheComponents a página anterior fica escondida no DOM (React Activity): filtrar o visível
-  await expect(page.getByText("79.00 USDT", { exact: true }).filter({ visible: true }).first()).toBeVisible();
+  await expect(page.getByText("10.80 USDT", { exact: true }).filter({ visible: true }).first()).toBeVisible();
   await expect(page.getByText(/never ask for your Battle\.net password/)).toBeVisible();
 });
 

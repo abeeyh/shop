@@ -13,6 +13,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [["github"], ["list"]] : "list",
+  // suíte em paralelo contra um único servidor: sob carga as actions passam de 5 s (padrão do Playwright)
+  expect: { timeout: 10_000 },
   use: {
     baseURL: `http://127.0.0.1:${PORT}`,
     channel: process.env.PW_CHANNEL,

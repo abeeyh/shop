@@ -1,5 +1,5 @@
 import { createHmac } from "node:crypto";
-import type { APIRequestContext } from "@playwright/test";
+import { expect, type APIRequestContext, type Page } from "@playwright/test";
 import postgres from "postgres";
 import { E2E_IPN_SECRET } from "./constants";
 
@@ -22,8 +22,20 @@ export const ipn = (request: APIRequestContext, body: Record<string, unknown>, s
   });
 
 // #86: sem provedor de pagamento o checkout é bloqueado, então o pedido do teste entra direto no banco
-// (fixture de teste, só banco local — global-setup). Mesmo pedido que o checkout criaria: M+ +10, 12 USDT.
+// (fixture de teste, só banco local — global-setup). Serviço sem horário (#94: agenda com o suporte), 12 USDT.
 const ORDER_LINK_DEV_SECRET = "dev-order-link-secret-only-for-local-and-tests"; // src/features/orders/link.ts
+const SERVICE = { kind: "service", realm: "Area 52", faction: "horde", character: "Thrall", addons: [] };
+
+// #94: serviço pede o personagem (realm, facção, nome) antes de ir ao carrinho
+export async function addService(page: Page, path = "/en/wow/mythic-plus/mythic-plus-10") {
+  await page.goto(path);
+  await page.getByLabel("Realm").fill("Area 52");
+  await page.getByLabel("Character name").fill("Thrall");
+  await page.getByRole("button", { name: "Add to cart" }).click();
+  // sob carga (suíte inteira em paralelo) a action passa de 5 s
+  await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible({ timeout: 15_000 });
+}
+
 export async function seedOrder(): Promise<{ id: string; path: string }> {
   const sql = postgres(process.env.DATABASE_URL!, { max: 1 });
   try {
@@ -33,8 +45,8 @@ export async function seedOrder(): Promise<{ id: string; path: string }> {
       returning id`;
     await sql`
       insert into order_items (order_id, product_id, product_name, options, unit_price_usdt_cents, quantity)
-      select ${order!.id}, id, name, ${sql.json({ keyLevel: 10, runs: 1, timed: false })}, 1200, 1
-      from products where slug = 'mplus-us'`;
+      select ${order!.id}, id, name, ${sql.json(SERVICE)}, 1200, 1
+      from products where slug = 'mythic-plus-10'`;
     const t = createHmac("sha256", ORDER_LINK_DEV_SECRET).update(`order:${order!.id}`).digest("base64url");
     return { id: order!.id, path: `/en/pedido/${order!.id}?t=${t}` };
   } finally {

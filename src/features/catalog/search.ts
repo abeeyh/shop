@@ -8,12 +8,15 @@ const SIMILARITY = 0.3; // RN-100: limiar do pg_trgm (tolera erro de digitação
 
 const text = sql`${products.name} || ' ' || ${categories.name} || ' ' || ${products.description}`;
 
-// RN-11: raid só está disponível se tem horário futuro com vaga; gold e M+ sempre
-const bookable = or(
-  sql`${categories.kind} <> 'raid'`,
-  sql`exists (select 1 from ${raidSlots} s where s.product_id = ${products.id} and s.active
-             and s.starts_at > now() and s.reserved < s.capacity)`,
+// RN-11 / RN-16 (#94): produto com horários só está disponível se algum tem vaga; sem horário, a run é
+// agendada com o suporte (sempre disponível). Sob consulta (RN-106) não vai ao carrinho.
+const upcomingSlot = sql`select 1 from ${raidSlots} s where s.product_id = ${products.id} and s.active
+             and s.starts_at > now()`;
+const bookable = and(
+  eq(products.priceOnRequest, false),
+  or(sql`not exists (${upcomingSlot})`, sql`exists (${upcomingSlot} and s.reserved < s.capacity)`),
 );
+const priced = eq(products.priceOnRequest, false); // filtro de preço/promoção ignora "sob consulta"
 
 // RN-102/RN-24: preço final = base − maior desconto valendo agora (mesma regra de pricing/rules.ts,
 // no banco para ordenar e filtrar sem carregar tudo). Arredondamento igual ao Math.round para positivos.
@@ -29,9 +32,9 @@ const filterConditions = (f: Filters): (SQL | undefined)[] => [
   eq(products.active, true),
   eq(categories.active, true),
   f.categories.length ? inArray(categories.slug, f.categories) : undefined,
-  f.min !== undefined ? gte(finalPrice, f.min * 100) : undefined,
-  f.max !== undefined ? lte(finalPrice, f.max * 100) : undefined,
-  f.promo ? sql`${finalPrice} < ${products.priceUsdtCents}` : undefined,
+  f.min !== undefined ? and(priced, gte(finalPrice, f.min * 100)) : undefined,
+  f.max !== undefined ? and(priced, lte(finalPrice, f.max * 100)) : undefined,
+  f.promo ? and(priced, sql`${finalPrice} < ${products.priceUsdtCents}`) : undefined,
   f.available ? bookable : undefined,
   f.q ? sql`word_similarity(${f.q}, ${text}) > ${SIMILARITY}` : undefined,
 ];
@@ -45,8 +48,8 @@ export async function searchProducts(f: Filters) {
   const order = {
     relevance: [desc(score), desc(products.salesCount)],
     best: [desc(products.salesCount), asc(products.name)],
-    "price-asc": [asc(finalPrice), asc(products.name)],
-    "price-desc": [desc(finalPrice), asc(products.name)],
+    "price-asc": [asc(products.priceOnRequest), asc(finalPrice), asc(products.name)], // sob consulta no fim
+    "price-desc": [asc(products.priceOnRequest), desc(finalPrice), asc(products.name)],
   }[f.sort];
 
   const rows = await db
@@ -62,6 +65,8 @@ export async function searchProducts(f: Filters) {
       categorySlug: categories.slug,
       categoryKind: categories.kind,
       categoryName: categories.name,
+      priceOnRequest: products.priceOnRequest,
+      hot: products.hot,
       available: sql<boolean>`${bookable}`,
       total: sql<number>`count(*) over()`.mapWith(Number),
     })

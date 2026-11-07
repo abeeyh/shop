@@ -67,6 +67,8 @@ export async function listItems(cartId: string) {
       productName: products.name,
       productActive: products.active,
       basePriceCents: products.priceUsdtCents,
+      addons: products.addons,
+      priceOnRequest: products.priceOnRequest,
       unit: products.unit,
       categoryId: products.categoryId,
       categorySlug: categories.slug,

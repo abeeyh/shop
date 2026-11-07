@@ -29,7 +29,9 @@
     "selfPlay": "本人上线：你使用自己的角色游戏。我们绝不索要你的 Battle.net 密码。",
     "empty": "暂无商品。",
     "home": "首页",
-    "loading": "加载中…"
+    "loading": "加载中…",
+    "onRequest": "价格面议",
+    "hot": "热门"
   },
   "Footer": {
     "about": "World of Warcraft 正式服美服和欧服的金币、团队副本与史诗钥石。",
@@ -92,21 +94,13 @@
     "characterHint": "接收金币的角色（仅限文字）。",
     "quantity": "数量（千金币）",
     "slot": "日期和时间",
-    "loot": "战利品选项",
-    "lootNone": "仅通关",
-    "lootArmor": "按护甲类型优先（+30%）",
-    "lootFull": "完整战利品（+80%）",
-    "keyLevel": "钥石等级",
-    "runs": "场数",
-    "timed": "限时完成（+20%）",
     "total": "总计",
     "add": "加入购物车",
     "added": "已加入购物车",
     "viewCart": "查看购物车",
     "unit": {
-      "raid": "每次团队副本",
-      "dungeon": "每场，最高 +10",
-      "gold": "每 1,000 金币"
+      "gold": "每 1,000 金币",
+      "service": "每次服务"
     },
     "errors": {
       "realm": "请输入服务器名称。",
@@ -115,11 +109,19 @@
       "slotId": "该时段已无法预约，请选择其他时段。",
       "product": "该商品已无法购买。",
       "faction": "请选择阵营。",
-      "keyLevel": "请选择 +2 至 +15 的等级。",
-      "runs": "请选择 1 至 10 场。",
-      "loot": "请选择战利品选项。"
+      "addon": "只能选择列出的附加项。",
+      "quantityService": "请选择 1 到 {max} 之间的数量。"
     },
-    "promoEnds": "促销剩余时间"
+    "promoEnds": "促销剩余时间",
+    "characterHintService": "我们邀请进团的角色（仅限字母）。",
+    "quantityService": "数量",
+    "addons": "附加项",
+    "addon": "{name}（+{percent}%）",
+    "scheduleNote": "无固定时间：付款后，请在聊天中与客服预约你的场次。",
+    "onRequest": "价格面议",
+    "onRequestNote": "请联系客服获取此服务的报价。",
+    "askPrice": "咨询价格",
+    "askPriceMessage": "你好！我想咨询以下服务的报价：{name}"
   },
   "Cart": {
     "title": "购物车",
@@ -187,7 +189,11 @@
     },
     "discount": "优惠码折扣",
     "delivered": "已交付 — 谢谢！",
-    "proof": "查看交付证明"
+    "proof": "查看交付证明",
+    "scheduleTitle": "预约你的场次",
+    "scheduleText": "在聊天中联系客服，选择场次的日期和时间。",
+    "scheduleButton": "与客服预约",
+    "scheduleMessage": "你好！我想预约订单 {order} 的场次。"
   },
   "Admin": {
     "title": "管理后台",
@@ -203,7 +209,8 @@
       "reports": "问题反馈",
       "docs": "内部文档",
       "team": "团队",
-      "support": "客服"
+      "support": "客服",
+      "subcategories": "子分类"
     },
     "login": {
       "title": "团队登录",
@@ -253,12 +260,21 @@
       "code": "代码",
       "maxUses": "总使用次数（留空 = 不限）",
       "maxUsesPerEmail": "每个邮箱使用次数（留空 = 不限）",
-      "minOrder": "最低订单金额（USDT）"
+      "minOrder": "最低订单金额（USDT）",
+      "subcategory": "子分类",
+      "noSubcategory": "— 无 —",
+      "priceOnRequest": "价格面议（不显示价格，打开聊天）",
+      "addons": "附加项（每行一个：名称 | %）",
+      "maxQuantity": "每单最大数量",
+      "hot": "热门（突出显示）"
     },
     "kinds": {
       "gold": "金币",
       "raid": "团队副本",
-      "dungeon": "史诗钥石+"
+      "dungeon": "史诗钥石+",
+      "pvp": "PvP",
+      "achievement": "成就",
+      "delve": "地下堡"
     },
     "form": {
       "newCategory": "新建分类",
@@ -269,7 +285,8 @@
       "cancel": "取消编辑",
       "editLink": "编辑",
       "newPromotion": "新建促销",
-      "newCoupon": "新建优惠码"
+      "newCoupon": "新建优惠码",
+      "newSubcategory": "新建子分类"
     },
     "table": {
       "activeProducts": "启用中的商品",
@@ -288,7 +305,7 @@
       "sortOrder": "排序需为 0 至 999。",
       "categoryId": "请选择分类。",
       "region": "请选择地区。",
-      "price": "USDT 价格最多 2 位小数，且大于零。",
+      "price": "以 USDT 计价，最多 2 位小数，必须大于零（或勾选“价格面议”）。",
       "activeProducts": "停用分类前，请先停用或移动其中启用的商品。",
       "type": "请选择折扣类型。",
       "value": "百分比 1 至 90，或大于零的 USDT 金额。",
@@ -298,7 +315,10 @@
       "code": "代码：2–40 个字母、数字、连字符或下划线，且不能重复。",
       "maxUses": "请输入 1 以上的整数。",
       "maxUsesPerEmail": "请输入 1 以上的整数。",
-      "minOrder": "USDT 最低金额最多 2 位小数。"
+      "minOrder": "USDT 最低金额最多 2 位小数。",
+      "subcategoryId": "请选择同一分类下的子分类。",
+      "addons": "每行一个附加项，格式为“名称 | 25”（1–100%，名称不重复，最多 10 个）。",
+      "maxQuantity": "请填写 1 到 100。"
     },
     "discount": {
       "percent": "百分比",
@@ -314,7 +334,8 @@
         "category": "分类",
         "product": "商品",
         "promotion": "促销",
-        "coupon": "优惠码"
+        "coupon": "优惠码",
+        "subcategory": "子分类"
       },
       "actions": {
         "create": "创建",

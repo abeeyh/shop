@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { GradientCard } from "@/components/molecules/GradientCard";
-import { KindThumb } from "./KindIcon";
+import { KindThumb, type Kind } from "./KindIcon";
 
-type Props = { href: string; name: string; description: string; kind: "gold" | "raid" | "dungeon" };
+type Props = { href: string; name: string; description: string; kind: Kind };
 
 export function CategoryCard({ href, name, description, kind }: Props) {
   return (

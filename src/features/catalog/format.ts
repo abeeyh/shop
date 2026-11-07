@@ -37,10 +37,17 @@ export function promoPrice(
     : { cents: p.priceUsdtCents, originalCents: null, endsAt: null };
 }
 
+export type CardLabels = { unit: (unit: string) => string; onRequest: string; hot: string };
+type CardProduct = Pick<
+  CatalogProduct,
+  "id" | "slug" | "name" | "categoryId" | "categorySlug" | "categoryKind" | "priceUsdtCents" | "unit"
+> & { priceOnRequest: boolean; hot: boolean };
+
+// RN-106: "sob consulta" no lugar do preço (o valor guardado é só um marcador)
 export function toProductCard(
   locale: string,
-  p: CatalogProduct,
-  unitLabel: (unit: string) => string,
+  p: CardProduct,
+  labels: CardLabels,
   promos: Promotion[] = [],
 ): ProductCardData {
   const price = promoPrice(p, promos);
@@ -48,8 +55,16 @@ export function toProductCard(
     href: productHref(locale, p),
     name: p.name,
     kind: p.categoryKind,
-    price: formatUsdt(locale, price.cents),
-    original: price.originalCents ? formatUsdt(locale, price.originalCents) : undefined,
-    unit: p.unit ? unitLabel(p.unit) : undefined,
+    badge: p.hot ? labels.hot : undefined,
+    price: p.priceOnRequest ? labels.onRequest : formatUsdt(locale, price.cents),
+    original: !p.priceOnRequest && price.originalCents ? formatUsdt(locale, price.originalCents) : undefined,
+    unit: !p.priceOnRequest && p.unit ? labels.unit(p.unit) : undefined,
   };
 }
+
+// rótulos do card no idioma de quem vê (home, categoria e busca usam os mesmos)
+export const cardLabels = (c: (key: "perK" | "onRequest" | "hot") => string): CardLabels => ({
+  unit: (u) => (u === "per_1k_gold" ? c("perK") : u),
+  onRequest: c("onRequest"),
+  hot: c("hot"),
+});

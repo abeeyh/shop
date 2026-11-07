@@ -140,8 +140,9 @@ sequenceDiagram
 
 ## Modelo de dados (resumo)
 
-- `categories` (id, kind `gold|raid|dungeon`, name, slug, description, image_url, sort_order, active) — RN-13; texto único para todos os idiomas (RN-84)
-- `products` (id, category_id, region `US|EU`, name, slug, description, image_url, price_usdt_cents, unit, options jsonb, active, sales_count) — RN-19; índice `pg_trgm` (GIN) em `name` e `description` para a busca (RN-100)
+- `categories` (id, kind `gold|raid|dungeon|pvp|achievement|delve`, name, slug, description, image_url, sort_order, active) — RN-13; texto único para todos os idiomas (RN-84)
+- `subcategories` (id, category_id, name, slug único na categoria, sort_order, active) — RN-13 (#94)
+- `products` (id, category_id, subcategory_id?, region (sempre `US` — RN-14), name, slug, description, image_url, price_usdt_cents, unit, addons jsonb `[{name, percent}]` (RN-17), max_quantity, price_on_request (RN-106), hot, sort_order, external_id (importação idempotente), active, sales_count) — RN-19; índice `pg_trgm` (GIN) em `name` e `description` para a busca (RN-100)
 - `promotions` (id, name, type `percent|fixed`, value, scope `store|category|product`, category_id?, product_id?, starts_at, ends_at, active) — RN-21 a RN-24. **Um alvo por registro** (vários alvos = várias promoções; sem tabela `promotion_targets`)
 - `coupons` (id, code único (minúsculas), type, value, scope, category_id?, product_id?, starts_at, ends_at, max_uses?, max_uses_per_email?, min_order_usdt_cents, active) — RN-25; um alvo por registro. `carts.coupon_code` guarda o cupom digitado, revalidado a cada leitura
 - `coupon_redemptions` (coupon_id, order_id único, email, status `reserved|used|released`) — RN-27: reservado no checkout com a linha do cupom travada, `used` quando o IPN leva a `pago`, `released` na expiração

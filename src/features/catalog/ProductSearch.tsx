@@ -11,7 +11,7 @@ import { env } from "@/lib/env";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
 import { ProductCard } from "./components/ProductCard";
 import { ProductFilters } from "./components/ProductFilters";
-import { categoryHref, toProductCard } from "./format";
+import { cardLabels, categoryHref, toProductCard } from "./format";
 import { listCategories } from "./queries";
 import { filtersToQuery, PAGE_SIZE, parseFilters, SORTS, type Filters } from "./schemas";
 import { searchProducts } from "./search";
@@ -136,7 +136,7 @@ export async function ProductSearch({ locale, raw }: Props) {
   const href = (patch: Partial<Filters>) => base + filtersToQuery(f, patch);
   const allowed = await searchAllowed(f);
   const { items, total } = allowed ? await searchProducts(f) : { items: [], total: 0 };
-  const unit = (u: string) => (u === "per_1k_gold" ? c("perK") : u);
+  const labels = cardLabels(c);
   const status = allowed
     ? `${t("results", { n: total })}${f.q ? ` ${t("resultsFor", { q: f.q })}` : ""}`
     : t("tooMany");
@@ -166,7 +166,7 @@ export async function ProductSearch({ locale, raw }: Props) {
                       {t("unavailable")}
                     </span>
                   )}
-                  <ProductCard p={toProductCard(locale, p, unit, promos)} />
+                  <ProductCard p={toProductCard(locale, p, labels, promos)} />
                 </div>
               ))}
             </div>

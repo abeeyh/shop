@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { ipn, seedOrder } from "./helpers";
+import { addService, ipn, seedOrder } from "./helpers";
 
 // #18/#86: IPN assinado sobre pedido criado no banco (sem provedor o checkout é bloqueado).
 // RN-01, RN-32, RN-33, RN-37, RN-50.
@@ -40,6 +40,12 @@ test.describe("checkout USDT", () => {
     await ipn(request, { ...base, payment_status: "expired", actually_paid: 0 }); // fora de ordem
     await page.reload();
     await expect(status).toHaveText("Paid");
+
+    // RN-16 (#94): serviço sem horário — o pedido pago oferece agendar com o suporte, já com o nº do pedido
+    await page.getByRole("button", { name: "Schedule with support" }).click();
+    await expect(page.getByRole("textbox", { name: "How can we help?" })).toHaveValue(
+      `Hi! I'd like to schedule the run for order ${orderId.slice(0, 8)}.`,
+    );
   });
 
   test("RN-32: IPN sem assinatura válida é recusado e não muda o pedido", async ({ page, request }) => {
@@ -67,9 +73,7 @@ test.describe("checkout USDT", () => {
   test("#86: sem provedor de pagamento o checkout é bloqueado com aviso e não cria pedido", async ({
     page,
   }) => {
-    await page.goto("/en/wow/mythic-plus/mplus-us");
-    await page.getByRole("button", { name: "Add to cart" }).click();
-    await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible();
+    await addService(page);
     await page.goto("/en/carrinho");
     await page.getByLabel("Email").fill("buyer@example.com");
     await page.getByRole("button", { name: "Pay with USDT" }).click();
@@ -86,9 +90,7 @@ test.describe("checkout USDT", () => {
   });
 
   test("RN-01: e-mail inválido não cria pedido", async ({ page }) => {
-    await page.goto("/en/wow/mythic-plus/mplus-us");
-    await page.getByRole("button", { name: "Add to cart" }).click();
-    await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible();
+    await addService(page);
     await page.goto("/en/carrinho");
     await page.getByLabel("Email").fill("a@b");
     await page.getByLabel("Email").evaluate((el: HTMLInputElement) => (el.type = "text")); // passa do HTML5

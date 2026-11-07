@@ -4,4 +4,4 @@ export { isOrderToken } from "./link";
 export { DeliveryBox } from "./DeliveryBox";
 export { PaymentBox } from "./PaymentBox";
 export { getOrder } from "./queries";
-export type { OrderStatus } from "./rules";
+export { needsScheduling, type OrderStatus } from "./rules";

@@ -52,8 +52,10 @@ export default async function AuditAdmin({ params, searchParams }: PageProps<"/[
                   <td>{r.staffEmail}</td>
                   <td className="text-heading">
                     {t(`audit.actions.${r.action as "create" | "update"}`)}{" "}
-                    {t(`audit.entities.${r.entity as "category" | "product" | "promotion" | "coupon"}`)}:{" "}
-                    {show(after.name ?? after.code)}
+                    {t(
+                      `audit.entities.${r.entity as "category" | "subcategory" | "product" | "promotion" | "coupon"}`,
+                    )}
+                    : {show(after.name ?? after.code)}
                   </td>
                   <td>
                     <ul className="grid gap-0.5 text-xs">

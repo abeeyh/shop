@@ -29,7 +29,9 @@
     "selfPlay": "親自上線：你使用自己的角色遊玩。我們絕不索取你的 Battle.net 密碼。",
     "empty": "暫無商品。",
     "home": "首頁",
-    "loading": "載入中…"
+    "loading": "載入中…",
+    "onRequest": "價格另洽",
+    "hot": "熱門"
   },
   "Footer": {
     "about": "World of Warcraft 正式版美服與歐服的金幣、團隊副本與傳奇+。",
@@ -92,21 +94,13 @@
     "characterHint": "接收金幣的角色（僅限文字）。",
     "quantity": "數量（千金幣）",
     "slot": "日期與時間",
-    "loot": "戰利品選項",
-    "lootNone": "僅通關",
-    "lootArmor": "依護甲類型優先（+30%）",
-    "lootFull": "完整戰利品（+80%）",
-    "keyLevel": "鑰石等級",
-    "runs": "場數",
-    "timed": "限時完成（+20%）",
     "total": "總計",
     "add": "加入購物車",
     "added": "已加入購物車",
     "viewCart": "查看購物車",
     "unit": {
-      "raid": "每次團隊副本",
-      "dungeon": "每場，最高 +10",
-      "gold": "每 1,000 金幣"
+      "gold": "每 1,000 金幣",
+      "service": "每次服務"
     },
     "errors": {
       "realm": "請輸入伺服器名稱。",
@@ -115,11 +109,19 @@
       "slotId": "此時段已無法預約，請選擇其他時段。",
       "product": "此商品已無法購買。",
       "faction": "請選擇陣營。",
-      "keyLevel": "請選擇 +2 至 +15 的等級。",
-      "runs": "請選擇 1 至 10 場。",
-      "loot": "請選擇戰利品選項。"
+      "addon": "只能選擇列出的附加項目。",
+      "quantityService": "請選擇 1 到 {max} 之間的數量。"
     },
-    "promoEnds": "促銷剩餘時間"
+    "promoEnds": "促銷剩餘時間",
+    "characterHintService": "我們邀請進團的角色（僅限字母）。",
+    "quantityService": "數量",
+    "addons": "附加項目",
+    "addon": "{name}（+{percent}%）",
+    "scheduleNote": "無固定時間：付款後，請在聊天中與客服預約你的場次。",
+    "onRequest": "價格另洽",
+    "onRequestNote": "請聯絡客服取得此服務的報價。",
+    "askPrice": "詢問價格",
+    "askPriceMessage": "你好！我想詢問以下服務的報價：{name}"
   },
   "Cart": {
     "title": "購物車",
@@ -187,7 +189,11 @@
     },
     "discount": "優惠碼折扣",
     "delivered": "已交付 — 感謝你！",
-    "proof": "查看交付證明"
+    "proof": "查看交付證明",
+    "scheduleTitle": "預約你的場次",
+    "scheduleText": "在聊天中聯絡客服，選擇場次的日期與時間。",
+    "scheduleButton": "與客服預約",
+    "scheduleMessage": "你好！我想預約訂單 {order} 的場次。"
   },
   "Admin": {
     "title": "管理後台",
@@ -203,7 +209,8 @@
       "reports": "問題回報",
       "docs": "內部文件",
       "team": "團隊",
-      "support": "客服"
+      "support": "客服",
+      "subcategories": "子分類"
     },
     "login": {
       "title": "團隊登入",
@@ -253,12 +260,21 @@
       "code": "代碼",
       "maxUses": "總使用次數（留空 = 不限）",
       "maxUsesPerEmail": "每個電子郵件使用次數（留空 = 不限）",
-      "minOrder": "最低訂單金額（USDT）"
+      "minOrder": "最低訂單金額（USDT）",
+      "subcategory": "子分類",
+      "noSubcategory": "— 無 —",
+      "priceOnRequest": "價格另洽（不顯示價格，開啟聊天）",
+      "addons": "附加項目（每行一個：名稱 | %）",
+      "maxQuantity": "每筆訂單最大數量",
+      "hot": "熱門（醒目顯示）"
     },
     "kinds": {
       "gold": "金幣",
       "raid": "團隊副本",
-      "dungeon": "傳奇+"
+      "dungeon": "傳奇+",
+      "pvp": "PvP",
+      "achievement": "成就",
+      "delve": "探究"
     },
     "form": {
       "newCategory": "新增分類",
@@ -269,7 +285,8 @@
       "cancel": "取消編輯",
       "editLink": "編輯",
       "newPromotion": "新增促銷",
-      "newCoupon": "新增優惠碼"
+      "newCoupon": "新增優惠碼",
+      "newSubcategory": "新增子分類"
     },
     "table": {
       "activeProducts": "啟用中的商品",
@@ -288,7 +305,7 @@
       "sortOrder": "排序需為 0 至 999。",
       "categoryId": "請選擇分類。",
       "region": "請選擇地區。",
-      "price": "USDT 價格最多 2 位小數，且大於零。",
+      "price": "以 USDT 計價，最多 2 位小數，須大於零（或勾選「價格另洽」）。",
       "activeProducts": "停用分類前，請先停用或移動其中啟用的商品。",
       "type": "請選擇折扣類型。",
       "value": "百分比 1 至 90，或大於零的 USDT 金額。",
@@ -298,7 +315,10 @@
       "code": "代碼：2–40 個字母、數字、連字號或底線，且不可重複。",
       "maxUses": "請輸入 1 以上的整數。",
       "maxUsesPerEmail": "請輸入 1 以上的整數。",
-      "minOrder": "USDT 最低金額最多 2 位小數。"
+      "minOrder": "USDT 最低金額最多 2 位小數。",
+      "subcategoryId": "請選擇同一分類下的子分類。",
+      "addons": "每行一個附加項目，格式為「名稱 | 25」（1–100%，名稱不重複，最多 10 個）。",
+      "maxQuantity": "請填寫 1 到 100。"
     },
     "discount": {
       "percent": "百分比",
@@ -314,7 +334,8 @@
         "category": "分類",
         "product": "商品",
         "promotion": "促銷",
-        "coupon": "優惠碼"
+        "coupon": "優惠碼",
+        "subcategory": "子分類"
       },
       "actions": {
         "create": "建立",

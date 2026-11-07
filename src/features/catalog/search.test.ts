@@ -20,7 +20,7 @@ describe.skipIf(!process.env.DATABASE_URL)("busca pelo preço final (RN-102, RN-
     const [p] = await db
       .select({ id: s.products.id })
       .from(s.products)
-      .where(eq(s.products.slug, "mplus-us"));
+      .where(eq(s.products.slug, "mythic-plus-10"));
     productId = p!.id;
     const [promo] = await db
       .insert(s.promotions)

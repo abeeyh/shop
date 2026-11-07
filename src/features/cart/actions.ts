@@ -5,8 +5,14 @@ import { headers } from "next/headers";
 import { z } from "zod";
 import { formatUsdt, getProduct } from "@/features/catalog";
 import { activePromotions, couponByCode, normalizeCode } from "@/features/discounts/queries";
-import { inWindow, lineTotalCents, promoUnitCents, unitPriceCents } from "@/features/pricing/rules";
-import { isBookable } from "@/features/schedule";
+import {
+  inWindow,
+  lineTotalCents,
+  promoUnitCents,
+  unitPriceCents,
+  type Addon,
+} from "@/features/pricing/rules";
+import { isBookable, listSlotsForProduct } from "@/features/schedule";
 import { routing } from "@/i18n/routing";
 import { clientIp, rateLimitKey } from "@/lib/client-ip";
 import { env } from "@/lib/env";
@@ -18,14 +24,39 @@ import { parseItem, type ParsedItem } from "./schemas";
 export type AddState = { status: "idle" | "ok" | "error"; fields: string[] };
 
 type Checked =
-  | { ok: true; productId: string; categoryId: string; basePrice: number; item: ParsedItem }
+  | {
+      ok: true;
+      productId: string;
+      categoryId: string;
+      basePrice: number;
+      addons: Addon[];
+      item: ParsedItem;
+    }
   | { ok: false; fields: string[] };
 
-// Valida tudo no servidor: produto ativo, opções do tipo do produto e horário com vaga (RN-11, RN-15 a RN-17)
-async function checkItem(form: FormData): Promise<Checked> {
+// prévia do preço antes de o cliente digitar o personagem: o preço não depende dele
+const QUOTE_WHO = { realm: "quote", faction: "alliance", character: "quote" };
+
+function formInput(form: FormData, forQuote: boolean) {
+  const sent = Object.fromEntries(form);
+  const who = forQuote
+    ? Object.fromEntries(Object.entries(QUOTE_WHO).map(([k, v]) => [k, sent[k] || v]))
+    : {};
+  return { ...sent, ...who, addon: form.getAll("addon").map(String) };
+}
+
+// Valida tudo no servidor: produto ativo, opções do produto e horário com vaga (RN-11, RN-15 a RN-17).
+// Sob consulta (RN-106) não entra no carrinho.
+
+async function checkItem(form: FormData, forQuote = false): Promise<Checked> {
   const product = await getProduct(String(form.get("product") ?? ""));
-  if (!product) return { ok: false, fields: ["product"] };
-  const parsed = parseItem(product.categoryKind, Object.fromEntries(form));
+  if (!product || product.priceOnRequest) return { ok: false, fields: ["product"] };
+  const slots = product.categoryKind === "gold" ? [] : await listSlotsForProduct(product.slug);
+  const parsed = parseItem(product.categoryKind, formInput(form, forQuote), {
+    addons: product.addons,
+    maxQuantity: product.maxQuantity,
+    hasSlots: slots.length > 0,
+  });
   if (!parsed.ok) return parsed;
   if (parsed.item.slotId) {
     const slot = await getSlotForProduct(parsed.item.slotId, product.id);
@@ -36,6 +67,7 @@ async function checkItem(form: FormData): Promise<Checked> {
     productId: product.id,
     categoryId: product.categoryId,
     basePrice: product.priceUsdtCents,
+    addons: product.addons,
     item: parsed.item,
   };
 }
@@ -53,9 +85,9 @@ export async function addToCart(_prev: AddState, form: FormData): Promise<AddSta
 export async function quoteItem(form: FormData): Promise<string | null> {
   const locale = String(form.get("locale") ?? "");
   if (!routing.locales.some((l) => l === locale)) return null;
-  const checked = await checkItem(form);
+  const checked = await checkItem(form, true);
   if (!checked.ok) return null;
-  const unitCents = unitPriceCents(checked.basePrice, checked.item.options);
+  const unitCents = unitPriceCents(checked.basePrice, checked.item.options, checked.addons);
   const unit = promoUnitCents({ ...checked, unitCents }, await activePromotions()); // RN-22
   return formatUsdt(locale, lineTotalCents(unit, checked.item.quantity));
 }

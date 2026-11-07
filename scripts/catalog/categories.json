@@ -1,0 +1,53 @@
+{
+  "_comment": "Mapa do serviceCategoryId/serviceSubcategoryId do sistema de origem para as categorias da loja (#94). O JSON de produtos não traz nomes de categoria; ajuste aqui e rode pnpm catalog:import de novo.",
+  "categories": {
+    "8": {
+      "slug": "mythic-plus",
+      "kind": "dungeon",
+      "name": "Mythic+",
+      "sortOrder": 2,
+      "description": "Mythic+ keys, bundles and seasonal achievements (KSH, KSL, KSM)."
+    },
+    "40": {
+      "slug": "raids",
+      "kind": "raid",
+      "name": "Raids",
+      "sortOrder": 3,
+      "description": "Current raids in Normal and Heroic: saved or unsaved, full clear or single bosses."
+    },
+    "41": {
+      "slug": "raids-full-priority",
+      "kind": "raid",
+      "name": "Raids — Full Priority",
+      "sortOrder": 4,
+      "description": "VIP runs where every item you can equip is yours."
+    },
+    "37": {
+      "slug": "delves",
+      "kind": "delve",
+      "name": "Delves",
+      "sortOrder": 5,
+      "description": "Delves by tier, priced per tier."
+    },
+    "35": {
+      "slug": "pvp",
+      "kind": "pvp",
+      "name": "PvP",
+      "sortOrder": 6,
+      "description": "2v2 and 3v3 arena rating."
+    },
+    "36": {
+      "slug": "achievements",
+      "kind": "achievement",
+      "name": "Achievements",
+      "sortOrder": 7,
+      "description": "Glory meta-achievements from every expansion."
+    }
+  },
+  "subcategories": {
+    "2": { "category": "40", "slug": "heroic", "name": "Heroic", "sortOrder": 1 },
+    "3": { "category": "40", "slug": "normal", "name": "Normal", "sortOrder": 2 },
+    "4": { "category": "41", "slug": "mythic", "name": "Mythic", "sortOrder": 1 },
+    "5": { "category": "41", "slug": "heroic-vip", "name": "Heroic (VIP)", "sortOrder": 2 }
+  }
+}

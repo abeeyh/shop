@@ -1,10 +1,19 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { and, asc, count, desc, eq, inArray, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { auditLog, categories, couponRedemptions, coupons, products, promotions, users } from "@/db/schema";
+import {
+  auditLog,
+  categories,
+  couponRedemptions,
+  coupons,
+  products,
+  promotions,
+  subcategories,
+  users,
+} from "@/db/schema";
 import { ADMIN_PAGE_SIZE, type Cursor } from "@/lib/pagination";
 import { saveAudited } from "./audit";
-import type { CategoryInput, CouponInput, ProductInput, PromotionInput } from "./schemas";
+import type { CategoryInput, CouponInput, ProductInput, PromotionInput, SubcategoryInput } from "./schemas";
 
 // Admin vê tudo, inclusive inativos (a vitrine filtra — RN-19)
 export async function listAllCategories() {
@@ -38,11 +47,17 @@ export async function listAllProducts() {
       description: products.description,
       imageUrl: products.imageUrl,
       priceUsdtCents: products.priceUsdtCents,
+      subcategoryId: products.subcategoryId,
+      addons: products.addons,
+      maxQuantity: products.maxQuantity,
+      priceOnRequest: products.priceOnRequest,
+      hot: products.hot,
+      sortOrder: products.sortOrder,
       active: products.active,
     })
     .from(products)
     .innerJoin(categories, eq(products.categoryId, categories.id))
-    .orderBy(asc(categories.sortOrder), asc(products.name));
+    .orderBy(asc(categories.sortOrder), asc(products.sortOrder), asc(products.name));
 }
 
 export async function activeProductCount(categoryId: string): Promise<number> {
@@ -51,6 +66,30 @@ export async function activeProductCount(categoryId: string): Promise<number> {
     .from(products)
     .where(and(eq(products.categoryId, categoryId), eq(products.active, true)));
   return r?.n ?? 0;
+}
+
+// #94: subcategorias com o nome da categoria (admin vê inativas também)
+export const listAllSubcategories = () =>
+  db
+    .select({
+      id: subcategories.id,
+      categoryId: subcategories.categoryId,
+      categoryName: categories.name,
+      name: subcategories.name,
+      slug: subcategories.slug,
+      sortOrder: subcategories.sortOrder,
+      active: subcategories.active,
+    })
+    .from(subcategories)
+    .innerJoin(categories, eq(subcategories.categoryId, categories.id))
+    .orderBy(asc(categories.sortOrder), asc(subcategories.sortOrder), asc(subcategories.name));
+
+export async function subcategoryCategoryOf(id: string) {
+  const [r] = await db
+    .select({ categoryId: subcategories.categoryId })
+    .from(subcategories)
+    .where(eq(subcategories.id, id));
+  return r?.categoryId ?? null;
 }
 
 export async function categoryKindOf(id: string) {
@@ -104,6 +143,24 @@ export const saveCategoryRow = (staffId: string, id: string | null, v: CategoryI
             .where(eq(categories.id, id))
             .returning({ id: categories.id })
         : await tx.insert(categories).values(v).returning({ id: categories.id });
+      return r?.id;
+    },
+  );
+
+export const saveSubcategoryRow = (staffId: string, id: string | null, v: SubcategoryInput) =>
+  saveAudited(
+    "subcategory",
+    staffId,
+    id,
+    async (tx, key) => (await tx.select().from(subcategories).where(eq(subcategories.id, key)))[0],
+    async (tx) => {
+      const [r] = id
+        ? await tx
+            .update(subcategories)
+            .set({ ...v, updatedAt: new Date() })
+            .where(eq(subcategories.id, id))
+            .returning({ id: subcategories.id })
+        : await tx.insert(subcategories).values(v).returning({ id: subcategories.id });
       return r?.id;
     },
   );

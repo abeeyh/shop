@@ -155,7 +155,7 @@ Se o componente **conhece o domínio**, fica na feature; se é genérico, em `sr
 | Organismo | `Header` (menu + seletores de idioma/fuso + carrinho + conta; sem região — loja só US), `Footer` (4 colunas + newsletter), `Carousel` (CSS scroll-snap, sem biblioteca) | `components/organisms` |
 | Template | `MarketingTemplate`, `AuthTemplate`, `AppTemplate` | `components/templates` |
 | Domínio | `ProductFilters` (painel lateral no desktop, gaveta no celular), `SortSelect`, `CategoryCard`, `ServiceCard`, `RaidSlotCard` (com `Countdown`), `BestSellerCard`, `AdvantageItem`, `ServiceOptionsDrawer` | `features/catalog`, `features/schedule` |
-| Domínio (suporte) | `ChatLauncher` (botão flutuante), `ChatWindow`, `ChatMessage`, `ChatComposer`, `OfflineForm`, `SupportQueue` (dashboard) | `features/support` |
+| Domínio (suporte) | `ChatOpenButton` (abre o chat com mensagem pronta: consultar preço, agendar run), `ChatLauncher` (botão flutuante), `ChatWindow`, `ChatMessage`, `ChatComposer`, `OfflineForm`, `SupportQueue` (dashboard) | `features/support` |
 
 ### Convenções
 - Um componente por arquivo, `PascalCase.tsx`, props tipadas, `className` repassado com `cn()`.

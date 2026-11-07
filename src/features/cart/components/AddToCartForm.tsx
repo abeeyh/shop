@@ -8,6 +8,7 @@ import { LocalTime } from "@/components/molecules/LocalTime";
 import { addToCart, quoteItem, type AddState } from "../actions";
 
 type Slot = { id: string; startsAt: string; seats: string; bookable: boolean };
+type Addon = { name: string; label: string }; // label já traduzido: "Armor Stack (+25%)"
 
 type Labels = {
   realm: string;
@@ -18,13 +19,8 @@ type Labels = {
   characterHint: string;
   quantity: string;
   slot: string;
-  loot: string;
-  lootNone: string;
-  lootArmor: string;
-  lootFull: string;
-  keyLevel: string;
-  runs: string;
-  timed: string;
+  addons: string;
+  scheduleNote: string; // RN-16: sem horário → agendar com o suporte depois do pagamento
   total: string;
   add: string;
   added: string;
@@ -34,13 +30,15 @@ type Labels = {
 
 type Props = {
   product: string;
-  kind: "gold" | "raid" | "dungeon";
+  kind: "gold" | "service";
   locale: string; // código da URL (pt-br) — o servidor formata
   canonicalLocale: string; // BCP 47 para LocalTime
   timeZone: string | null;
   initialQuote: string;
   cartHref: string;
   gold: { min: number; max: number; step: number };
+  maxQuantity: number; // serviço: 1 = sem seletor
+  addons: Addon[];
   slots: Slot[];
   labels: Labels;
 };
@@ -54,7 +52,81 @@ const choice =
 
 const initial: AddState = { status: "idle", fields: [] };
 
-// RN-15 a RN-17: o formulário só coleta; o servidor valida, calcula o preço (RN-20) e confere a vaga (RN-11)
+// RN-16 / RN-17 (#94): quantidade (quando o produto deixa), adicionais e horário — ou o aviso de que a run
+// é agendada com o suporte depois do pagamento
+function ServiceFields({
+  p,
+  invalid,
+  error,
+}: {
+  p: Props;
+  invalid: (f: string) => boolean;
+  error: (f: string) => React.ReactNode;
+}) {
+  const firstBookable = p.slots.find((s) => s.bookable)?.id;
+  return (
+    <>
+      {p.maxQuantity > 1 ? (
+        <label className={fieldCls}>
+          <span className={labelCls}>{p.labels.quantity}</span>
+          <Select name="quantity" defaultValue="1" aria-invalid={invalid("quantity")}>
+            {Array.from({ length: p.maxQuantity }, (_, i) => i + 1).map((n) => (
+              <option key={n} value={n}>
+                {n}
+              </option>
+            ))}
+          </Select>
+          {error("quantity")}
+        </label>
+      ) : null}
+
+      {p.addons.length ? (
+        <fieldset className={fieldCls}>
+          <legend className={`${labelCls} mb-1.5`}>{p.labels.addons}</legend>
+          {p.addons.map((a) => (
+            <label key={a.name} className={choice}>
+              <input type="checkbox" name="addon" value={a.name} className="size-4.5 accent-primary" />
+              {a.label}
+            </label>
+          ))}
+          {error("addon")}
+        </fieldset>
+      ) : null}
+
+      {p.slots.length ? (
+        <fieldset className={fieldCls}>
+          <legend className={`${labelCls} mb-1.5`}>{p.labels.slot}</legend>
+          <div className="grid gap-2">
+            {p.slots.map((s) => (
+              <label key={s.id} className={`${choice} ${s.bookable ? "" : "opacity-50"}`}>
+                <input
+                  type="radio"
+                  name="slotId"
+                  value={s.id}
+                  disabled={!s.bookable}
+                  defaultChecked={s.id === firstBookable}
+                  className="size-4.5 accent-primary"
+                />
+                <span className="flex-1 font-semibold text-heading">
+                  <LocalTime iso={s.startsAt} locale={p.canonicalLocale} timeZone={p.timeZone} />
+                </span>
+                <span className="text-xs text-muted-foreground">{s.seats}</span>
+              </label>
+            ))}
+          </div>
+          {error("slotId")}
+        </fieldset>
+      ) : null}
+
+      {!p.slots.length ? (
+        <p className="rounded-md border border-link/30 bg-link/10 p-3 text-sm">{p.labels.scheduleNote}</p>
+      ) : null}
+    </>
+  );
+}
+
+// RN-15 a RN-17: o formulário só coleta; o servidor valida, calcula o preço (RN-20) e confere a vaga (RN-11).
+// Gold e serviço pedem o mesmo personagem (realm, facção, nome); serviço tem adicionais e horário/agendamento.
 export function AddToCartForm(p: Props) {
   const [state, formAction, pending] = useActionState(addToCart, initial);
   const [quote, setQuote] = useState(p.initialQuote);
@@ -67,7 +139,6 @@ export function AddToCartForm(p: Props) {
         {p.labels.errors[f]}
       </span>
     ) : null;
-  const firstBookable = p.slots.find((s) => s.bookable)?.id;
 
   return (
     <form
@@ -84,140 +155,75 @@ export function AddToCartForm(p: Props) {
       <input type="hidden" name="product" value={p.product} />
       <input type="hidden" name="locale" value={p.locale} />
 
-      {p.kind === "gold" ? (
-        <>
-          <label className={fieldCls}>
-            <span className={labelCls}>{p.labels.realm}</span>
-            <input
-              name="realm"
-              required
-              minLength={2}
-              maxLength={40}
-              className={input}
-              aria-invalid={invalid("realm")}
-            />
-            {error("realm")}
-          </label>
-          <fieldset className={fieldCls}>
-            <legend className={`${labelCls} mb-1.5`}>{p.labels.faction}</legend>
-            <div className="grid grid-cols-2 gap-2">
-              <label className={choice}>
-                <input
-                  type="radio"
-                  name="faction"
-                  value="alliance"
-                  defaultChecked
-                  className="size-4.5 accent-primary"
-                />
-                {p.labels.alliance}
-              </label>
-              <label className={choice}>
-                <input type="radio" name="faction" value="horde" className="size-4.5 accent-primary" />
-                {p.labels.horde}
-              </label>
-            </div>
-          </fieldset>
-          <label className={fieldCls}>
-            <span className={labelCls}>{p.labels.character}</span>
-            <input
-              name="character"
-              required
-              minLength={2}
-              maxLength={12}
-              autoComplete="off"
-              className={input}
-              aria-invalid={invalid("character")}
-              aria-describedby="hint-character"
-            />
-            <span id="hint-character" className="text-xs text-muted-foreground">
-              {p.labels.characterHint}
-            </span>
-            {error("character")}
-          </label>
-          <label className={fieldCls}>
-            <span className={labelCls}>{p.labels.quantity}</span>
-            <input
-              name="quantity"
-              type="number"
-              inputMode="numeric"
-              required
-              min={p.gold.min}
-              max={p.gold.max}
-              step={p.gold.step}
-              defaultValue={100}
-              className={input}
-              aria-invalid={invalid("quantity")}
-            />
-            {error("quantity")}
-          </label>
-        </>
-      ) : null}
-
-      {p.kind === "raid" ? (
-        <>
-          <fieldset className={fieldCls}>
-            <legend className={`${labelCls} mb-1.5`}>{p.labels.slot}</legend>
-            <div className="grid gap-2">
-              {p.slots.map((s) => (
-                <label key={s.id} className={`${choice} ${s.bookable ? "" : "opacity-50"}`}>
-                  <input
-                    type="radio"
-                    name="slotId"
-                    value={s.id}
-                    disabled={!s.bookable}
-                    defaultChecked={s.id === firstBookable}
-                    className="size-4.5 accent-primary"
-                  />
-                  <span className="flex-1 font-semibold text-heading">
-                    <LocalTime iso={s.startsAt} locale={p.canonicalLocale} timeZone={p.timeZone} />
-                  </span>
-                  <span className="text-xs text-muted-foreground">{s.seats}</span>
-                </label>
-              ))}
-            </div>
-            {error("slotId")}
-          </fieldset>
-          <label className={fieldCls}>
-            <span className={labelCls}>{p.labels.loot}</span>
-            <Select name="loot" defaultValue="none">
-              <option value="none">{p.labels.lootNone}</option>
-              <option value="armor">{p.labels.lootArmor}</option>
-              <option value="full">{p.labels.lootFull}</option>
-            </Select>
-          </label>
-        </>
-      ) : null}
-
-      {p.kind === "dungeon" ? (
-        <>
-          <div className="grid grid-cols-2 gap-3">
-            <label className={fieldCls}>
-              <span className={labelCls}>{p.labels.keyLevel}</span>
-              <Select name="keyLevel" defaultValue="10">
-                {Array.from({ length: 14 }, (_, i) => i + 2).map((n) => (
-                  <option key={n} value={n}>
-                    +{n}
-                  </option>
-                ))}
-              </Select>
-            </label>
-            <label className={fieldCls}>
-              <span className={labelCls}>{p.labels.runs}</span>
-              <Select name="runs" defaultValue="1">
-                {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </Select>
-            </label>
-          </div>
+      <label className={fieldCls}>
+        <span className={labelCls}>{p.labels.realm}</span>
+        <input
+          name="realm"
+          required
+          minLength={2}
+          maxLength={40}
+          className={input}
+          aria-invalid={invalid("realm")}
+        />
+        {error("realm")}
+      </label>
+      <fieldset className={fieldCls}>
+        <legend className={`${labelCls} mb-1.5`}>{p.labels.faction}</legend>
+        <div className="grid grid-cols-2 gap-2">
           <label className={choice}>
-            <input type="checkbox" name="timed" className="size-4.5 accent-primary" />
-            {p.labels.timed}
+            <input
+              type="radio"
+              name="faction"
+              value="alliance"
+              defaultChecked
+              className="size-4.5 accent-primary"
+            />
+            {p.labels.alliance}
           </label>
-        </>
+          <label className={choice}>
+            <input type="radio" name="faction" value="horde" className="size-4.5 accent-primary" />
+            {p.labels.horde}
+          </label>
+        </div>
+      </fieldset>
+      <label className={fieldCls}>
+        <span className={labelCls}>{p.labels.character}</span>
+        <input
+          name="character"
+          required
+          minLength={2}
+          maxLength={12}
+          autoComplete="off"
+          className={input}
+          aria-invalid={invalid("character")}
+          aria-describedby="hint-character"
+        />
+        <span id="hint-character" className="text-xs text-muted-foreground">
+          {p.labels.characterHint}
+        </span>
+        {error("character")}
+      </label>
+
+      {p.kind === "gold" ? (
+        <label className={fieldCls}>
+          <span className={labelCls}>{p.labels.quantity}</span>
+          <input
+            name="quantity"
+            type="number"
+            inputMode="numeric"
+            required
+            min={p.gold.min}
+            max={p.gold.max}
+            step={p.gold.step}
+            defaultValue={100}
+            className={input}
+            aria-invalid={invalid("quantity")}
+          />
+          {error("quantity")}
+        </label>
       ) : null}
+
+      {p.kind === "service" ? <ServiceFields p={p} invalid={invalid} error={error} /> : null}
 
       <div className="flex items-baseline justify-between border-t border-border pt-4">
         <span>{p.labels.total}</span>

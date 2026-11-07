@@ -1,6 +1,14 @@
-import { Castle, Coins, ShieldCheck } from "lucide-react";
+import { Castle, Coins, Pickaxe, ShieldCheck, Swords, Trophy } from "lucide-react";
 
-const ICONS = { gold: Coins, raid: ShieldCheck, dungeon: Castle } as const;
+const ICONS = {
+  gold: Coins,
+  raid: ShieldCheck,
+  dungeon: Castle,
+  pvp: Swords,
+  achievement: Trophy,
+  delve: Pickaxe,
+} as const;
+export type Kind = keyof typeof ICONS; // RN-13
 
 export function KindIcon({ kind, className }: { kind: keyof typeof ICONS; className?: string }) {
   const Icon = ICONS[kind];

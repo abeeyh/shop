@@ -6,10 +6,13 @@ describe("formulários do admin (RN-12, RN-13, RN-19)", () => {
     categoryId: "8f14e45f-ceea-4167-a5a3-5f3c0e6b9a51",
     name: "Gold — US",
     slug: "gold-us",
-    region: "US",
+    subcategoryId: "",
     description: "",
     imageUrl: "",
     price: "0.45",
+    addons: "",
+    maxQuantity: "1",
+    sortOrder: "0",
   };
 
   it("RN-12: preço em USDT vira centavos inteiros", () => {
@@ -27,6 +30,25 @@ describe("formulários do admin (RN-12, RN-13, RN-19)", () => {
     expect(productInput.safeParse({ ...product, imageUrl: "javascript:alert(1)" }).success).toBe(false);
     expect(productInput.safeParse({ ...product, imageUrl: "http://x.com/a.png" }).success).toBe(false);
     expect(productInput.parse(product).imageUrl).toBeNull();
+  });
+
+  it('RN-17 (#94): adicionais um por linha, "Nome | %"; repetido, 0% ou formato livre é recusado', () => {
+    expect(productInput.parse({ ...product, addons: "Armor Stack | 25\r\n VIP|10 " }).addons).toEqual([
+      { name: "Armor Stack", percent: 25 },
+      { name: "VIP", percent: 10 },
+    ]);
+    expect(productInput.parse(product).addons).toEqual([]);
+    for (const bad of ["Armor Stack", "A | 0", "Armor | 25\narmor | 10", "X | 101"])
+      expect(productInput.safeParse({ ...product, addons: bad }).success).toBe(false);
+  });
+
+  it("RN-106: sob consulta dispensa o preço (guarda 1 centavo de marcador); sem ele o preço é obrigatório", () => {
+    expect(productInput.parse({ ...product, price: "", priceOnRequest: "on" })).toMatchObject({
+      price: 1,
+      priceOnRequest: true,
+    });
+    expect(productInput.safeParse({ ...product, price: "" }).success).toBe(false);
+    expect(productInput.parse({ ...product, subcategoryId: "" }).subcategoryId).toBeNull();
   });
 
   it("RN-13: categoria exige tipo válido; checkbox desmarcado = inativa", () => {

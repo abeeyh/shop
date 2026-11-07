@@ -12,6 +12,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
@@ -34,7 +35,15 @@ export const accessLogs = pgTable(
 );
 
 // Catálogo (docs/04 — Modelo de dados). Criado pelo admin; texto único para todos os idiomas (RN-84).
-export const categoryKind = pgEnum("category_kind", ["gold", "raid", "dungeon"]); // RN-13
+// RN-13: o tipo define o ícone e o formulário (gold = realm/facção/quantidade em milhares; o resto = serviço)
+export const categoryKind = pgEnum("category_kind", [
+  "gold",
+  "raid",
+  "dungeon",
+  "pvp",
+  "achievement",
+  "delve",
+]);
 export const gameRegion = pgEnum("game_region", ["US", "EU"]); // RN-14: só US à venda; EU fica no enum (dados antigos)
 
 const timestamps = {
@@ -54,6 +63,26 @@ export const categories = pgTable("categories", {
   ...timestamps,
 });
 
+// Subcategoria opcional dentro da categoria (ex.: Raids → Heroic / Normal) — #94, RN-13
+export const subcategories = pgTable(
+  "subcategories",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    categoryId: uuid("category_id")
+      .notNull()
+      .references(() => categories.id),
+    name: text("name").notNull(),
+    slug: text("slug").notNull(),
+    sortOrder: integer("sort_order").notNull().default(0),
+    active: boolean("active").notNull().default(true),
+    ...timestamps,
+  },
+  (t) => [uniqueIndex("subcategories_category_slug_idx").on(t.categoryId, t.slug)],
+);
+
+// Adicional em % sobre o preço do produto, escolhido pelo cliente (RN-17, ex.: Armor Stack +25%)
+export type ProductAddon = { name: string; percent: number };
+
 export const products = pgTable(
   "products",
   {
@@ -69,6 +98,13 @@ export const products = pgTable(
     priceUsdtCents: integer("price_usdt_cents").notNull(), // RN-12: inteiro, nunca float
     unit: text("unit"), // ex.: "per_1k_gold"
     options: jsonb("options").notNull().default({}),
+    subcategoryId: uuid("subcategory_id").references(() => subcategories.id),
+    addons: jsonb("addons").$type<ProductAddon[]>().notNull().default([]),
+    maxQuantity: integer("max_quantity").notNull().default(1), // ex.: delve "por tier"
+    priceOnRequest: boolean("price_on_request").notNull().default(false), // RN-106: não vai ao carrinho
+    hot: boolean("hot").notNull().default(false), // destaque "popular" (vem primeiro)
+    sortOrder: integer("sort_order").notNull().default(0),
+    externalId: integer("external_id").unique(), // id no sistema de origem (importação idempotente)
     active: boolean("active").notNull().default(true),
     salesCount: integer("sales_count").notNull().default(0),
     ...timestamps,
@@ -79,6 +115,7 @@ export const products = pgTable(
     index("products_name_trgm_idx").using("gin", t.name.op("gin_trgm_ops")),
     index("products_description_trgm_idx").using("gin", t.description.op("gin_trgm_ops")),
     check("products_price_positive", sql`${t.priceUsdtCents} > 0`),
+    check("products_max_quantity", sql`${t.maxQuantity} between 1 and 100`),
   ],
 );
 
