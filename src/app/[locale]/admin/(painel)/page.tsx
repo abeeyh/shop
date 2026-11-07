@@ -8,6 +8,7 @@ export const instant = false;
 
 const SECTIONS = [
   ["pedidos", "orders"],
+  ["reportes", "reports"],
   ["categorias", "categories"],
   ["produtos", "products"],
   ["promocoes", "promotions"],

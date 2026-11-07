@@ -35,7 +35,8 @@
   },
   "Footer": {
     "about": "Gold, Raids und Mythisch+ für World of Warcraft Retail US und EU.",
-    "copyright": "© 2026 Shop · Nicht mit Blizzard Entertainment verbunden."
+    "copyright": "© 2026 Shop · Nicht mit Blizzard Entertainment verbunden.",
+    "report": "Problem melden"
   },
   "NotFound": {
     "title": "Seite nicht gefunden",
@@ -199,7 +200,8 @@
       "promotions": "Aktionen",
       "coupons": "Gutscheine",
       "audit": "Änderungsprotokoll",
-      "orders": "Bestellungen"
+      "orders": "Bestellungen",
+      "reports": "Problemmeldungen"
     },
     "login": {
       "title": "Anmeldung (Team)",
@@ -329,6 +331,36 @@
       "note": "Hinweis für den Kunden",
       "proofError": "Gib einen https-Link zum Liefernachweis an.",
       "stale": "Jemand anderes hat diese Bestellung schon weitergesetzt. Lade die Seite neu."
+    },
+    "reports": {
+      "new": "Neu",
+      "resolved": "Erledigt",
+      "onlyNew": "Nur neue",
+      "page": "Seite",
+      "ids": "Fehler-ID · Request-ID",
+      "context": "Sprache · Region · Zeitzone · Version",
+      "browser": "Browser",
+      "resolve": "Als erledigt markieren"
     }
+  },
+  "Errors": {
+    "title": "Etwas ist schiefgelaufen",
+    "message": "Das hat nicht geklappt. Versuche es erneut — wenn es wieder passiert, melde es mit der ID unten.",
+    "code": "Code",
+    "id": "Fehler-ID",
+    "retry": "Erneut versuchen",
+    "report": "Dieses Problem melden"
+  },
+  "Report": {
+    "title": "Problem melden",
+    "intro": "Erzähl uns, was passiert ist. Seite, Sprache, Zeitzone und Browser hängen wir automatisch an — nie Passwörter oder Zahlungsdaten.",
+    "errorId": "Fehler-ID",
+    "description": "Was ist passiert?",
+    "email": "E-Mail (optional)",
+    "emailHint": "Nur wenn du eine Antwort möchtest.",
+    "submit": "Meldung senden",
+    "sent": "Danke! Deine Meldung ist beim Team angekommen.",
+    "invalid": "Beschreibe das Problem mit mindestens 10 Zeichen und prüfe die E-Mail.",
+    "limited": "Zu viele Meldungen von deiner Verbindung. Versuche es in einer Stunde erneut."
   }
 }

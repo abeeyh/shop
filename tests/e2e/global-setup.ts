@@ -35,6 +35,7 @@ export default async function globalSetup() {
       ...(await valkey.keys("rl:totp:*")),
       ...(await valkey.keys("rl:checkout:*")),
       ...(await valkey.keys("rl:coupon:*")),
+      ...(await valkey.keys("rl:report:*")),
     ];
     if (keys.length) await valkey.del(...keys);
     valkey.disconnect();

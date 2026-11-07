@@ -35,7 +35,8 @@
   },
   "Footer": {
     "about": "World of Warcraft 正式版美服與歐服的金幣、團隊副本與傳奇+。",
-    "copyright": "© 2026 Shop · 與 Blizzard Entertainment 無關。"
+    "copyright": "© 2026 Shop · 與 Blizzard Entertainment 無關。",
+    "report": "回報問題"
   },
   "NotFound": {
     "title": "找不到頁面",
@@ -199,7 +200,8 @@
       "promotions": "促銷活動",
       "coupons": "優惠碼",
       "audit": "稽核紀錄",
-      "orders": "訂單"
+      "orders": "訂單",
+      "reports": "問題回報"
     },
     "login": {
       "title": "團隊登入",
@@ -329,6 +331,36 @@
       "note": "給客戶的備註",
       "proofError": "請提供交付證明的 https 連結。",
       "stale": "其他人已更新此訂單，請重新整理頁面。"
+    },
+    "reports": {
+      "new": "新回報",
+      "resolved": "已解決",
+      "onlyNew": "只看新回報",
+      "page": "頁面",
+      "ids": "錯誤 ID · 請求 ID",
+      "context": "語言 · 地區 · 時區 · 版本",
+      "browser": "瀏覽器",
+      "resolve": "標記為已解決"
     }
+  },
+  "Errors": {
+    "title": "發生錯誤",
+    "message": "無法完成此操作，請再試一次；若持續發生，請附上下方 ID 回報。",
+    "code": "代碼",
+    "id": "錯誤 ID",
+    "retry": "再試一次",
+    "report": "回報此問題"
+  },
+  "Report": {
+    "title": "回報問題",
+    "intro": "請告訴我們發生了什麼。我們會自動附上頁面、語言、時區與瀏覽器資訊，絕不包含密碼或付款資料。",
+    "errorId": "錯誤 ID",
+    "description": "發生了什麼事？",
+    "email": "電子郵件（選填）",
+    "emailHint": "需要回覆時再填寫。",
+    "submit": "送出回報",
+    "sent": "謝謝！你的回報已送達團隊。",
+    "invalid": "請至少用 10 個字描述問題，並確認電子郵件。",
+    "limited": "你的網路連線回報次數過多，請一小時後再試。"
   }
 }

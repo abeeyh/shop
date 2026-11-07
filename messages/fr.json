@@ -35,7 +35,8 @@
   },
   "Footer": {
     "about": "Or, raids et Mythique+ pour World of Warcraft Retail US et EU.",
-    "copyright": "© 2026 Shop · Non affilié à Blizzard Entertainment."
+    "copyright": "© 2026 Shop · Non affilié à Blizzard Entertainment.",
+    "report": "Signaler un problème"
   },
   "NotFound": {
     "title": "Page introuvable",
@@ -199,7 +200,8 @@
       "promotions": "Promotions",
       "coupons": "Coupons",
       "audit": "Journal d'audit",
-      "orders": "Commandes"
+      "orders": "Commandes",
+      "reports": "Signalements"
     },
     "login": {
       "title": "Connexion (équipe)",
@@ -329,6 +331,36 @@
       "note": "Note pour le client",
       "proofError": "Ajoutez un lien https vers la preuve de livraison.",
       "stale": "Quelqu'un a déjà fait avancer cette commande. Rechargez la page."
+    },
+    "reports": {
+      "new": "Nouveau",
+      "resolved": "Résolu",
+      "onlyNew": "Nouveaux uniquement",
+      "page": "Page",
+      "ids": "ID d'erreur · ID de requête",
+      "context": "Langue · région · fuseau · version",
+      "browser": "Navigateur",
+      "resolve": "Marquer comme résolu"
     }
+  },
+  "Errors": {
+    "title": "Une erreur s'est produite",
+    "message": "Impossible de terminer l'opération. Réessayez — si cela continue, signalez-le avec l'ID ci-dessous.",
+    "code": "Code",
+    "id": "ID d'erreur",
+    "retry": "Réessayer",
+    "report": "Signaler ce problème"
+  },
+  "Report": {
+    "title": "Signaler un problème",
+    "intro": "Dites-nous ce qui s'est passé. Nous joignons automatiquement la page, la langue, le fuseau et le navigateur — jamais de mot de passe ni de données de paiement.",
+    "errorId": "ID d'erreur",
+    "description": "Que s'est-il passé ?",
+    "email": "E-mail (facultatif)",
+    "emailHint": "Seulement si vous voulez une réponse.",
+    "submit": "Envoyer",
+    "sent": "Merci ! Votre signalement a été transmis à l'équipe.",
+    "invalid": "Décrivez le problème en au moins 10 caractères et vérifiez l'e-mail.",
+    "limited": "Trop de signalements depuis votre connexion. Réessayez dans une heure."
   }
 }

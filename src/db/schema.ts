@@ -395,3 +395,25 @@ export const deliveries = pgTable("deliveries", {
   note: text("note").notNull().default(""),
   deliveredAt: timestamp("delivered_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+// Reportes de problema (RN-91) — 1 ano (docs/16). E-mail opcional; nada mais de dado pessoal.
+export const bugReportStatus = pgEnum("bug_report_status", ["novo", "resolvido"]);
+export const bugReports = pgTable(
+  "bug_reports",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    description: text("description").notNull(),
+    email: text("email"),
+    page: text("page").notNull(), // só o caminho, sem query (pode ter token do pedido)
+    errorId: text("error_id"), // digest do erro mostrado na tela (RN-90)
+    requestId: text("request_id").notNull(),
+    locale: text("locale").notNull(),
+    region: text("region"),
+    timezone: text("timezone"),
+    userAgent: text("user_agent"),
+    release: text("release").notNull(),
+    status: bugReportStatus("status").notNull().default("novo"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("bug_reports_status_created_idx").on(t.status, t.createdAt)],
+);

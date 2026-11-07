@@ -176,7 +176,8 @@ sequenceDiagram
 | `/api/webhooks/crypto`, `/api/webhooks/card` | API | Só assinatura do provedor |
 | `/api/cron/expire-orders`, `/api/cron/refresh-fx`, `/api/cron/purge-access-logs` | API | Segredo do cron |
 | `/api/health` | API | Público; só status (sem versão de dependências nem dados) — usado pelo Better Stack Uptime |
-| `/api/bug-reports` | API | Público, com rate limit e CAPTCHA (RN-91) |
+| `/[locale]/reportar?pagina=&erro=` | Página + Server Action | Público (RN-91): 5/h por IP (`failClosed`) + campo-isca; CAPTCHA entra com a decisão do Turnstile. Link no rodapé e na tela de erro |
+| `/[locale]/admin/reportes` | Página + Server Action | Suporte e admin (RN-06); "resolvido" entra na auditoria (RN-07) |
 | `/api/support/conversations` | API (POST) | Público, CAPTCHA para visitante, rate limit (RN-92, RN-97) |
 | `/api/support/conversations/[id]/messages` | API (GET/POST) | Dono da conversa (sessão ou cookie da conversa) ou equipe |
 | `/api/support/conversations/[id]/stream` | API (SSE) | Idem; ping a cada 25 s |

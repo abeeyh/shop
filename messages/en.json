@@ -35,7 +35,8 @@
   },
   "Footer": {
     "about": "Gold, raids and Mythic+ for World of Warcraft Retail US and EU.",
-    "copyright": "© 2026 Shop · Not affiliated with Blizzard Entertainment."
+    "copyright": "© 2026 Shop · Not affiliated with Blizzard Entertainment.",
+    "report": "Report a problem"
   },
   "NotFound": {
     "title": "Page not found",
@@ -199,7 +200,8 @@
       "promotions": "Promotions",
       "coupons": "Coupons",
       "audit": "Audit log",
-      "orders": "Orders"
+      "orders": "Orders",
+      "reports": "Problem reports"
     },
     "login": {
       "title": "Staff sign in",
@@ -329,6 +331,36 @@
       "note": "Note for the customer",
       "proofError": "Add an https link to the delivery proof.",
       "stale": "This order was already moved by someone else. Reload the page."
+    },
+    "reports": {
+      "new": "New",
+      "resolved": "Resolved",
+      "onlyNew": "Only new",
+      "page": "Page",
+      "ids": "Error ID · request ID",
+      "context": "Language · region · time zone · version",
+      "browser": "Browser",
+      "resolve": "Mark as resolved"
     }
+  },
+  "Errors": {
+    "title": "Something went wrong",
+    "message": "We couldn't complete this. Try again — if it keeps happening, report it with the ID below.",
+    "code": "Code",
+    "id": "Error ID",
+    "retry": "Try again",
+    "report": "Report this problem"
+  },
+  "Report": {
+    "title": "Report a problem",
+    "intro": "Tell us what happened. We attach the page, language, time zone and browser automatically — never passwords or payment data.",
+    "errorId": "Error ID",
+    "description": "What happened?",
+    "email": "Email (optional)",
+    "emailHint": "Only if you want a reply.",
+    "submit": "Send report",
+    "sent": "Thanks! Your report was sent to our team.",
+    "invalid": "Describe the problem in at least 10 characters and check the email.",
+    "limited": "Too many reports from your connection. Try again in an hour."
   }
 }

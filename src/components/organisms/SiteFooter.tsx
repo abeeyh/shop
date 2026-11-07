@@ -1,10 +1,11 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 type Column = { title: string; links: { href: string; label: string }[] };
 
-type SiteFooterProps = { about: string; columns: Column[]; copyright: string };
+type SiteFooterProps = { about: string; columns: Column[]; copyright: string; extra?: ReactNode };
 
-export function SiteFooter({ about, columns, copyright }: SiteFooterProps) {
+export function SiteFooter({ about, columns, copyright, extra }: SiteFooterProps) {
   return (
     <footer className="mt-16 border-t border-border bg-background py-12">
       <div className="mx-auto w-full max-w-[1350px] px-4 sm:px-5">
@@ -25,7 +26,10 @@ export function SiteFooter({ about, columns, copyright }: SiteFooterProps) {
             </div>
           ))}
         </div>
-        <p className="mt-8 border-t border-border pt-5 text-[13px] text-muted-foreground">{copyright}</p>
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-5">
+          <p className="text-[13px] text-muted-foreground">{copyright}</p>
+          {extra}
+        </div>
       </div>
     </footer>
   );

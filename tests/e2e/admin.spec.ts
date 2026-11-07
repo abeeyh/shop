@@ -178,7 +178,19 @@ test.describe("admin", () => {
       "href",
       "https://example.com/proof.png",
     );
+    // RN-91: reporte feito pelo rodapé chega ao dashboard com página e requestId
+    await buyerPage.goto("/en/produtos");
+    await buyerPage.getByRole("link", { name: "Report a problem" }).click();
+    await expect(buyerPage).toHaveURL(/\/en\/reportar\?pagina=%2Fen%2Fprodutos/);
+    await buyerPage.getByLabel("What happened?").fill(`E2E report ${id}: search is slow`);
+    await buyerPage.getByRole("button", { name: "Send report" }).click();
+    await expect(buyerPage.getByText("Thanks! Your report was sent to our team.")).toBeVisible();
     await buyer.close();
+    await page.goto("/en/admin/reportes");
+    const card = page.getByRole("listitem").filter({ hasText: `E2E report ${id}` });
+    await expect(card.getByText("/en/produtos")).toBeVisible();
+    await card.getByRole("button", { name: "Mark as resolved" }).click();
+    await expect(page.getByText(`E2E report ${id}`)).toHaveCount(0); // sai da lista de novos
 
     // RN-02: depois de sair, o login pede o código
     await page.getByRole("button", { name: "Sign out" }).click();
