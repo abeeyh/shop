@@ -9,11 +9,11 @@ import { ActionForm } from "@/features/admin/components/ActionForm";
 import { Check, Field, tableCls } from "@/features/admin/fields";
 import { formErrors } from "@/features/admin/labels";
 import { listAllCategories } from "@/features/admin/queries";
+import { KINDS } from "@/features/admin/schemas";
 import { requireStaff } from "@/features/auth/staff";
 
 export const instant = false;
 
-const KINDS = ["gold", "raid", "dungeon"] as const;
 const EMPTY = {
   id: "",
   name: "",

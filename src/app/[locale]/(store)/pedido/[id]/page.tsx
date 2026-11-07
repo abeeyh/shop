@@ -5,7 +5,8 @@ import { connection } from "next/server";
 import { z } from "zod";
 import { GradientCard } from "@/components/molecules/GradientCard";
 import { formatUsdt } from "@/features/catalog";
-import { DeliveryBox, getOrder, isOrderToken, PaymentBox } from "@/features/orders";
+import { DeliveryBox, getOrder, isOrderToken, needsScheduling, PaymentBox } from "@/features/orders";
+import { ChatOpenButton } from "@/features/support";
 import { getDelivery } from "@/features/orders/staff";
 
 export const instant = false;
@@ -74,6 +75,17 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/[l
           payUrl={order.payUrl}
           t={t}
         />
+        {needsScheduling(order) ? (
+          // RN-16 (#94): sem horário fixo — o cliente marca a run com o suporte pelo chat
+          <div className="grid gap-3 rounded-md border border-link/30 bg-link/10 p-4 text-sm">
+            <p className="font-semibold text-heading">{t("scheduleTitle")}</p>
+            <p>{t("scheduleText")}</p>
+            <ChatOpenButton
+              label={t("scheduleButton")}
+              message={t("scheduleMessage", { order: order.id.slice(0, 8) })}
+            />
+          </div>
+        ) : null}
         <DeliveryBox delivery={delivery} t={t} />
       </GradientCard>
     </div>

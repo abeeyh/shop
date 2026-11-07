@@ -20,12 +20,14 @@ export function ChatThread({
   viewer,
   action,
   hidden,
+  draft,
   labels,
 }: {
   conversationId: string;
   viewer: "customer" | "staff";
   action: (prev: ChatState, form: FormData) => Promise<ChatState>;
   hidden?: Record<string, string>;
+  draft?: string; // texto inicial do campo (mensagem pronta)
   labels: Labels;
 }) {
   const { messages } = useChat(conversationId);
@@ -66,6 +68,7 @@ export function ChatThread({
           name="body"
           required
           maxLength={2000}
+          defaultValue={draft}
           placeholder={labels.placeholder}
           className="min-h-16"
         />

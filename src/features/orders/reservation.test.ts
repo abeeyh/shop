@@ -46,7 +46,7 @@ describe.skipIf(!process.env.DATABASE_URL)("reserva de vaga (RN-34)", () => {
     const [p] = await db
       .select({ id: s.products.id })
       .from(s.products)
-      .where(eq(s.products.slug, "mplus-us")); // produto do seed, nunca um criado pelo E2E
+      .where(eq(s.products.slug, "venomous-abyss-8-8-saved-heroic")); // do seed (já tem horários — #94)
     productId = p!.id;
     const [slot] = await db
       .insert(s.raidSlots)

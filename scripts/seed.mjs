@@ -1,9 +1,11 @@
 // Catálogo inicial para desenvolvimento, homologação e E2E (no app real o admin cadastra — RN-13, RN-19).
+// Gold fica aqui; o resto é o catálogo real importado de scripts/catalog (#94).
 // Idempotente: atualiza pelo slug. Uso: pnpm db:seed (lê DATABASE_URL; .env.local se existir).
 import { existsSync } from "node:fs";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { and, eq, gt, sql } from "drizzle-orm";
 import { categories, products, raidSlots } from "../src/db/schema.ts";
+import { importCatalog, productIdByExternal } from "./catalog/import.mjs";
 
 if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 if (!process.env.DATABASE_URL) {
@@ -20,59 +22,21 @@ const CATEGORIES = [
     sortOrder: 1,
     description: "Fast, safe gold delivery by mail or face to face.",
   },
-  {
-    slug: "raids",
-    kind: "raid",
-    name: "Raids",
-    sortOrder: 2,
-    description: "Current raid in Normal, Heroic and Mythic, with fixed schedules.",
-  },
-  {
-    slug: "mythic-plus",
-    kind: "dungeon",
-    name: "Mythic+",
-    sortOrder: 3,
-    description: "Keys from +2 to +15, timed or untimed, single or bundles.",
-  },
 ];
 
 // [slug, categoria, região, nome, centavos de USDT, unidade, vendas, descrição]
 const PRODUCTS = [
   ["gold-us", "gold", "US", "Gold — US realms", 45, "per_1k_gold", 980, "Delivered by mail within 2 hours."],
   ["gold-us-express", "gold", "US", "Gold — US express", 55, "per_1k_gold", 120, "Delivery within 1 hour."],
-  ["raid-normal-us", "raids", "US", "Current raid — Normal", 3900, null, 310, "Full clear, self-play."],
-  ["raid-heroic-us", "raids", "US", "Current raid — Heroic", 7900, null, 640, "Full clear, self-play."],
-  [
-    "raid-mythic-us",
-    "raids",
-    "US",
-    "Current raid — Mythic (1 boss)",
-    14900,
-    null,
-    90,
-    "One Mythic boss, self-play.",
-  ],
-  ["mplus-us", "mythic-plus", "US", "Mythic+ key", 1200, null, 520, "One key, level of your choice."],
-  [
-    "mplus-bundle-us",
-    "mythic-plus",
-    "US",
-    "Mythic+ — 4 keys bundle",
-    4200,
-    null,
-    260,
-    "Four keys of the same level, best value.",
-  ],
-  [
-    "mplus-15-us",
-    "mythic-plus",
-    "US",
-    "Mythic+ +15 timed",
-    2900,
-    null,
-    75,
-    "High key, timed, for the seasonal achievement.",
-  ],
+];
+// demonstração antiga (antes do #94: calculadora de M+ e loot de raid) — sai da vitrine, fica nos pedidos
+const RETIRED = [
+  "raid-normal-us",
+  "raid-heroic-us",
+  "raid-mythic-us",
+  "mplus-us",
+  "mplus-bundle-us",
+  "mplus-15-us",
 ];
 
 const catIds = {};
@@ -103,14 +67,24 @@ for (const [slug, cat, region, name, price, unit, sales, description] of PRODUCT
     unit,
     salesCount: sales,
     description,
+    hot: slug === "gold-us", // destaque na home junto dos populares do catálogo (#94)
   };
   await db
     .insert(products)
     .values(values)
     .onConflictDoUpdate({ target: products.slug, set: { ...values, updatedAt: sql`now()` } });
 }
-// Agenda (RN-16): próximas 4 noites — 01:00 UTC (noite nos EUA) e 19:00 UTC (noite na Europa).
-// Só insere se o produto não tem horários futuros (não apaga horário que um pedido possa referenciar).
+for (const slug of RETIRED)
+  await db
+    .update(products)
+    .set({ active: false, updatedAt: sql`now()` })
+    .where(eq(products.slug, slug));
+
+const imported = await importCatalog(db);
+
+// Agenda (RN-16): só dois produtos de raid têm horário fixo (o resto agenda com o suporte — #94).
+// Próximas 4 noites às 01:00 UTC (noite nos EUA). Só insere se não há horários futuros (não apaga
+// horário que um pedido possa referenciar). O 1º horário da Normal sai esgotado (RN-11).
 const DAY = 24 * 60 * 60 * 1000;
 const slotTimes = (hourUtc) => {
   const base = new Date();
@@ -118,24 +92,26 @@ const slotTimes = (hourUtc) => {
   if (base.getTime() < Date.now() + 2 * 60 * 60 * 1000) base.setTime(base.getTime() + DAY);
   return [0, 1, 2, 3].map((d) => new Date(base.getTime() + d * DAY));
 };
+const SCHEDULED = [
+  { externalId: 397, soldOutFirst: false }, // Venomous Abyss 8/8 SAVED HEROIC
+  { externalId: 395, soldOutFirst: true }, // Venomous Abyss SAVED NORMAL
+];
 let slots = 0;
-for (const [slug, cat, region] of PRODUCTS) {
-  if (cat !== "raids") continue;
-  const [p] = await db.select({ id: products.id }).from(products).where(eq(products.slug, slug));
+for (const { externalId, soldOutFirst } of SCHEDULED) {
+  const productId = await productIdByExternal(db, externalId);
   const future = await db
     .select({ id: raidSlots.id })
     .from(raidSlots)
-    .where(and(eq(raidSlots.productId, p.id), gt(raidSlots.startsAt, new Date())));
+    .where(and(eq(raidSlots.productId, productId), gt(raidSlots.startsAt, new Date())));
   if (future.length) continue;
-  const times = slotTimes(region === "US" ? 1 : 19);
-  // o primeiro horário da Normal US sai esgotado, para a vitrine mostrar o estado (RN-11)
-  const rows = times.map((startsAt, i) => {
-    const capacity = slug.includes("mythic") ? 4 : 10;
-    const reserved = slug === "raid-normal-us" && i === 0 ? capacity : i;
-    return { productId: p.id, startsAt, capacity, reserved };
+  const rows = slotTimes(1).map((startsAt, i) => {
+    const capacity = 10;
+    return { productId, startsAt, capacity, reserved: soldOutFirst && i === 0 ? capacity : i };
   });
   await db.insert(raidSlots).values(rows);
   slots += rows.length;
 }
-console.log(`seed: ${CATEGORIES.length} categorias, ${PRODUCTS.length} produtos, ${slots} horários novos`);
+console.log(
+  `seed: gold (${PRODUCTS.length} produtos) + catálogo (${imported.categories} categorias, ${imported.products} produtos), ${slots} horários novos`,
+);
 await db.$client.end();

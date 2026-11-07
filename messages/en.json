@@ -29,7 +29,9 @@
     "selfPlay": "Self-play: you play your own character. We never ask for your Battle.net password.",
     "empty": "No products yet.",
     "home": "Home",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "onRequest": "Price on request",
+    "hot": "Popular"
   },
   "Footer": {
     "about": "Gold, raids and Mythic+ for World of Warcraft Retail US and EU.",
@@ -92,21 +94,13 @@
     "characterHint": "The character that receives the gold (letters only).",
     "quantity": "Amount (thousands of gold)",
     "slot": "Date and time",
-    "loot": "Loot option",
-    "lootNone": "Clear only",
-    "lootArmor": "Armor-type priority (+30%)",
-    "lootFull": "Full loot funnel (+80%)",
-    "keyLevel": "Key level",
-    "runs": "Runs",
-    "timed": "Timed (+20%)",
     "total": "Total",
     "add": "Add to cart",
     "added": "Added to cart",
     "viewCart": "View cart",
     "unit": {
-      "raid": "per raid",
-      "dungeon": "per run, up to +10",
-      "gold": "per 1,000 gold"
+      "gold": "per 1,000 gold",
+      "service": "per service"
     },
     "errors": {
       "realm": "Enter the realm name.",
@@ -115,11 +109,19 @@
       "slotId": "This time is no longer available. Choose another.",
       "product": "This product is no longer available.",
       "faction": "Choose a faction.",
-      "keyLevel": "Choose a key level from +2 to +15.",
-      "runs": "Choose 1 to 10 runs.",
-      "loot": "Choose a loot option."
+      "addon": "Choose only the listed add-ons.",
+      "quantityService": "Choose a quantity from 1 to {max}."
     },
-    "promoEnds": "Promotion ends in"
+    "promoEnds": "Promotion ends in",
+    "characterHintService": "The character we invite to the run (letters only).",
+    "quantityService": "Quantity",
+    "addons": "Add-ons",
+    "addon": "{name} (+{percent}%)",
+    "scheduleNote": "No fixed time: after payment, schedule your run with support in the chat.",
+    "onRequest": "Price on request",
+    "onRequestNote": "Talk to support to get a quote for this service.",
+    "askPrice": "Ask for price",
+    "askPriceMessage": "Hi! I'd like a quote for: {name}"
   },
   "Cart": {
     "title": "Cart",
@@ -187,7 +189,11 @@
     },
     "discount": "Coupon discount",
     "delivered": "Delivered — thank you!",
-    "proof": "See the delivery proof"
+    "proof": "See the delivery proof",
+    "scheduleTitle": "Schedule your run",
+    "scheduleText": "Talk to support in the chat to pick the date and time of your run.",
+    "scheduleButton": "Schedule with support",
+    "scheduleMessage": "Hi! I'd like to schedule the run for order {order}."
   },
   "Admin": {
     "title": "Admin",
@@ -203,7 +209,8 @@
       "reports": "Problem reports",
       "docs": "Internal docs",
       "team": "Team",
-      "support": "Support"
+      "support": "Support",
+      "subcategories": "Subcategories"
     },
     "login": {
       "title": "Staff sign in",
@@ -253,12 +260,21 @@
       "code": "Code",
       "maxUses": "Total uses (empty = no limit)",
       "maxUsesPerEmail": "Uses per email (empty = no limit)",
-      "minOrder": "Minimum order (USDT)"
+      "minOrder": "Minimum order (USDT)",
+      "subcategory": "Subcategory",
+      "noSubcategory": "— none —",
+      "priceOnRequest": "Price on request (no price, opens the chat)",
+      "addons": "Add-ons (one per line: Name | %)",
+      "maxQuantity": "Max quantity per order",
+      "hot": "Popular (highlight)"
     },
     "kinds": {
       "gold": "Gold",
       "raid": "Raid",
-      "dungeon": "Mythic+"
+      "dungeon": "Mythic+",
+      "pvp": "PvP",
+      "achievement": "Achievements",
+      "delve": "Delves"
     },
     "form": {
       "newCategory": "New category",
@@ -269,7 +285,8 @@
       "cancel": "Cancel editing",
       "editLink": "Edit",
       "newPromotion": "New promotion",
-      "newCoupon": "New coupon"
+      "newCoupon": "New coupon",
+      "newSubcategory": "New subcategory"
     },
     "table": {
       "activeProducts": "Active products",
@@ -288,7 +305,7 @@
       "sortOrder": "Order must be 0 to 999.",
       "categoryId": "Choose a category.",
       "region": "Choose a region.",
-      "price": "Price in USDT with up to 2 decimals, greater than zero.",
+      "price": "Price in USDT with up to 2 decimals, greater than zero (or mark “price on request”).",
       "activeProducts": "Deactivate or move the active products before deactivating the category.",
       "type": "Choose a discount type.",
       "value": "Percentage from 1 to 90, or a USDT amount greater than zero.",
@@ -298,7 +315,10 @@
       "code": "Code: 2–40 letters, numbers, hyphen or underscore, not used by another coupon.",
       "maxUses": "Use a whole number of 1 or more.",
       "maxUsesPerEmail": "Use a whole number of 1 or more.",
-      "minOrder": "Minimum in USDT with up to 2 decimals."
+      "minOrder": "Minimum in USDT with up to 2 decimals.",
+      "subcategoryId": "Choose a subcategory of the same category.",
+      "addons": "One add-on per line as “Name | 25” (1–100%, no repeated names, up to 10).",
+      "maxQuantity": "Use 1 to 100."
     },
     "discount": {
       "percent": "Percentage",
@@ -314,7 +334,8 @@
         "category": "Category",
         "product": "Product",
         "promotion": "Promotion",
-        "coupon": "Coupon"
+        "coupon": "Coupon",
+        "subcategory": "Subcategory"
       },
       "actions": {
         "create": "Created",

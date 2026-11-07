@@ -8,6 +8,7 @@ import {
   chooseDiscount,
   couponDiscountCents,
   lineTotalCents,
+  isCurrentOptions,
   unitPriceCents,
   type ItemOptions,
   type Promotion,
@@ -49,7 +50,11 @@ const slotOk = (r: Row) =>
   isBookable({ startsAt: r.slotStartsAt, capacity: r.slotCapacity ?? 0, reserved: r.slotReserved ?? 0 });
 
 function priceLine(r: Row, promos: Promotion[], now: Date) {
-  const unitCents = unitPriceCents(r.basePriceCents, r.options as ItemOptions);
+  // item com opções antigas (antes do #94) ou produto que virou "sob consulta" não pode seguir ao checkout
+  const current = isCurrentOptions(r.options) && !r.priceOnRequest;
+  const unitCents = current
+    ? unitPriceCents(r.basePriceCents, r.options as ItemOptions, r.addons)
+    : r.basePriceCents;
   const best = bestPromotion({ productId: r.productId, categoryId: r.categoryId, unitCents }, promos, now);
   return {
     id: r.id,
@@ -61,7 +66,7 @@ function priceLine(r: Row, promos: Promotion[], now: Date) {
     promotionId: best?.promotion.id ?? null,
     promoDiscountCents: (best?.discountCents ?? 0) * r.quantity, // RN-24: por unidade × quantidade
     originalCents: lineTotalCents(unitCents, r.quantity),
-    available: r.productActive && slotOk(r), // RN-11 / RN-19
+    available: current && r.productActive && slotOk(r), // RN-11 / RN-19 / RN-106
   };
 }
 

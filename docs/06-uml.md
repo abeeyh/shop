@@ -39,7 +39,14 @@ flowchart LR
 classDiagram
   class Category {
     +id: string
-    +kind: gold|raid|dungeon
+    +kind: gold|raid|dungeon|pvp|achievement|delve
+    +name: string
+    +slug: string
+    +sortOrder: int
+    +active: boolean
+  }
+  class Subcategory {
+    +id: string
     +name: string
     +slug: string
     +sortOrder: int
@@ -47,11 +54,15 @@ classDiagram
   }
   class Product {
     +id: string
-    +region: US|EU
+    +region: US
     +name: string
     +priceUsdtCents: int
     +unit: string
-    +options: json
+    +addons: name+percent[]
+    +maxQuantity: int
+    +priceOnRequest: boolean
+    +hot: boolean
+    +sortOrder: int
     +active: boolean
   }
   class Promotion {
@@ -124,6 +135,8 @@ classDiagram
     +type: string
   }
   Category "1" *-- "*" Product
+  Category "1" --> "0..*" Subcategory
+  Subcategory "0..1" --> "0..*" Product
   Cart "1" *-- "*" CartItem
   CartItem "*" --> "1" Product
   CartItem "*" --> "0..1" RaidSlot

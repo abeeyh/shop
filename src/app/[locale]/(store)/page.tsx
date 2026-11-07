@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { buttonVariants } from "@/components/atoms/Button";
 import { CardGridSkeleton, LoadingRegion } from "@/components/molecules/Skeletons";
 import {
+  cardLabels,
   CategoryCard,
   categoryHref,
   listCategories,
@@ -87,7 +88,7 @@ async function HomeBestSellers({ locale }: { locale: string }) {
     getTranslations({ locale, namespace: "Catalog" }),
     activePromotions(),
   ]);
-  const unit = (u: string) => (u === "per_1k_gold" ? c("perK") : u);
+  const labels = cardLabels(c);
   return (
     <>
       <section className="pt-14" aria-labelledby="mais-vendidos">
@@ -106,7 +107,7 @@ async function HomeBestSellers({ locale }: { locale: string }) {
         {products.length ? (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,260px),1fr))] gap-5">
             {products.map((p) => (
-              <ProductCard key={p.id} p={toProductCard(locale, p, unit, promos)} />
+              <ProductCard key={p.id} p={toProductCard(locale, p, labels, promos)} />
             ))}
           </div>
         ) : (

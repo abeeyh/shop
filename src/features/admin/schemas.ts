@@ -13,35 +13,77 @@ const imageUrl = z
   .transform((v) => v || null);
 const checkbox = z.preprocess((v) => v === "on" || v === "true", z.boolean());
 
+export const KINDS = ["gold", "raid", "dungeon", "pvp", "achievement", "delve"] as const; // RN-13
+
 // RN-13: categoria com tipo fixo; nome igual em todos os idiomas (RN-84)
 export const categoryInput = z.object({
   name: text(60).min(2),
   slug,
-  kind: z.enum(["gold", "raid", "dungeon"]),
+  kind: z.enum(KINDS),
   description: text(500),
   imageUrl,
   sortOrder: z.coerce.number().int().min(0).max(999),
   active: checkbox,
 });
 
-// RN-19 / RN-12: preço digitado em USDT ("12.50") e gravado em centavos inteiros
-export const productInput = z.object({
+// #94: subcategoria opcional dentro da categoria (ex.: Raids → Heroic); slug único na categoria
+export const subcategoryInput = z.object({
   categoryId: z.uuid(),
-  name: text(80).min(2),
+  name: text(60).min(2),
   slug,
-  description: text(1000),
-  imageUrl,
-  price: z
-    .string()
-    .trim()
-    .regex(/^\d{1,6}(\.\d{1,2})?$/)
-    .transform((v) => Math.round(Number(v) * 100))
-    .refine((c) => c > 0),
+  sortOrder: z.coerce.number().int().min(0).max(999),
   active: checkbox,
 });
 
+// RN-17: um adicional por linha, "Nome | %" (ex.: "Armor Stack | 25"); nome único, 1–100%
+const ADDON_LINE = /^(.{2,40}?)\s*\|\s*(\d{1,3})$/;
+const addons = z
+  .string()
+  .max(1000)
+  .transform((v) =>
+    v
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean),
+  )
+  .pipe(z.array(z.string().regex(ADDON_LINE)).max(10))
+  .transform((lines) =>
+    lines.map((l) => {
+      const [, name, percent] = ADDON_LINE.exec(l)!;
+      return { name: name!.trim(), percent: Number(percent) };
+    }),
+  )
+  .refine((list) => list.every((a) => a.percent >= 1 && a.percent <= 100))
+  .refine((list) => new Set(list.map((a) => a.name.toLowerCase())).size === list.length);
+
+// RN-19 / RN-12: preço digitado em USDT ("12.50") e gravado em centavos inteiros.
+// RN-106: "sob consulta" dispensa o preço (guarda 1 centavo só como marcador — nunca é cobrado).
+export const productInput = z
+  .object({
+    categoryId: z.uuid(),
+    subcategoryId: z.union([z.literal(""), z.uuid()]).transform((v) => v || null),
+    name: text(80).min(2),
+    slug,
+    description: text(1000),
+    imageUrl,
+    price: z
+      .string()
+      .trim()
+      .regex(/^(\d{1,6}(\.\d{1,2})?)?$/)
+      .transform((v) => (v ? Math.round(Number(v) * 100) : 0)),
+    priceOnRequest: checkbox,
+    addons,
+    maxQuantity: z.coerce.number().int().min(1).max(100),
+    hot: checkbox,
+    sortOrder: z.coerce.number().int().min(0).max(999),
+    active: checkbox,
+  })
+  .refine((v) => v.priceOnRequest || v.price > 0, { path: ["price"] })
+  .transform((v) => ({ ...v, price: v.priceOnRequest && v.price === 0 ? 1 : v.price }));
+
 export type CategoryInput = z.infer<typeof categoryInput>;
 export type ProductInput = z.infer<typeof productInput>;
+export type SubcategoryInput = z.infer<typeof subcategoryInput>;
 
 export const fieldsOf = (e: z.ZodError) => [...new Set(e.issues.map((i) => String(i.path[0])))];
 

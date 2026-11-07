@@ -73,7 +73,7 @@ test.describe("admin", () => {
 
     const id = Date.now().toString(36);
     await page.goto("/en/admin/categorias");
-    await page.getByLabel("Name").fill(`E2E Keys ${id}`);
+    await page.getByLabel("Name", { exact: true }).fill(`E2E Keys ${id}`);
     await page.getByLabel("Slug (URL)").fill(`e2e-keys-${id}`);
     await page.getByLabel("Type").selectOption("dungeon"); // M+: vai ao carrinho sem horário
     await page.getByRole("button", { name: "Save" }).click();
@@ -81,15 +81,17 @@ test.describe("admin", () => {
     await expect(page.getByRole("cell", { name: new RegExp(`E2E Keys ${id}`) }).first()).toBeVisible();
 
     await page.goto("/en/admin/produtos");
-    await page.getByLabel("Category").selectOption({ label: `E2E Keys ${id}` });
-    await page.getByLabel("Name").fill(`E2E Key Product ${id}`);
+    await page
+      .getByRole("combobox", { name: "Category", exact: true })
+      .selectOption({ label: `E2E Keys ${id}` });
+    await page.getByLabel("Name", { exact: true }).fill(`E2E Key Product ${id}`);
     await page.getByLabel("Slug (URL)").fill(`e2e-product-${id}`);
     await page.getByLabel("Price (USDT)").fill("9.99");
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");
 
     // slug repetido é recusado no campo (o formulário de criação limpa depois de salvar)
-    await page.getByLabel("Name").fill(`E2E Key Product ${id} 2`);
+    await page.getByLabel("Name", { exact: true }).fill(`E2E Key Product ${id} 2`);
     await page.getByLabel("Slug (URL)").fill(`e2e-product-${id}`);
     await page.getByLabel("Price (USDT)").fill("1");
     await page.getByRole("button", { name: "Save" }).click();
@@ -109,7 +111,7 @@ test.describe("admin", () => {
 
     // RN-21/RN-22: promoção de 10% no produto → riscado + contagem na página do produto
     await page.goto("/en/admin/promocoes");
-    await page.getByLabel("Name").fill(`E2E Promo ${id}`);
+    await page.getByLabel("Name", { exact: true }).fill(`E2E Promo ${id}`);
     await page.getByLabel("Value (% or USDT)").fill("10");
     await page.getByLabel("Applies to").selectOption({ label: `E2E Key Product ${id}` });
     await page.getByRole("button", { name: "Save" }).click();
@@ -131,6 +133,8 @@ test.describe("admin", () => {
     await expect(page.getByRole("status")).toHaveText("Saved");
 
     await page.goto(`/en/wow/e2e-keys-${id}/e2e-product-${id}`);
+    await page.getByLabel("Realm").fill("Area 52"); // #94: serviço pede o personagem
+    await page.getByLabel("Character name").fill("Thrall");
     await page.getByRole("button", { name: "Add to cart" }).click();
     await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible();
     await page.goto("/en/carrinho");
