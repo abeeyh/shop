@@ -6,8 +6,10 @@ test("home lista categorias e mais vendidos (loja só US — #92)", async ({ bro
   const page = await context.newPage();
   await page.goto("/en");
   await expect(page.getByRole("heading", { level: 2, name: "Categories" })).toBeVisible();
+  // #102: categorias em blocos compactos (links) dentro da página, além das abas do cabeçalho
+  const main = page.locator("#conteudo");
   for (const name of ["Gold", "Raids", "Mythic+"]) {
-    await expect(page.getByRole("heading", { level: 3, name, exact: true })).toBeVisible();
+    await expect(main.getByRole("link", { name, exact: true })).toBeVisible();
   }
   await expect(page.getByRole("link", { name: "Gold — US realms" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Gold — EU realms" })).toHaveCount(0); // RN-14: EU desativado
@@ -17,12 +19,14 @@ test("home lista categorias e mais vendidos (loja só US — #92)", async ({ bro
 test("categoria mostra produtos com preço em USDT (sem estimativa fake na moeda local)", async ({ page }) => {
   await page.goto("/pt-br/wow/gold");
   await expect(page.getByRole("heading", { level: 1, name: "Gold" })).toBeVisible();
-  const card = page.locator("div", { has: page.getByRole("link", { name: "Gold — US realms" }) }).last();
+  const card = page.locator("[data-spotlight]", {
+    has: page.getByRole("link", { name: "Gold — US realms" }),
+  });
   await expect(card).toContainText("0,45 USDT");
   await expect(card).not.toContainText("≈"); // RN-18: só com a API de cotação (#86, #63)
 });
 
-test("produto abre pelo card e mostra o aviso de self-play", async ({ page }) => {
+test("#102: produto abre numa gaveta por cima da lista; fechar volta para a lista", async ({ page }) => {
   await page.goto("/en/wow/raids");
   // #94: produtos agrupados por subcategoria, na ordem do admin
   await expect(page.getByRole("heading", { level: 2, name: "Heroic", exact: true })).toBeVisible();
@@ -30,10 +34,19 @@ test("produto abre pelo card e mostra o aviso de self-play", async ({ page }) =>
   // #100: a raid aparece uma vez por dificuldade; as runs viram opções dentro do produto
   await page.getByRole("link", { name: "Venomous Abyss" }).first().click();
   await expect(page).toHaveURL(/\/en\/wow\/raids\/venomous-abyss-heroic$/);
+  const drawer = page.getByRole("dialog");
+  await expect(drawer.getByRole("heading", { level: 1 })).toHaveText("Venomous Abyss");
+  await expect(drawer.getByText("5.18 USDT", { exact: true }).first()).toBeVisible();
+  await expect(drawer.getByText(/never ask for your Battle\.net password/)).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page).toHaveURL(/\/en\/wow\/raids$/);
+  await expect(drawer).toHaveCount(0);
+});
+
+test("#102: link direto do produto abre a página inteira (sem gaveta)", async ({ page }) => {
+  await page.goto("/en/wow/raids/venomous-abyss-heroic");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Venomous Abyss");
-  // com cacheComponents a página anterior fica escondida no DOM (React Activity): filtrar o visível
-  await expect(page.getByText("5.18 USDT", { exact: true }).filter({ visible: true }).first()).toBeVisible();
-  await expect(page.getByText(/never ask for your Battle\.net password/)).toBeVisible();
 });
 
 // Com streaming, o esqueleto já saiu com 200 quando a página descobre que não existe: o Next mostra a

@@ -7,7 +7,7 @@ export const cardVariants = cva("rounded-lg p-5", {
   variants: {
     tone: {
       gradient: "bg-linear-[116.85deg] from-gradient-from/20 to-gradient-to/20",
-      solid: "border border-border bg-card",
+      solid: "border border-border bg-card/80 backdrop-blur",
     },
     interactive: {
       true: "transition-transform duration-200 hover:scale-[1.02] focus-within:scale-[1.02]",

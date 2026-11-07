@@ -2,26 +2,29 @@
 
 Componentes com **shadcn/ui + Tailwind CSS**, organizados por **Atomic Design**. Tema: **escuro** (único no MVP).
 
-Referência visual: template **Enfhess (dark)** da ThemeMarch — análise em [15](15-referencia-layout.md). Usamos a **direção visual** (paleta, gradiente, fontes, raios, ritmo das seções), reimplementada nos nossos componentes. Não copiamos HTML, CSS, JS nem imagens do template.
+Referência visual: começou no template **Enfhess (dark)** da ThemeMarch (análise em [15](15-referencia-layout.md)); desde o #102 a loja tem identidade própria — escura, minimalista, violeta + ouro (seções 1 e 8). Fontes e raios seguem a referência. Não copiamos HTML, CSS, JS nem imagens de template.
 
 ## 1. Paleta
 
 | Papel | Hex | Uso |
 |-------|-----|-----|
-| Fundo | `#080326` | Fundo das páginas (template) |
-| Superfície | `#110d2e` | Header, menus, painéis (template) |
-| Superfície de input | `#0f0935` | Inputs, modais (template) |
-| Borda | `#ffffff1a` (branco 10%) | Divisórias, inputs (template) |
-| Primária | `#2f63e6` | Botão principal — **ajustada**: o `#3772ff` do template dá 4,19:1 com texto branco |
-| Primária hover | `#2556cc` | Hover da primária (6,4:1) |
-| Texto sobre primária | `#ffffff` | 5,19:1 sobre `#2f63e6` |
-| Link / anel de foco | `#6b95ff` | Links e foco sobre o fundo (7,0:1) |
-| Gradiente — início | `#fc466b` | Só decorativo: bordas, overlays, cards a 20% (template) |
-| Gradiente — fim | `#3f5efb` | Idem (template) |
+| Fundo | `#08080c` | Fundo das páginas (preto neutro levemente frio) |
+| Superfície | `#101017` | Cards, linhas de produto, painéis (com transparência + desfoque) |
+| Popover | `#15151e` | Gaveta de compra, painel do globo |
+| Superfície de input | `#14141d` | Inputs, selects |
+| Borda | `#ffffff14` (branco 8%) | Divisórias, inputs |
+| Primária | `#6d4aff` (violeta) | Botão principal — branco sobre ela 5,15:1 |
+| Primária hover | `#5a37ec` | Hover da primária (6,58:1) |
+| Ouro | `#f5c451` | **Preço** e destaques de valor (11,6:1 sobre a superfície) — lembra o gold do jogo |
+| Link / anel de foco | `#a99bff` | Links e foco (8,4:1 sobre o fundo) |
+| Gradiente — início | `#6d4aff` | Só decorativo: aurora, slider, ícones, borda do "Popular" |
+| Gradiente — fim | `#22d3ee` (ciano) | Idem |
 | Destrutivo / erro | `#e11d48` | Excluir, erros (4,7:1 com branco) |
-| Texto de erro | `#f43f5e` | Mensagem de erro sobre o fundo (5,4:1) |
-| Texto principal | `#ffffff` (títulos) / `#cecdd4` (corpo, branco 80%) | 12,7:1 |
-| Texto secundário | `#9c9aa8` (branco 60%) | Legendas, placeholders (7,2:1) — **ajustado**: o branco 45% do template dá 4,41:1 |
+| Texto de erro | `#fb7185` | Mensagem de erro sobre o fundo (7,4:1) |
+| Texto principal | `#f7f7fb` (títulos) / `#c8c8d4` (corpo) | 12,1:1 |
+| Texto secundário | `#8e8ea3` | Legendas, placeholders (6,2:1 no fundo; 5,7:1 no input) |
+
+*(#102, 2026-11-07: paleta trocada pelo designer com aprovação do dono — antes: azul-marinho do template Enfhess com primária `#2f63e6` e gradiente rosa→azul.)*
 
 Regras:
 - Toda combinação de texto/fundo com contraste ≥ 4,5:1 (conferir antes de aprovar a paleta).
@@ -35,72 +38,18 @@ Regras:
 `src/app/globals.css`:
 
 ```css
-@import "tailwindcss";
-
+/* src/app/globals.css (resumo — o arquivo é a fonte) */
 :root {
-  --radius: 0.9375rem; /* 15px — cards do template */
-  --heading: #ffffff;
-  --link: #6b95ff;
-  --error-text: #f43f5e;
-  --gradient-from: #fc466b;
-  --gradient-to: #3f5efb;
-  --background: #080326;
-  --foreground: #cecdd4;
-  --card: #110d2e;
-  --card-foreground: #cecdd4;
-  --popover: #110d2e;
-  --popover-foreground: #cecdd4;
-  --primary: #2f63e6;
-  --primary-hover: #2556cc;
-  --primary-foreground: #ffffff;
-  --secondary: #ffffff14;
-  --secondary-foreground: #ffffff;
-  --muted: #ffffff14;
-  --muted-foreground: #9c9aa8;
-  --accent: #ffffff1f;
-  --accent-foreground: #ffffff;
-  --destructive: #e11d48;
-  --destructive-foreground: #ffffff;
-  --border: #ffffff1a;
-  --input: #0f0935;
-  --ring: #6b95ff;
+  --radius: 0.875rem;
+  --heading: #f7f7fb;  --foreground: #c8c8d4;  --muted-foreground: #8e8ea3;
+  --background: #08080c;  --card: #101017;  --popover: #15151e;  --input: #14141d;
+  --border: #ffffff14;  --secondary: #ffffff0f;  --muted: #ffffff0f;  --accent: #ffffff17;
+  --primary: #6d4aff;  --primary-hover: #5a37ec;  --primary-foreground: #ffffff;
+  --link: #a99bff;  --ring: #a99bff;  --gold: #f5c451;
+  --gradient-from: #6d4aff;  --gradient-to: #22d3ee;
+  --destructive: #e11d48;  --error-text: #fb7185;
 }
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-heading: var(--heading);
-  --color-link: var(--link);
-  --color-error-text: var(--error-text);
-  --color-gradient-from: var(--gradient-from);
-  --color-gradient-to: var(--gradient-to);
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
-  --font-sans: var(--font-mulish), var(--font-cjk);
-  --font-heading: var(--font-inter), var(--font-cjk);
-}
-
-body { background: var(--background); color: var(--foreground); }
-:root { --font-cjk: "PingFang TC", "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", "Noto Sans CJK TC", "Noto Sans CJK SC", sans-serif; }
+/* @theme inline expõe cada um como cor do Tailwind: bg-card, text-gold, from-gradient-from… */
 ```
 
 Componentes usam **só tokens** (`bg-primary`, `text-muted-foreground`); hex fora do `globals.css` é proibido.
@@ -151,8 +100,9 @@ Se o componente **conhece o domínio**, fica na feature; se é genérico, em `sr
 | Átomo | `Button` (variantes `primary`, `gradient-outline`, `ghost`, `destructive`), `IconButton`, `Input`, `Label`, `Avatar`, `Badge`, `Switch`, `Tooltip`, `Separator`, `Skeleton`, `Spinner` | `components/atoms` |
 | Molécula | `FormField`, `PasswordField`, `CopyField`, `Toast`, `LocaleSwitcher`, `TimezoneSwitcher`, `PriceTag` (USDT + estimativa; preço original riscado em promoção) | `components/molecules` |
 | Molécula | `Collapsible` (expandir/recolher com `<details>`; aberto a partir de `lg`), `Pagination` (página na URL), `LoadingRegion` + `CardGridSkeleton` / `TableSkeleton` / `TitleSkeleton` (esqueletos com a forma do conteúdo, `role="status"` com texto para leitor de tela; `Skeleton` sem animação com `prefers-reduced-motion`) | `components/molecules` |
+| Molécula | `NavTabs` (abas de categoria; aba atual por `usePathname` em `Suspense`), `Popover` (`<details>` com estado no React; Esc e clique fora fecham), `Drawer` (`<dialog>` modal: foco preso, Esc fecha, fechar = voltar no histórico), `SpotlightTracker` (um ouvinte para a luz do cursor) — #102 |
 | Molécula | `SearchField` (busca no cabeçalho, `role="search"`), `FilterChip` (filtro ativo removível), `SectionHeading` (título + link "ver todos"), `FilterTabs`, `Countdown`, `GradientCard` (moldura com gradiente) | `components/molecules` |
-| Organismo | `Header` (menu + seletores de idioma/fuso + carrinho + conta; sem região — loja só US), `Footer` (4 colunas + newsletter), `Carousel` (CSS scroll-snap, sem biblioteca) | `components/organisms` |
+| Organismo | `Header` (uma linha: logo, busca, globo com idioma/fuso, conta, carrinho; abas de categoria embaixo — #102; sem região — loja só US), `Footer` (4 colunas + newsletter), `Carousel` (CSS scroll-snap, sem biblioteca) | `components/organisms` |
 | Template | `MarketingTemplate`, `AuthTemplate`, `AppTemplate` | `components/templates` |
 | Domínio | `VariantPicker` (#100: um eixo por linha — slider para valores em sequência, caixas para escolhas soltas; mostra o preço e a nota da combinação), `ProductFilters` (painel lateral no desktop, gaveta no celular), `SortSelect`, `CategoryCard`, `ServiceCard`, `RaidSlotCard` (com `Countdown`), `BestSellerCard`, `AdvantageItem`, `ServiceOptionsDrawer` | `features/catalog`, `features/schedule` |
 | Domínio (suporte) | `ChatOpenButton` (abre o chat com mensagem pronta: consultar preço, agendar run), `ChatLauncher` (botão flutuante), `ChatWindow`, `ChatMessage`, `ChatComposer`, `OfflineForm`, `SupportQueue` (dashboard) | `features/support` |
@@ -215,10 +165,18 @@ Garantia: revisão de PR, agente `frontend-ui` e checagem no CI de classes visua
 
 ## 8. Estilo visual
 
-Baseado no Enfhess dark ([15](15-referencia-layout.md)):
+#102 (2026-11-07): **minimalista, escuro e com destaque nos pontos de ação** — tudo a poucos cliques.
 
-- Fundo azul-marinho quase preto; cards com **gradiente rosa→azul a 20%** e raio de 15 px.
-- Botão principal sólido em pílula; botão secundário com **borda em gradiente** (`gradient-outline`). Uma ação principal por tela continua valendo.
-- Seções empilhadas com título à esquerda e "ver todos" à direita; grades de cards e carrosséis horizontais.
-- Hover discreto: `scale(1.02–1.04)` ou `translateY(-3px)`, desligado com `prefers-reduced-motion`.
-- Imagens: arte **própria ou licenciada**; nada de arte oficial da Blizzard nem imagens do template.
+- **Cabeçalho em uma linha:** logo · busca · globo (idioma e fuso, já detectados) · conta · carrinho; logo abaixo, **abas das categorias** (rolam de lado no celular, aba atual marcada). Sem menu escondido.
+- **Produtos em lista densa** (`ProductCard` em linha): ícone · nome + etiquetas (subcategoria, "Popular") + descrição curta · preço em **ouro** ("a partir de" quando tem opções) · "Comprar". A linha inteira é o link. Nada de imagem decorativa repetida.
+- **Subcategorias** como atalhos fixos no topo da lista (âncoras).
+- **Compra numa gaveta:** da lista, o produto abre por cima (rota interceptada — doc 04); link direto abre a página. "Comprar agora" adiciona e vai direto ao pagamento; "Adicionar ao carrinho" continua comprando.
+- **"Popular"** só nos destaques escolhidos (borda em gradiente girando) — selo em tudo não destaca nada.
+- **Efeitos** (todos desligados com `prefers-reduced-motion`):
+  - aurora violeta/ciano desfocada no topo da página, andando devagar;
+  - luz que segue o cursor em linhas e blocos (`data-spotlight` + `SpotlightTracker`; só mouse);
+  - brilho que atravessa o botão principal no hover + halo violeta;
+  - gaveta entra deslizando (de baixo no celular);
+  - slider de opções com trilho em gradiente.
+- Uma ação principal por tela continua valendo (botão violeta); a secundária usa `gradient-outline`.
+- Imagens: arte **própria ou licenciada**; nada de arte oficial da Blizzard.

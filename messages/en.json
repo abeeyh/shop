@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "WoW services: gold, raids and Mythic+",
-    "description": "Gold, raids and Mythic+ dungeons for World of Warcraft US and EU. Pay in USDT or by card."
+    "description": "Gold, raids, Mythic+ and achievements for World of Warcraft US. Pay in USDT."
   },
   "Nav": {
     "label": "Main",
@@ -12,10 +12,11 @@
     "closeMenu": "Close menu",
     "detecting": "Detecting…",
     "cart": "Cart ({n} items)",
-    "account": "My account"
+    "account": "My account",
+    "preferences": "Language and time zone"
   },
   "Home": {
-    "badge": "WoW Retail · US & EU",
+    "badge": "WoW Retail · US",
     "title": "Your WoW progress, without the grind",
     "subtitle": "Gold, raid carries and Mythic+ dungeons. Priced in USDT, scheduled in your time zone, in your language.",
     "ctaGold": "Buy gold",
@@ -33,10 +34,13 @@
     "home": "Home",
     "loading": "Loading…",
     "onRequest": "Price on request",
-    "hot": "Popular"
+    "hot": "Popular",
+    "buy": "Buy",
+    "subcategories": "Subcategories",
+    "close": "Close"
   },
   "Footer": {
-    "about": "Gold, raids and Mythic+ for World of Warcraft Retail US and EU.",
+    "about": "Gold, raids, Mythic+ and achievements for World of Warcraft Retail US.",
     "copyright": "© 2026 Shop · Not affiliated with Blizzard Entertainment.",
     "report": "Report a problem"
   },
@@ -127,7 +131,8 @@
     "askPriceMessage": "Hi! I'd like a quote for: {name}",
     "savedCharacter": "Saved character",
     "savedNone": "— type a new one —",
-    "saveCharacter": "Save this character to my account"
+    "saveCharacter": "Save this character to my account",
+    "buyNow": "Buy now"
   },
   "Cart": {
     "title": "Cart",
@@ -345,7 +350,11 @@
         "product": "Product",
         "promotion": "Promotion",
         "coupon": "Coupon",
-        "subcategory": "Subcategory"
+        "subcategory": "Subcategory",
+        "order": "Order",
+        "bug_report": "Bug report",
+        "staff": "Team member",
+        "support_hours": "Support hours"
       },
       "actions": {
         "create": "Created",

@@ -57,6 +57,9 @@ export async function importCatalog(db, file = here("products.json")) {
 
   const { groups } = JSON.parse(readFileSync(here("groups.json"), "utf8"));
   const catalog = toCatalog(info, groups);
+  // #102: "Popular" só nos destaques escolhidos (a origem marca tudo como hotItem)
+  const hot = new Set(map.hot); // sem a lista = nenhum
+  for (const p of [...catalog.singles, ...catalog.groups]) p.hot = hot.has(p.slug);
   const place = (p) => ({
     categoryId: catIds[String(p.categoryRef)],
     subcategoryId: p.subcategoryRef === null ? null : (subIds[String(p.subcategoryRef)] ?? null),

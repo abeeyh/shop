@@ -1,33 +1,34 @@
 @import "tailwindcss";
 
-/* Paleta e tokens: docs/11-design.md §1–2. Hex só aqui. */
+/* Paleta e tokens: docs/11-design.md §1–2 (#102: escuro neutro, violeta + ouro). Hex só aqui. */
 :root {
-  --radius: 0.9375rem;
-  --heading: #ffffff;
-  --link: #6b95ff;
-  --error-text: #f43f5e;
-  --gradient-from: #fc466b;
-  --gradient-to: #3f5efb;
-  --background: #080326;
-  --foreground: #cecdd4;
-  --card: #110d2e;
-  --card-foreground: #cecdd4;
-  --popover: #110d2e;
-  --popover-foreground: #cecdd4;
-  --primary: #2f63e6;
-  --primary-hover: #2556cc;
+  --radius: 0.875rem;
+  --heading: #f7f7fb;
+  --link: #a99bff;
+  --error-text: #fb7185;
+  --gradient-from: #6d4aff;
+  --gradient-to: #22d3ee;
+  --gold: #f5c451;
+  --background: #08080c;
+  --foreground: #c8c8d4;
+  --card: #101017;
+  --card-foreground: #c8c8d4;
+  --popover: #15151e;
+  --popover-foreground: #c8c8d4;
+  --primary: #6d4aff;
+  --primary-hover: #5a37ec;
   --primary-foreground: #ffffff;
-  --secondary: #ffffff14;
-  --secondary-foreground: #ffffff;
-  --muted: #ffffff14;
-  --muted-foreground: #9c9aa8;
-  --accent: #ffffff1f;
-  --accent-foreground: #ffffff;
+  --secondary: #ffffff0f;
+  --secondary-foreground: #f7f7fb;
+  --muted: #ffffff0f;
+  --muted-foreground: #8e8ea3;
+  --accent: #ffffff17;
+  --accent-foreground: #f7f7fb;
   --destructive: #e11d48;
   --destructive-foreground: #ffffff;
-  --border: #ffffff1a;
-  --input: #0f0935;
-  --ring: #6b95ff;
+  --border: #ffffff14;
+  --input: #14141d;
+  --ring: #a99bff;
   --font-cjk:
     "PingFang TC", "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", "Noto Sans CJK TC",
     "Noto Sans CJK SC", sans-serif;
@@ -59,6 +60,7 @@
   --color-error-text: var(--error-text);
   --color-gradient-from: var(--gradient-from);
   --color-gradient-to: var(--gradient-to);
+  --color-gold: var(--gold);
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 5px);
   --radius-sm: calc(var(--radius) - 10px);
@@ -69,6 +71,113 @@
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+/* #102 — efeitos (docs/11 §8): todos param com prefers-reduced-motion (regra abaixo) */
+
+/* aurora: brilho violeta/ciano atrás do topo da página, andando devagar */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -20vh -10vw auto;
+  height: 70vh;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      40% 60% at 20% 30%,
+      color-mix(in srgb, var(--gradient-from) 28%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      35% 55% at 80% 20%,
+      color-mix(in srgb, var(--gradient-to) 18%, transparent),
+      transparent 70%
+    );
+  filter: blur(40px);
+  animation: aurora 18s ease-in-out infinite alternate;
+}
+@keyframes aurora {
+  to {
+    transform: translate3d(4vw, 3vh, 0) scale(1.08);
+  }
+}
+
+/* luz que segue o cursor (linhas e cards com data-spotlight; posição vinda do SpotlightTracker) */
+[data-spotlight] {
+  position: relative;
+  isolation: isolate;
+}
+[data-spotlight]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.25s;
+  background: radial-gradient(
+    320px circle at var(--x, 50%) var(--y, 50%),
+    color-mix(in srgb, var(--gradient-from) 16%, transparent),
+    transparent 70%
+  );
+}
+[data-spotlight]:hover::before,
+[data-spotlight]:focus-within::before {
+  opacity: 1;
+}
+
+/* brilho que atravessa o botão principal no hover */
+.shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translateX(-120%) skewX(-20deg);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.28), transparent);
+  transition: transform 0.6s ease;
+}
+.shine:hover::after {
+  transform: translateX(120%) skewX(-20deg);
+}
+
+/* selo "Popular": borda em gradiente girando */
+.badge-glow {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--card), var(--card)) padding-box,
+    conic-gradient(
+        from var(--angle, 0deg),
+        var(--gradient-from),
+        var(--gradient-to),
+        var(--gold),
+        var(--gradient-from)
+      )
+      border-box;
+  animation: spin-angle 4s linear infinite;
+}
+@property --angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes spin-angle {
+  to {
+    --angle: 360deg;
+  }
+}
+
+/* trilho de abas rolando de lado sem barra (cabeçalho e subcategorias) */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -117,4 +226,26 @@ body {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
   border-radius: 9999px;
+}
+
+/* #102: gaveta entra deslizando (da direita; no celular, de baixo) */
+dialog.drawer[open] {
+  animation: drawer-in 0.22s ease-out;
+}
+@keyframes drawer-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+@media (max-width: 639px) {
+  dialog.drawer[open] {
+    animation-name: sheet-in;
+  }
+  @keyframes sheet-in {
+    from {
+      transform: translateY(32px);
+      opacity: 0;
+    }
+  }
 }

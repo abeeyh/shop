@@ -25,7 +25,22 @@ const DEFAULTS: Record<"gold" | "service", { options: ItemOptions; quantity: num
   service: { options: { kind: "service", ...NO_ONE, addons: [] }, quantity: 1 },
 };
 
-type Props = { locale: string; product: CatalogProduct; timeZone: string | null };
+type Props = {
+  locale: string;
+  product: CatalogProduct;
+  timeZone: string | null;
+  bare?: boolean; // #102: dentro da gaveta, sem o card em volta
+};
+
+// card fixo ao rolar na página do produto; na gaveta, só o conteúdo
+function Shell({ bare, children }: { bare?: boolean; children: React.ReactNode }) {
+  if (bare) return <div className="flex flex-col gap-4">{children}</div>;
+  return (
+    <GradientCard tone="solid" className="flex flex-col gap-4 lg:sticky lg:top-32">
+      {children}
+    </GradientCard>
+  );
+}
 type T = Awaited<ReturnType<typeof getTranslations<"Buy">>>;
 
 const unixNow = () => Math.floor(Date.now() / 1000);
@@ -41,13 +56,13 @@ const ERROR_KEYS = [
 ] as const;
 
 // RN-106: sob consulta — sem preço nem carrinho; o cliente pede o orçamento no chat
-function OnRequest({ product, t }: { product: CatalogProduct; t: T }) {
+function OnRequest({ product, t, bare }: { product: CatalogProduct; t: T; bare?: boolean }) {
   return (
-    <GradientCard tone="solid" className="flex flex-col gap-4 lg:sticky lg:top-24">
+    <Shell bare={bare}>
       <p className="font-heading text-xl font-bold text-heading">{t("onRequest")}</p>
       <p className="text-sm text-muted-foreground">{t("onRequestNote")}</p>
       <ChatOpenButton label={t("askPrice")} message={t("askPriceMessage", { name: product.name })} />
-    </GradientCard>
+    </Shell>
   );
 }
 
@@ -104,7 +119,7 @@ const unitLabel = (
   return hasVariants ? c("from") : t("unit.service");
 };
 
-export async function BuyBox({ locale, product, timeZone }: Props) {
+export async function BuyBox({ locale, product, timeZone, bare }: Props) {
   const [t, c, s, promos, account] = await Promise.all([
     getTranslations({ locale, namespace: "Buy" }),
     getTranslations({ locale, namespace: "Catalog" }),
@@ -113,7 +128,8 @@ export async function BuyBox({ locale, product, timeZone }: Props) {
     accountCharacters(),
   ]);
   // produto com opções mostra o seletor mesmo sob consulta: o cliente pergunta pela combinação certa
-  if (product.priceOnRequest && !product.optionAxes.length) return <OnRequest product={product} t={t} />;
+  if (product.priceOnRequest && !product.optionAxes.length)
+    return <OnRequest product={product} t={t} bare={bare} />;
   const kind = product.categoryKind === "gold" ? "gold" : "service";
   const slots = kind === "service" ? await slotOptions(product.slug, s) : [];
   const d = DEFAULTS[kind];
@@ -128,7 +144,7 @@ export async function BuyBox({ locale, product, timeZone }: Props) {
   const errors = errorLabels(t, kind, product.maxQuantity);
 
   return (
-    <GradientCard tone="solid" className="flex flex-col gap-4 lg:sticky lg:top-24">
+    <Shell bare={bare}>
       <PriceTag
         price={product.priceOnRequest ? t("onRequest") : formatUsdt(locale, price.cents)}
         original={price.originalCents ? formatUsdt(locale, price.originalCents) : undefined}
@@ -172,12 +188,13 @@ export async function BuyBox({ locale, product, timeZone }: Props) {
           saveCharacter: t("saveCharacter"),
           total: t("total"),
           add: t("add"),
+          buyNow: t("buyNow"),
           added: t("added"),
           viewCart: t("viewCart"),
           errors,
         }}
       />
       <p className="text-xs text-muted-foreground">{c("estimateNote")}</p>
-    </GradientCard>
+    </Shell>
   );
 }

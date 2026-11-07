@@ -2,6 +2,7 @@
 
 import { refresh } from "next/cache";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { formatUsdt, getProduct } from "@/features/catalog";
 import { activePromotions, couponByCode, normalizeCode } from "@/features/discounts/queries";
@@ -100,6 +101,9 @@ export async function addToCart(_prev: AddState, form: FormData): Promise<AddSta
   const cartId = await ensureCart();
   await insertItem(cartId, { productId: checked.productId, ...checked.item });
   if (form.get("saveCharacter") === "on") await rememberCharacter(checked.item);
+  // #102: "Comprar agora" pula o carrinho e cai direto no pagamento (carrinho e checkout na mesma página)
+  const locale = routing.locales.find((l) => l === form.get("locale"));
+  if (form.get("intent") === "buy" && locale) redirect(`/${locale}/carrinho#pagar`);
   refresh(); // contador do carrinho no cabeçalho
   return { status: "ok", fields: [] };
 }

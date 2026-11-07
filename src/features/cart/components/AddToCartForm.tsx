@@ -29,6 +29,7 @@ type Labels = {
   saveCharacter: string;
   total: string;
   add: string;
+  buyNow: string;
   added: string;
   viewCart: string;
   errors: Record<string, string>;
@@ -205,11 +206,25 @@ function Submit({
     <>
       <div className="flex items-baseline justify-between border-t border-border pt-4">
         <span>{p.labels.total}</span>
-        <output aria-live="polite" className="font-heading text-xl font-bold text-heading">
+        <output aria-live="polite" className="font-heading text-xl font-bold text-gold">
           {quote}
         </output>
       </div>
-      <button type="submit" disabled={pending} className={buttonVariants({ variant: "primary", size: "lg" })}>
+      {/* #102: comprar agora = adicionar e ir direto ao pagamento; adicionar = continuar comprando */}
+      <button
+        type="submit"
+        name="intent"
+        value="buy"
+        disabled={pending}
+        className={buttonVariants({ variant: "primary", size: "lg" })}
+      >
+        {p.labels.buyNow}
+      </button>
+      <button
+        type="submit"
+        disabled={pending}
+        className={buttonVariants({ variant: "gradient-outline", size: "lg" })}
+      >
         {p.labels.add}
       </button>
     </>

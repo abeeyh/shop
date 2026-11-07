@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "Serviços de WoW: gold, raids e Mítica+",
-    "description": "Gold, raids e masmorras Mítica+ para World of Warcraft US e EU. Pague em USDT ou cartão."
+    "description": "Gold, raids, Mítica+ e conquistas para World of Warcraft US. Pague em USDT."
   },
   "Nav": {
     "label": "Principal",
@@ -12,10 +12,11 @@
     "closeMenu": "Fechar menu",
     "detecting": "Detectando…",
     "cart": "Carrinho ({n} itens)",
-    "account": "Minha conta"
+    "account": "Minha conta",
+    "preferences": "Idioma e fuso horário"
   },
   "Home": {
-    "badge": "WoW Retail · US e EU",
+    "badge": "WoW Retail · US",
     "title": "Seu progresso no WoW, sem o grind",
     "subtitle": "Gold, raids e masmorras Mítica+. Preço em USDT, horários no seu fuso, no seu idioma.",
     "ctaGold": "Comprar gold",
@@ -33,10 +34,13 @@
     "home": "Início",
     "loading": "Carregando…",
     "onRequest": "Sob consulta",
-    "hot": "Popular"
+    "hot": "Popular",
+    "buy": "Comprar",
+    "subcategories": "Subcategorias",
+    "close": "Fechar"
   },
   "Footer": {
-    "about": "Gold, raids e Mítica+ para World of Warcraft Retail US e EU.",
+    "about": "Gold, raids, Mítica+ e conquistas para World of Warcraft Retail US.",
     "copyright": "© 2026 Shop · Sem afiliação com a Blizzard Entertainment.",
     "report": "Reportar problema"
   },
@@ -127,7 +131,8 @@
     "askPriceMessage": "Olá! Quero um orçamento de: {name}",
     "savedCharacter": "Personagem salvo",
     "savedNone": "— digitar outro —",
-    "saveCharacter": "Salvar este personagem na minha conta"
+    "saveCharacter": "Salvar este personagem na minha conta",
+    "buyNow": "Comprar agora"
   },
   "Cart": {
     "title": "Carrinho",
@@ -345,7 +350,11 @@
         "product": "Produto",
         "promotion": "Promoção",
         "coupon": "Cupom",
-        "subcategory": "Subcategoria"
+        "subcategory": "Subcategoria",
+        "order": "Pedido",
+        "bug_report": "Reporte de bug",
+        "staff": "Membro da equipe",
+        "support_hours": "Horário do suporte"
       },
       "actions": {
         "create": "Criou",

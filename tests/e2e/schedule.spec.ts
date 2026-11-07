@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openPreferences } from "./helpers";
 
 // #16: agenda de raids no fuso do cliente. RN-11, RN-16, RN-83.
 test.describe("agenda", () => {
@@ -17,6 +18,7 @@ test.describe("agenda", () => {
     await expect(firstTime).not.toHaveText("");
     const before = await firstTime.textContent();
     const serverBefore = await serverTime.textContent();
+    await openPreferences(page);
     await page.locator("#pref-timezone").selectOption("Asia/Tokyo");
     await expect(firstTime).not.toHaveText(before!);
     await expect(serverTime).toHaveText(serverBefore!);

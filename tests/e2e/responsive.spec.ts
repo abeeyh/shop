@@ -7,7 +7,7 @@ const PAGES = [
   "/en/wow/gold",
   "/en/wow/raids",
   "/en/wow/mythic-plus/mythic-plus-key",
-  "/en/wow/pvp/pvp-2v2-0-1600",
+  "/en/wow/pvp/arena-rating",
   "/en/carrinho",
   "/en/reportar",
   "/en/admin/entrar",
@@ -16,6 +16,7 @@ const PAGES = [
 for (const width of [360, 1920]) {
   test(`sem rolagem horizontal em ${width}px`, async ({ page, isMobile }) => {
     test.skip(isMobile !== (width === 360), "celular confere 360 px; desktop confere 1920 px");
+    test.setTimeout(90_000); // 9 páginas em sequência; sob a suíte em paralelo passa de 30 s
     await page.setViewportSize({ width, height: 900 });
     for (const path of PAGES) {
       await page.goto(path);

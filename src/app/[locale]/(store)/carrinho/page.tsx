@@ -9,7 +9,7 @@ import { getCustomer } from "@/features/account";
 import { cartSummary, getCartId, removeFromCart } from "@/features/cart";
 import { CouponForm } from "@/features/cart/components/CouponForm";
 import { describeItem } from "@/features/cart/describe";
-import { KindThumb } from "@/features/catalog";
+import { KindTile } from "@/features/catalog";
 import { CheckoutForm } from "@/features/orders";
 import { canonicalLocale } from "@/i18n/routing";
 import { getTimezone } from "@/lib/preferences";
@@ -96,9 +96,7 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
           {cart.lines.map((line) => (
             <li key={line.id}>
               <GradientCard tone="solid" className="flex flex-wrap items-center gap-4">
-                <div className="w-18 shrink-0 [&>div]:mb-0">
-                  <KindThumb kind={line.kind} />
-                </div>
+                <KindTile kind={line.kind} />
                 <div className="min-w-0 flex-1">
                   <Link href={line.href} className="font-heading font-semibold text-heading hover:underline">
                     {line.name}
@@ -146,6 +144,8 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
             }}
           />
           {cart.hasUnavailable ? <p className="text-sm text-error-text">{t("removeUnavailable")}</p> : null}
+          {/* #102: "Comprar agora" chega aqui (#pagar) */}
+          <div id="pagar" className="scroll-mt-32" />
           <CheckoutForm
             locale={locale}
             defaultEmail={customer?.email}
