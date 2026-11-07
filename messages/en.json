@@ -11,7 +11,8 @@
     "menu": "Open menu",
     "closeMenu": "Close menu",
     "detecting": "Detecting…",
-    "cart": "Cart ({n} items)"
+    "cart": "Cart ({n} items)",
+    "account": "My account"
   },
   "Home": {
     "badge": "WoW Retail · US & EU",
@@ -123,7 +124,10 @@
     "onRequest": "Price on request",
     "onRequestNote": "Talk to support to get a quote for this service.",
     "askPrice": "Ask for price",
-    "askPriceMessage": "Hi! I'd like a quote for: {name}"
+    "askPriceMessage": "Hi! I'd like a quote for: {name}",
+    "savedCharacter": "Saved character",
+    "savedNone": "— type a new one —",
+    "saveCharacter": "Save this character to my account"
   },
   "Cart": {
     "title": "Cart",
@@ -471,5 +475,49 @@
     "offlineTitle": "We're offline right now — leave a message and we'll reply by email or here.",
     "offlineStart": "Leave a message",
     "backAt": "We're back at"
+  },
+  "Account": {
+    "title": "My account",
+    "email": "Email",
+    "password": "Password",
+    "signOut": "Sign out",
+    "login": {
+      "title": "Sign in",
+      "submit": "Sign in",
+      "forgot": "Forgot your password? Password reset is not available yet (API not implemented). Talk to support in the chat.",
+      "noAccount": "No account yet?"
+    },
+    "signup": {
+      "title": "Create account",
+      "intro": "Optional: you can buy without an account. With one, you see your orders and save your characters.",
+      "passwordHint": "At least 12 characters. Leaked passwords are refused.",
+      "submit": "Create account",
+      "done": "If the account could be created, sign in with your email and password.",
+      "hasAccount": "Already have an account?"
+    },
+    "orders": {
+      "title": "My orders",
+      "empty": "No orders placed with this account yet."
+    },
+    "characters": {
+      "title": "My characters",
+      "intro": "Saved characters fill the purchase form for you (up to 10).",
+      "add": "Save character",
+      "remove": "Remove"
+    },
+    "delete": {
+      "title": "Delete account",
+      "intro": "Deletes your account and saved characters. Orders are kept for 5 years (tax law) without the link to the account.",
+      "submit": "Delete my account"
+    },
+    "errors": {
+      "invalid": "Email or password incorrect.",
+      "signupInvalid": "Enter a valid email and a password with at least 12 characters.",
+      "limited": "Too many attempts. Try again in a few minutes.",
+      "pwned": "This password appeared in a data leak. Choose another one.",
+      "character": "Enter the realm and a name with 2–12 letters.",
+      "characterLimit": "You can save up to 10 characters.",
+      "characterDuplicate": "This character is already saved."
+    }
   }
 }

@@ -4,6 +4,7 @@ import { refresh } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { getCustomer } from "@/features/account/session";
 import { cartSummary, clearCart, getCartId, setCartCoupon } from "@/features/cart";
 import { canonicalEmail } from "@/features/discounts/queries";
 import { routing } from "@/i18n/routing";
@@ -53,6 +54,9 @@ async function createOrder(order: Parameters<typeof insertOrder>[0], cartId: str
   }
 }
 
+// RN-107: conta logada (opcional) — visitante compra só com e-mail (RN-01)
+const customerId = async () => (await getCustomer())?.id ?? null;
+
 // RN-01, RN-20, RN-30, RN-35: total recalculado aqui; o pedido congela os preços; o pagamento é
 // na fatura do provedor e só o IPN confirma (RN-32)
 export async function placeOrder(_prev: CheckoutState, form: FormData): Promise<CheckoutState> {
@@ -73,6 +77,7 @@ export async function placeOrder(_prev: CheckoutState, form: FormData): Promise<
 
   const order = {
     email: canonicalEmail(email),
+    userId: await customerId(), // RN-107: o pedido aparece em "Meus pedidos"
     locale,
     network,
     subtotalUsdtCents: cart.subtotalCents,

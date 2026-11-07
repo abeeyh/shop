@@ -5,6 +5,7 @@ import { connection } from "next/server";
 import { buttonVariants } from "@/components/atoms/Button";
 import { GradientCard } from "@/components/molecules/GradientCard";
 import { LocalTime } from "@/components/molecules/LocalTime";
+import { getCustomer } from "@/features/account";
 import { cartSummary, getCartId, removeFromCart } from "@/features/cart";
 import { CouponForm } from "@/features/cart/components/CouponForm";
 import { describeItem } from "@/features/cart/describe";
@@ -64,11 +65,12 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
   await connection();
   const { locale } = await params;
   setRequestLocale(locale);
-  const [t, k, timeZone, cartId] = await Promise.all([
+  const [t, k, timeZone, cartId, customer] = await Promise.all([
     getTranslations({ locale, namespace: "Cart" }),
     getTranslations({ locale, namespace: "Checkout" }),
     getTimezone(),
     getCartId(),
+    getCustomer(),
   ]);
   const cart = await cartSummary(locale, cartId);
 
@@ -146,6 +148,7 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
           {cart.hasUnavailable ? <p className="text-sm text-error-text">{t("removeUnavailable")}</p> : null}
           <CheckoutForm
             locale={locale}
+            defaultEmail={customer?.email}
             disabled={cart.hasUnavailable}
             expectedTotal={cart.totalCents}
             labels={{

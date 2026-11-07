@@ -9,8 +9,9 @@ import { env } from "@/lib/env";
 
 const DEV_SECRET = "dev-better-auth-secret-only-for-local-and-tests"; // público: só vale em APP_ENV=local
 
-// Login só da equipe (RN-04): sem cadastro público; 2FA TOTP (RN-02, RN-05). Usado só por Server
-// Actions via auth.api — não há rota pública /api/auth (menos superfície).
+// Equipe (convite, RN-04; 2FA TOTP, RN-02/RN-05) e cliente (cadastro opcional, RN-107). Usado só por
+// Server Actions via auth.api — não há rota pública /api/auth (menos superfície): o cadastro só acontece
+// pela action signUp (limite por IP, senha vazada recusada, sem revelar e-mail existente).
 export const auth = betterAuth({
   appName: "Shop",
   baseURL: env.APP_URL,
@@ -25,8 +26,10 @@ export const auth = betterAuth({
       twoFactor: twoFactors,
     },
   }),
-  emailAndPassword: { enabled: true, disableSignUp: true, minPasswordLength: 12 },
-  session: { expiresIn: 60 * 60 * 12, updateAge: 60 * 60 }, // equipe: 12 h
+  // autoSignIn desligado: cadastro novo e e-mail já usado têm a mesma resposta (docs/09 "Nunca")
+  emailAndPassword: { enabled: true, minPasswordLength: 12, autoSignIn: false },
+  // cliente: 7 dias; a equipe tem teto de 12 h conferido em getStaff (features/auth/staff.ts)
+  session: { expiresIn: 60 * 60 * 24 * 7, updateAge: 60 * 60 * 24 },
   advanced: { ipAddress: { ipAddressHeaders: [env.CLIENT_IP_HEADER ?? "x-forwarded-for"] } },
   telemetry: { enabled: false }, // docs/09: nada para terceiros sem necessidade
   plugins: [twoFactor({ issuer: "Shop" }), nextCookies()],

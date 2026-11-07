@@ -76,9 +76,11 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 
   Risco aceito: o limite de cupom "por cliente" (RN-25) conta o e-mail normalizado (sem `+tag`, sem pontos no Gmail), mas sem conta nem verificação de e-mail é só uma barreira leve.
   Pendente antes de produção: CAPTCHA no chat e no reporte (Turnstile, #29) — sem ele, e-mail não verificado permite abrir muitas conversas (o limite por IP segura parte). Expurgo de conversas 1 ano depois de resolvidas (cron).
+  Risco aceito (#101): conta de cliente sem e-mail verificado e sem CAPTCHA no cadastro até o #29 — mitigado por 5 cadastros/h por IP (`failClosed`), senha vazada recusada, conta que só vê pedidos feitos logada e resposta igual para e-mail novo e já usado (sem enumeração). "Esqueci a senha" bloqueado até ter e-mail transacional.
   Risco aceito: pedido em `pagamento_parcial` não expira e segura vaga e uso de cupom até o admin resolver (fluxo do admin em #23).
   Risco aceito: quem sabe o e-mail de um admin consegue travar o login dele por 10 min de cada vez (limite por e-mail). Monitorar `auth.login_failed`; se virar problema, contar só falhas no balde por e-mail.
   | Cupom (RN-28), por IP | 10/hora | **bloqueia** (`failClosed`) |
+  | Cadastro de cliente (RN-107), por IP | 5/hora | **bloqueia** (`failClosed`) |
   | Checkout (cada um reserva vaga e cupom), por IP | 10 a cada 10 min | **bloqueia** (`failClosed`) |
   | Reporte, chat (quando existirem) | definir na issue | **bloqueia** (`failClosed`) |
 
@@ -147,6 +149,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 | Dado | Finalidade | Base legal | Retenção |
 |------|-----------|------------|----------|
 | E-mail, hash da senha | Conta e login | Execução de contrato | Até excluir a conta + 30 dias |
+| Personagens salvos na conta (realm, facção, nome — RN-108) | Preencher compras futuras | Consentimento (o cliente escolhe salvar) | Até o cliente remover ou excluir a conta (RN-109) |
 | IP e logs de acesso (tabela `access_logs`) | Segurança, Marco Civil (art. 15) | Obrigação legal | 6 meses, apagado por cron diário |
 | Logs de depuração (Better Stack) | Correção de erros | Legítimo interesse | 3 dias |
 | Cookies de anúncio/analytics | [ ] | Consentimento | Conforme CMP |

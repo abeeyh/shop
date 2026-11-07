@@ -11,7 +11,8 @@
     "menu": "Menü öffnen",
     "closeMenu": "Menü schließen",
     "detecting": "Wird erkannt…",
-    "cart": "Warenkorb ({n} Artikel)"
+    "cart": "Warenkorb ({n} Artikel)",
+    "account": "Mein Konto"
   },
   "Home": {
     "badge": "WoW Retail · US & EU",
@@ -123,7 +124,10 @@
     "onRequest": "Preis auf Anfrage",
     "onRequestNote": "Frag den Support nach einem Angebot für diesen Service.",
     "askPrice": "Preis anfragen",
-    "askPriceMessage": "Hallo! Ich hätte gern ein Angebot für: {name}"
+    "askPriceMessage": "Hallo! Ich hätte gern ein Angebot für: {name}",
+    "savedCharacter": "Gespeicherter Charakter",
+    "savedNone": "— neuen eingeben —",
+    "saveCharacter": "Diesen Charakter in meinem Konto speichern"
   },
   "Cart": {
     "title": "Warenkorb",
@@ -471,5 +475,49 @@
     "offlineTitle": "Wir sind gerade offline — hinterlass eine Nachricht, wir antworten per E-Mail oder hier.",
     "offlineStart": "Nachricht hinterlassen",
     "backAt": "Wir sind zurück am"
+  },
+  "Account": {
+    "title": "Mein Konto",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "signOut": "Abmelden",
+    "login": {
+      "title": "Anmelden",
+      "submit": "Anmelden",
+      "forgot": "Passwort vergessen? Das Zurücksetzen ist noch nicht verfügbar (API noch nicht implementiert). Wende dich im Chat an den Support.",
+      "noAccount": "Noch kein Konto?"
+    },
+    "signup": {
+      "title": "Konto erstellen",
+      "intro": "Optional: Du kannst ohne Konto kaufen. Mit Konto siehst du deine Bestellungen und speicherst deine Charaktere.",
+      "passwordHint": "Mindestens 12 Zeichen. Geleakte Passwörter werden abgelehnt.",
+      "submit": "Konto erstellen",
+      "done": "Falls das Konto erstellt werden konnte, melde dich mit E-Mail und Passwort an.",
+      "hasAccount": "Schon ein Konto?"
+    },
+    "orders": {
+      "title": "Meine Bestellungen",
+      "empty": "Mit diesem Konto wurden noch keine Bestellungen aufgegeben."
+    },
+    "characters": {
+      "title": "Meine Charaktere",
+      "intro": "Gespeicherte Charaktere füllen das Kaufformular für dich aus (bis zu 10).",
+      "add": "Charakter speichern",
+      "remove": "Entfernen"
+    },
+    "delete": {
+      "title": "Konto löschen",
+      "intro": "Löscht dein Konto und die gespeicherten Charaktere. Bestellungen bleiben 5 Jahre gespeichert (Steuerrecht), ohne Verbindung zum Konto.",
+      "submit": "Mein Konto löschen"
+    },
+    "errors": {
+      "invalid": "E-Mail oder Passwort falsch.",
+      "signupInvalid": "Gib eine gültige E-Mail und ein Passwort mit mindestens 12 Zeichen ein.",
+      "limited": "Zu viele Versuche. Versuche es in ein paar Minuten erneut.",
+      "pwned": "Dieses Passwort ist in einem Datenleck aufgetaucht. Wähle ein anderes.",
+      "character": "Gib den Realm und einen Namen mit 2–12 Buchstaben ein.",
+      "characterLimit": "Du kannst bis zu 10 Charaktere speichern.",
+      "characterDuplicate": "Dieser Charakter ist bereits gespeichert."
+    }
   }
 }

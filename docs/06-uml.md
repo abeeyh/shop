@@ -100,6 +100,14 @@ classDiagram
     +capacity: int
     +reserved: int
   }
+  class Customer {
+    +email: string
+  }
+  class Character {
+    +realm: string
+    +faction: alliance|horde
+    +name: string
+  }
   class Order {
     +id: string
     +email: string
@@ -157,6 +165,8 @@ classDiagram
   Coupon "1" *-- "*" CouponRedemption
   CouponRedemption "*" --> "1" Order
   Order "1" *-- "1..*" OrderItem
+  Customer "1" *-- "0..10" Character
+  Customer "0..1" --> "*" Order : compras logado
   OrderItem "*" --> "1" Product
   OrderItem "*" --> "0..1" RaidSlot
   Order "1" -- "0..1" Delivery

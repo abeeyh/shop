@@ -24,6 +24,9 @@ type Labels = {
   addons: string;
   scheduleNote: string; // RN-16: sem horário → agendar com o suporte depois do pagamento
   onRequest: string;
+  savedCharacter: string;
+  savedNone: string;
+  saveCharacter: string;
   total: string;
   add: string;
   added: string;
@@ -46,6 +49,7 @@ type Props = {
   // #100: eixos e combinações (preço por combinação); null = produto sem variantes
   variants: { axes: PickerAxis[]; list: PickerVariant[]; initialId: string } | null;
   askPrice: { label: string; message: string }; // combinação sob consulta (RN-106): pedir o preço no chat
+  account: Character[] | null; // RN-108: personagens salvos; null = visitante
   labels: Labels;
 };
 
@@ -57,6 +61,54 @@ const choice =
   "flex min-h-11 cursor-pointer items-center gap-3 rounded-md border border-border bg-input px-4 has-[:checked]:border-primary has-[:checked]:bg-primary/10";
 
 const initial: AddState = { status: "idle", fields: [] };
+
+type Character = { realm: string; faction: "alliance" | "horde"; name: string };
+
+// RN-108: escolher um personagem salvo preenche realm, facção e nome (o cliente ainda pode editar)
+function fillCharacter(form: HTMLFormElement | null, c: Character) {
+  if (!form) return;
+  const set = (name: string, value: string) => {
+    const el = form.elements.namedItem(name);
+    if (el instanceof HTMLInputElement) el.value = value;
+  };
+  set("realm", c.realm);
+  set("character", c.name);
+  const radio = form.querySelector<HTMLInputElement>(`input[name="faction"][value="${c.faction}"]`);
+  if (radio) radio.checked = true;
+}
+
+function SavedCharacters({
+  p,
+  form,
+  onPick,
+}: {
+  p: Props;
+  form: React.RefObject<HTMLFormElement | null>;
+  onPick: () => void;
+}) {
+  if (!p.account?.length) return null;
+  const list = p.account;
+  return (
+    <label className={fieldCls}>
+      <span className={labelCls}>{p.labels.savedCharacter}</span>
+      <Select
+        defaultValue=""
+        onChange={(e) => {
+          const c = list[Number(e.target.value)];
+          if (c) fillCharacter(form.current, c);
+          onPick();
+        }}
+      >
+        <option value="">{p.labels.savedNone}</option>
+        {list.map((c, i) => (
+          <option key={`${c.realm}-${c.name}`} value={i}>
+            {c.name} · {c.realm}
+          </option>
+        ))}
+      </Select>
+    </label>
+  );
+}
 
 const initialVariant = (v: Props["variants"]) => v?.list.find((x) => x.id === v.initialId) ?? null;
 
@@ -210,6 +262,7 @@ export function AddToCartForm(p: Props) {
         </>
       ) : null}
 
+      <SavedCharacters p={p} form={form} onPick={requote} />
       <label className={fieldCls}>
         <span className={labelCls}>{p.labels.realm}</span>
         <input
@@ -280,6 +333,12 @@ export function AddToCartForm(p: Props) {
 
       {p.kind === "service" ? <ServiceFields p={p} invalid={invalid} error={error} /> : null}
 
+      {p.account ? (
+        <label className="flex items-center gap-3 text-sm">
+          <input type="checkbox" name="saveCharacter" className="size-4.5 accent-primary" />
+          {p.labels.saveCharacter}
+        </label>
+      ) : null}
       <Submit p={p} variant={variant} quote={quote} pending={pending} />
       <p role="status" className="min-h-5 text-center text-sm">
         {state.status === "ok" ? (

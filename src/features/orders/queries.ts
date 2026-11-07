@@ -8,6 +8,7 @@ import { nextStatus, settle, type Network, type OrderStatus, type PaymentOutcome
 
 export type NewOrder = {
   email: string;
+  userId: string | null; // RN-107: conta logada (opcional)
   locale: string;
   network: Network;
   subtotalUsdtCents: number;

@@ -6,6 +6,7 @@ import { placeOrder, type CheckoutState } from "../actions";
 
 type Props = {
   locale: string;
+  defaultEmail?: string; // RN-107: e-mail da conta logada (o cliente pode trocar)
   disabled: boolean;
   expectedTotal: number; // total mostrado; o servidor recalcula e só compara (RN-20)
   labels: {
@@ -24,7 +25,7 @@ const choice =
   "flex min-h-11 cursor-pointer items-center gap-3 rounded-md border border-border bg-input px-4 font-semibold text-heading has-[:checked]:border-primary has-[:checked]:bg-primary/10";
 
 // RN-01: visitante paga só com e-mail; RN-37: rede escolhida em destaque (rede errada = perda)
-export function CheckoutForm({ locale, disabled, expectedTotal, labels }: Props) {
+export function CheckoutForm({ locale, defaultEmail, disabled, expectedTotal, labels }: Props) {
   const [state, action, pending] = useActionState<CheckoutState, FormData>(placeOrder, { error: "" });
   return (
     <form action={action} className="grid gap-4 border-t border-border pt-4">
@@ -38,6 +39,7 @@ export function CheckoutForm({ locale, disabled, expectedTotal, labels }: Props)
           required
           maxLength={254}
           autoComplete="email"
+          defaultValue={defaultEmail}
           className={input}
           aria-invalid={state.error === "email"}
           aria-describedby="hint-email"
