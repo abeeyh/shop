@@ -38,7 +38,7 @@ describe("formulários do admin (RN-12, RN-13, RN-19)", () => {
       { name: "VIP", percent: 10 },
     ]);
     expect(productInput.parse(product).addons).toEqual([]);
-    for (const bad of ["Armor Stack", "A | 0", "Armor | 25\narmor | 10", "X | 101"])
+    for (const bad of ["Armor Stack", "A | 0", "x | 5", "Armor | 25\narmor | 10", "X | 101"])
       expect(productInput.safeParse({ ...product, addons: bad }).success).toBe(false);
   });
 

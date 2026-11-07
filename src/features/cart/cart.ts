@@ -8,7 +8,7 @@ import {
   chooseDiscount,
   couponDiscountCents,
   lineTotalCents,
-  isCurrentOptions,
+  itemStillValid,
   unitPriceCents,
   type ItemOptions,
   type Promotion,
@@ -51,7 +51,15 @@ const slotOk = (r: Row) =>
 
 function priceLine(r: Row, promos: Promotion[], now: Date) {
   // item com opções antigas (antes do #94) ou produto que virou "sob consulta" não pode seguir ao checkout
-  const current = isCurrentOptions(r.options) && !r.priceOnRequest;
+  const current =
+    !r.priceOnRequest &&
+    itemStillValid(r.options, r.quantity, {
+      isGold: r.categoryKind === "gold",
+      addons: r.addons,
+      maxQuantity: r.maxQuantity,
+      hasSlots: r.hasSlots,
+      slotId: r.slotId,
+    });
   const unitCents = current
     ? unitPriceCents(r.basePriceCents, r.options as ItemOptions, r.addons)
     : r.basePriceCents;

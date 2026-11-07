@@ -1,5 +1,5 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
-import { and, asc, count, eq } from "drizzle-orm";
+import { and, asc, count, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { cartItems, carts, categories, products, raidSlots } from "@/db/schema";
 import type { ItemOptions } from "@/features/pricing/rules";
@@ -69,6 +69,10 @@ export async function listItems(cartId: string) {
       basePriceCents: products.priceUsdtCents,
       addons: products.addons,
       priceOnRequest: products.priceOnRequest,
+      maxQuantity: products.maxQuantity,
+      // RN-16: o produto tem horário futuro ativo? (item sem horário deixa de valer — #94)
+      hasSlots: sql<boolean>`exists (select 1 from ${raidSlots} s where s.product_id = ${products.id}
+        and s.active and s.starts_at > now())`,
       unit: products.unit,
       categoryId: products.categoryId,
       categorySlug: categories.slug,

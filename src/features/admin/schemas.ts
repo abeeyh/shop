@@ -36,7 +36,7 @@ export const subcategoryInput = z.object({
 });
 
 // RN-17: um adicional por linha, "Nome | %" (ex.: "Armor Stack | 25"); nome único, 1–100%
-const ADDON_LINE = /^(.{2,40}?)\s*\|\s*(\d{1,3})$/;
+const ADDON_LINE = /^(\S.{0,38}?\S)\s*\|\s*(\d{1,3})$/; // nome de 2–40 caracteres, sem espaço nas pontas
 const addons = z
   .string()
   .max(1000)

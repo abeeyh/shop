@@ -25,6 +25,29 @@ export function unitPriceCents(basePriceCents: number, options: ItemOptions, add
   return Math.round((basePriceCents * (100 + percent)) / 100);
 }
 
+// Item guardado no carrinho continua válido para o produto como está AGORA? (o admin pode ter mudado
+// adicionais, limite, horários ou o tipo da categoria depois — revisão de segurança do #94)
+export function itemStillValid(
+  options: unknown,
+  quantity: number,
+  product: {
+    isGold: boolean;
+    addons: Addon[];
+    maxQuantity: number;
+    hasSlots: boolean;
+    slotId: string | null;
+  },
+): boolean {
+  if (!isCurrentOptions(options) || (options.kind === "gold") !== product.isGold) return false;
+  if (options.kind === "gold") return true;
+  const names = product.addons.map((a) => a.name);
+  return (
+    options.addons.every((n) => names.includes(n)) && // adicional removido/renomeado não vira 0%
+    quantity <= product.maxQuantity &&
+    (!product.hasSlots || product.slotId !== null) // produto ganhou horários: tem de escolher um
+  );
+}
+
 export const isCurrentOptions = (o: unknown): o is ItemOptions => {
   const kind = (o as { kind?: unknown } | null)?.kind;
   return kind === "gold" || kind === "service";
