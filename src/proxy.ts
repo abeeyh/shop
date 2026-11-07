@@ -2,9 +2,9 @@ import createMiddleware from "next-intl/middleware";
 import { type NextFetchEvent, NextRequest, NextResponse } from "next/server";
 import { recordAccess } from "./features/access-log";
 import { routing } from "./i18n/routing";
-import { clientIp } from "./lib/client-ip";
+import { clientIp, rateLimitKey } from "./lib/client-ip";
 import { env } from "./lib/env";
-import { RATE_LIMITS, rateLimit, tooManyRequests } from "./lib/rate-limit";
+import { noteUnknownIp, RATE_LIMITS, rateLimit, tooManyRequests } from "./lib/rate-limit";
 import { REQUEST_ID_HEADER } from "./lib/request-id";
 
 const handleI18n = createMiddleware(routing);
@@ -18,8 +18,9 @@ export default async function proxy(request: NextRequest, event?: NextFetchEvent
 
   // docs/09 §2: rate limit compartilhado por IP antes de qualquer trabalho (inclusive o log de acesso)
   if (!NOT_LIMITED.has(pathname)) {
-    const ip = clientIp(request.headers, env.CLIENT_IP_HEADER ?? "x-forwarded-for") ?? "unknown";
-    const limited = await rateLimit({ key: `ip:${ip}`, ...RATE_LIMITS.request });
+    const ip = clientIp(request.headers, env.CLIENT_IP_HEADER ?? "x-forwarded-for");
+    if (!ip) noteUnknownIp(env.APP_ENV); // em production indica CDN mal configurada
+    const limited = await rateLimit({ key: rateLimitKey(ip), ...RATE_LIMITS.request });
     if (!limited.allowed) {
       const blocked = tooManyRequests(limited, requestId);
       blocked.headers.set(REQUEST_ID_HEADER, requestId);
@@ -43,6 +44,9 @@ export default async function proxy(request: NextRequest, event?: NextFetchEvent
   return response;
 }
 
+// Exclui só arquivos estáticos conhecidos: rota com ponto no caminho (ex.: /api/x.json) passa pelo
+// proxy e recebe rate limit, requestId e log de acesso (revisão de segurança da #48).
 export const config = {
-  matcher: "/((?!_next|_vercel|.*\\..*).*)",
+  matcher:
+    "/((?!_next|_vercel|.*\\.(?:ico|png|jpe?g|gif|webp|avif|svg|css|js|map|txt|xml|woff2?|ttf|webmanifest)$).*)",
 };

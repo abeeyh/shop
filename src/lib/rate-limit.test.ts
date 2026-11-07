@@ -26,6 +26,23 @@ describe("rate limit — sem Valkey (docs/09 §2)", () => {
     getValkey()?.disconnect();
   });
 
+  it("disjuntor: após uma falha, não consulta o Valkey de novo por alguns segundos", async () => {
+    vi.resetModules();
+    const evalFn = vi.fn(async () => {
+      throw new Error("timeout");
+    });
+    vi.doMock("./valkey", () => ({ readyValkey: async () => ({ eval: evalFn }) }));
+    const { rateLimit, resetBreaker } = await import("./rate-limit");
+    resetBreaker();
+    for (let i = 0; i < 20; i++)
+      expect((await rateLimit({ key: "k", limit: 1, windowMs: 1000 })).allowed).toBe(true);
+    expect(evalFn).toHaveBeenCalledTimes(1);
+    resetBreaker();
+    await rateLimit({ key: "k", limit: 1, windowMs: 1000 });
+    expect(evalFn).toHaveBeenCalledTimes(2);
+    vi.doUnmock("./valkey");
+  });
+
   it("429 com Retry-After em segundos, código estável e requestId", async () => {
     const { tooManyRequests } = await import("./rate-limit");
     const res = tooManyRequests({ allowed: false, remaining: 0, resetMs: 1500 }, "req-1");

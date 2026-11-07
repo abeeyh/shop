@@ -19,6 +19,9 @@ const SCRIPT =
 
 const UNAVAILABLE_LOG_INTERVAL_MS = 60_000;
 let lastUnavailableLog = 0;
+// Disjuntor: após uma falha do Valkey, 5 s sem consultá-lo (Valkey travado custaria 150 ms por requisição).
+export const BREAKER_COOLDOWN_MS = 5_000;
+let breakerOpenUntil = 0;
 
 // Valkey fora do ar: tráfego geral passa (failClosed=false), rotas sensíveis bloqueiam (failClosed=true).
 function unavailable(failClosed: boolean, err: unknown): RateLimitResult {
@@ -32,12 +35,27 @@ function unavailable(failClosed: boolean, err: unknown): RateLimitResult {
   return { allowed: !failClosed, remaining: 0, resetMs: 0 };
 }
 
+let lastUnknownIpLog = 0;
+
+// Requisição sem IP válido cai no balde "ip:unknown" (fail-safe). Em production isso não deveria
+// acontecer: a CDN sempre envia CLIENT_IP_HEADER. Alerta no máximo 1×/min.
+export function noteUnknownIp(appEnv: string): void {
+  if (appEnv !== "production" || Date.now() - lastUnknownIpLog < UNAVAILABLE_LOG_INTERVAL_MS) return;
+  lastUnknownIpLog = Date.now();
+  logger.warn(
+    { event: "rate_limit.unknown_ip" },
+    "requisição sem IP válido: conferir CDN e CLIENT_IP_HEADER",
+  );
+}
+
 export async function rateLimit({
   key,
   limit,
   windowMs,
   failClosed = false,
 }: Options): Promise<RateLimitResult> {
+  // disjuntor aberto: Valkey falhou há pouco, não paga o timeout de novo em cada requisição
+  if (Date.now() < breakerOpenUntil) return unavailable(failClosed, new Error("disjuntor aberto"));
   const client = await readyValkey();
   if (!client) return unavailable(failClosed, new Error("VALKEY_URL não configurada"));
   try {
@@ -48,8 +66,14 @@ export async function rateLimit({
       resetMs: ttl > 0 ? ttl : windowMs,
     };
   } catch (err) {
+    breakerOpenUntil = Date.now() + BREAKER_COOLDOWN_MS;
     return unavailable(failClosed, err);
   }
+}
+
+// Só para testes: fecha o disjuntor.
+export function resetBreaker(): void {
+  breakerOpenUntil = 0;
 }
 
 export function tooManyRequests(result: RateLimitResult, requestId: string): Response {
