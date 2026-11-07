@@ -195,7 +195,8 @@
       "store": "商店",
       "signOut": "退出",
       "promotions": "促销活动",
-      "coupons": "优惠码"
+      "coupons": "优惠码",
+      "audit": "审计日志"
     },
     "login": {
       "title": "团队登录",
@@ -296,6 +297,22 @@
       "percent": "百分比",
       "fixed": "固定金额（USDT）",
       "store": "全店"
+    },
+    "audit": {
+      "when": "时间（UTC）",
+      "who": "人员",
+      "what": "项目",
+      "changes": "变更内容",
+      "entities": {
+        "category": "分类",
+        "product": "商品",
+        "promotion": "促销",
+        "coupon": "优惠码"
+      },
+      "actions": {
+        "create": "创建",
+        "update": "修改"
+      }
     }
   }
 }

@@ -195,7 +195,8 @@
       "store": "Boutique",
       "signOut": "Se déconnecter",
       "promotions": "Promotions",
-      "coupons": "Coupons"
+      "coupons": "Coupons",
+      "audit": "Journal d'audit"
     },
     "login": {
       "title": "Connexion (équipe)",
@@ -296,6 +297,22 @@
       "percent": "Pourcentage",
       "fixed": "Montant fixe (USDT)",
       "store": "Toute la boutique"
+    },
+    "audit": {
+      "when": "Quand (UTC)",
+      "who": "Qui",
+      "what": "Quoi",
+      "changes": "Modifications",
+      "entities": {
+        "category": "Catégorie",
+        "product": "Produit",
+        "promotion": "Promotion",
+        "coupon": "Coupon"
+      },
+      "actions": {
+        "create": "Création",
+        "update": "Modification"
+      }
     }
   }
 }

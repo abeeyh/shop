@@ -71,6 +71,13 @@
       "when": 1794031547058,
       "tag": "0009_lame_ironclad",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1794032497676,
+      "tag": "0010_modern_spirit",
+      "breakpoints": true
     }
   ]
 }

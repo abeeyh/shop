@@ -195,7 +195,8 @@
       "store": "Loja",
       "signOut": "Sair",
       "promotions": "Promoções",
-      "coupons": "Cupons"
+      "coupons": "Cupons",
+      "audit": "Auditoria"
     },
     "login": {
       "title": "Entrar (equipe)",
@@ -296,6 +297,22 @@
       "percent": "Percentual",
       "fixed": "Valor fixo (USDT)",
       "store": "Loja toda"
+    },
+    "audit": {
+      "when": "Quando (UTC)",
+      "who": "Quem",
+      "what": "O quê",
+      "changes": "Alterações",
+      "entities": {
+        "category": "Categoria",
+        "product": "Produto",
+        "promotion": "Promoção",
+        "coupon": "Cupom"
+      },
+      "actions": {
+        "create": "Criou",
+        "update": "Alterou"
+      }
     }
   }
 }
