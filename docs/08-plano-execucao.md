@@ -67,7 +67,7 @@ gantt
 - [x] Visual minimalista novo (#102) e compra em poucos cliques: lista densa, página do produto com opções e carrinho na barra lateral (#109), "Comprar agora" direto ao pagamento.
 - [x] Correções da análise de bugs e contrato de 2026-11-07 (#112).
 
-- [ ] Dashboard admin com 2FA (RN-02, RN-70): **categorias e produtos** (RN-13, RN-19, RN-72, RN-73), preços, slots, pedidos. *Feito: login com 2FA, categorias, produtos e preços (#20). Faltam slots e pedidos (#23).*
+- [ ] Dashboard admin (2FA opcional desde o #116 — RN-02, RN-70): **categorias e produtos** (RN-13, RN-19, RN-72, RN-73), preços, slots, pedidos. *Feito: login com 2FA, categorias, produtos e preços (#20). Faltam slots e pedidos (#23).*
 - [x] **Promoções por tempo** (RN-21 a RN-24) e **cupons** (RN-25 a RN-29) com regra "vale o maior" (RN-26). *Datas digitadas em UTC no admin. Ordenação por preço final e filtro "em promoção": #74.*
 - [x] Auditoria de alterações de preço, promoção e cupom (RN-71). *Pedidos entram com o fluxo de entrega (#23 — RN-07).*
 - [x] Fluxo `pago → em_andamento → concluido` com prova de entrega (RN-50, RN-52). *Prova como link https até existir o storage de arquivos.*
@@ -84,7 +84,7 @@ gantt
 
 ## F5 — Suporte e chat
 
-- [x] Papéis `cliente`/`suporte`/`admin`, convite de equipe, 2FA obrigatório, permissões por papel (RN-04 a RN-07). *Convite por link mostrado ao admin até existir o provedor de e-mail.*
+- [x] Papéis `cliente`/`suporte`/`admin`, convite de equipe, 2FA (opcional desde o #116), permissões por papel (RN-04 a RN-07). *Convite por link mostrado ao admin até existir o provedor de e-mail.*
 - [x] Conta opcional do cliente (#101): cadastro e login, personagens salvos, excluir conta (RN-107 a RN-109); regra de senha 8+ com maiúscula, minúscula e número (#107).
 - [ ] Pendentes da conta (#113): conversa do chat ligada à conta logada (RN-92), exportar meus dados (LGPD), idioma e fuso guardados no perfil (RN-82). "Esqueci a senha" e confirmação de e-mail dependem do e-mail transacional (#29).
 - [x] Chat próprio: SSE + PostgreSQL + pub/sub do Valkey; widget em todas as páginas; fila no dashboard (RN-92, RN-93, RN-98). *Mascaramento (RN-95) já entrou; fila atualiza por polling de 15 s.*

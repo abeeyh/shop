@@ -7,7 +7,7 @@ import { TwoFactorSetup } from "@/features/auth/components/AuthForms";
 
 export const instant = false;
 
-// RN-02: primeiro acesso da equipe ativa o 2FA antes de ver o painel
+// RN-02 (#116): ativar o 2FA é opcional — a pessoa chega aqui pelo link "2FA" do painel
 export default async function TwoFactorPage({ params }: PageProps<"/[locale]/admin/2fa">) {
   await connection();
   const { locale } = await params;

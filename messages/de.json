@@ -230,7 +230,8 @@
       "docs": "Interne Dokumentation",
       "team": "Team",
       "support": "Support",
-      "subcategories": "Unterkategorien"
+      "subcategories": "Unterkategorien",
+      "twoFactor": "2FA"
     },
     "login": {
       "title": "Anmeldung (Team)",
@@ -246,7 +247,7 @@
     },
     "setup": {
       "title": "Zwei-Faktor aktivieren",
-      "intro": "Der Admin erfordert Zwei-Faktor-Authentifizierung. Bestätige dein Passwort, um den Einrichtungsschlüssel zu erhalten.",
+      "intro": "Zwei-Faktor-Authentifizierung ist optional und empfohlen: Sie schützt das Panel, falls dein Passwort geleakt wird. Bestätige dein Passwort, um den Einrichtungsschlüssel zu erhalten.",
       "password": "Passwort",
       "start": "Schlüssel erzeugen",
       "secret": "Einrichtungsschlüssel (in der Authenticator-App hinzufügen)",

@@ -230,7 +230,8 @@
       "docs": "內部文件",
       "team": "團隊",
       "support": "客服",
-      "subcategories": "子分類"
+      "subcategories": "子分類",
+      "twoFactor": "2FA"
     },
     "login": {
       "title": "團隊登入",
@@ -246,7 +247,7 @@
     },
     "setup": {
       "title": "啟用雙重驗證",
-      "intro": "管理後台需要雙重驗證。請確認密碼以取得設定金鑰。",
+      "intro": "兩步驟驗證為選用，但建議開啟：密碼外洩時仍能保護管理後台。請確認密碼以取得設定金鑰。",
       "password": "密碼",
       "start": "取得金鑰",
       "secret": "設定金鑰（加入驗證器 App）",

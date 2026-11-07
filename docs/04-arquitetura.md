@@ -177,9 +177,9 @@ sequenceDiagram
 | `/[locale]/cadastro`, `/[locale]/entrar` | Página + Server Actions | Público (RN-107): 5 cadastros/h por IP, login 10/10 min por IP e por e-mail (`failClosed`); senha vazada recusada (HIBP) |
 | `/[locale]/conta` | Página + Server Actions | Cliente logado (RN-107 a RN-109): minhas compras, personagens salvos, sair, excluir a conta (pede a senha) |
 | `/[locale]/pedido/[id]?t=` | Página | Dono do pedido: link assinado (HMAC do id com `ORDER_LINK_SECRET`); token errado = "não encontrado". Não mostra o e-mail |
-| `/[locale]/admin/entrar`, `/[locale]/admin/entrar/codigo`, `/[locale]/admin/2fa` | Página + Server Actions | Login da equipe (senha → código TOTP); primeiro acesso ativa o 2FA. Conta inicial: `pnpm admin:create <email>` |
+| `/[locale]/admin/entrar`, `/[locale]/admin/entrar/codigo`, `/[locale]/admin/2fa` | Página + Server Actions | Login da equipe (senha; código TOTP só para quem ativou o 2FA). Ativar o 2FA é opcional, pelo link "2FA" do painel (RN-02, #116). Conta inicial: `pnpm admin:create <email>` |
 | `/[locale]/admin/pedidos`, `/[locale]/admin/pedidos/[id]` | Página + Server Action | Suporte e admin (RN-06): fila "a fazer" (pago, em andamento), iniciar e concluir com prova (RN-52); suporte vê e-mail mascarado e hash curto |
-| `/[locale]/admin/*` | Página | Equipe ativa com 2FA (RN-02); permissão conferida em cada página e action (`requireStaff`), não no layout |
+| `/[locale]/admin/*` | Página | Equipe ativa (2FA opcional — RN-02, #116); permissão conferida em cada página e action (`requireStaff`), não no layout |
 | `/[locale]/admin/categorias`, `/[locale]/admin/produtos`, `/[locale]/admin/promocoes`, `/[locale]/admin/cupons` | Página + Server Actions | Admin com 2FA (RN-70) |
 | `/api/webhooks/crypto`, `/api/webhooks/card` | API | Só assinatura do provedor |
 | `/api/cron/expire-orders`, `/api/cron/refresh-fx`, `/api/cron/purge-access-logs` | API | Segredo do cron |
@@ -188,11 +188,11 @@ sequenceDiagram
 | `/[locale]/reportar?pagina=&erro=` | Página + Server Action | Público (RN-91): 5/h por IP (`failClosed`) + campo-isca; CAPTCHA entra com a decisão do Turnstile. Link no rodapé e na tela de erro |
 | `/[locale]/admin/reportes` | Página + Server Action | Suporte e admin (RN-06); "resolvido" entra na auditoria (RN-07) |
 | Abrir conversa e mandar mensagem | Server Actions (`startChat`, `sendChatMessage`, `staffReply`) | Público com rate limit (RN-92, RN-97: 5 conversas/h por IP, 3 abertas por e-mail, 20 mensagens/min por conversa); CAPTCHA com a decisão do Turnstile (#29) |
-| `/api/support/conversations/[id]/messages?after=` | API (GET) | Dono da conversa (cookie `chat` com token; só o hash no banco) ou equipe com 2FA — retomada pelo último `id` |
+| `/api/support/conversations/[id]/messages?after=` | API (GET) | Dono da conversa (cookie `chat` com token; só o hash no banco) ou equipe ativa — retomada pelo último `id` |
 | `/api/support/conversations/[id]/stream` | API (SSE) | Idem; ping a cada 25 s |
 | `/api/support/stream` | — | *Ainda não: a fila `/admin/suporte` atualiza a cada 15 s* |
-| `/[locale]/admin/suporte` | Página | Suporte e admin com 2FA (fila, conversa, dados do pedido) |
+| `/[locale]/admin/suporte` | Página | Suporte e admin (fila, conversa, dados do pedido) |
 | `/[locale]/admin/equipe` | Página + Server Actions | Só admin (convidar, desativar, papéis, idiomas); horário com #30 |
 | `/[locale]/admin/convite/[token]` | Página + Server Action | Quem tem o link: cria nome e senha (8+ com maiúscula, minúscula e número — #107; recusa senha vazada — HIBP); 2FA no primeiro login |
-| `/[locale]/admin/docs`, `/[locale]/admin/docs/[slug]` | Página | Admin e suporte com 2FA (RN-74); lê `docs/*.md` incluídos no build (`outputFileTracingIncludes`) — sem cópia; visitante e cliente recebem 404; Markdown mostrado como texto (renderizar exige dependência nova) |
-| `/[locale]/admin/bug-reports` | Página | Admin com 2FA |
+| `/[locale]/admin/docs`, `/[locale]/admin/docs/[slug]` | Página | Admin e suporte (RN-74); lê `docs/*.md` incluídos no build (`outputFileTracingIncludes`) — sem cópia; visitante e cliente recebem 404; Markdown mostrado como texto (renderizar exige dependência nova) |
+| `/[locale]/admin/bug-reports` | Página | Admin |

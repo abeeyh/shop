@@ -230,7 +230,8 @@
       "docs": "内部文档",
       "team": "团队",
       "support": "客服",
-      "subcategories": "子分类"
+      "subcategories": "子分类",
+      "twoFactor": "2FA"
     },
     "login": {
       "title": "团队登录",
@@ -246,7 +247,7 @@
     },
     "setup": {
       "title": "启用双重验证",
-      "intro": "管理后台需要双重验证。请确认密码以获取设置密钥。",
+      "intro": "双重验证为可选，但建议开启：密码泄露时仍能保护管理后台。请确认密码以获取设置密钥。",
       "password": "密码",
       "start": "获取密钥",
       "secret": "设置密钥（添加到验证器 App）",

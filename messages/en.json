@@ -230,7 +230,8 @@
       "docs": "Internal docs",
       "team": "Team",
       "support": "Support",
-      "subcategories": "Subcategories"
+      "subcategories": "Subcategories",
+      "twoFactor": "2FA"
     },
     "login": {
       "title": "Staff sign in",
@@ -246,7 +247,7 @@
     },
     "setup": {
       "title": "Turn on two-factor",
-      "intro": "The admin requires two-factor authentication. Confirm your password to get the setup key.",
+      "intro": "Two-factor authentication is optional, and recommended: it protects the panel if your password leaks. Confirm your password to get the setup key.",
       "password": "Password",
       "start": "Get setup key",
       "secret": "Setup key (add it to your authenticator app)",

@@ -42,7 +42,7 @@ test.describe("admin", () => {
     await expect(page.getByText("Invalid email, password or code.")).toBeVisible();
   });
 
-  test("RN-02/RN-19: ativa 2FA, cria categoria e produto que aparecem na vitrine", async ({
+  test("RN-02/RN-19: 2FA opcional (ativa pelo painel), cria categoria e produto que aparecem na vitrine", async ({
     page,
     browser,
     baseURL,
@@ -53,11 +53,13 @@ test.describe("admin", () => {
     const other = await browser.newContext({ baseURL });
     const otherPage = await other.newPage();
     await login(otherPage);
-    await expect(otherPage).toHaveURL(/\/en\/admin\/2fa$/);
+    await expect(otherPage).toHaveURL(/\/en\/admin$/);
 
     await login(page);
-    await expect(page).toHaveURL(/\/en\/admin\/2fa$/); // painel bloqueado até ativar o 2FA
+    await expect(page).toHaveURL(/\/en\/admin$/); // #116: painel abre sem 2FA
     await page.goto("/en/admin/categorias");
+    await expect(page).toHaveURL(/\/en\/admin\/categorias$/);
+    await page.getByRole("link", { name: "2FA" }).click(); // ativar continua possível
     await expect(page).toHaveURL(/\/en\/admin\/2fa$/);
     await page.getByLabel("Password").fill(E2E_ADMIN.password);
     await page.getByRole("button", { name: "Get setup key" }).click();
@@ -248,13 +250,7 @@ test.describe("admin", () => {
     await sp.getByLabel("Email").fill(supportEmail);
     await sp.locator('input[name="password"]:visible').fill(supportPassword);
     await sp.getByRole("button", { name: "Sign in" }).click();
-    await expect(sp).toHaveURL(/\/en\/admin\/2fa$/);
-    await sp.locator('input[name="password"]:visible').fill(supportPassword);
-    await sp.getByRole("button", { name: "Get setup key" }).click();
-    const supportSecret = (await sp.getByTestId("totp-secret").textContent())!.trim();
-    await sp.getByLabel("Code from the app").fill(totp(supportSecret));
-    await sp.getByRole("button", { name: "Turn on and continue" }).click();
-    await expect(sp).toHaveURL(/\/en\/admin$/);
+    await expect(sp).toHaveURL(/\/en\/admin$/); // #116: sem 2FA, entra direto
     await sp.goto("/en/admin/cupons");
     await expect(sp.getByRole("heading", { name: "No access" })).toBeVisible();
     await sp.goto("/en/admin/pedidos");

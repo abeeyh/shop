@@ -15,10 +15,10 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 | ID | Regra |
 |----|-------|
 | RN-01 | Comprar não exige conta: checkout como visitante com e-mail. A conta é opcional (RN-107). *(proposta — confirmar)* |
-| RN-02 | Admin acessa o painel só com 2FA ativo. *(proposta — confirmar)* |
+| RN-02 | **2FA da equipe é opcional** (recomendado): quem ativou digita o código no login; o painel abre sem 2FA. *(alterada em 2026-11-07 — #116, decisão do dono; antes: admin só com 2FA ativo. Risco aceito no doc 09)* |
 | RN-03 | A loja **nunca** pede, recebe ou guarda login/senha de Battle.net do cliente. No MVP todo serviço é *self-play* (o cliente joga junto). *(proposta — confirmar)* |
 | RN-04 | Papéis: `cliente`, `suporte` e `admin`. Contas de **suporte** e **admin** só são criadas por um admin, por convite de e-mail; nunca pelo cadastro público. *(aprovada em 2026-11-06)* |
-| RN-05 | Suporte e admin exigem 2FA (amplia RN-02). Conta de equipe desativada perde o acesso e todas as sessões na hora. *(proposta — confirmar)* |
+| RN-05 | Suporte e admin podem ativar 2FA (RN-02, opcional desde o #116). Conta de equipe desativada perde o acesso e todas as sessões na hora. *(proposta — confirmar)* |
 | RN-06 | **Suporte pode:** atender o chat, ver pedidos (status, itens, personagem/realm, histórico — sem cotação, valor cobrado em cartão nem hash completo da transação), mudar pedido `pago → em_andamento → concluido` com prova de entrega (RN-52) tratar reportes de bug (RN-91) e ler a documentação interna (RN-74). **Não pode:** categorias, produtos, preços, promoções, cupons, reembolsos nem contas de equipe. Admin pode tudo. *(aprovada em 2026-11-06)* |
 | RN-07 | Toda ação de suporte ou admin em pedido, conversa ou reporte entra na auditoria (como RN-71). *(proposta — confirmar)* |
 
@@ -103,7 +103,7 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 
 | ID | Regra |
 |----|-------|
-| RN-70 | O dashboard (2FA — RN-02, RN-05; permissões por papel — RN-06) gerencia: **categorias, produtos, preços, promoções por tempo, cupons**, slots de raid, pedidos, **equipe (contas de suporte/admin)**, **chat de suporte**, horário de atendimento e **documentação interna** (RN-74). *(aprovada em 2026-11-06)* |
+| RN-70 | O dashboard (equipe ativa; 2FA opcional — RN-02, RN-05; permissões por papel — RN-06) gerencia: **categorias, produtos, preços, promoções por tempo, cupons**, slots de raid, pedidos, **equipe (contas de suporte/admin)**, **chat de suporte**, horário de atendimento e **documentação interna** (RN-74). *(aprovada em 2026-11-06)* |
 | RN-74 | **Documentação interna** em `/[locale]/admin/docs`: mostra os arquivos de `docs/` do repositório (fonte única, sem cópia), só para **admin e suporte** (RN-04 a RN-06); cliente e visitante recebem 404. *(aprovada em 2026-11-06)* |
 | RN-71 | Toda criação/alteração de categoria, produto, preço, promoção ou cupom gera registro de auditoria: quem, quando, valor antes e depois. *(proposta — confirmar)* |
 | RN-72 | Categoria, produto ou cupom já usado em pedido não é apagado, só desativado. *(proposta — confirmar)* |
