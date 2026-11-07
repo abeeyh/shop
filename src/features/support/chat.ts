@@ -9,7 +9,8 @@ import { publish } from "@/lib/pubsub";
 import { maskSensitive } from "./mask";
 import { statusAfterCustomerMessage, type ConversationStatus } from "./rules";
 
-export const CHAT_COOKIE = "chat";
+// __Host-: subdomínio não consegue gravar/fixar o cookie (exige secure, path=/ e sem domain)
+export const CHAT_COOKIE = env.NODE_ENV === "production" ? "__Host-chat" : "chat";
 const hash = (t: string) => createHash("sha256").update(t).digest("hex");
 export const channelOf = (conversationId: string) => `chat:${conversationId}`;
 
@@ -154,4 +155,5 @@ export const listQueue = () =>
     })
     .from(supportConversations)
     .where(inArray(supportConversations.status, ["aberta", "em_atendimento"]))
+    .orderBy(asc(supportConversations.createdAt)) // as mais antigas nunca somem da fila
     .limit(200);

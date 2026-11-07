@@ -57,8 +57,10 @@ export async function startChat(_prev: ChatState, form: FormData): Promise<ChatS
 }
 
 // RN-97: 20 mensagens por minuto por conversa
-async function conversationLimited(id: string) {
-  return !(await rateLimit({ key: `chatMsg:${id}`, ...RATE_LIMITS.chatMessage, failClosed: true })).allowed;
+// chave separada por lado: cliente mandando muito não impede o atendente de responder
+async function conversationLimited(id: string, side: "customer" | "staff") {
+  return !(await rateLimit({ key: `chatMsg:${id}:${side}`, ...RATE_LIMITS.chatMessage, failClosed: true }))
+    .allowed;
 }
 
 export async function sendChatMessage(_prev: ChatState, form: FormData): Promise<ChatState> {
@@ -67,7 +69,7 @@ export async function sendChatMessage(_prev: ChatState, form: FormData): Promise
   if (!text.success || !id) return { status: "error" };
   const c = await getConversation(id);
   if (!c || !customerCanReply(c)) return { status: "closed" }; // RN-93: depois de 7 dias, nova conversa
-  if (await conversationLimited(id)) return { status: "limited" };
+  if (await conversationLimited(id, "customer")) return { status: "limited" };
   await addMessage(id, { type: "customer" }, text.data);
   return { status: "ok", id };
 }
@@ -81,7 +83,7 @@ export async function staffReply(_prev: ChatState, form: FormData): Promise<Chat
   const staff = await requireStaff(input.data.locale, ["admin", "suporte"]);
   const c = await getConversation(input.data.id);
   if (!c) return { status: "error" };
-  if (await conversationLimited(c.id)) return { status: "limited" };
+  if (await conversationLimited(c.id, "staff")) return { status: "limited" };
   if (c.status === "aberta") await setConversationStatus(c.id, "em_atendimento", staff.user.id);
   await addMessage(c.id, { type: "staff", id: staff.user.id }, input.data.body);
   return { status: "ok", id: c.id };

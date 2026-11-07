@@ -21,7 +21,13 @@ const listeners = new Map<string, Set<(message: string) => void>>();
 function getSubscriber(): Valkey | null {
   if (subscriber !== undefined) return subscriber;
   subscriber = env.VALKEY_URL ? new Valkey(env.VALKEY_URL, { connectTimeout: 1000 }) : null;
-  subscriber?.on("error", () => undefined);
+  // Valkey fora: o chat perde o tempo real (o cliente busca ao reconectar) — avisa no log, 1×/min
+  let lastLog = 0;
+  subscriber?.on("error", (err: unknown) => {
+    if (Date.now() - lastLog < 60_000) return;
+    lastLog = Date.now();
+    logger.warn({ event: "pubsub.subscriber_error", ...errorSummary(err) }, "assinatura do chat com erro");
+  });
   subscriber?.on("message", (channel: string, message: string) => {
     listeners.get(channel)?.forEach((fn) => fn(message));
   });

@@ -1,7 +1,7 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 
 // RN-95: número de cartão (Luhn) e frase-semente de carteira são mascarados ANTES de gravar
-// (docs/09 "Nunca": a loja não guarda dado de cartão nem chave de carteira).
+// (docs/09 "Nunca": a loja não guarda dado de cartão nem chave de carteira). Na dúvida, mascara.
 
 function luhn(digits: string): boolean {
   let sum = 0;
@@ -16,10 +16,20 @@ function luhn(digits: string): boolean {
   return sum % 10 === 0;
 }
 
-// 13–19 dígitos, com espaço ou hífen entre os grupos
-const CARD = /\b(?:\d[ -]?){12,18}\d\b/g;
-// 12 a 24 palavras minúsculas seguidas (formato de frase BIP-39)
-const SEED = /\b(?:[a-z]{3,8}\s+){11,23}[a-z]{3,8}\b/g;
+// algum trecho de 13–19 dígitos seguidos (sem separadores) passa no Luhn?
+function hasCard(digits: string): boolean {
+  for (let len = 13; len <= 19; len++)
+    for (let i = 0; i + len <= digits.length; i++) if (luhn(digits.slice(i, i + len))) return true;
+  return false;
+}
+
+// sequência de dígitos com separadores comuns (espaço, ponto, hífen, barra), colada ou não em letras.
+// Pega junto validade e CVV ("4111 1111 1111 1111 12/27 123") — tudo some.
+const DIGIT_RUN = /(?<!\d)\d(?:[ .\-/]*\d){12,}(?!\d)/g;
+// 12 a 24 palavras (maiúsculas, vírgulas, numeração "1." / "1)") — formato de frase BIP-39.
+// shortcut: comparar com a lista BIP-39 reduziria falso positivo; hoje mascara qualquer sequência assim
+const WORD = String.raw`(?:\d{1,2}[.)]\s*)?[a-z]{3,8}`;
+const SEED = new RegExp(String.raw`\b${WORD}(?:[\s,;.]+${WORD}){11,23}\b`, "gi");
 
 export const CARD_MASK = "[cartão removido]";
 export const SEED_MASK = "[frase-semente removida]";
@@ -27,9 +37,8 @@ export const SEED_MASK = "[frase-semente removida]";
 export function maskSensitive(text: string): { text: string; masked: boolean } {
   let masked = false;
   const out = text
-    .replace(CARD, (m) => {
-      const digits = m.replace(/\D/g, "");
-      if (digits.length < 13 || !luhn(digits)) return m;
+    .replace(DIGIT_RUN, (m) => {
+      if (!hasCard(m.replace(/\D/g, ""))) return m;
       masked = true;
       return CARD_MASK;
     })
