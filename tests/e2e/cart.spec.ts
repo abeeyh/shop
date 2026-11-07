@@ -40,24 +40,31 @@ test.describe("carrinho", () => {
   test("RN-11/RN-16: horário esgotado fica desabilitado; raid com horário vai para o carrinho", async ({
     page,
   }) => {
-    await page.goto("/en/wow/raids/venomous-abyss-saved-normal");
+    await page.goto("/en/wow/raids/venomous-abyss-normal");
     const slots = page.locator('input[name="slotId"]');
     await expect(slots.first()).toBeDisabled(); // o primeiro horário do seed está cheio
     await expect(slots.nth(1)).toBeChecked();
-    await expect(page.locator("output")).toContainText("6.30"); // 140k gold = 6,30 USDT (#94)
+    await expect(page.locator("output")).toContainText("2.93"); // 1ª opção: Last boss, 65k gold (#100)
+    await page.getByText("8/8 Saved", { exact: true }).click(); // a opção muda o preço: 140k = 6,30
+    await expect(page.locator("output")).toContainText("6.30");
     await page.getByLabel("Realm").fill("Area 52");
     await page.getByLabel("Character name").fill("Thrall");
     await page.getByRole("button", { name: "Add to cart" }).click();
     // sob carga (suíte inteira em paralelo) a action passa de 5 s
     await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible({ timeout: 15_000 });
     await page.goto("/en/carrinho");
-    await expect(page.getByText("Area 52 · Alliance · Thrall")).toBeVisible();
+    await expect(page.getByText("Area 52 · Alliance · Thrall · 8/8 Saved")).toBeVisible();
   });
 
   test("RN-17 (#94): adicional Armor Stack +25% muda o preço; remover esvazia o carrinho", async ({
     page,
   }) => {
-    await page.goto("/en/wow/mythic-plus/mythic-plus-10");
+    await page.goto("/en/wow/mythic-plus/mythic-plus-key");
+    await expect(page.locator("output")).toContainText("3.15"); // +6 (1º nível do slider)
+    // #100: o slider anda pelo teclado (4 passos: +6 → +10)
+    const level = page.getByRole("slider", { name: "Key level" });
+    await level.focus();
+    for (let i = 0; i < 4; i++) await level.press("ArrowRight");
     await expect(page.locator("output")).toContainText("4.95");
     await page.getByLabel("Armor Stack (+25%)").check();
     await expect(page.locator("output")).toContainText("6.19"); // 4,95 × 1,25 = 6,1875
@@ -79,11 +86,13 @@ test.describe("carrinho", () => {
   }) => {
     await page.goto("/en/wow/pvp");
     await expect(page.getByText("Price on request").first()).toBeVisible();
-    await page.goto("/en/wow/pvp/pvp-2v2-0-1600");
+    // #100: o cliente escolhe a combinação e o pedido de orçamento vai com ela
+    await page.goto("/en/wow/pvp/arena-rating");
     await expect(page.getByRole("button", { name: "Add to cart" })).toHaveCount(0);
+    await page.getByText("3v3", { exact: true }).click();
     await page.getByRole("button", { name: "Ask for price" }).click();
     await expect(page.getByRole("textbox", { name: "How can we help?" })).toHaveValue(
-      "Hi! I'd like a quote for: PVP 2V2 0-1600",
+      "Hi! I'd like a quote for: Arena Rating (3v3 · Up to 1600)",
     );
   });
 });

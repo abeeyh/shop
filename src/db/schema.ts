@@ -82,6 +82,9 @@ export const subcategories = pgTable(
 
 // Adicional em % sobre o preço do produto, escolhido pelo cliente (RN-17, ex.: Armor Stack +25%)
 export type ProductAddon = { name: string; percent: number };
+// #100: eixo de opção do produto (ex.: Bosses 2/8…8/8 em slider; Group size em caixas). A combinação
+// escolhida aponta para uma variante com preço próprio (RN-17).
+export type OptionAxis = { name: string; values: string[]; style: "slider" | "boxes" };
 
 export const products = pgTable(
   "products",
@@ -105,6 +108,7 @@ export const products = pgTable(
     hot: boolean("hot").notNull().default(false), // destaque "popular" (vem primeiro)
     sortOrder: integer("sort_order").notNull().default(0),
     externalId: integer("external_id").unique(), // id no sistema de origem (importação idempotente)
+    optionAxes: jsonb("option_axes").$type<OptionAxis[]>().notNull().default([]), // #100: vazio = sem variantes
     active: boolean("active").notNull().default(true),
     salesCount: integer("sales_count").notNull().default(0),
     ...timestamps,
@@ -116,6 +120,30 @@ export const products = pgTable(
     index("products_description_trgm_idx").using("gin", t.description.op("gin_trgm_ops")),
     check("products_price_positive", sql`${t.priceUsdtCents} > 0`),
     check("products_max_quantity", sql`${t.maxQuantity} between 1 and 100`),
+  ],
+);
+
+// #100: variante = uma combinação dos eixos do produto, com preço próprio. Com variantes, o preço do
+// produto é só o "a partir de" (menor preço ativo), mantido pelo admin/importação.
+export const productVariants = pgTable(
+  "product_variants",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    options: jsonb("options").$type<Record<string, string>>().notNull(), // eixo → valor
+    priceUsdtCents: integer("price_usdt_cents").notNull(), // RN-12
+    priceOnRequest: boolean("price_on_request").notNull().default(false), // RN-106
+    note: text("note").notNull().default(""), // ex.: "3-4 items drop"
+    sortOrder: integer("sort_order").notNull().default(0),
+    externalId: integer("external_id").unique(),
+    active: boolean("active").notNull().default(true),
+    ...timestamps,
+  },
+  (t) => [
+    uniqueIndex("product_variants_product_options_idx").on(t.productId, t.options),
+    check("product_variants_price_positive", sql`${t.priceUsdtCents} > 0`),
   ],
 );
 
@@ -160,6 +188,8 @@ export const cartItems = pgTable(
       .notNull()
       .references(() => products.id),
     raidSlotId: uuid("raid_slot_id").references(() => raidSlots.id),
+    // #100: variante escolhida; removida pelo admin → null e o item fica indisponível
+    variantId: uuid("variant_id").references(() => productVariants.id, { onDelete: "set null" }),
     quantity: integer("quantity").notNull(), // gold: milhares; M+: runs; raid: 1
     options: jsonb("options").notNull().default({}), // validado por tipo (features/cart/schemas.ts)
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -220,6 +250,7 @@ export const orderItems = pgTable(
       .notNull()
       .references(() => products.id),
     raidSlotId: uuid("raid_slot_id").references(() => raidSlots.id),
+    variantId: uuid("variant_id").references(() => productVariants.id, { onDelete: "set null" }), // #100
     productName: text("product_name").notNull(), // cópia: o admin pode renomear depois
     options: jsonb("options").notNull(), // realm/facção/personagem, loot, nível… (RN-15 a RN-17)
     unitPriceUsdtCents: integer("unit_price_usdt_cents").notNull(), // preço original (RN-29)

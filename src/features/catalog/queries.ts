@@ -1,7 +1,7 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { and, asc, desc, eq, or, isNull } from "drizzle-orm";
 import { db } from "@/db";
-import { categories, products, subcategories } from "@/db/schema";
+import { categories, products, productVariants, subcategories } from "@/db/schema";
 
 const productColumns = {
   id: products.id,
@@ -19,6 +19,7 @@ const productColumns = {
   maxQuantity: products.maxQuantity,
   priceOnRequest: products.priceOnRequest, // RN-106
   hot: products.hot,
+  optionAxes: products.optionAxes, // #100: com eixos, o preço do produto é o "a partir de"
   subcategoryName: subcategories.name,
 };
 
@@ -85,4 +86,19 @@ export async function getProduct(slug: string) {
       ),
     );
   return row ?? null;
+}
+
+// #100: combinações ativas do produto, na ordem dos eixos (sob consulta aparece, mas não vai ao carrinho)
+export async function listVariants(productId: string) {
+  return db
+    .select({
+      id: productVariants.id,
+      options: productVariants.options,
+      priceUsdtCents: productVariants.priceUsdtCents,
+      priceOnRequest: productVariants.priceOnRequest,
+      note: productVariants.note,
+    })
+    .from(productVariants)
+    .where(and(eq(productVariants.productId, productId), eq(productVariants.active, true)))
+    .orderBy(asc(productVariants.sortOrder));
 }

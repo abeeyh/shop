@@ -25,6 +25,7 @@
   },
   "Catalog": {
     "perK": "每 1,000 金币",
+    "from": "起",
     "estimateNote": "本地货币估算：API 尚未实现。按 USDT 收费。",
     "selfPlay": "本人上线：你使用自己的角色游戏。我们绝不索要你的 Battle.net 密码。",
     "empty": "暂无商品。",
@@ -110,6 +111,7 @@
       "product": "该商品已无法购买。",
       "faction": "请选择阵营。",
       "addon": "只能选择列出的附加项。",
+      "variant": "此选项已无法选择，请改选其他。",
       "quantityService": "请选择 1 到 {max} 之间的数量。"
     },
     "promoEnds": "促销剩余时间",
@@ -265,6 +267,8 @@
       "noSubcategory": "— 无 —",
       "priceOnRequest": "价格面议（不显示价格，打开聊天）",
       "addons": "附加项（每行一个：名称 | %）",
+      "optionAxes": "选项（每行一个：名称 | slider 或 boxes | 值, 值…）",
+      "variants": "组合（每行一个：选项=值; 选项=值 | 价格或 - | 备注）",
       "maxQuantity": "每单最大数量",
       "hot": "热门（突出显示）"
     },
@@ -318,6 +322,8 @@
       "minOrder": "USDT 最低金额最多 2 位小数。",
       "subcategoryId": "请选择同一分类下的子分类。",
       "addons": "每行一个附加项，格式为“名称 | 25”（1–100%，名称不重复，最多 10 个）。",
+      "optionAxes": "最多 4 个选项，格式为“Bosses | slider | 2/8, 3/8”（名称和值不可重复，最多 30 个值）。",
+      "variants": "每个组合需为每个选项填一个已列出的值、价格（或 - 表示询价），且不可重复。没有选项时请留空。",
       "maxQuantity": "请填写 1 到 100。"
     },
     "discount": {

@@ -7,6 +7,7 @@ import {
   couponRedemptions,
   coupons,
   products,
+  productVariants,
   promotions,
   subcategories,
   users,
@@ -49,6 +50,12 @@ export async function listAllProducts() {
       priceUsdtCents: products.priceUsdtCents,
       subcategoryId: products.subcategoryId,
       addons: products.addons,
+      optionAxes: products.optionAxes, // #100
+      variants: sql<
+        { options: Record<string, string>; priceUsdtCents: number; priceOnRequest: boolean; note: string }[]
+      >`coalesce((select json_agg(json_build_object('options', v.options, 'priceUsdtCents', v.price_usdt_cents,
+        'priceOnRequest', v.price_on_request, 'note', v.note) order by v.sort_order)
+        from ${productVariants} v where v.product_id = ${products.id} and v.active), '[]'::json)`,
       maxQuantity: products.maxQuantity,
       priceOnRequest: products.priceOnRequest,
       hot: products.hot,
@@ -165,25 +172,70 @@ export const saveSubcategoryRow = (staffId: string, id: string | null, v: Subcat
     },
   );
 
+type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
+
+// #100: a auditoria mostra as variantes junto do produto (o que o cliente paga mudou)
+async function productSnapshot(tx: Tx, key: string) {
+  const [p] = await tx.select().from(products).where(eq(products.id, key));
+  if (!p) return undefined;
+  const variants = await tx
+    .select({
+      options: productVariants.options,
+      price: productVariants.priceUsdtCents,
+      onRequest: productVariants.priceOnRequest,
+      note: productVariants.note,
+    })
+    .from(productVariants)
+    .where(and(eq(productVariants.productId, key), eq(productVariants.active, true)))
+    .orderBy(asc(productVariants.sortOrder));
+  return { ...p, variants };
+}
+
+// #100: grava as combinações pela chave (produto, opções); as que saíram da lista são desativadas — não
+// apagadas, porque carrinhos e pedidos podem apontar para elas
+async function syncVariants(tx: Tx, productId: string, list: ProductInput["variants"]) {
+  for (const v of list) {
+    const row = { ...v, productId, active: true };
+    await tx
+      .insert(productVariants)
+      .values(row)
+      .onConflictDoUpdate({
+        target: [productVariants.productId, productVariants.options],
+        set: { ...row, updatedAt: new Date() },
+      });
+  }
+  const keep = list.map((v) => JSON.stringify(v.options));
+  await tx
+    .update(productVariants)
+    .set({ active: false, updatedAt: new Date() })
+    .where(
+      and(
+        eq(productVariants.productId, productId),
+        // jsonb compara sem depender da ordem das chaves
+        keep.length
+          ? sql`${productVariants.options} not in (${sql.join(
+              keep.map((k) => sql`${k}::jsonb`),
+              sql`, `,
+            )})`
+          : undefined,
+      ),
+    );
+}
+
 export const saveProductRow = (staffId: string, id: string | null, v: ProductInput, unit: string | null) => {
-  const { price, ...rest } = v;
+  const { price, variants, ...rest } = v;
   const row = { ...rest, priceUsdtCents: price, unit };
-  return saveAudited(
-    "product",
-    staffId,
-    id,
-    async (tx, key) => (await tx.select().from(products).where(eq(products.id, key)))[0],
-    async (tx) => {
-      const [r] = id
-        ? await tx
-            .update(products)
-            .set({ ...row, updatedAt: new Date() })
-            .where(eq(products.id, id))
-            .returning({ id: products.id })
-        : await tx.insert(products).values(row).returning({ id: products.id });
-      return r?.id;
-    },
-  );
+  return saveAudited("product", staffId, id, productSnapshot, async (tx) => {
+    const [r] = id
+      ? await tx
+          .update(products)
+          .set({ ...row, updatedAt: new Date() })
+          .where(eq(products.id, id))
+          .returning({ id: products.id })
+      : await tx.insert(products).values(row).returning({ id: products.id });
+    if (r) await syncVariants(tx, r.id, variants);
+    return r?.id;
+  });
 };
 
 export const savePromotionRow = (staffId: string, id: string | null, v: PromotionInput) =>

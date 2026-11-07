@@ -79,3 +79,42 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* #100: slider do seletor de variantes (bosses, nível, tier, rating) — só tokens */
+.variant-range {
+  appearance: none;
+  height: 2.75rem; /* alvo de toque ≥ 44px */
+  background: transparent;
+  cursor: pointer;
+}
+.variant-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--gradient-from), var(--gradient-to));
+}
+.variant-range::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--gradient-from), var(--gradient-to));
+}
+.variant-range::-webkit-slider-thumb {
+  appearance: none;
+  margin-top: -9px;
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  background: var(--heading);
+  border: 3px solid var(--primary);
+}
+.variant-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: var(--heading);
+  border: 3px solid var(--primary);
+}
+.variant-range:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 9999px;
+}

@@ -20,8 +20,8 @@ test("RN-100: busca do cabeçalho tolera erro de digitação e ordena por relev�
   await expect(page.getByRole("status")).toContainText("for “mithic”");
   const found = await titles(page);
   expect(found.length).toBeGreaterThan(0);
-  // nome parecido vem primeiro; depois o resto da categoria Mythic+ (KSH, bundles…) pelo nome da categoria
-  expect(found.slice(0, 5).every((t) => /Mythic/.test(t))).toBe(true);
+  // nome parecido vem primeiro (#100: os níveis viraram um produto só, "Mythic+ Key")
+  expect(found[0]).toMatch(/Mythic/);
 });
 
 test("RN-100: termo de 1 caractere pede 2", async ({ page }) => {

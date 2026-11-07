@@ -49,26 +49,35 @@ const slotOk = (r: Row) =>
   r.slotStartsAt === null ||
   isBookable({ startsAt: r.slotStartsAt, capacity: r.slotCapacity ?? 0, reserved: r.slotReserved ?? 0 });
 
+// item com opções antigas (antes do #94) ou produto que virou "sob consulta" não pode seguir ao checkout
+const isCurrent = (r: Row) =>
+  !r.priceOnRequest &&
+  itemStillValid(r.options, r.quantity, {
+    isGold: r.categoryKind === "gold",
+    addons: r.addons,
+    maxQuantity: r.maxQuantity,
+    hasSlots: r.hasSlots,
+    slotId: r.slotId,
+    hasVariants: r.hasVariants,
+    variantChosen: r.variantId !== null,
+    variantOk: r.variantOk,
+  });
+
+// #100: com variantes, o preço é o da combinação; o do produto é só o "a partir de"
+const basePrice = (r: Row) =>
+  r.hasVariants && r.variantPriceCents !== null ? r.variantPriceCents : r.basePriceCents;
+
 function priceLine(r: Row, promos: Promotion[], now: Date) {
-  // item com opções antigas (antes do #94) ou produto que virou "sob consulta" não pode seguir ao checkout
-  const current =
-    !r.priceOnRequest &&
-    itemStillValid(r.options, r.quantity, {
-      isGold: r.categoryKind === "gold",
-      addons: r.addons,
-      maxQuantity: r.maxQuantity,
-      hasSlots: r.hasSlots,
-      slotId: r.slotId,
-    });
-  const unitCents = current
-    ? unitPriceCents(r.basePriceCents, r.options as ItemOptions, r.addons)
-    : r.basePriceCents;
+  const current = isCurrent(r);
+  const base = basePrice(r);
+  const unitCents = current ? unitPriceCents(base, r.options as ItemOptions, r.addons) : base;
   const best = bestPromotion({ productId: r.productId, categoryId: r.categoryId, unitCents }, promos, now);
   return {
     id: r.id,
     productId: r.productId,
     categoryId: r.categoryId,
     slotId: r.slotId,
+    variantId: r.variantId,
     unitCents,
     quantity: r.quantity,
     promotionId: best?.promotion.id ?? null,

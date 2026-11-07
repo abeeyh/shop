@@ -27,6 +27,7 @@ describe.skipIf(!process.env.DATABASE_URL)("reserva de vaga (RN-34)", () => {
       {
         productId,
         raidSlotId,
+        variantId: null,
         productName: "t",
         options: {},
         unitPriceUsdtCents: 100,
@@ -46,7 +47,7 @@ describe.skipIf(!process.env.DATABASE_URL)("reserva de vaga (RN-34)", () => {
     const [p] = await db
       .select({ id: s.products.id })
       .from(s.products)
-      .where(eq(s.products.slug, "venomous-abyss-8-8-saved-heroic")); // do seed (já tem horários — #94)
+      .where(eq(s.products.slug, "venomous-abyss-heroic")); // do seed (já tem horários — #94/#100)
     productId = p!.id;
     const [slot] = await db
       .insert(s.raidSlots)

@@ -64,6 +64,18 @@ describe("validação do item do carrinho (RN-15 a RN-17)", () => {
     expect(parseItem("raid", { ...who, slotId }, rules)).toMatchObject({ ok: false, fields: ["slotId"] });
   });
 
+  it("#100: produto com variantes exige o id da variante; sem variantes, não aceita um", () => {
+    const variant = "1f0e2d3c-4b5a-4697-8877-665544332211";
+    const withVariants = { ...rules, hasVariants: true };
+    expect(parseItem("raid", { ...who, variant }, withVariants)).toMatchObject({
+      ok: true,
+      item: { variantId: variant },
+    });
+    expect(parseItem("raid", { ...who }, withVariants)).toMatchObject({ ok: false, fields: ["variant"] });
+    expect(parseItem("raid", { ...who, variant: "x" }, withVariants)).toMatchObject({ ok: false });
+    expect(parseItem("raid", { ...who, variant }, rules)).toMatchObject({ ok: false, fields: ["variant"] });
+  });
+
   it("RN-20: preço enviado pelo cliente é ignorado (não faz parte do schema)", () => {
     const r = parseItem("dungeon", { ...who, price: "1", priceUsdtCents: "1" }, rules);
     expect(r.ok && "price" in r.item).toBe(false);

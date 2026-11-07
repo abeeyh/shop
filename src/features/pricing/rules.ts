@@ -10,7 +10,16 @@ export type Addon = { name: string; percent: number }; // RN-17: adicional cadas
 export type ItemOptions =
   | { kind: "gold"; realm: string; faction: Faction; character: string }
   // RN-17 (#94): serviço com preço fixo; o cliente escolhe adicionais pelo nome (o % vem do banco)
-  | { kind: "service"; realm: string; faction: Faction; character: string; addons: string[] };
+  // #100: `variant` = valores da combinação escolhida na ordem dos eixos (cópia para exibir — o jsonb
+  // reordena chaves de objeto); o preço vem da variante no banco
+  | {
+      kind: "service";
+      realm: string;
+      faction: Faction;
+      character: string;
+      addons: string[];
+      variant?: string[];
+    };
 
 // Preço unitário em centavos de USDT (RN-12: inteiro; arredonda para o centavo mais próximo).
 // `quantity` multiplica fora: gold = milhares; serviço = unidades (ex.: tiers de delve).
@@ -36,8 +45,14 @@ export function itemStillValid(
     maxQuantity: number;
     hasSlots: boolean;
     slotId: string | null;
+    hasVariants: boolean; // #100: produto com eixos exige uma variante ativa, com preço, deste produto
+    variantChosen: boolean; // o item aponta para uma variante
+    variantOk: boolean;
   },
 ): boolean {
+  // produto sem eixos com item de variante (admin tirou os eixos): o rótulo "8/8" não vale o preço base
+  if (product.hasVariants !== product.variantChosen) return false;
+  if (product.hasVariants && !product.variantOk) return false;
   if (!isCurrentOptions(options) || (options.kind === "gold") !== product.isGold) return false;
   if (options.kind === "gold") return true;
   const names = product.addons.map((a) => a.name);

@@ -25,6 +25,7 @@
   },
   "Catalog": {
     "perK": "pro 1.000 Gold",
+    "from": "ab",
     "estimateNote": "Schätzung in deiner Währung: API noch nicht implementiert. Abrechnung in USDT.",
     "selfPlay": "Self-Play: Du spielst deinen eigenen Charakter. Wir fragen nie nach deinem Battle.net-Passwort.",
     "empty": "Noch keine Produkte.",
@@ -110,6 +111,7 @@
       "product": "Dieses Produkt ist nicht mehr verfügbar.",
       "faction": "Wähle eine Fraktion.",
       "addon": "Wähle nur die angebotenen Extras.",
+      "variant": "Diese Option ist nicht mehr verfügbar. Wähle eine andere.",
       "quantityService": "Wähle eine Anzahl von 1 bis {max}."
     },
     "promoEnds": "Aktion endet in",
@@ -265,6 +267,8 @@
       "noSubcategory": "— keine —",
       "priceOnRequest": "Preis auf Anfrage (ohne Preis, öffnet den Chat)",
       "addons": "Extras (eins pro Zeile: Name | %)",
+      "optionAxes": "Optionen (eine pro Zeile: Name | slider oder boxes | Wert, Wert…)",
+      "variants": "Kombinationen (eine pro Zeile: Achse=Wert; Achse=Wert | Preis oder - | Notiz)",
       "maxQuantity": "Max. Anzahl pro Bestellung",
       "hot": "Beliebt (hervorgehoben)"
     },
@@ -318,6 +322,8 @@
       "minOrder": "Mindestwert in USDT mit höchstens 2 Nachkommastellen.",
       "subcategoryId": "Wähle eine Unterkategorie derselben Kategorie.",
       "addons": "Ein Extra pro Zeile als „Name | 25“ (1–100 %, keine Doppelten, max. 10).",
+      "optionAxes": "Bis zu 4 Optionen im Format „Bosses | slider | 2/8, 3/8“ (eindeutige Namen und Werte, max. 30 Werte).",
+      "variants": "Jede Kombination braucht einen gelisteten Wert pro Option, einen Preis (oder - für auf Anfrage) und darf sich nicht wiederholen. Ohne Optionen leer lassen.",
       "maxQuantity": "Nutze 1 bis 100."
     },
     "discount": {

@@ -93,8 +93,8 @@ const slotTimes = (hourUtc) => {
   return [0, 1, 2, 3].map((d) => new Date(base.getTime() + d * DAY));
 };
 const SCHEDULED = [
-  { externalId: 397, soldOutFirst: false }, // Venomous Abyss 8/8 SAVED HEROIC
-  { externalId: 395, soldOutFirst: true }, // Venomous Abyss SAVED NORMAL
+  { externalId: 397, soldOutFirst: false }, // Venomous Abyss (Heroic) — produto do grupo (#100)
+  { externalId: 395, soldOutFirst: true }, // Venomous Abyss (Normal)
 ];
 let slots = 0;
 for (const { externalId, soldOutFirst } of SCHEDULED) {

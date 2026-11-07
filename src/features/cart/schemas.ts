@@ -24,10 +24,15 @@ const gold = z.object({
     .refine((n) => n % PRICING.gold.stepK === 0),
 });
 
-export type ParsedItem = { options: ItemOptions; quantity: number; slotId?: string };
+export type ParsedItem = { options: ItemOptions; quantity: number; slotId?: string; variantId?: string };
 export type ParseResult = { ok: true; item: ParsedItem } | { ok: false; fields: string[] };
 // o que o servidor sabe do produto (banco) — nunca vem do cliente (docs/09: entrada não confiável)
-export type ProductRules = { addons: { name: string }[]; maxQuantity: number; hasSlots: boolean };
+export type ProductRules = {
+  addons: { name: string }[];
+  maxQuantity: number;
+  hasSlots: boolean;
+  hasVariants?: boolean; // #100: a combinação escolhida chega como id da variante (conferida no banco)
+};
 
 const fail = (e: z.ZodError): ParseResult => ({ ok: false, fields: e.issues.map((i) => String(i.path[0])) });
 
@@ -43,6 +48,7 @@ function service(rules: ProductRules) {
       .max(names.length)
       .default([]),
     slotId: rules.hasSlots ? z.uuid() : z.literal("").optional(),
+    variant: rules.hasVariants ? z.uuid() : z.literal("").optional(),
   });
 }
 
@@ -59,7 +65,7 @@ export function parseItem(
   }
   const r = service(rules).safeParse(raw);
   if (!r.success) return fail(r.error);
-  const { quantity, addon, slotId, realm, faction, character: name } = r.data;
+  const { quantity, addon, slotId, variant, realm, faction, character: name } = r.data;
   const options: ItemOptions = {
     kind: "service",
     realm,
@@ -67,5 +73,8 @@ export function parseItem(
     character: name,
     addons: [...new Set(addon)],
   };
-  return { ok: true, item: { options, quantity, ...(slotId ? { slotId } : {}) } };
+  return {
+    ok: true,
+    item: { options, quantity, ...(slotId ? { slotId } : {}), ...(variant ? { variantId: variant } : {}) },
+  };
 }
