@@ -28,8 +28,38 @@ test("RN-100: termo de 1 caractere pede 2", async ({ page }) => {
   await expect(page.getByText("Digite pelo menos 2 caracteres.")).toBeVisible();
 });
 
-test("RN-101/RN-103: filtro de categoria vai para a URL, vira chip e o chip remove", async ({ page }) => {
+// #90: painel de filtros recolhível — fechado no celular, aberto no desktop
+const filters = (page: import("@playwright/test").Page) => page.locator("details", { hasText: "Filters" });
+// desktop abre sozinho depois de hidratar; no celular é preciso tocar no botão
+async function openFilters(page: import("@playwright/test").Page, isMobile: boolean) {
+  const panel = filters(page);
+  if (isMobile) await panel.locator("summary").click();
+  await expect(panel).toHaveAttribute("open", "");
+}
+
+test("#90: filtros começam recolhidos no celular e abertos no desktop; o botão alterna", async ({
+  page,
+  isMobile,
+}) => {
+  await page.goto("/en/produtos?region=all&promo=1");
+  await results(page);
+  const panel = filters(page);
+  const gold = page.getByRole("checkbox", { name: "Gold", exact: true });
+  await expect(panel.locator("summary")).toContainText("1"); // 1 filtro ativo, visível mesmo recolhido
+  if (isMobile) await expect(gold).toBeHidden();
+  else await expect(panel).toHaveAttribute("open", ""); // só clica depois que o desktop abriu
+  await panel.locator("summary").click();
+  if (isMobile) await expect(gold).toBeVisible();
+  else await expect(gold).toBeHidden();
+});
+
+test("RN-101/RN-103: filtro de categoria vai para a URL, vira chip e o chip remove", async ({
+  page,
+  isMobile,
+}) => {
   await page.goto("/en/produtos?region=all");
+  await results(page);
+  await openFilters(page, isMobile);
   await page.getByRole("checkbox", { name: "Gold", exact: true }).check();
   await expect(page).toHaveURL(/cat=gold/);
   expect((await titles(page)).every((t) => t.startsWith("Gold"))).toBe(true);

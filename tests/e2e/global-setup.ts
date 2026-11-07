@@ -30,19 +30,12 @@ export default async function globalSetup() {
   await sql`delete from support_hours`; // banco local: começa sem horário (chat sempre aberto)
   await sql`delete from users where email like 'e2e-support-%@shop.test'`;
   await sql.end();
-  // tentativas de login das rodadas anteriores (rate limit de login — docs/09 §2)
+  // contadores de rate limit das rodadas anteriores (docs/09 §2)
   const valkeyUrl = process.env.VALKEY_URL;
   if (valkeyUrl && isLocal(valkeyUrl)) {
     const valkey = new Valkey(valkeyUrl);
-    const keys = [
-      ...(await valkey.keys("rl:login:*")),
-      ...(await valkey.keys("rl:totp:*")),
-      ...(await valkey.keys("rl:checkout:*")),
-      ...(await valkey.keys("rl:coupon:*")),
-      ...(await valkey.keys("rl:report:*")),
-      ...(await valkey.keys("rl:chatStart:*")),
-      ...(await valkey.keys("rl:sse:*")),
-    ];
+    // todos os contadores de rate limit (login, busca, checkout, chat…): Valkey local, já conferido acima
+    const keys = await valkey.keys("rl:*");
     if (keys.length) await valkey.del(...keys);
     valkey.disconnect();
   }

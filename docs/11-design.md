@@ -150,7 +150,7 @@ Se o componente **conhece o domínio**, fica na feature; se é genérico, em `sr
 |-------|-----------|-------|
 | Átomo | `Button` (variantes `primary`, `gradient-outline`, `ghost`, `destructive`), `IconButton`, `Input`, `Label`, `Avatar`, `Badge`, `Switch`, `Tooltip`, `Separator`, `Skeleton`, `Spinner` | `components/atoms` |
 | Molécula | `FormField`, `PasswordField`, `CopyField`, `Toast`, `LocaleSwitcher`, `TimezoneSwitcher`, `RegionSwitcher`, `PriceTag` (USDT + estimativa; preço original riscado em promoção) | `components/molecules` |
-| Molécula | `Pagination` (página na URL), `LoadingRegion` + `CardGridSkeleton` / `TableSkeleton` / `TitleSkeleton` (esqueletos com a forma do conteúdo, `role="status"` com texto para leitor de tela; `Skeleton` sem animação com `prefers-reduced-motion`) | `components/molecules` |
+| Molécula | `Collapsible` (expandir/recolher com `<details>`; aberto a partir de `lg`), `Pagination` (página na URL), `LoadingRegion` + `CardGridSkeleton` / `TableSkeleton` / `TitleSkeleton` (esqueletos com a forma do conteúdo, `role="status"` com texto para leitor de tela; `Skeleton` sem animação com `prefers-reduced-motion`) | `components/molecules` |
 | Molécula | `SearchField` (busca no cabeçalho, `role="search"`), `FilterChip` (filtro ativo removível), `SectionHeading` (título + link "ver todos"), `FilterTabs`, `Countdown`, `GradientCard` (moldura com gradiente) | `components/molecules` |
 | Organismo | `Header` (menu + seletores de região/idioma/fuso + carrinho + conta), `Footer` (4 colunas + newsletter), `Carousel` (CSS scroll-snap, sem biblioteca) | `components/organisms` |
 | Template | `MarketingTemplate`, `AuthTemplate`, `AppTemplate` | `components/templates` |
@@ -210,6 +210,8 @@ Garantia: revisão de PR, agente `frontend-ui` e checagem no CI de classes visua
 - Layout fluido (`flex-wrap`, grid com `minmax`, `max-width`); nada de largura fixa em containers.
 - Margens laterais de 16–20 px no celular; alvos de toque ≥ 44 px; nada depende de *hover*.
 - E2E em dois tamanhos: 390×844 e 1440×900.
+- Painéis secundários (ex.: filtros da busca) usam `Collapsible` (`<details>` nativo): **recolhido no celular**, para os resultados virem primeiro, e aberto no desktop; o botão mostra quantos filtros estão ativos (#90).
+- E2E confere que as páginas principais não têm rolagem horizontal em 360 px.
 
 ## 8. Estilo visual
 
