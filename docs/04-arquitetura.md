@@ -155,7 +155,7 @@ sequenceDiagram
 - `access_logs` (occurred_at, ip, port?, user_id?, session_id?, method, route, request_id) — log de acesso legal, 6 meses ([16 §9](16-observabilidade.md#9-log-de-acesso-obrigação-legal))
 - `staff_profiles` (user_id, role `suporte|admin`, languages text[], active, invited_by, created_at) — RN-04 a RN-06; clientes não têm linha aqui. Desativar apaga as sessões na hora (RN-05)
 - `staff_invites` (id, email, role, languages, token_hash (sha-256), expires_at (7 dias), used_at, invited_by) — RN-04: o link do convite é mostrado uma vez ao admin (e-mail entra com o provedor)
-- `support_hours` (weekday, starts_at_utc, ends_at_utc) — RN-99
+- `support_hours` (weekday 0=domingo, start_min, end_min — minutos UTC; fim < início atravessa a meia-noite) — RN-99; sem linhas = sempre aberto; editado em `/admin/equipe` com auditoria
 - `support_conversations` (id, user_id?, guest_email?, guest_name?, order_id?, locale, status `aberta|em_atendimento|resolvida`, assigned_to?, guest_token_hash?, created_at, last_message_at, resolved_at) — RN-92, RN-93
 - `support_messages` (id, conversation_id, author_type `customer|staff|system`, author_id?, body, created_at, read_at) — corpo já mascarado (RN-95)
 - `support_attachments` (id, message_id, storage_key, mime, size_bytes) — RN-96

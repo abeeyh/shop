@@ -387,6 +387,14 @@
       "assume": "Assumir conversa",
       "resolve": "Marcar como resolvida",
       "you": "Você"
+    },
+    "hours": {
+      "title": "Horário de atendimento (UTC)",
+      "hint": "O cliente vê este horário no fuso dele. Fora dele, o chat vira formulário de mensagem.",
+      "open": "Aberto",
+      "start": "Das",
+      "end": "Até",
+      "error": "Cada dia aberto precisa de horário de início e fim, diferentes."
     }
   },
   "Errors": {
@@ -431,6 +439,9 @@
       "error": "Confira os campos e tente de novo.",
       "limited": "Muitas mensagens ou conversas. Aguarde um pouco e tente de novo.",
       "closed": "Esta conversa foi encerrada há mais de 7 dias. Abra uma nova."
-    }
+    },
+    "offlineTitle": "Estamos fora do horário agora — deixe sua mensagem e respondemos por e-mail ou aqui.",
+    "offlineStart": "Deixar mensagem",
+    "backAt": "Voltamos em"
   }
 }

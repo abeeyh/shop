@@ -2,6 +2,9 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { connection } from "next/server";
 import { GradientCard } from "@/components/molecules/GradientCard";
 import { requireStaff } from "@/features/auth/staff";
+import { toHHMM } from "@/features/support/hours";
+import { listHours } from "@/features/support/hours-queries";
+import { HoursForm } from "@/features/staff/components/HoursForm";
 import { InviteForm, MemberForm } from "@/features/staff/components/StaffForms";
 import { listStaff } from "@/features/staff/queries";
 import { LOCALE_LABELS } from "@/i18n/navigation";
@@ -15,7 +18,26 @@ export default async function TeamAdmin({ params }: PageProps<"/[locale]/admin/e
   const { locale } = await params;
   setRequestLocale(locale);
   await requireStaff(locale);
-  const [t, members] = await Promise.all([getTranslations({ locale, namespace: "Admin" }), listStaff()]);
+  const [t, members, hours] = await Promise.all([
+    getTranslations({ locale, namespace: "Admin" }),
+    listStaff(),
+    listHours(),
+  ]);
+  // domingo = 0 (como Date.getUTCDay); nomes dos dias pelo Intl, no idioma da equipe
+  const dayName = (d: number) =>
+    new Intl.DateTimeFormat(locale, { weekday: "long", timeZone: "UTC" }).format(
+      new Date(Date.UTC(2026, 10, 8 + d)),
+    );
+  const days = [1, 2, 3, 4, 5, 6, 0].map((weekday) => {
+    const w = hours.find((h) => h.weekday === weekday);
+    return {
+      weekday,
+      label: dayName(weekday),
+      open: !!w,
+      start: toHHMM(w?.startMin ?? 720),
+      end: toHHMM(w?.endMin ?? 1200),
+    };
+  });
   const langs = routing.locales.map((code) => ({ code, label: LOCALE_LABELS[code] ?? code }));
   const roles = {
     role: t("team.role"),
@@ -45,6 +67,22 @@ export default async function TeamAdmin({ params }: PageProps<"/[locale]/admin/e
             submit: t("team.sendInvite"),
             link: t("team.link"),
             errors,
+          }}
+        />
+      </GradientCard>
+      <GradientCard tone="solid" className="grid gap-4">
+        <h2 className="font-heading text-xl font-semibold text-heading">{t("hours.title")}</h2>
+        <p className="text-sm text-muted-foreground">{t("hours.hint")}</p>
+        <HoursForm
+          locale={locale}
+          days={days}
+          labels={{
+            open: t("hours.open"),
+            start: t("hours.start"),
+            end: t("hours.end"),
+            save: t("form.save"),
+            saved: t("form.saved"),
+            error: t("hours.error"),
           }}
         />
       </GradientCard>
