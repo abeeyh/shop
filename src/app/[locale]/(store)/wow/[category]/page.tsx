@@ -50,7 +50,7 @@ export default async function CategoryPage({ params }: PageProps<"/[locale]/wow/
 
   return (
     <div className="mx-auto w-full max-w-[1200px] px-4 pb-14 sm:px-5">
-      <nav aria-label="Breadcrumb" className="flex gap-2 pt-6 pb-3 text-sm text-muted-foreground">
+      <nav aria-label={c("breadcrumb")} className="flex gap-2 pt-6 pb-3 text-sm text-muted-foreground">
         <Link href={`/${locale}`} className="text-link hover:underline">
           {c("home")}
         </Link>

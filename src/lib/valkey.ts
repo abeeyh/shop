@@ -15,7 +15,7 @@ export function getValkey(): Valkey | null {
         enableOfflineQueue: false,
         maxRetriesPerRequest: 1,
         connectTimeout: 1000,
-        commandTimeout: 150, // Valkey travado não pode segurar a requisição (revisão da #48)
+        commandTimeout: env.VALKEY_COMMAND_TIMEOUT_MS, // Valkey travado não segura a requisição (#48)
       })
     : null;
   // erro de conexão é tratado por quem chama; sem este handler o processo registraria "unhandled error"

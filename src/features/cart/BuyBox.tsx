@@ -194,6 +194,7 @@ export async function BuyBox({ locale, product, timeZone }: Props) {
             total: t("total"),
             checkout: t("goToPayment"),
             keepShopping: t("keepShopping"),
+            unavailable: t("unavailableItem"),
           },
           errors,
         }}

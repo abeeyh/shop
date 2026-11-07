@@ -24,7 +24,14 @@ export const ipn = (request: APIRequestContext, body: Record<string, unknown>, s
 // #86: sem provedor de pagamento o checkout é bloqueado, então o pedido do teste entra direto no banco
 // (fixture de teste, só banco local — global-setup). Serviço sem horário (#94: agenda com o suporte), 12 USDT.
 const ORDER_LINK_DEV_SECRET = "dev-order-link-secret-only-for-local-and-tests"; // src/features/orders/link.ts
-const SERVICE = { kind: "service", realm: "Area 52", faction: "horde", character: "Thrall", addons: [] };
+const SERVICE = {
+  kind: "service",
+  realm: "Area 52",
+  faction: "horde",
+  character: "Thrall",
+  addons: ["Armor Stack"],
+  variant: ["+10"], // #100: combinação comprada (cópia nas opções do item)
+};
 
 // #102: idioma e fuso ficam atrás do globo no cabeçalho
 export async function openPreferences(page: Page) {

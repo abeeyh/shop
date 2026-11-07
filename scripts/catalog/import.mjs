@@ -5,7 +5,7 @@
 // O mapa id → categoria/subcategoria fica em scripts/catalog/categories.json (o JSON de produtos não tem nomes).
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray, notInArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { categories, products, productVariants, subcategories } from "../../src/db/schema.ts";
 import { toCatalog } from "./lib.mjs";
@@ -14,7 +14,11 @@ const here = (f) => resolve(import.meta.dirname, f);
 // categoryRef/subcategoryRef são ids da origem — viram category_id/subcategory_id em place()
 const withoutRefs = (p) => Object.fromEntries(Object.entries(p).filter(([k]) => !k.endsWith("Ref")));
 
-export async function importCatalog(db, file = here("products.json")) {
+// tudo ou nada: um erro no meio (ex.: índice único) não deixa o catálogo meio importado
+export const importCatalog = (db, file = here("products.json")) =>
+  db.transaction((tx) => importInto(tx, file));
+
+async function importInto(db, file) {
   const map = JSON.parse(readFileSync(here("categories.json"), "utf8"));
   const { info } = JSON.parse(readFileSync(file, "utf8"));
   const unknown = [...new Set(info.map((i) => String(i.serviceCategoryId)))].filter(
@@ -88,6 +92,19 @@ export async function importCatalog(db, file = here("products.json")) {
         .values(vv)
         .onConflictDoUpdate({ target: productVariants.externalId, set: { ...vv, updatedAt: sql`now()` } });
     }
+    // variante que saiu do grupo no groups.json fica inativa (não apaga: pedidos apontam para ela)
+    await db
+      .update(productVariants)
+      .set({ active: false, updatedAt: sql`now()` })
+      .where(
+        and(
+          eq(productVariants.productId, row.id),
+          notInArray(
+            productVariants.externalId,
+            variants.map((v) => v.externalId),
+          ),
+        ),
+      );
   }
   // produtos de importações anteriores (um por variante) saem da vitrine; ficam para carrinhos/pedidos antigos
   if (catalog.groupedIds.length)

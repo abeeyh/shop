@@ -72,6 +72,7 @@ export async function saveProduct(_prev: SaveState, form: FormData): Promise<Sav
   if (!parsed.success) return { status: "error", fields: fieldsOf(parsed.error) };
   const kind = await categoryKindOf(parsed.data.categoryId);
   if (!kind) return { status: "error", fields: ["categoryId"] };
+  if (kind === "gold" && parsed.data.optionAxes.length) return { status: "error", fields: ["optionAxes"] };
   const sub = parsed.data.subcategoryId;
   if (sub && (await subcategoryCategoryOf(sub)) !== parsed.data.categoryId)
     return { status: "error", fields: ["subcategoryId"] };

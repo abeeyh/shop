@@ -64,7 +64,10 @@ test.describe("carrinho", () => {
     // #100: o slider anda pelo teclado (4 passos: +6 → +10)
     const level = page.getByRole("slider", { name: "Key level" });
     await level.focus();
-    for (let i = 0; i < 4; i++) await level.press("ArrowRight");
+    for (const v of ["+7", "+8", "+9", "+10"]) {
+      await level.press("ArrowRight");
+      await expect(level).toHaveAttribute("aria-valuetext", v); // um passo de cada vez (sob carga)
+    }
     await expect(page.locator("output")).toContainText("4.95");
     await page.getByLabel("Armor Stack (+25%)").check();
     await expect(page.locator("output")).toContainText("6.19"); // 4,95 × 1,25 = 6,1875
@@ -120,6 +123,10 @@ test("#109: adicionar mostra o carrinho na barra lateral", async ({ page }) => {
   await expect(sheet).toBeVisible({ timeout: 15_000 });
   await expect(sheet.getByText("Mythic+ Key")).toBeVisible();
   await expect(sheet.getByText("Area 52 · Alliance · Thrall · +6")).toBeVisible();
+  // clique na área vazia DENTRO da barra não fecha (só o fundo escurecido fecha)
+  const box = (await sheet.boundingBox())!;
+  await page.mouse.click(box.x + 20, box.y + box.height - 10);
+  await expect(sheet).toBeVisible();
   await sheet.getByRole("button", { name: "Keep shopping" }).click();
   await expect(sheet).toBeHidden();
   // de novo (o React limpa os campos depois de uma action que deu certo): abre outra vez
@@ -129,4 +136,17 @@ test("#109: adicionar mostra o carrinho na barra lateral", async ({ page }) => {
   await expect(sheet).toBeVisible({ timeout: 15_000 });
   await sheet.getByRole("link", { name: "Go to payment" }).click();
   await expect(page).toHaveURL(/\/en\/carrinho#pagar$/);
+});
+
+// análise de 2026-11-07: personagem digitado pela metade não trava a prévia do total na combinação anterior
+test("prévia do total acompanha a combinação mesmo com personagem inválido", async ({ page }) => {
+  await page.goto("/en/wow/mythic-plus/mythic-plus-key");
+  await page.getByLabel("Character name").fill("T"); // inválido (2–12 letras)
+  const level = page.getByRole("slider", { name: "Key level" });
+  await level.focus();
+  for (const v of ["+7", "+8", "+9", "+10"]) {
+    await level.press("ArrowRight");
+    await expect(level).toHaveAttribute("aria-valuetext", v);
+  }
+  await expect(page.locator("output")).toContainText("4.95");
 });

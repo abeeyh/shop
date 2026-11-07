@@ -113,9 +113,7 @@ export function VariantPicker({ axes, variants, initialId, onRequestLabel, onSel
       )}
       <p className="flex items-baseline justify-between gap-3 rounded-md bg-secondary px-3 py-2 text-sm">
         <span className="text-muted-foreground">{current.note}</span>
-        <span className="shrink-0 font-heading font-bold text-heading">
-          {current.price ?? onRequestLabel}
-        </span>
+        <span className="shrink-0 font-heading font-bold text-gold">{current.price ?? onRequestLabel}</span>
       </p>
     </div>
   );

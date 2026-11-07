@@ -11,6 +11,7 @@ import { routing } from "@/i18n/routing";
 import { clientIp, rateLimitKey } from "@/lib/client-ip";
 import { env } from "@/lib/env";
 import { logger } from "@/lib/logger";
+import { getRequestId } from "@/lib/request-id";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
 import { addCharacter, deleteCharacter, deleteCustomer, isStaff } from "./queries";
 import { characterInput, signInInput, signUpInput } from "./schemas";
@@ -23,7 +24,9 @@ const locale = z.enum(routing.locales);
 // docs/09 §2: por IP (e por e-mail no login); Valkey fora = bloqueia
 async function limited(scope: "signup" | "login", key?: string): Promise<boolean> {
   const ip = clientIp(await headers(), env.CLIENT_IP_HEADER ?? "x-forwarded-for");
-  const keys = [`customer-${scope}:${rateLimitKey(ip)}`, ...(key ? [`login:${key}`] : [])];
+  // login usa o mesmo balde por IP da equipe (features/auth/actions.ts: `login:<ip>`)
+  const ipKey = scope === "login" ? `login:${rateLimitKey(ip)}` : `customer-signup:${rateLimitKey(ip)}`;
+  const keys = [ipKey, ...(key ? [`login:${key}`] : [])];
   for (const key of keys) {
     const r = await rateLimit({ key, ...RATE_LIMITS[scope], failClosed: true });
     if (!r.allowed) return true;
@@ -59,7 +62,8 @@ export async function signInCustomer(_prev: AccountState, form: FormData): Promi
     twoFactor = "twoFactorRedirect" in r && r.twoFactorRedirect === true;
   } catch (err) {
     if (!(err instanceof APIError)) throw err;
-    logger.warn({ event: "auth.customer_login_failed" }, "login de cliente recusado");
+    const requestId = getRequestId(await headers()); // docs/16: requestId em todo log; sem e-mail
+    logger.warn({ event: "auth.customer_login_failed", requestId }, "login de cliente recusado");
     return { error: "invalid" };
   }
   // conta de equipe com 2FA (RN-02): o código é pedido na tela da equipe
@@ -107,6 +111,6 @@ export async function deleteAccount(_prev: AccountState, form: FormData): Promis
   }
   await auth.api.signOut({ headers: h });
   await deleteCustomer(customer.id);
-  logger.info({ event: "account.deleted" }, "conta de cliente excluída");
+  logger.info({ event: "account.deleted", requestId: getRequestId(h) }, "conta de cliente excluída");
   redirect(`/${input.data.locale}`);
 }

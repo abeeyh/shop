@@ -18,7 +18,7 @@ export function KindIcon({ kind, className }: { kind: keyof typeof ICONS; classN
 // #102: ícone em quadradinho com gradiente suave (linhas de produto, carrinho, categorias)
 export function KindTile({ kind }: { kind: keyof typeof ICONS }) {
   return (
-    <span className="grid size-11 shrink-0 place-items-center rounded-md bg-linear-[135deg] from-gradient-from/25 to-gradient-to/15 text-heading ring-1 ring-white/10">
+    <span className="grid size-11 shrink-0 place-items-center rounded-md bg-linear-[135deg] from-gradient-from/25 to-gradient-to/15 text-heading ring-1 ring-border">
       <KindIcon kind={kind} className="size-5" />
     </span>
   );

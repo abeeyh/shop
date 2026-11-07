@@ -63,7 +63,7 @@ components (Atomic) ◄───────────────────
 | Componente | Faz | Não faz |
 |------------|-----|---------|
 | Página / Server Action / Route Handler | Valida (`schemas.ts`), checa sessão e permissão, chama a feature | Regra de negócio, SQL |
-| `features/<x>/rules.ts` | Regras RN puras: preço por região, **preço final com promoção/cupom (`pricing/rules.ts`)**, cálculo de M+, vagas, transições do pedido, conversão de fuso | Banco, rede ou framework |
+| `features/<x>/rules.ts` | Regras RN puras: **preço final com promoção/cupom (`pricing/rules.ts`)**, preço da variante + adicionais em % (RN-17, #100), vagas, transições do pedido, conversão de fuso | Banco, rede ou framework |
 | `features/<x>/queries.ts` | Leitura e escrita no banco da feature | Decidir regra |
 | `lib/payments/crypto` e `lib/payments/card` | Adapters `PaymentProvider` (`createCheckout`, `verifyWebhook`, `refund`) | Mudar estado do pedido |
 | `lib/rate-limit` + `lib/valkey` | Rate limit compartilhado por IP no proxy e por rota sensível (docs/09 §2) | Guardar estado em memória do processo |
@@ -74,7 +74,7 @@ components (Atomic) ◄───────────────────
 
 ## Features
 
-`catalog` (categorias e produtos), `pricing` (promoções, cupons e cálculo do preço final — RN-21 a RN-29), `schedule` (slots de raid), `cart`, `checkout`, `payments`, `orders`, `admin`, `auth`, `preferences` (região, idioma, fuso), `support` (chat de suporte e reportes de bug), `staff` (contas de suporte/admin, papéis, idiomas e horário de atendimento) — os mesmos nomes dos escopos de commit.
+`catalog` (categorias, produtos e variantes — #100), `account` (conta opcional do cliente e personagens salvos — RN-107 a RN-109), `pricing` (promoções, cupons e cálculo do preço final — RN-21 a RN-29), `schedule` (slots de raid), `cart`, `checkout`, `payments`, `orders`, `admin`, `auth`, `preferences` (região, idioma, fuso), `support` (chat de suporte e reportes de bug), `staff` (contas de suporte/admin, papéis, idiomas e horário de atendimento) — os mesmos nomes dos escopos de commit.
 
 ## Idioma, fuso e região (RN-14, RN-80 a RN-83)
 
@@ -98,7 +98,7 @@ components (Atomic) ◄───────────────────
 
 ### Compra
 
-1. Cliente escolhe região, produto e opções (realm/facção para gold, slot para raid, chave para M+), e opcionalmente um cupom.
+1. Cliente escolhe o produto e as opções (combinação da variante — #100, adicionais, realm/facção/personagem — ou um personagem salvo, RN-108; horário quando a raid tem agenda) e, se quiser, um cupom.
 2. O servidor recalcula o total em USDT a partir do banco (RN-20) e aplica o maior desconto entre promoção e cupom (RN-23, RN-26).
 3. "Finalizar": escolhe **USDT** ou **cartão** (RN-35). A action cria o pedido `pendente`, reserva gold/vaga (RN-34) e:
    - USDT: cria fatura no gateway (rede escolhida — RN-37), esvazia o carrinho e redireciona para a fatura; falha do gateway → pedido `expirado` e carrinho intacto;
@@ -149,7 +149,7 @@ sequenceDiagram
 - `coupon_redemptions` (coupon_id, order_id único, email, status `reserved|used|released`) — RN-27: reservado no checkout com a linha do cupom travada, `used` quando o IPN leva a `pago`, `released` na expiração
 - `audit_log` (id, staff_id, entity `category|product|promotion|coupon`, entity_id, action `create|update`, before jsonb, after jsonb, created_at) — RN-71; gravado na mesma transação da alteração (`saveAudited`), só cresce; tela em `/[locale]/admin/auditoria`
 - `raid_slots` (id, product_id, region, starts_at timestamptz, capacity, reserved)
-- `carts` (id, created_at, updated_at) + `cart_items` (id, cart_id, product_id, raid_slot_id?, variant_id? (#100), quantity > 0, options jsonb) — carrinho do visitante, id em cookie httpOnly (30 dias); **sem preço gravado**: o total é recalculado a cada leitura (RN-20). Tabela de preço (faixas de M+, multiplicador de loot, passo do gold) em `src/features/pricing/rules.ts` (RN-15 a RN-17)
+- `carts` (id, created_at, updated_at) + `cart_items` (id, cart_id, product_id, raid_slot_id?, variant_id? (#100), quantity > 0, options jsonb) — carrinho do visitante, id em cookie httpOnly (30 dias); **sem preço gravado**: o total é recalculado a cada leitura (RN-20). Regras de preço em `src/features/pricing/rules.ts`: passo do gold (RN-15), preço da variante + adicionais (RN-17, #100)
 - `orders` (id, email, locale, status, subtotal_usdt_cents (original), discount_usdt_cents, discount_source `promotion|coupon|none`, discount_ref (id do cupom), total_usdt_cents, payment_method `usdt|card`, network `trc20|erc20`, provider, provider_payment_id, pay_url, paid_usdt_cents, tx_hash, expires_at, created_at, updated_at). Com o cartão (#26) entram quote_rate, charged_amount, charged_currency
 - `order_items` (order_id, product_id, raid_slot_id?, variant_id? (#100), product_name (cópia), options jsonb — realm, facção e personagem, combinação escolhida (`variant`, cópia) e adicionais —, unit_price_usdt_cents (original), discount_usdt_cents (promoção da linha), promotion_id?, quantity). Preços e descontos congelados no checkout (RN-29)
 - `deliveries` (order_id, staff_id, proof_url (https — print/log; upload de arquivo entra com o storage), note, delivered_at) — RN-52; `orders.assigned_to` = quem iniciou a entrega
@@ -171,7 +171,7 @@ sequenceDiagram
 | Rota | Tipo | Acesso |
 |------|------|--------|
 | `/[locale]` | Página | Público |
-| `/[locale]/produtos?q=&cat=&region=&min=&max=&disponivel=1&sort=&page=` | Página (busca e filtros — RN-100 a RN-103). Fora de `/wow/` para não colidir com o slug de uma categoria; `promo=1` filtra produtos com promoção valendo; preço mínimo/máximo e ordenação usam o **preço final** (SQL em `catalog/search.ts`, mesma regra de `pricing/rules.ts`) | Público |
+| `/[locale]/produtos?q=&cat=&min=&max=&disponivel=1&sort=&page=` | Página (busca e filtros — RN-100 a RN-103). Fora de `/wow/` para não colidir com o slug de uma categoria; `promo=1` filtra produtos com promoção valendo; preço mínimo/máximo e ordenação usam o **preço final** (SQL em `catalog/search.ts`, mesma regra de `pricing/rules.ts`) | Público |
 | `/[locale]/wow/[categoria]`, `/[locale]/wow/[categoria]/[produto]` (slugs criados pelo admin — RN-13, RN-19; rotas no grupo `app/[locale]/(store)`). Inexistente → página "não encontrada" com `noindex` (status 200 por causa do streaming). #109: clicar no produto abre a **página do produto** com as opções; ao adicionar, a action `addToCart` devolve o carrinho e ele aparece na **barra lateral** (ir ao pagamento ou continuar comprando). "Comprar agora" vai direto para `/carrinho#pagar` (a gaveta por rota interceptada do #102 foi removida a pedido do dono) | Página | Público |
 | `/[locale]/carrinho` (carrinho e checkout na mesma página: e-mail, rede e "Pagar com USDT") | Página + Server Actions | Público (visitante — RN-01) |
 | `/[locale]/cadastro`, `/[locale]/entrar` | Página + Server Actions | Público (RN-107): 5 cadastros/h por IP, login 10/10 min por IP e por e-mail (`failClosed`); senha vazada recusada (HIBP) |
@@ -192,6 +192,6 @@ sequenceDiagram
 | `/api/support/stream` | — | *Ainda não: a fila `/admin/suporte` atualiza a cada 15 s* |
 | `/[locale]/admin/suporte` | Página | Suporte e admin com 2FA (fila, conversa, dados do pedido) |
 | `/[locale]/admin/equipe` | Página + Server Actions | Só admin (convidar, desativar, papéis, idiomas); horário com #30 |
-| `/[locale]/admin/convite/[token]` | Página + Server Action | Quem tem o link: cria nome e senha (12+, recusa senha vazada — HIBP); 2FA no primeiro login |
+| `/[locale]/admin/convite/[token]` | Página + Server Action | Quem tem o link: cria nome e senha (8+ com maiúscula, minúscula e número — #107; recusa senha vazada — HIBP); 2FA no primeiro login |
 | `/[locale]/admin/docs`, `/[locale]/admin/docs/[slug]` | Página | Admin e suporte com 2FA (RN-74); lê `docs/*.md` incluídos no build (`outputFileTracingIncludes`) — sem cópia; visitante e cliente recebem 404; Markdown mostrado como texto (renderizar exige dependência nova) |
 | `/[locale]/admin/bug-reports` | Página | Admin com 2FA |

@@ -37,7 +37,8 @@
     "hot": "Populaire",
     "buy": "Acheter",
     "subcategories": "Sous-catégories",
-    "close": "Fermer"
+    "close": "Fermer",
+    "breadcrumb": "Fil d’Ariane"
   },
   "Footer": {
     "about": "Or, raids, Mythique+ et hauts faits pour World of Warcraft Retail US.",
@@ -134,7 +135,8 @@
     "saveCharacter": "Enregistrer ce personnage dans mon compte",
     "buyNow": "Acheter maintenant",
     "goToPayment": "Passer au paiement",
-    "keepShopping": "Continuer mes achats"
+    "keepShopping": "Continuer mes achats",
+    "unavailableItem": "Plus disponible — retiré du total."
   },
   "Cart": {
     "title": "Panier",

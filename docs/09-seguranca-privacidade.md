@@ -66,14 +66,14 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 - Regra de senha (#107, decisão do dono em 2026-11-07): **8+ caracteres com maiúscula, minúscula e número**, para cliente e equipe (`src/lib/password.ts`, conferida no servidor; o `pattern` do navegador só ajuda). Antes: 12+. A equipe compensa com 2FA obrigatório (RN-02).
 - Verificação de e-mail; tokens de uso único com validade curta.
 - Vínculo de contas OAuth ↔ senha só com e-mails verificados.
-- Senhas vazadas recusadas (HIBP por k-anonimato: só 5 caracteres do SHA-1 saem) no aceite do convite; HIBP fora do ar não bloqueia (log `auth.hibp_unavailable`). A conta inicial (`pnpm admin:create`) usa senha gerada.
+- Senhas vazadas recusadas (HIBP por k-anonimato: só 5 caracteres do SHA-1 saem) no aceite do convite e no cadastro de cliente (RN-107); HIBP fora do ar não bloqueia (log `auth.hibp_unavailable`). A conta inicial (`pnpm admin:create`) usa senha gerada.
 - Rate limit em store compartilhado (não em memória): Valkey, janela fixa atômica (`src/lib/rate-limit.ts`, limites em `RATE_LIMITS`):
 
   | Onde | Limite | Se o Valkey cair |
   |------|--------|------------------|
   | Toda página/API, por IP, no proxy (antes do log de acesso) | 300/min | passa (disponibilidade) + alerta `rate_limit.unavailable` 1×/min |
   | Busca (RN-105) | 30/min | passa |
-  | Login da equipe: senha por IP e por e-mail; código do 2FA por IP (o Better Auth ainda limita a 5 tentativas por desafio e bloqueia a conta por 15 min após 10 falhas) | 10 a cada 10 min | **bloqueia** (`failClosed`) |
+  | Login (equipe **e** cliente no mesmo balde por IP): senha por IP e por e-mail; excluir conta também por conta; código do 2FA por IP (o Better Auth ainda limita a 5 tentativas por desafio e bloqueia a conta por 15 min após 10 falhas) | 10 a cada 10 min | **bloqueia** (`failClosed`) |
 
   Risco aceito: o limite de cupom "por cliente" (RN-25) conta o e-mail normalizado (sem `+tag`, sem pontos no Gmail), mas sem conta nem verificação de e-mail é só uma barreira leve.
   Pendente antes de produção: CAPTCHA no chat e no reporte (Turnstile, #29) — sem ele, e-mail não verificado permite abrir muitas conversas (o limite por IP segura parte). Expurgo de conversas 1 ano depois de resolvidas (cron).
@@ -144,6 +144,8 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 - Guardar chave privada ou seed de carteira cripto no servidor da app.
 - Atendente pedir senha, código 2FA ou dados de cartão ao cliente pelo chat.
 - Criar conta de suporte/admin pelo cadastro público.
+
+  Pendente (análise de 2026-11-07, #113): "exportar meus dados" na conta do cliente (LGPD art. 18) — hoje só há excluir (RN-109); até lá, o suporte exporta a pedido.
 
 ## 4. LGPD
 

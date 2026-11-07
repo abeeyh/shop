@@ -15,8 +15,7 @@ import {
   type Addon,
 } from "@/features/pricing/rules";
 import { isBookable, listSlotsForProduct } from "@/features/schedule";
-import { addCharacter } from "@/features/account/queries";
-import { getCustomer } from "@/features/account/session";
+import { addCharacter, getCustomer } from "@/features/account";
 import { routing } from "@/i18n/routing";
 import { clientIp, rateLimitKey } from "@/lib/client-ip";
 import { env } from "@/lib/env";
@@ -43,12 +42,11 @@ type Checked =
 // prévia do preço antes de o cliente digitar o personagem: o preço não depende dele
 const QUOTE_WHO = { realm: "quote", faction: "alliance", character: "quote" };
 
+// na prévia vale sempre o personagem de exemplo: realm/nome digitados pela metade (inválidos) não podem
+// deixar o total parado no valor da combinação anterior (análise de 2026-11-07)
 function formInput(form: FormData, forQuote: boolean) {
   const sent = Object.fromEntries(form);
-  const who = forQuote
-    ? Object.fromEntries(Object.entries(QUOTE_WHO).map(([k, v]) => [k, sent[k] || v]))
-    : {};
-  return { ...sent, ...who, addon: form.getAll("addon").map(String) };
+  return { ...sent, ...(forQuote ? QUOTE_WHO : {}), addon: form.getAll("addon").map(String) };
 }
 
 // #100: preço da combinação escolhida (e cópia dela nas opções); variante de outro produto, inativa ou

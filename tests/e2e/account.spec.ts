@@ -5,6 +5,8 @@ const field = (page: Page, label: string) => page.getByLabel(label).filter({ vis
 
 // RN-107 a RN-109 (#101): cadastro opcional, personagens salvos e exclusão da conta
 test.describe("conta do cliente", () => {
+  // outro IP de cliente: o balde de login por IP é o mesmo da equipe (docs/09) e os testes do admin já o usam
+  test.use({ extraHTTPHeaders: { "x-forwarded-for": "198.51.100.7" } });
   test("cadastro → login → personagem salvo preenche a compra → excluir a conta", async ({ page }, info) => {
     test.setTimeout(60_000); // cadastro + HIBP + login + compra + exclusão
     const email = `e2e-${info.project.name}-${Date.now()}@example.com`;

@@ -62,7 +62,7 @@ Componentes usam **só tokens** (`bg-primary`, `text-muted-foreground`); hex for
 - Escala: 12 / 14 / 16 / 20 / 24 / 32 px; títulos com `clamp()`.
 - Espaçamento: escala de 4 px do Tailwind.
 - Raio (do template): **15 px** cards e painéis, **10 px** cards pequenos, **5 px** inputs, **pílula (9999 px)** botões, badges e busca, 50% avatares.
-- Container: largura máxima **1350 px** (template), margem lateral 16–20 px no celular.
+- Container: largura máxima **1200 px na loja** (#102) e **1350 px no admin**; margem lateral 16–20 px no celular.
 - Ícones: lucide-react, 16/20 px.
 
 ## 4. Acessibilidade (obrigatório)
@@ -102,9 +102,10 @@ Se o componente **conhece o domínio**, fica na feature; se é genérico, em `sr
 | Molécula | `Collapsible` (expandir/recolher com `<details>`; aberto a partir de `lg`), `Pagination` (página na URL), `LoadingRegion` + `CardGridSkeleton` / `TableSkeleton` / `TitleSkeleton` (esqueletos com a forma do conteúdo, `role="status"` com texto para leitor de tela; `Skeleton` sem animação com `prefers-reduced-motion`) | `components/molecules` |
 | Molécula | `NavTabs` (abas de categoria; aba atual por `usePathname` em `Suspense`), `Popover` (`<details>` com estado no React; Esc e clique fora fecham), `Drawer` (barra lateral em `<dialog>` modal: foco preso, Esc e clique no fundo fecham; base do `CartSheet` — #109), `SpotlightTracker` (um ouvinte para a luz do cursor) — #102 |
 | Molécula | `SearchField` (busca no cabeçalho, `role="search"`), `FilterChip` (filtro ativo removível), `SectionHeading` (título + link "ver todos"), `FilterTabs`, `Countdown`, `GradientCard` (moldura com gradiente) | `components/molecules` |
-| Organismo | `Header` (uma linha: logo, busca, globo com idioma/fuso, conta, carrinho; abas de categoria embaixo — #102; sem região — loja só US), `Footer` (4 colunas + newsletter), `Carousel` (CSS scroll-snap, sem biblioteca) | `components/organisms` |
+| Organismo | `Header` (uma linha: logo, busca, globo com idioma/fuso, conta, carrinho; abas de categoria embaixo — #102; sem região — loja só US), `Footer` (texto, links e "reportar problema"; colunas e newsletter quando houver conteúdo), `Carousel` (CSS scroll-snap, sem biblioteca) | `components/organisms` |
 | Template | `MarketingTemplate`, `AuthTemplate`, `AppTemplate` | `components/templates` |
 | Domínio | `VariantPicker` (#100: um eixo por linha — slider para valores em sequência, caixas para escolhas soltas; mostra o preço e a nota da combinação), `ProductFilters` (painel lateral no desktop, gaveta no celular), `SortSelect`, `CategoryCard`, `ServiceCard`, `RaidSlotCard` (com `Countdown`), `BestSellerCard`, `AdvantageItem`, `ServiceOptionsDrawer` | `features/catalog`, `features/schedule` |
+| Domínio (compra e conta) | `BuyBox` (preço, opções, personagem, total, "Comprar agora"/"Adicionar"), `ProductPanel` (página do produto), `CartSheet` (carrinho na barra lateral — #109), `AccountForms` (cadastro, login, personagens, excluir conta — RN-107 a RN-109) | `features/cart`, `features/account` |
 | Domínio (suporte) | `ChatOpenButton` (abre o chat com mensagem pronta: consultar preço, agendar run), `ChatLauncher` (botão flutuante), `ChatWindow`, `ChatMessage`, `ChatComposer`, `OfflineForm`, `SupportQueue` (dashboard) | `features/support` |
 
 ### Convenções

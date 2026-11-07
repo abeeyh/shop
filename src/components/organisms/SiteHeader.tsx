@@ -21,7 +21,7 @@ export function SiteHeader({ homeHref, tools, search, mobileSearch, tabs }: Site
           >
             <span
               aria-hidden="true"
-              className="grid size-8 place-items-center rounded-md bg-linear-[135deg] from-gradient-from to-gradient-to text-sm text-white shadow-[0_0_24px_-4px_var(--gradient-from)]"
+              className="grid size-8 place-items-center rounded-md bg-linear-[135deg] from-gradient-from to-gradient-to text-sm text-primary-foreground shadow-[0_0_24px_-4px_var(--gradient-from)]"
             >
               S
             </span>

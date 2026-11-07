@@ -37,7 +37,8 @@
     "hot": "Popular",
     "buy": "Comprar",
     "subcategories": "Subcategorias",
-    "close": "Fechar"
+    "close": "Fechar",
+    "breadcrumb": "Navegação estrutural"
   },
   "Footer": {
     "about": "Gold, raids, Mítica+ e conquistas para World of Warcraft Retail US.",
@@ -134,7 +135,8 @@
     "saveCharacter": "Salvar este personagem na minha conta",
     "buyNow": "Comprar agora",
     "goToPayment": "Ir para o pagamento",
-    "keepShopping": "Continuar comprando"
+    "keepShopping": "Continuar comprando",
+    "unavailableItem": "Não está mais disponível — fora do total."
   },
   "Cart": {
     "title": "Carrinho",

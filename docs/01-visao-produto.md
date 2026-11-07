@@ -12,7 +12,7 @@ Loja de serviços de WoW (Retail US) com preço-base em **USDT**, pagamento em *
 
 ## Público
 
-- Jogadores de WoW Retail nas regiões **US** e **EU**.
+- Jogadores de WoW Retail da região **US** (EU desativado — RN-14, #92).
 - Falantes de inglês, francês, alemão, português (BR), chinês tradicional e simplificado.
 - Admin/lojista, **atendentes de suporte** e equipe de entrega (boosters/fornecedores de gold).
 

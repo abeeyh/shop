@@ -37,7 +37,8 @@
     "hot": "Popular",
     "buy": "Buy",
     "subcategories": "Subcategories",
-    "close": "Close"
+    "close": "Close",
+    "breadcrumb": "Breadcrumb"
   },
   "Footer": {
     "about": "Gold, raids, Mythic+ and achievements for World of Warcraft Retail US.",
@@ -134,7 +135,8 @@
     "saveCharacter": "Save this character to my account",
     "buyNow": "Buy now",
     "goToPayment": "Go to payment",
-    "keepShopping": "Keep shopping"
+    "keepShopping": "Keep shopping",
+    "unavailableItem": "No longer available — removed from the total."
   },
   "Cart": {
     "title": "Cart",

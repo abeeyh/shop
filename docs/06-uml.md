@@ -11,7 +11,8 @@ flowchart LR
   P((Provedores de<br/>pagamento))
   S((Suporte))
   subgraph Shop
-    UC0([Escolher idioma, região e fuso])
+    UC0([Escolher idioma e fuso])
+    UC_CONTA([Criar conta, salvar personagens, excluir conta — RN-107 a RN-109])
     UC1([Navegar por categorias e produtos])
     UC13([Buscar e filtrar produtos])
     UC2([Escolher slot de raid])
@@ -112,8 +113,7 @@ classDiagram
     +id: string
     +email: string
     +locale: string
-    +timezone: string
-    +region: US|EU
+    +region: US
     +status: OrderStatus
     +subtotalUsdtCents: int
     +discountUsdtCents: int
