@@ -31,19 +31,21 @@ export function maskEmail(email: string): string {
   return `${user[0]}***@${host[0] ?? ""}***${tld}`;
 }
 
-function transport() {
-  const targets: TransportTargetOptions[] = [];
-  if (env.BETTERSTACK_SOURCE_TOKEN && env.BETTERSTACK_INGEST_HOST) {
-    targets.push({
+// Sem Better Stack: stdout direto, sem worker (o host coleta o stdout).
+// shortcut: o transport do Better Stack roda num worker cujas dependências o build standalone
+// não copia (pino-abstract-transport); resolver antes de configurar o token em produção (issue #11).
+function destination() {
+  if (!env.BETTERSTACK_SOURCE_TOKEN || !env.BETTERSTACK_INGEST_HOST) return undefined;
+  const targets: TransportTargetOptions[] = [
+    {
       target: "@logtail/pino",
       options: {
         sourceToken: env.BETTERSTACK_SOURCE_TOKEN,
         options: { endpoint: `https://${env.BETTERSTACK_INGEST_HOST}` },
       },
-    });
-  }
-  // stdout sempre: o host também coleta, e local/test não dependem do Better Stack
-  targets.push({ target: "pino/file", options: { destination: 1 } });
+    },
+    { target: "pino/file", options: { destination: 1 } },
+  ];
   return pino.transport({ targets });
 }
 
@@ -56,5 +58,5 @@ export const logger = pino(
     redact: { paths: REDACT_PATHS, censor: "[redacted]" },
     timestamp: pino.stdTimeFunctions.isoTime,
   },
-  env.NODE_ENV === "test" ? undefined : transport(),
+  destination(),
 );

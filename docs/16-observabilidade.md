@@ -144,11 +144,12 @@ O Marco Civil (art. 15) obriga guardar por **6 meses** os registros de acesso à
 | `port` | int, opcional | porta de origem, se a CDN/proxy informar *(confirmar com advogado se é exigida)* |
 | `user_id` / `session_id` | texto, opcional | quem estava logado |
 | `method`, `route` | texto | rota **sem** query string (pode ter dados pessoais) |
-| `status` | int | código HTTP |
 | `request_id` | texto | liga ao log do Better Stack e ao Sentry |
 
-- Gravado só para páginas e chamadas de API (não para assets estáticos), depois da resposta (`after()` do Next.js), para não atrasar o usuário.
-- Cron diário `/api/cron/purge-access-logs` apaga registros com mais de 6 meses (RN de retenção em [09 §4](09-seguranca-privacidade.md#4-lgpd)).
+- Gravado em `src/proxy.ts` para páginas e chamadas de API (não para assets estáticos nem `/api/health`), com `event.waitUntil` depois da resposta, para não atrasar o usuário. Código em `src/features/access-log`.
+- Sem código HTTP: o proxy roda antes da página e ainda não sabe o status final. O Marco Civil exige data/hora e IP.
+- IP lido do header definido em `CLIENT_IP_HEADER` (padrão `x-forwarded-for`, primeiro valor). *Definir o header confiável da CDN junto com a hospedagem (#2): sem CDN na frente, o cliente pode forjar esse header.*
+- Cron diário `/api/cron/purge-access-logs` (`Authorization: Bearer <CRON_SECRET>`) apaga registros com mais de 6 meses — o corte ajusta fim de mês (31/ago → 28/fev) para nunca apagar antes do prazo (RN de retenção em [09 §4](09-seguranca-privacidade.md#4-lgpd)).
 - Índice em `occurred_at`. *shortcut: DELETE diário simples; trocar por partição mensal se a tabela passar de alguns milhões de linhas.*
 - Acesso restrito: sem tela no admin; consulta só por pedido formal (ordem judicial), registrada no log de auditoria.
 - Falha ao gravar o log de acesso é `logger.error` + alerta, mas **não** derruba a requisição do usuário.

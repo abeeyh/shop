@@ -126,7 +126,7 @@ sequenceDiagram
 - `deliveries` (order_id, proof_url, note, delivered_at, admin_id) — RN-52
 - `payment_events` (provider, provider_event_id **único**, type, received_at) — idempotência
 - `users` / `sessions` (Better Auth), com `locale` e `timezone`
-- `access_logs` (occurred_at, ip, port?, user_id?, session_id?, method, route, status, request_id) — log de acesso legal, 6 meses ([16 §9](16-observabilidade.md#9-log-de-acesso-obrigação-legal))
+- `access_logs` (occurred_at, ip, port?, user_id?, session_id?, method, route, request_id) — log de acesso legal, 6 meses ([16 §9](16-observabilidade.md#9-log-de-acesso-obrigação-legal))
 - `staff_profiles` (user_id, role `suporte|admin`, languages text[], active, invited_by, created_at) — RN-04 a RN-06; clientes não têm linha aqui
 - `support_hours` (weekday, starts_at_utc, ends_at_utc) — RN-99
 - `support_conversations` (id, user_id?, guest_email?, guest_name?, order_id?, locale, status `aberta|em_atendimento|resolvida`, assigned_to?, guest_token_hash?, created_at, last_message_at, resolved_at) — RN-92, RN-93
