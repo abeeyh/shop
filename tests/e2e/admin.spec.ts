@@ -1,6 +1,7 @@
 import { createHmac } from "node:crypto";
 import { expect, test, type Page } from "@playwright/test";
 import { E2E_ADMIN } from "./global-setup";
+import { checkout, ipn } from "./helpers";
 
 // #20: admin com 2FA e CRUD de categorias/produtos. RN-02, RN-04, RN-13, RN-19, RN-70, RN-72, RN-73.
 
@@ -39,6 +40,7 @@ test.describe("admin", () => {
     page,
     browser,
     baseURL,
+    request,
   }) => {
     // outro aparelho entra só com a senha antes da ativação
     const other = await browser.newContext({ baseURL });
@@ -147,6 +149,36 @@ test.describe("admin", () => {
     await expect(page.getByText(`Updated Category: E2E Keys ${id}`).first()).toBeVisible();
     await expect(page.getByText(`Created Product: E2E Key Product ${id}`)).toBeVisible();
     await expect(page.getByText(E2E_ADMIN.email).first()).toBeVisible();
+
+    // RN-50/RN-52: pedido pago → equipe inicia → conclui com prova → cliente vê no pedido
+    const buyer = await browser.newContext({ baseURL });
+    const buyerPage = await buyer.newPage();
+    const orderId = await checkout(buyerPage);
+    const paid = { payment_id: Date.now() + Math.random(), order_id: orderId, pay_currency: "usdterc20" };
+    await ipn(request, {
+      ...paid,
+      price_amount: 12,
+      pay_amount: 12,
+      payment_status: "finished",
+      actually_paid: 12,
+    });
+    await page.goto("/en/admin/pedidos");
+    await page.getByRole("link", { name: orderId.slice(0, 8) }).click();
+    const staffStatus = page.getByTestId("staff-order-status");
+    await expect(staffStatus).toHaveText("Paid");
+    await page.getByRole("button", { name: "Start delivery" }).click();
+    await expect(staffStatus).toHaveText("In progress");
+    await page.getByLabel(/Delivery proof link/).fill("https://example.com/proof.png");
+    await page.getByLabel("Note for the customer").fill("Gold sent by mail.");
+    await page.getByRole("button", { name: "Mark as completed" }).click();
+    await expect(staffStatus).toHaveText("Completed");
+    await buyerPage.reload();
+    await expect(buyerPage.getByTestId("order-status")).toHaveText("Completed");
+    await expect(buyerPage.getByRole("link", { name: "See the delivery proof" })).toHaveAttribute(
+      "href",
+      "https://example.com/proof.png",
+    );
+    await buyer.close();
 
     // RN-02: depois de sair, o login pede o código
     await page.getByRole("button", { name: "Sign out" }).click();

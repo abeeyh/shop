@@ -18,6 +18,9 @@ export default async function PanelLayout({ children, params }: LayoutProps<"/[l
           <Link href={`/${locale}/admin`} className="mr-3 font-heading text-lg font-bold text-heading">
             {t("title")}
           </Link>
+          <Link href={`/${locale}/admin/pedidos`} className={link}>
+            {t("nav.orders")}
+          </Link>
           <Link href={`/${locale}/admin/categorias`} className={link}>
             {t("nav.categories")}
           </Link>

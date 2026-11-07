@@ -5,8 +5,9 @@ import { connection } from "next/server";
 import { buttonVariants } from "@/components/atoms/Button";
 import { GradientCard } from "@/components/molecules/GradientCard";
 import { LocalTime } from "@/components/molecules/LocalTime";
-import { cartSummary, getCartId, removeFromCart, type CartLine } from "@/features/cart";
+import { cartSummary, getCartId, removeFromCart } from "@/features/cart";
 import { CouponForm } from "@/features/cart/components/CouponForm";
+import { describeItem } from "@/features/cart/describe";
 import { KindThumb } from "@/features/catalog";
 import { CheckoutForm } from "@/features/orders";
 import { canonicalLocale } from "@/i18n/routing";
@@ -20,14 +21,6 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/carrinho
 }
 
 type T = Awaited<ReturnType<typeof getTranslations<"Cart">>>;
-
-// detalhes do item no idioma do usuário (o horário da raid aparece no fuso escolhido — RN-83)
-function details(line: CartLine, t: T): string {
-  const o = line.options;
-  if (o.kind === "gold") return `${o.realm} · ${t(o.faction)} · ${o.character} · ${line.quantity}k`;
-  if (o.kind === "raid") return t(`loot.${o.loot}`);
-  return `+${o.keyLevel} × ${t("runs", { n: line.quantity })}${o.timed ? ` · ${t("timed")}` : ""}`;
-}
 
 type Cart = Awaited<ReturnType<typeof cartSummary>>;
 
@@ -119,7 +112,7 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
                         ·{" "}
                       </>
                     ) : null}
-                    {details(line, t)} · {line.region}
+                    {describeItem(line.options, line.quantity, t)} · {line.region}
                   </p>
                   {line.available ? null : <p className="text-sm text-error-text">{t("unavailable")}</p>}
                 </div>

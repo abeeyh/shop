@@ -185,7 +185,9 @@
       "reembolsado": "已退款",
       "contestado": "爭議中"
     },
-    "discount": "優惠碼折扣"
+    "discount": "優惠碼折扣",
+    "delivered": "已交付 — 感謝你！",
+    "proof": "查看交付證明"
   },
   "Admin": {
     "title": "管理後台",
@@ -196,7 +198,8 @@
       "signOut": "登出",
       "promotions": "促銷活動",
       "coupons": "優惠碼",
-      "audit": "稽核紀錄"
+      "audit": "稽核紀錄",
+      "orders": "訂單"
     },
     "login": {
       "title": "團隊登入",
@@ -313,6 +316,19 @@
         "create": "建立",
         "update": "修改"
       }
+    },
+    "orders": {
+      "todo": "待處理",
+      "all": "全部",
+      "order": "訂單",
+      "tx": "交易",
+      "proof": "交付證明",
+      "start": "開始交付",
+      "complete": "標記為已完成",
+      "proofUrl": "交付證明連結（https — 截圖或紀錄）",
+      "note": "給客戶的備註",
+      "proofError": "請提供交付證明的 https 連結。",
+      "stale": "其他人已更新此訂單，請重新整理頁面。"
     }
   }
 }

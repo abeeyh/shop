@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { nextStatus, outcomeOf, settle } from "./rules";
+import { nextStaffStep, nextStatus, outcomeOf, settle, STAFF_STEPS } from "./rules";
 
 describe("estados do pedido (RN-50, RN-37)", () => {
   it("RN-50: pendente → pago | pagamento_parcial | expirado", () => {
@@ -31,5 +31,17 @@ describe("estados do pedido (RN-50, RN-37)", () => {
     expect(settle("paid", 9999, 10000)).toBe("partial");
     expect(settle("paid", 10000, 10000)).toBe("paid");
     expect(settle("paid", 10500, 10000)).toBe("paid"); // a maior: crédito/devolução manual (RN-37)
+  });
+});
+
+describe("passos da equipe (RN-50, RN-52)", () => {
+  it("pago → em_andamento → concluido; nada antes de pagar nem depois de concluir", () => {
+    expect(nextStaffStep("pago")).toBe("start");
+    expect(STAFF_STEPS.start.to).toBe("em_andamento");
+    expect(nextStaffStep("em_andamento")).toBe("complete");
+    expect(STAFF_STEPS.complete.to).toBe("concluido");
+    expect(nextStaffStep("pendente")).toBeNull();
+    expect(nextStaffStep("pagamento_parcial")).toBeNull();
+    expect(nextStaffStep("concluido")).toBeNull();
   });
 });

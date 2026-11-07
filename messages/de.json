@@ -185,7 +185,9 @@
       "reembolsado": "Erstattet",
       "contestado": "Angefochten"
     },
-    "discount": "Gutscheinrabatt"
+    "discount": "Gutscheinrabatt",
+    "delivered": "Geliefert — danke!",
+    "proof": "Liefernachweis ansehen"
   },
   "Admin": {
     "title": "Admin",
@@ -196,7 +198,8 @@
       "signOut": "Abmelden",
       "promotions": "Aktionen",
       "coupons": "Gutscheine",
-      "audit": "Änderungsprotokoll"
+      "audit": "Änderungsprotokoll",
+      "orders": "Bestellungen"
     },
     "login": {
       "title": "Anmeldung (Team)",
@@ -313,6 +316,19 @@
         "create": "Erstellt",
         "update": "Geändert"
       }
+    },
+    "orders": {
+      "todo": "Offen",
+      "all": "Alle",
+      "order": "Bestellung",
+      "tx": "Transaktion",
+      "proof": "Liefernachweis",
+      "start": "Lieferung starten",
+      "complete": "Als abgeschlossen markieren",
+      "proofUrl": "Link zum Liefernachweis (https — Screenshot oder Log)",
+      "note": "Hinweis für den Kunden",
+      "proofError": "Gib einen https-Link zum Liefernachweis an.",
+      "stale": "Jemand anderes hat diese Bestellung schon weitergesetzt. Lade die Seite neu."
     }
   }
 }

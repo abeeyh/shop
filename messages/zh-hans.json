@@ -185,7 +185,9 @@
       "reembolsado": "已退款",
       "contestado": "争议中"
     },
-    "discount": "优惠码折扣"
+    "discount": "优惠码折扣",
+    "delivered": "已交付 — 谢谢！",
+    "proof": "查看交付证明"
   },
   "Admin": {
     "title": "管理后台",
@@ -196,7 +198,8 @@
       "signOut": "退出",
       "promotions": "促销活动",
       "coupons": "优惠码",
-      "audit": "审计日志"
+      "audit": "审计日志",
+      "orders": "订单"
     },
     "login": {
       "title": "团队登录",
@@ -313,6 +316,19 @@
         "create": "创建",
         "update": "修改"
       }
+    },
+    "orders": {
+      "todo": "待处理",
+      "all": "全部",
+      "order": "订单",
+      "tx": "交易",
+      "proof": "交付证明",
+      "start": "开始交付",
+      "complete": "标记为已完成",
+      "proofUrl": "交付证明链接（https — 截图或日志）",
+      "note": "给客户的备注",
+      "proofError": "请提供交付证明的 https 链接。",
+      "stale": "其他人已更新此订单，请刷新页面。"
     }
   }
 }

@@ -7,6 +7,7 @@ import { requireStaff } from "@/features/auth/staff";
 export const instant = false;
 
 const SECTIONS = [
+  ["pedidos", "orders"],
   ["categorias", "categories"],
   ["produtos", "products"],
   ["promocoes", "promotions"],

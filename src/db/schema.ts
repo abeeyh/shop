@@ -163,6 +163,7 @@ export const orders = pgTable(
     paidUsdtCents: integer("paid_usdt_cents"), // valor recebido segundo o IPN (RN-37)
     txHash: text("tx_hash"),
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(), // RN-34
+    assignedTo: text("assigned_to"), // equipe que assumiu a entrega (pago → em_andamento)
     ...timestamps,
   },
   (t) => [
@@ -381,3 +382,16 @@ export const auditLog = pgTable(
     index("audit_log_entity_idx").on(t.entity, t.entityId),
   ],
 );
+
+// Prova de entrega (RN-52). shortcut: link https para print/log; upload de arquivo entra com o storage (S3)
+export const deliveries = pgTable("deliveries", {
+  orderId: uuid("order_id")
+    .primaryKey()
+    .references(() => orders.id),
+  staffId: text("staff_id")
+    .notNull()
+    .references(() => users.id),
+  proofUrl: text("proof_url").notNull(),
+  note: text("note").notNull().default(""),
+  deliveredAt: timestamp("delivered_at", { withTimezone: true }).notNull().defaultNow(),
+});

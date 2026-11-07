@@ -185,7 +185,9 @@
       "reembolsado": "Remboursé",
       "contestado": "Contesté"
     },
-    "discount": "Remise du coupon"
+    "discount": "Remise du coupon",
+    "delivered": "Livré — merci !",
+    "proof": "Voir la preuve de livraison"
   },
   "Admin": {
     "title": "Admin",
@@ -196,7 +198,8 @@
       "signOut": "Se déconnecter",
       "promotions": "Promotions",
       "coupons": "Coupons",
-      "audit": "Journal d'audit"
+      "audit": "Journal d'audit",
+      "orders": "Commandes"
     },
     "login": {
       "title": "Connexion (équipe)",
@@ -313,6 +316,19 @@
         "create": "Création",
         "update": "Modification"
       }
+    },
+    "orders": {
+      "todo": "À traiter",
+      "all": "Toutes",
+      "order": "Commande",
+      "tx": "Transaction",
+      "proof": "Preuve de livraison",
+      "start": "Démarrer la livraison",
+      "complete": "Marquer comme terminée",
+      "proofUrl": "Lien de la preuve de livraison (https — capture ou log)",
+      "note": "Note pour le client",
+      "proofError": "Ajoutez un lien https vers la preuve de livraison.",
+      "stale": "Quelqu'un a déjà fait avancer cette commande. Rechargez la page."
     }
   }
 }
