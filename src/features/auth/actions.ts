@@ -46,7 +46,7 @@ export async function signIn(_prev: AuthState, form: FormData): Promise<AuthStat
     logger.warn({ event: "auth.login_failed" }, "login recusado"); // sem e-mail no log (docs/16)
     return { error: "invalid" };
   }
-  redirect(twoFactor ? `/${l}/admin/entrar/codigo` : `/${l}/admin/2fa`);
+  redirect(twoFactor ? `/${l}/admin/entrar/codigo` : `/${l}/admin`); // RN-02 (#116): 2FA opcional
 }
 
 // Login: confirma o código depois da senha. Ativação: confirma o primeiro código do app autenticador.

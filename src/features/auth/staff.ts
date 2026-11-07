@@ -26,11 +26,11 @@ export async function getStaff() {
   };
 }
 
-// Toda página e Server Action do admin começa aqui (action é endpoint público — docs/09)
+// Toda página e Server Action do admin começa aqui (action é endpoint público — docs/09).
+// RN-02 (#116): 2FA opcional — quem ativou digita o código no login; o painel não exige mais
 export async function requireStaff(locale: string, roles: StaffRole[] = ["admin"]) {
   const staff = await getStaff();
   if (!staff) redirect(`/${locale}/admin/entrar`);
-  if (!staff.twoFactor) redirect(`/${locale}/admin/2fa`); // RN-02: painel só com 2FA ativo
   if (!roles.includes(staff.role)) forbidden(); // RN-06: 403 (ex.: suporte em preços e cupons)
   return staff;
 }

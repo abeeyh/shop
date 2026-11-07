@@ -32,7 +32,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 | Repúdio | [ ] | Log de auditoria de ações sensíveis |
 | Vazamento | [ ] | Respostas que não revelam se um e-mail existe; erros genéricos |
 | Negação de serviço | [ ] | Rate limit em store compartilhado; CAPTCHA no cadastro; CDN/WAF |
-| Elevação de privilégio | [ ] | Autorização sobre o recurso em toda rota; admin com 2FA |
+| Elevação de privilégio | [ ] | Autorização sobre o recurso em toda rota; 2FA opcional para a equipe (#116 — risco aceito abaixo) |
 
 ### Casos de abuso que viram testes
 
@@ -49,7 +49,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 11. Cookie `tz` ou `region` inválido → valor padrão; nunca usado sem validação (lista IANA / enum).
 12. Locale fora dos 6 na URL → 404 ou redireciona para `en` (RN-81).
 13a. Cupom: força bruta de códigos → bloqueio após 10 tentativas/hora (RN-28); uso simultâneo além do limite → só os primeiros reservam (RN-27, transação); cupom ou desconto enviado pelo cliente → ignorado, recalculado no servidor (RN-20).
-13b. Admin sem 2FA tentando alterar preço, promoção ou cupom → 403; toda alteração auditada (RN-71).
+13b. Suporte tentando alterar preço, promoção ou cupom → 403 (RN-06); toda alteração auditada (RN-71). *(Antes do #116 também valia para admin sem 2FA; hoje o 2FA é opcional.)*
 13c. Mensagem de chat com `<script>` → exibida como texto, nunca HTML.
 13d. Visitante tenta ler conversa de outro (trocando o `id`) → 404 (RN-92).
 13e. Atendente de suporte tenta mudar preço, cupom, reembolso ou equipe → 403 (RN-06).
@@ -63,7 +63,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 
 ### Autenticação e sessão
 - Senhas com scrypt/argon2; nunca em log.
-- Regra de senha (#107, decisão do dono em 2026-11-07): **8+ caracteres com maiúscula, minúscula e número**, para cliente e equipe (`src/lib/password.ts`, conferida no servidor; o `pattern` do navegador só ajuda). Antes: 12+. A equipe compensa com 2FA obrigatório (RN-02).
+- Regra de senha (#107, decisão do dono em 2026-11-07): **8+ caracteres com maiúscula, minúscula e número**, para cliente e equipe (`src/lib/password.ts`, conferida no servidor; o `pattern` do navegador só ajuda). Antes: 12+. A equipe pode ativar 2FA (opcional desde o #116 — RN-02).
 - Verificação de e-mail; tokens de uso único com validade curta.
 - Vínculo de contas OAuth ↔ senha só com e-mails verificados.
 - Senhas vazadas recusadas (HIBP por k-anonimato: só 5 caracteres do SHA-1 saem) no aceite do convite e no cadastro de cliente (RN-107); HIBP fora do ar não bloqueia (log `auth.hibp_unavailable`). A conta inicial (`pnpm admin:create`) usa senha gerada.
@@ -78,6 +78,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
   Risco aceito: o limite de cupom "por cliente" (RN-25) conta o e-mail normalizado (sem `+tag`, sem pontos no Gmail), mas sem conta nem verificação de e-mail é só uma barreira leve.
   Pendente antes de produção: CAPTCHA no chat e no reporte (Turnstile, #29) — sem ele, e-mail não verificado permite abrir muitas conversas (o limite por IP segura parte). Expurgo de conversas 1 ano depois de resolvidas (cron).
   Risco aceito (#101): conta de cliente sem e-mail verificado e sem CAPTCHA no cadastro até o #29 — mitigado por 5 cadastros/h por IP (`failClosed`), senha vazada recusada, conta que só vê pedidos feitos logada e resposta igual para e-mail novo e já usado (sem enumeração). "Esqueci a senha" bloqueado até ter e-mail transacional. Conta de cliente não verificada não ocupa e-mail de equipe: o convite pode ser feito e o aceite apaga essa conta (nunca a promove — RN-04). Excluir conta limita tentativas de senha por IP **e** por conta. Logger do Better Auth fixo em `warn` (em `info` ele grava e-mail de cadastro repetido).
+  Risco aceito (#116, decisão do dono em 2026-11-07): **2FA da equipe opcional**. Sem ele, uma senha vazada ou adivinhada dá acesso ao painel (preços, cupons, pedidos, equipe). Mitigado por: senha 8+ com maiúscula, minúscula e número e recusa de senha vazada (HIBP), limite de tentativas por IP e por e-mail, sessão da equipe com teto de 12 h, auditoria de toda alteração (RN-71) e 2FA disponível para quem quiser (recomendado, principalmente para admin).
   Risco aceito: pedido em `pagamento_parcial` não expira e segura vaga e uso de cupom até o admin resolver (fluxo do admin em #23).
   Risco aceito: quem sabe o e-mail de um admin consegue travar o login dele por 10 min de cada vez (limite por e-mail). Monitorar `auth.login_failed`; se virar problema, contar só falhas no balde por e-mail.
   | Cupom (RN-28), por IP | 10/hora | **bloqueia** (`failClosed`) |

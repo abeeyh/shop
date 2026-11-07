@@ -230,7 +230,8 @@
       "docs": "Documentation interne",
       "team": "Équipe",
       "support": "Support",
-      "subcategories": "Sous-catégories"
+      "subcategories": "Sous-catégories",
+      "twoFactor": "2FA"
     },
     "login": {
       "title": "Connexion (équipe)",
@@ -246,7 +247,7 @@
     },
     "setup": {
       "title": "Activez la double authentification",
-      "intro": "L'admin exige la double authentification. Confirmez votre mot de passe pour obtenir la clé de configuration.",
+      "intro": "L’authentification à deux facteurs est facultative et recommandée : elle protège le panneau si votre mot de passe fuit. Confirmez votre mot de passe pour obtenir la clé de configuration.",
       "password": "Mot de passe",
       "start": "Obtenir la clé",
       "secret": "Clé de configuration (à ajouter dans l'application)",
