@@ -1,12 +1,19 @@
 import { sql } from "drizzle-orm";
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
+type Db = (typeof import("./index"))["db"];
 
 // Integração com banco real (docs/13 §8): roda no CI e localmente com DATABASE_URL definida.
-describe.skipIf(!process.env.DATABASE_URL)("db", async () => {
-  const { db } = await import("./index");
+// O import fica no beforeAll: o corpo do describe roda na coleta mesmo quando a suíte é pulada.
+describe.skipIf(!process.env.DATABASE_URL)("db", () => {
+  let db: Db;
+
+  beforeAll(async () => {
+    ({ db } = await import("./index"));
+  });
 
   afterAll(async () => {
-    await db.$client.end();
+    await db?.$client.end();
   });
 
   it("conecta no PostgreSQL e executa consulta", async () => {
