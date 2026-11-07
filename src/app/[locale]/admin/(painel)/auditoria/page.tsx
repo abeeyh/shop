@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { connection } from "next/server";
-import { changedFields } from "@/features/admin/audit";
+import { changedFields } from "@/features/admin/diff";
 import { tableCls } from "@/features/admin/fields";
 import { listAudit } from "@/features/admin/queries";
 import { requireStaff } from "@/features/auth/staff";

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { changedFields } from "./audit";
+import { changedFields } from "./diff";
 
 describe("auditoria (RN-71)", () => {
   it("mostra só o que mudou, sem carimbos de data", () => {
