@@ -6,6 +6,7 @@ const schema = z.object({
   APP_ENV: z.enum(["local", "homologacao", "production"]).default("local"),
   APP_RELEASE: z.string().default("dev"),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug"]).optional(),
+  DATABASE_URL: z.url({ protocol: /^postgres(ql)?$/ }).optional(),
   BETTERSTACK_SOURCE_TOKEN: z.string().min(1).optional(),
   BETTERSTACK_INGEST_HOST: z.string().min(1).optional(),
 });

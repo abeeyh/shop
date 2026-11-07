@@ -17,6 +17,7 @@ const eslintConfig = defineConfig([
         { type: "features", pattern: "src/features/*", capture: ["feature"] },
         { type: "components", pattern: "src/components/**" },
         { type: "i18n", pattern: "src/i18n/**" },
+        { type: "db", pattern: "src/db/**" },
         { type: "lib", pattern: "src/lib/**" },
       ],
     },
@@ -32,13 +33,15 @@ const eslintConfig = defineConfig([
             },
             {
               from: { element: { type: "features" } },
-              allow: { to: { element: { types: ["features", "components", "i18n", "lib"] } } },
+              allow: { to: { element: { types: ["features", "components", "i18n", "db", "lib"] } } },
             },
             {
               from: { element: { type: "components" } },
               allow: { to: { element: { types: ["components", "lib"] } } },
             },
             { from: { element: { type: "i18n" } }, allow: { to: { element: { types: ["i18n", "lib"] } } } },
+            // SQL só nas queries.ts das features (docs/13 §2): rotas não importam db direto
+            { from: { element: { type: "db" } }, allow: { to: { element: { types: ["db", "lib"] } } } },
             { from: { element: { type: "lib" } }, allow: { to: { element: { type: "lib" } } } },
           ],
         },
