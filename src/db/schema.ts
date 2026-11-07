@@ -475,3 +475,20 @@ export const supportMessages = pgTable(
   },
   (t) => [index("support_messages_conversation_idx").on(t.conversationId, t.id)],
 );
+
+// Horário de atendimento (RN-99): minutos UTC por dia da semana (0 = domingo)
+export const supportHours = pgTable(
+  "support_hours",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    weekday: integer("weekday").notNull(),
+    startMin: integer("start_min").notNull(),
+    endMin: integer("end_min").notNull(),
+  },
+  (t) => [
+    check(
+      "support_hours_range",
+      sql`${t.weekday} between 0 and 6 and ${t.startMin} between 0 and 1439 and ${t.endMin} between 0 and 1439`,
+    ),
+  ],
+);

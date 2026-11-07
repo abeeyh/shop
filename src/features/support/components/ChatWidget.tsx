@@ -4,6 +4,7 @@ import { MessageCircle, X } from "lucide-react";
 import { useActionState, useState } from "react";
 import { buttonVariants } from "@/components/atoms/Button";
 import { Input, Textarea } from "@/components/atoms/Input";
+import { LocalTime } from "@/components/molecules/LocalTime";
 import { sendChatMessage, startChat, type ChatState } from "../chat-actions";
 import { ChatThread } from "./ChatThread";
 
@@ -16,6 +17,9 @@ type Labels = {
   name: string;
   message: string;
   start: string;
+  offlineTitle: string;
+  offlineStart: string;
+  backAt: string;
   you: string;
   team: string;
   placeholder: string;
@@ -26,11 +30,19 @@ type Labels = {
 // RN-92: botão de chat em todas as páginas da loja
 export function ChatWidget({
   locale,
+  timeLocale,
   initialId,
+  online,
+  backAt,
+  timeZone,
   labels,
 }: {
   locale: string;
+  timeLocale: string; // BCP 47 para o horário de volta
   initialId: string | null;
+  online: boolean;
+  backAt: string | null;
+  timeZone: string | null;
   labels: Labels;
 }) {
   const [open, setOpen] = useState(false);
@@ -56,6 +68,18 @@ export function ChatWidget({
             </button>
           </header>
           <p className="rounded-md bg-muted px-3 py-2 text-xs text-heading">{labels.notice}</p>
+          {!online && !id ? (
+            // RN-99: fora do horário vira formulário offline e diz quando volta (no fuso do cliente)
+            <p data-testid="chat-offline" className="text-sm text-heading">
+              {labels.offlineTitle}
+              {backAt ? (
+                <>
+                  {" "}
+                  {labels.backAt} <LocalTime iso={backAt} locale={timeLocale} timeZone={timeZone} />
+                </>
+              ) : null}
+            </p>
+          ) : null}
           {id ? (
             <ChatThread
               conversationId={id}
@@ -85,7 +109,7 @@ export function ChatWidget({
                 <Textarea name="body" required maxLength={2000} className="min-h-20" />
               </label>
               <button type="submit" disabled={pending} className={buttonVariants({ variant: "primary" })}>
-                {labels.start}
+                {online ? labels.start : labels.offlineStart}
               </button>
               {state.status === "error" || state.status === "limited" ? (
                 <p role="alert" className="text-sm text-error-text">

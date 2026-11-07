@@ -387,6 +387,14 @@
       "assume": "Prendre la conversation",
       "resolve": "Marquer comme résolue",
       "you": "Vous"
+    },
+    "hours": {
+      "title": "Horaires du support (UTC)",
+      "hint": "Les clients voient ces horaires dans leur fuseau. En dehors, le chat devient un formulaire de message.",
+      "open": "Ouvert",
+      "start": "De",
+      "end": "À",
+      "error": "Chaque jour ouvert doit avoir une heure de début et de fin différentes."
     }
   },
   "Errors": {
@@ -431,6 +439,9 @@
       "error": "Vérifiez les champs et réessayez.",
       "limited": "Trop de messages ou de conversations. Patientez un instant.",
       "closed": "Cette conversation est fermée depuis plus de 7 jours. Ouvrez-en une nouvelle."
-    }
+    },
+    "offlineTitle": "Nous sommes hors ligne — laissez un message, nous répondrons par e-mail ou ici.",
+    "offlineStart": "Laisser un message",
+    "backAt": "De retour le"
   }
 }

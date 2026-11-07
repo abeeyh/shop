@@ -387,6 +387,14 @@
       "assume": "Chat übernehmen",
       "resolve": "Als gelöst markieren",
       "you": "Du"
+    },
+    "hours": {
+      "title": "Supportzeiten (UTC)",
+      "hint": "Kunden sehen diese Zeiten in ihrer Zeitzone. Außerhalb wird der Chat zum Nachrichtenformular.",
+      "open": "Geöffnet",
+      "start": "Von",
+      "end": "Bis",
+      "error": "Jeder geöffnete Tag braucht eine Start- und Endzeit, die sich unterscheiden."
     }
   },
   "Errors": {
@@ -431,6 +439,9 @@
       "error": "Prüfe die Felder und versuche es erneut.",
       "limited": "Zu viele Nachrichten oder Chats. Warte kurz und versuche es erneut.",
       "closed": "Dieser Chat wurde vor mehr als 7 Tagen geschlossen. Starte einen neuen."
-    }
+    },
+    "offlineTitle": "Wir sind gerade offline — hinterlass eine Nachricht, wir antworten per E-Mail oder hier.",
+    "offlineStart": "Nachricht hinterlassen",
+    "backAt": "Wir sind zurück am"
   }
 }

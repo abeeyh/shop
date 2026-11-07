@@ -285,6 +285,26 @@ test.describe("admin", () => {
     await expect(page.getByTestId("conversation-status")).toHaveText("Resolved");
     await visitor.close();
 
+    // RN-99: fora do horário o chat vira formulário offline e diz quando volta
+    const day = (new Date().getUTCDay() + 3) % 7; // só um dia daqui a 3 dias: agora está fechado
+    await page.goto("/en/admin/equipe");
+    await page.locator(`input[name="open-${day}"]`).check();
+    await page.locator(`input[name="start-${day}"]`).fill("03:00");
+    await page.locator(`input[name="end-${day}"]`).fill("04:00");
+    const hoursForm = page.locator("form", { has: page.locator(`input[name="open-${day}"]`) });
+    await hoursForm.getByRole("button", { name: "Save" }).click();
+    await expect(hoursForm.getByRole("status")).toHaveText("Saved");
+    const late = await browser.newContext({ baseURL });
+    const lp = await late.newPage();
+    await lp.goto("/en");
+    await lp.getByRole("button", { name: "Chat with support" }).click();
+    await expect(lp.getByTestId("chat-offline")).toContainText("We're back at");
+    await expect(lp.getByRole("button", { name: "Leave a message" })).toBeVisible();
+    await late.close();
+    await page.locator(`input[name="open-${day}"]`).uncheck(); // volta a "sempre aberto"
+    await hoursForm.getByRole("button", { name: "Save" }).click();
+    await expect(hoursForm.getByRole("status")).toHaveText("Saved");
+
     // RN-02: depois de sair, o login pede o código
     await page.getByRole("button", { name: "Sign out" }).click();
     await expect(page).toHaveURL(/\/en\/admin\/entrar$/);

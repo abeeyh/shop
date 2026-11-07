@@ -6,6 +6,8 @@ import { z } from "zod";
 import { requireStaff } from "@/features/auth/staff";
 import { routing } from "@/i18n/routing";
 import { env } from "@/lib/env";
+import { toMinutes } from "@/features/support/hours";
+import { replaceHours } from "@/features/support/hours-queries";
 import { isPwnedPassword } from "./hibp";
 import { acceptInvite, createInvite, emailTaken, LastAdminError, openInvite, updateStaff } from "./queries";
 
@@ -79,4 +81,25 @@ export async function acceptStaffInvite(_prev: AcceptState, form: FormData): Pro
   if (await isPwnedPassword(password)) return { error: "pwned" };
   if (!(await acceptInvite(token, name, password))) return { error: "expired" };
   redirect(`/${l}/admin/entrar`);
+}
+
+export type HoursState = { status: "idle" | "ok" | "error" };
+
+// RN-99: horário em UTC; dia sem marcar = fechado
+export async function saveHours(_prev: HoursState, form: FormData): Promise<HoursState> {
+  const l = locale.safeParse(form.get("locale"));
+  if (!l.success) return { status: "error" };
+  const admin = await requireStaff(l.data);
+  const hhmm = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/);
+  const hours = [];
+  for (let weekday = 0; weekday < 7; weekday++) {
+    if (form.get(`open-${weekday}`) !== "on") continue;
+    const start = hhmm.safeParse(form.get(`start-${weekday}`));
+    const end = hhmm.safeParse(form.get(`end-${weekday}`));
+    if (!start.success || !end.success || start.data === end.data) return { status: "error" };
+    hours.push({ weekday, startMin: toMinutes(start.data), endMin: toMinutes(end.data) });
+  }
+  await replaceHours(admin.user.id, hours);
+  refresh();
+  return { status: "ok" };
 }

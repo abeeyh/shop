@@ -387,6 +387,14 @@
       "assume": "Take this chat",
       "resolve": "Mark as resolved",
       "you": "You"
+    },
+    "hours": {
+      "title": "Support hours (UTC)",
+      "hint": "Customers see these hours in their own time zone. Outside them, the chat becomes a message form.",
+      "open": "Open",
+      "start": "From",
+      "end": "To",
+      "error": "Each open day needs a start and an end time, and they can't be equal."
     }
   },
   "Errors": {
@@ -431,6 +439,9 @@
       "error": "Check the fields and try again.",
       "limited": "Too many messages or chats. Wait a moment and try again.",
       "closed": "This chat was closed more than 7 days ago. Start a new one."
-    }
+    },
+    "offlineTitle": "We're offline right now — leave a message and we'll reply by email or here.",
+    "offlineStart": "Leave a message",
+    "backAt": "We're back at"
   }
 }
