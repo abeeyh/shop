@@ -7,11 +7,7 @@
     "badge": "Demnächst verfügbar",
     "title": "Dein WoW-Fortschritt, ohne Grind",
     "subtitle": "Gold, Raids und Mythisch+-Dungeons für Retail US und EU – Preise in USDT, Termine in deiner Zeitzone.",
-    "categories": {
-      "gold": "Gold",
-      "raids": "Raids",
-      "dungeons": "Dungeons"
-    },
+    "tags": ["Gold", "Raids", "Dungeons"],
     "payment": "Bezahlung in USDT oder per Karte"
   }
 }

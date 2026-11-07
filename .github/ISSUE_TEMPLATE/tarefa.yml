@@ -1,0 +1,39 @@
+name: Tarefa
+description: Toda tarefa nasce aqui (docs/13 §5)
+labels: ["tarefa"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Objetivo
+      description: O que muda e por quê, em uma ou duas frases.
+    validations:
+      required: true
+  - type: input
+    id: rules
+    attributes:
+      label: Regras (RN-xx)
+      placeholder: "RN-21, RN-26 — ou nenhuma"
+    validations:
+      required: true
+  - type: input
+    id: docs
+    attributes:
+      label: Docs afetados
+      placeholder: "02, 04, 06…"
+  - type: textarea
+    id: done
+    attributes:
+      label: Pronto quando
+      description: Critérios verificáveis (checklist).
+      value: "- [ ] "
+    validations:
+      required: true
+  - type: input
+    id: agents
+    attributes:
+      label: Agentes
+      placeholder: "guardiao-docs, backend-api, qa-testes…"
+  - type: markdown
+    attributes:
+      value: "Branch: `<tipo>/<nº>-<assunto>` a partir de `dev`. PR para `dev` com `Refs #<nº>`. A issue ganha `dev` → `hom` → `prod` e fecha em produção."

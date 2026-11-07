@@ -5,9 +5,10 @@
 **Um repositório** com o app + infra em `infra/`. Separar repositórios só quando houver um segundo app de código próprio (ex.: mobile); com 3+ apps, virar monorepo (pnpm workspaces + Turborepo).
 
 - Organização GitHub: [ORG]
-- Repositório: `[ORG]/shop` (privado). Branch padrão: `hom`.
-- Proteção de `hom` e `main`: PR obrigatório, CI verde, sem push direto. `hom` aceita só squash; `main` só merge commit (promoção) — fluxo em [13 §5](13-padroes-qualidade.md#5-branches-e-prs).
-- Environments: `homologacao` (branch `hom`) e `production` (tags `v*` da `main`, aprovação manual).
+- Repositório: [`abeeyh/shop`](https://github.com/abeeyh/shop) (privado). Branch padrão: **`dev`**.
+- Fluxo: **issue → branch da tarefa → `dev` → `hom` → `main`** — regras em [13 §5](13-padroes-qualidade.md#5-tarefas-branches-e-prs). Tarefas e fases nas [issues](https://github.com/abeeyh/shop/issues) e [marcos](https://github.com/abeeyh/shop/milestones).
+- Sem push direto em `dev`, `hom` e `main`; CI verde obrigatório. *Plano gratuito em repositório privado não tem proteção de branch: vale por disciplina + checks do CI; com GitHub Pro, ativar rulesets.*
+- Environments: `homologacao` (branch `hom`) e `production` (tags `v*` da `main`, aprovação manual). `dev` não tem ambiente: só CI.
 
 ```
 [projeto]/
@@ -48,6 +49,7 @@ Regras:
 | Ambiente | Onde | Banco |
 |----------|------|-------|
 | Local | `pnpm dev` + `docker compose` (`compose.yaml`) | Postgres 17 na porta 5433 e Valkey 8 na 6380 (mudáveis por `SHOP_DB_PORT` / `SHOP_CACHE_PORT`) |
+| Integração | branch `dev` — só CI, sem deploy | — |
 | Homologação | branch `hom`, deploy automático — [onde] | Banco próprio, dados fictícios; pagamento em modo teste |
 | Produção | tag `vX.Y.Z` da `main`, aprovação manual — [onde] | Banco próprio; pagamento em modo real |
 
@@ -55,11 +57,12 @@ Regras:
 
 Pipeline completo em [13](13-padroes-qualidade.md#7-cicd). Resumo:
 
-1. PR: lint, typecheck, testes com cobertura, build, E2E, audit, título semântico.
-2. Merge em `hom`: build da imagem → registry → deploy em homologação → migrações → smoke test.
-3. PR de promoção `hom` → `main` (merge commit) → release-please atualiza o Release PR.
-4. Merge do Release PR: tag `vX.Y.Z` → produção com aprovação manual → back-merge `main` → `hom`.
-5. Rollback: redeploy da tag anterior. Infra: `terraform plan` no PR, `apply` manual.
+1. PR para `dev` (com `Refs #N`; a issue fecha só em produção): lint, typecheck, testes com cobertura, build, E2E, audit, título semântico.
+2. PR de promoção `dev` → `hom` (merge commit).
+3. Merge em `hom`: build da imagem → registry → deploy em homologação → migrações → smoke test.
+4. PR de promoção `hom` → `main` (merge commit) → release-please atualiza o Release PR.
+5. Merge do Release PR: tag `vX.Y.Z` → produção com aprovação manual → back-merge `main` → `hom` e `main` → `dev`.
+6. Rollback: redeploy da tag anterior. Infra: `terraform plan` no PR, `apply` manual.
 
 ## Operação
 

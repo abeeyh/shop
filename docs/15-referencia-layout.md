@@ -29,11 +29,12 @@ Template HTML de **marketplace de NFT** (Home "NFT Home Two"), da ThemeMarch, co
 
 | # | Seção no template | Na loja (WoW) | Observação |
 |---|-------------------|---------------|-----------|
-| 1 | Header: logo, menu com submenus, notificações, perfil com saldo em ETH, botões "Create" e "Connect Wallet" | Logo; menu **Gold · Raids · Dungeons · Como funciona · Suporte**; seletores de **região**, **idioma** e **fuso**; carrinho; Entrar/Conta | Sem carteira nem notificações no MVP |
+| 1 | Header: logo, menu com submenus, notificações, perfil com saldo em ETH, botões "Create" e "Connect Wallet" | Logo; **busca de produtos** (RN-100); menu **Gold · Raids · Dungeons · Como funciona · Suporte**; seletores de **região**, **idioma** e **fuso**; carrinho; Entrar/Conta | Sem carteira nem notificações no MVP |
 | 2 | Hero: título forte, subtítulo, 2 CTAs | Título + subtítulo; CTA principal **"Comprar gold"** e secundário (gradient-outline) **"Agendar raid"** | Uma ação principal por tela |
 | 3 | Top Category (6 cards com imagem) | **3 categorias**: Gold, Raids, Dungeons | `CategoryCard` |
 | 4 | Top Seller (cards de vendedores com Follow) | Removida | Não existe vendedor público |
 | 5 | Live Auction (cards com **contagem regressiva**, lance atual) | **Próximas raids**: slot no fuso do cliente, contagem até o início, vagas restantes, preço em USDT | Encaixe perfeito com RN-16 e RN-83 |
+| 5b | Página Explore (filtro lateral) | **Produtos** (`/wow/produtos`): busca + filtros (categoria, região, preço, promoção, disponível) e ordenação; gaveta de filtros no celular | RN-100 a RN-104 |
 | 6 | New Items com abas de filtro | **Serviços** com abas Todos / Gold / Raids / Dungeons + filtro de região | `FilterTabs` + `ServiceCard` |
 | 7 | Top Collection (volume, preço mínimo) | **Mais vendidos** | `BestSellerCard` |
 | 8 | Competitive Advantages (4 blocos) | **Pagamento em USDT ou cartão · Self-play seguro (RN-03) · 6 idiomas e seu fuso · Entrega com prova (RN-52)** | `AdvantageItem` |

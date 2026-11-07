@@ -18,20 +18,38 @@ Subagentes do Claude Code em [`.claude/agents/`](../.claude/agents/). Cada um te
 
 Modelo `opus` onde errar custa caro (conformidade, dinheiro, segurança, diagnóstico); `sonnet` na implementação do dia a dia.
 
+## Papel de cada agente
+
+Toda decisão é tomada no papel do profissional sênior da área e citada como `Como <papel>: <decisão> — <porquê>` ([CLAUDE.md](../CLAUDE.md)).
+
+| Agente | Papel |
+|--------|-------|
+| `guardiao-docs` | arquiteto de software sênior e guardião de requisitos |
+| `frontend-ui` | engenheiro front-end sênior, especialista em design systems, acessibilidade e responsividade |
+| `backend-api` | engenheiro de software back-end sênior (Node.js, PostgreSQL, arquitetura limpa) |
+| `pagamentos` | engenheiro de pagamentos sênior (fintech, cripto, antifraude e conciliação) |
+| `i18n` | especialista sênior em internacionalização e localização de jogos |
+| `infra` | engenheiro de DevOps/SRE sênior |
+| `seguranca` | engenheiro de segurança de aplicações (AppSec) sênior |
+| `qa-testes` | engenheiro de QA sênior, especialista em testes automatizados e casos de abuso |
+| `analista-bugs` | engenheiro SRE sênior especializado em diagnóstico de incidentes |
+
 ## Fluxo por tarefa
 
 ```mermaid
 flowchart LR
-  P[Pedido] --> G[guardiao-docs]
+  P[Pedido] --> IS[Issue no GitHub]
+  IS --> G[guardiao-docs]
   G -- conflito --> U[Pergunta ao usuário]
   G -- ok --> I[Implementação<br/>backend-api / pagamentos → frontend-ui]
   I --> T[i18n<br/>se houver texto]
   T --> Q[qa-testes]
   Q --> S[seguranca<br/>se tocar auth, dinheiro, dados, logs, infra]
-  S --> PR[PR para hom]
-  PR --> H[homologação] --> M[promoção → main → release]
+  S --> PR[PR para dev<br/>Refs #N]
+  PR --> D[dev] --> H[hom / homologação] --> M[main / produção]
 ```
 
+- Todo pedido vira (ou já é) uma issue; o agente trabalha na branch `<tipo>/<nº>-<assunto>` criada de `dev`.
 - Tarefas que atravessam camadas: backend (contrato da API) primeiro, depois UI, depois traduções.
 - Tudo que toca `checkout`, `src/lib/payments`, `src/lib/fx` ou `/api/webhooks/*` é do `pagamentos` e passa **sempre** pelo `seguranca`.
 - Mudança em CI, deploy, branches ou observabilidade é do `infra`.
@@ -45,7 +63,7 @@ flowchart LR
   IS --> Q[qa-testes<br/>teste que reproduz]
   Q --> F[agente da área corrige<br/>fix/* ou hotfix/*]
   F --> S[seguranca se necessário]
-  S --> PR[PR → hom → main]
+  S --> PR[PR → dev → hom → main]
 ```
 
 ## Regras comuns

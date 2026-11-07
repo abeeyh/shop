@@ -1,9 +1,9 @@
-# PRs de dependência entram por hom, como qualquer mudança (docs/13 §5)
+# PRs de dependência entram por dev, como qualquer mudança (docs/13 §5)
 version: 2
 updates:
   - package-ecosystem: npm
     directory: /
-    target-branch: hom
+    target-branch: dev
     schedule:
       interval: weekly
     commit-message:
@@ -11,17 +11,24 @@ updates:
     groups:
       minor-patch:
         update-types: [minor, patch]
+    ignore:
+      # Node 24 LTS (.nvmrc): tipos acompanham o runtime; troca de LTS é manual
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
-    target-branch: hom
+    target-branch: dev
     schedule:
       interval: weekly
     commit-message:
       prefix: "ci(deps)"
   - package-ecosystem: docker
     directory: /
-    target-branch: hom
+    target-branch: dev
     schedule:
       interval: weekly
+    ignore:
+      - dependency-name: node
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: "chore(deps)"

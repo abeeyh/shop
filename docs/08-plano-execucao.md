@@ -24,7 +24,8 @@ gantt
 ## F0 — Fundação (padrão para todo projeto)
 
 - [ ] Domínio e DNS.
-- [ ] Repositório `[ORG]/shop`, branches `hom` (padrão) e `main` protegidas, Environments `homologacao` e `production` ([13 §5](13-padroes-qualidade.md#5-branches-e-prs)).
+- [x] Repositório [`abeeyh/shop`](https://github.com/abeeyh/shop) privado, branches `dev` (padrão), `hom` e `main`, tarefas como issues por marco ([13 §5](13-padroes-qualidade.md#5-tarefas-branches-e-prs)).
+- [ ] Environments `homologacao` e `production` (com a hospedagem). Proteção de branch exige GitHub Pro.
 - [x] App base (Next.js 16 + TypeScript + Tailwind 4), `output: "standalone"`, `Dockerfile` (sem root, healthcheck). *shadcn/ui entra junto com o primeiro componente que precisar dele.*
 - [x] Idiomas: `next-intl` com os 6 idiomas, detecção, prefixos `/pt-br`, `/zh-hant`, `/zh-hans`, checagem de chaves (`pnpm i18n:check`).
 - [x] `docker compose` local (Postgres 17, Valkey 8).
@@ -34,7 +35,7 @@ gantt
 - [ ] Infra como código (Terraform) do ambiente de homologação.
 - [x] CI (lint, format, typecheck, i18n, testes com cobertura, build, audit, título semântico, coautoria de IA, destino do PR) e back-merge `main` → `hom`.
 - [ ] Build/push da imagem + deploy em homologação a partir de `hom` (depende da hospedagem).
-- [ ] E2E com Playwright (entra com o primeiro fluxo da F1).
+- [x] E2E com Playwright no CI (celular e desktop): idiomas, 404, rolagem horizontal, `x-request-id`, health.
 - [x] release-please (config + manifest; primeira release `0.1.0`), Dependabot (alvo `hom`).
 - [ ] Backup do banco (depende da hospedagem).
 - [x] `logger` pino com mascaramento + envio ao Better Stack quando há token; `/api/health`.
@@ -82,6 +83,7 @@ gantt
 - [ ] Chat próprio: SSE + PostgreSQL + pub/sub do Valkey; widget em todas as páginas; fila no dashboard (RN-92, RN-93, RN-98).
 - [ ] E-mail de mensagem nova com link assinado (RN-94); aviso de credenciais e mascaramento (RN-95); anexos de imagem (RN-96); limites e CAPTCHA (RN-97).
 - [ ] Horário de atendimento e modo offline (RN-99).
+- [ ] Documentação interna `/admin/docs` para admin e suporte (RN-74).
 
 **Pronto quando:** um visitante em `zh-Hant` abre conversa, um atendente de suporte responde em tempo real pelo dashboard, o visitante fecha a aba e recebe o e-mail com o link, retoma a conversa; e o suporte não consegue abrir a tela de preços ou cupons (403).
 

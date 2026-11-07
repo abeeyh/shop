@@ -3,8 +3,6 @@ import { setRequestLocale } from "next-intl/server";
 import { use } from "react";
 import { ComingSoonTemplate } from "@/components/templates/ComingSoonTemplate";
 
-const CATEGORIES = ["gold", "raids", "dungeons"] as const;
-
 export default function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale } = use(params);
   setRequestLocale(locale);
@@ -15,7 +13,8 @@ export default function HomePage({ params }: PageProps<"/[locale]">) {
       badge={t("badge")}
       title={t("title")}
       subtitle={t("subtitle")}
-      tags={CATEGORIES.map((key) => t(`categories.${key}`))}
+      // texto de marketing da página "em breve"; as categorias reais vêm do banco na vitrine (RN-13, #15)
+      tags={t.raw("tags") as string[]}
       footnote={t("payment")}
     />
   );

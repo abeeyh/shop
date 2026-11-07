@@ -3,9 +3,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [hom, main]
+    branches: [dev, hom, main]
   push:
-    branches: [hom, main]
+    branches: [dev, hom, main]
 
 permissions:
   contents: read
@@ -17,10 +17,28 @@ concurrency:
 jobs:
   quality:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.6-alpine
+        env:
+          POSTGRES_USER: shop
+          POSTGRES_PASSWORD: shop
+          POSTGRES_DB: shop
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U shop" --health-interval 5s --health-timeout 5s --health-retries 10
+      valkey:
+        image: valkey/valkey:8.1-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "valkey-cli ping" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://shop:shop@localhost:5432/shop
+      VALKEY_URL: redis://localhost:6379
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -29,14 +47,26 @@ jobs:
       - run: pnpm format:check
       - run: pnpm typecheck
       - run: pnpm i18n:check
+      - run: pnpm db:migrate
       - run: pnpm test:coverage
       - run: pnpm build
+      - name: E2E (Playwright, celular e desktop)
+        run: |
+          pnpm exec playwright install --with-deps chromium
+          pnpm e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7
       - run: pnpm audit --prod --audit-level high
 
   pr-rules:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pull-requests: read
     steps:
       - uses: amannn/action-semantic-pull-request@v5
@@ -63,7 +93,7 @@ jobs:
             support
             observability
           requireScope: false
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Commits sem IA como coautora (CONTRIBUTING.md)
@@ -74,9 +104,28 @@ jobs:
             exit 1
           fi
       - name: Destino correto (docs/13 §5)
-        if: github.base_ref == 'main'
+        env:
+          BASE: ${{ github.base_ref }}
+          HEAD: ${{ github.head_ref }}
         run: |
-          case "${{ github.head_ref }}" in
-            hom|hotfix/*|release-please--*) ;;
-            *) echo "::error::PR para main só de hom, hotfix/* ou release-please."; exit 1 ;;
+          case "$BASE:$HEAD" in
+            main:hom|main:hotfix/*|main:release-please--*) ;;
+            hom:dev|hom:main) ;;
+            dev:main|dev:hom|dev:dependabot/*) ;;
+            dev:feat/[0-9]*|dev:fix/[0-9]*|dev:docs/[0-9]*|dev:refactor/[0-9]*|dev:test/[0-9]*|dev:chore/[0-9]*|dev:ci/[0-9]*|dev:perf/[0-9]*|dev:build/[0-9]*) ;;
+            *) echo "::error::PR de '$HEAD' para '$BASE' fora do fluxo. Tarefa: <tipo>/<nº>-<assunto> → dev; dev → hom; hom → main."; exit 1 ;;
           esac
+      - name: Tarefa linkada a uma issue (docs/13 §5)
+        if: github.base_ref == 'dev' && !startsWith(github.head_ref, 'dependabot/') && github.head_ref != 'main' && github.head_ref != 'hom'
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          # dev é a branch padrão: Closes/Fixes/Resolves fechariam a issue antes de chegar em produção
+          if printf '%s' "$BODY" | grep -qiE '(close[sd]?|fix(e[sd])?|resolve[sd]?) #[0-9]+'; then
+            echo "::error::Use 'Refs #<nº>' (não Closes/Fixes/Resolves): a issue só fecha em produção."
+            exit 1
+          fi
+          if ! printf '%s' "$BODY" | grep -qiE 'refs #[0-9]+'; then
+            echo "::error::PR de tarefa precisa de 'Refs #<nº da issue>' no corpo."
+            exit 1
+          fi

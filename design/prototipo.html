@@ -1,0 +1,1237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shop — protótipo navegável</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<!--
+  Protótipo de layout (issue #53). NÃO é código do produto: aqui o JavaScript simula o que,
+  no app real, o servidor decide (docs/04 — "O front só exibe"). Tokens: docs/11. Estrutura: docs/15.
+  Figma: abra no Chrome, navegue até a página e capture com a extensão html.to.design.
+  ?clean=1 esconde o índice do protótipo.
+-->
+<style>
+:root {
+  --radius: 15px;
+  --heading: #ffffff;
+  --link: #6b95ff;
+  --error-text: #f43f5e;
+  --gradient-from: #fc466b;
+  --gradient-to: #3f5efb;
+  --background: #080326;
+  --foreground: #cecdd4;
+  --card: #110d2e;
+  --primary: #2f63e6;
+  --primary-hover: #2556cc;
+  --primary-foreground: #ffffff;
+  --secondary: #ffffff14;
+  --muted: #ffffff14;
+  --muted-foreground: #9c9aa8;
+  --accent: #ffffff1f;
+  --destructive: #e11d48;
+  --border: #ffffff1a;
+  --input: #0f0935;
+  --ring: #6b95ff;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --font-cjk: "PingFang TC", "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", "Noto Sans CJK TC", "Noto Sans CJK SC", sans-serif;
+  --font-sans: "Mulish", var(--font-cjk);
+  --font-heading: "Inter", var(--font-cjk);
+  --grad: linear-gradient(116.85deg, var(--gradient-from), var(--gradient-to));
+  --grad-20: linear-gradient(116.85deg, #fc466b33, #3f5efb33);
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--background); color: var(--foreground); font: 400 16px/1.6 var(--font-sans); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4 { font-family: var(--font-heading); color: var(--heading); line-height: 1.2; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; }
+h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; }
+h3 { font-size: 1.25rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 6px; }
+button, input, select, textarea { font: inherit; color: inherit; }
+.container { width: 100%; max-width: 1350px; margin: 0 auto; padding: 0 16px; }
+@media (min-width: 768px) { .container { padding: 0 20px; } }
+.skip { position: absolute; left: -999px; top: 8px; }
+.skip:focus { left: 8px; z-index: 100; background: var(--card); padding: 8px 12px; }
+.muted { color: var(--muted-foreground); }
+.small { font-size: 14px; }
+.xs { font-size: 12px; }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.between { justify-content: space-between; }
+.grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); }
+.section { padding-block: 48px; }
+.section-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* Átomos */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 24px; border-radius: 999px; border: 1px solid transparent; font: 600 14px/1 var(--font-heading); cursor: pointer; transition: background .2s, transform .2s; white-space: nowrap; }
+.btn-primary { background: var(--primary); color: var(--primary-foreground); }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-outline { color: var(--heading); background: linear-gradient(var(--background), var(--background)) padding-box, var(--grad) border-box; }
+.btn-outline:hover { background: linear-gradient(var(--card), var(--card)) padding-box, var(--grad) border-box; }
+.btn-ghost { background: transparent; color: var(--foreground); }
+.btn-ghost:hover { background: var(--accent); }
+.btn-danger { background: var(--destructive); color: #fff; }
+.btn-sm { min-height: 36px; padding: 0 14px; font-size: 13px; }
+.btn-block { width: 100%; }
+.btn[disabled] { opacity: .5; pointer-events: none; }
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: var(--muted); color: var(--muted-foreground); font: 600 12px/1.4 var(--font-heading); }
+.badge-ok { background: #34d39922; color: var(--success); }
+.badge-warn { background: #fbbf2422; color: var(--warning); }
+.badge-err { background: #f43f5e22; color: var(--error-text); }
+.badge-info { background: #6b95ff22; color: var(--link); }
+.input, .select, textarea.input { width: 100%; min-height: 44px; padding: 10px 14px; border-radius: 5px; border: 1px solid var(--border); background: var(--input); color: var(--heading); }
+.select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%), linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%); background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 36px; }
+label.field { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--muted-foreground); }
+label.field > span { color: var(--foreground); font-weight: 600; }
+.hint { font-size: 12px; color: var(--muted-foreground); }
+.err { color: var(--error-text); font-size: 13px; }
+
+/* Moléculas */
+.card { background: var(--grad-20); border-radius: var(--radius); padding: 20px; transition: transform .25s; }
+.card-solid { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+a.card:hover, .card.hover:hover { transform: scale(1.02); text-decoration: none; }
+.thumb { aspect-ratio: 16/10; border-radius: 10px; background: var(--grad); display: grid; place-items: center; color: #fff; margin-bottom: 14px; position: relative; overflow: hidden; }
+.thumb svg { width: 56px; height: 56px; opacity: .9; }
+.thumb .tag { position: absolute; top: 10px; left: 10px; background: #080326d9; color: #fff; }
+.price { font: 700 20px/1.2 var(--font-heading); color: var(--heading); }
+.price s { color: var(--muted-foreground); font-weight: 500; font-size: 14px; margin-right: 6px; }
+.estimate { font-size: 13px; color: var(--muted-foreground); }
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.tab { min-height: 40px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--foreground); cursor: pointer; font: 600 14px var(--font-heading); }
+.tab[aria-selected="true"] { background: var(--primary); border-color: var(--primary); color: #fff; }
+.countdown { display: inline-flex; gap: 6px; font: 600 14px var(--font-heading); color: var(--heading); font-variant-numeric: tabular-nums; }
+.countdown b { background: var(--muted); padding: 4px 8px; border-radius: 6px; }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--card); border: 1px solid var(--border); padding: 12px 20px; border-radius: 999px; z-index: 60; box-shadow: 0 10px 40px #0008; }
+.notice { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 10px; background: #6b95ff14; border: 1px solid #6b95ff33; font-size: 14px; }
+.notice.warn { background: #fbbf2414; border-color: #fbbf2433; }
+.notice svg { flex: 0 0 18px; margin-top: 2px; }
+.kv { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; }
+.kv + .kv { border-top: 1px solid var(--border); }
+.total { font: 700 22px var(--font-heading); color: var(--heading); }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--border); border-radius: 999px; }
+.stepper button { width: 44px; height: 44px; border: 0; background: transparent; color: var(--heading); font-size: 20px; cursor: pointer; border-radius: 999px; }
+.stepper output { min-width: 64px; text-align: center; font-weight: 700; color: var(--heading); }
+.choice { display: flex; gap: 12px; align-items: center; padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; background: var(--input); }
+.choice:has(input:checked) { border-color: var(--primary); background: #2f63e61f; }
+.choice input { accent-color: var(--primary); width: 18px; height: 18px; }
+.choices { display: grid; gap: 10px; }
+table.table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.table th { text-align: left; color: var(--muted-foreground); font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.table td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); background: var(--card); }
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.timeline li { display: grid; grid-template-columns: 28px 1fr; gap: 12px; padding-bottom: 18px; position: relative; }
+.timeline li::before { content: ""; position: absolute; left: 13px; top: 28px; bottom: 0; width: 2px; background: var(--border); }
+.timeline li:last-child::before { display: none; }
+.dot { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--muted); color: var(--muted-foreground); font-size: 13px; font-weight: 700; }
+.timeline li.done .dot { background: var(--success); color: #062; }
+.timeline li.current .dot { background: var(--primary); color: #fff; box-shadow: 0 0 0 4px #2f63e633; }
+
+/* Organismos: header */
+.site-header { position: sticky; top: 0; z-index: 40; background: #110d2ef2; backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+.header-inner { display: flex; align-items: center; gap: 16px; min-height: 72px; }
+.logo { display: flex; align-items: center; gap: 10px; font: 700 20px var(--font-heading); color: var(--heading); }
+.logo-mark { width: 34px; height: 34px; border-radius: 10px; background: var(--grad); display: grid; place-items: center; color: #fff; font-size: 16px; }
+.main-nav { display: none; gap: 4px; margin-left: 12px; }
+.main-nav a { color: var(--foreground); padding: 8px 12px; border-radius: 999px; font: 600 14px var(--font-heading); }
+.main-nav a:hover, .main-nav a[aria-current="page"] { background: var(--accent); color: var(--heading); text-decoration: none; }
+.header-tools { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.pref { display: none; }
+.pref .select { min-height: 36px; padding: 6px 30px 6px 12px; border-radius: 999px; font-size: 13px; width: auto; }
+.icon-btn { position: relative; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--heading); cursor: pointer; }
+.icon-btn:hover { background: var(--accent); }
+.icon-btn .count { position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--gradient-from); color: #fff; font: 700 11px/20px var(--font-heading); }
+.menu-btn { display: grid; }
+.mobile-panel { border-top: 1px solid var(--border); padding-block: 16px; display: grid; gap: 12px; }
+.mobile-panel a { color: var(--heading); font: 600 16px var(--font-heading); padding: 10px 0; }
+@media (min-width: 1024px) {
+  .main-nav { display: flex; }
+  .pref { display: flex; gap: 8px; }
+  .menu-btn { display: none; }
+  .mobile-panel { display: none !important; }
+}
+
+/* Busca e filtros (RN-100 a RN-104) */
+.search { position: relative; flex: 1; max-width: 360px; display: none; }
+.search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted-foreground); pointer-events: none; }
+.search .input { min-height: 40px; padding-left: 40px; border-radius: 999px; }
+.mobile-panel .search { display: block; max-width: none; }
+@media (min-width: 768px) { .header-inner > .search { display: block; } }
+.catalog { display: grid; gap: 24px; align-items: start; }
+@media (min-width: 1024px) { .catalog { grid-template-columns: 280px 1fr; } .filters { position: sticky; top: 96px; } }
+.filters summary { cursor: pointer; font: 700 16px var(--font-heading); color: var(--heading); list-style: none; display: flex; justify-content: space-between; align-items: center; }
+.filters summary::-webkit-details-marker { display: none; }
+.filters .group { border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px; display: grid; gap: 8px; }
+.filters .group > strong { color: var(--heading); font-size: 14px; }
+.check { display: flex; gap: 10px; align-items: center; min-height: 36px; cursor: pointer; font-size: 14px; }
+.check input { accent-color: var(--primary); width: 18px; height: 18px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px 4px 12px; border-radius: 999px; background: var(--accent); color: var(--heading); font-size: 13px; }
+.chip button { width: 24px; height: 24px; border-radius: 50%; border: 0; background: transparent; color: var(--heading); cursor: pointer; }
+.chip button:hover { background: var(--muted); }
+.toolbar { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 16px; }
+.toolbar .select { width: auto; min-height: 40px; }
+.empty { text-align: center; padding: 48px 20px; display: grid; gap: 12px; justify-items: center; }
+
+/* Hero */
+.hero { padding-block: 56px 32px; display: grid; gap: 32px; align-items: center; }
+@media (min-width: 1024px) { .hero { grid-template-columns: 1.1fr .9fr; padding-block: 88px 48px; } }
+.hero-visual { border-radius: 24px; padding: 2px; background: var(--grad); }
+.hero-visual > div { border-radius: 22px; background: var(--card); padding: 28px; display: grid; gap: 14px; }
+.hero-stat { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: 12px; background: var(--muted); }
+.hero-stat .ico { width: 44px; height: 44px; border-radius: 12px; background: var(--grad); display: grid; place-items: center; color: #fff; flex: 0 0 44px; }
+
+/* Footer */
+footer.site-footer { border-top: 1px solid var(--border); margin-top: 64px; padding: 48px 0 24px; background: #05001a; }
+.footer-grid { display: grid; gap: 32px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.footer-grid h4 { font-size: 16px; margin-bottom: 12px; }
+.footer-grid ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.footer-grid a { color: var(--foreground); font-size: 14px; }
+.footer-bottom { margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; gap: 12px; justify-content: space-between; flex-wrap: wrap; font-size: 13px; color: var(--muted-foreground); }
+
+/* Layouts de página */
+.two-col { display: grid; gap: 28px; }
+@media (min-width: 1024px) { .two-col { grid-template-columns: 1.2fr .8fr; align-items: start; } .sticky { position: sticky; top: 96px; } }
+.breadcrumb { display: flex; gap: 8px; font-size: 14px; color: var(--muted-foreground); padding: 20px 0; flex-wrap: wrap; }
+.qr { width: 180px; height: 180px; background: #fff; border-radius: 12px; padding: 10px; }
+.addr { font-family: ui-monospace, monospace; word-break: break-all; background: var(--input); padding: 12px; border-radius: 8px; border: 1px solid var(--border); color: var(--heading); }
+
+/* Admin */
+.admin { display: grid; min-height: calc(100vh - 72px); }
+@media (min-width: 1024px) { .admin { grid-template-columns: 240px 1fr; } }
+.admin-side { background: var(--card); border-right: 1px solid var(--border); padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
+.admin-side a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: var(--foreground); font: 600 14px var(--font-heading); }
+.admin-side a:hover, .admin-side a[aria-current="page"] { background: var(--accent); color: var(--heading); text-decoration: none; }
+.admin-main { padding: 24px 16px 48px; min-width: 0; }
+@media (min-width: 768px) { .admin-main { padding: 32px; } }
+.kpis { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 24px; }
+.kpi { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
+.kpi strong { display: block; font: 700 28px var(--font-heading); color: var(--heading); }
+.modal-back { position: fixed; inset: 0; background: #000c; display: grid; place-items: center; z-index: 70; padding: 16px; }
+.modal { width: min(560px, 100%); max-height: 90vh; overflow: auto; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; display: grid; gap: 16px; }
+.form-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.support { display: grid; gap: 16px; }
+@media (min-width: 1024px) { .support { grid-template-columns: 320px 1fr; } }
+.conv { display: flex; gap: 10px; padding: 12px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; width: 100%; text-align: left; background: transparent; }
+.conv:hover, .conv[aria-current="true"] { background: var(--accent); border-color: var(--border); }
+
+/* Chat */
+.chat-launcher { position: fixed; right: 16px; bottom: 16px; z-index: 50; width: 60px; height: 60px; border-radius: 50%; border: 0; background: var(--grad); color: #fff; cursor: pointer; box-shadow: 0 10px 30px #3f5efb66; display: grid; place-items: center; }
+.chat-window { position: fixed; right: 16px; bottom: 88px; z-index: 50; width: min(380px, calc(100vw - 32px)); height: min(560px, calc(100vh - 120px)); background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; box-shadow: 0 20px 60px #000a; overflow: hidden; }
+.chat-head { padding: 14px 16px; background: var(--grad-20); display: flex; align-items: center; gap: 10px; }
+.chat-body { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.msg { max-width: 82%; padding: 10px 14px; border-radius: 14px; font-size: 14px; white-space: pre-wrap; }
+.msg.me { align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 4px; }
+.msg.them { align-self: flex-start; background: var(--muted); color: var(--heading); border-bottom-left-radius: 4px; }
+.msg.sys { align-self: center; background: transparent; color: var(--muted-foreground); font-size: 12px; text-align: center; }
+.chat-foot { border-top: 1px solid var(--border); padding: 10px; display: flex; gap: 8px; align-items: end; }
+.chat-foot textarea { resize: none; min-height: 44px; max-height: 120px; }
+
+/* Índice do protótipo */
+.proto-index { position: fixed; left: 16px; bottom: 16px; z-index: 55; }
+.proto-index details { background: #000d; border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px; max-width: 260px; font-size: 13px; }
+.proto-index summary { cursor: pointer; font-weight: 700; color: var(--heading); }
+.proto-index ul { margin: 8px 0 0; padding-left: 16px; display: grid; gap: 4px; }
+body.clean .proto-index { display: none; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#app" data-i18n="skip">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="logo" href="#/" aria-label="Shop — home"><span class="logo-mark" aria-hidden="true">S</span>Shop</a>
+    <nav class="main-nav" aria-label="Main" id="main-nav"></nav>
+    <form class="search" role="search" data-action="search">
+      <label class="sr-only" for="q" data-i18n="searchLabel">Search products</label>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input class="input" id="q" name="q" type="search" autocomplete="off" data-search-input />
+    </form>
+    <div class="header-tools">
+      <div class="pref">
+        <label class="sr-only" for="sel-region" data-i18n="region">Region</label>
+        <select class="select" id="sel-region" data-pref="region"></select>
+        <label class="sr-only" for="sel-lang" data-i18n="language">Language</label>
+        <select class="select" id="sel-lang" data-pref="lang"></select>
+        <label class="sr-only" for="sel-tz" data-i18n="timezone">Time zone</label>
+        <select class="select" id="sel-tz" data-pref="tz"></select>
+      </div>
+      <a class="icon-btn" href="#/cart" id="cart-btn" aria-label="Cart">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
+        <span class="count" id="cart-count" hidden>0</span>
+      </a>
+      <a class="btn btn-ghost btn-sm" href="#/admin" data-i18n="signIn">Sign in</a>
+      <button class="icon-btn menu-btn" id="menu-btn" aria-expanded="false" aria-controls="mobile-panel" aria-label="Menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="container mobile-panel" id="mobile-panel" hidden></div>
+</header>
+
+<main id="app" tabindex="-1"></main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid" id="footer-grid"></div>
+    <div class="footer-bottom"><span id="footer-copy"></span><span id="footer-tz"></span></div>
+  </div>
+</footer>
+
+<button class="chat-launcher" id="chat-launcher" aria-expanded="false" aria-controls="chat-window" aria-label="Support chat">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>
+</button>
+<section class="chat-window" id="chat-window" hidden aria-label="Support chat"></section>
+
+<nav class="proto-index" aria-label="Prototype pages">
+  <details>
+    <summary>Páginas do protótipo</summary>
+    <ul>
+      <li><a href="#/">Home</a></li>
+      <li><a href="#/products">Produtos (busca e filtros)</a></li>
+      <li><a href="#/products?q=mithic">Busca com erro de digitação</a></li>
+      <li><a href="#/products?q=zzz">Busca sem resultado</a></li>
+      <li><a href="#/c/gold">Categoria — Gold</a></li>
+      <li><a href="#/c/raids">Categoria — Raids</a></li>
+      <li><a href="#/p/gold-us">Produto — Gold</a></li>
+      <li><a href="#/p/raid-heroic-us">Produto — Raid</a></li>
+      <li><a href="#/p/mplus-us">Produto — Mythic+</a></li>
+      <li><a href="#/cart">Carrinho</a></li>
+      <li><a href="#/checkout">Checkout</a></li>
+      <li><a href="#/invoice">Fatura USDT</a></li>
+      <li><a href="#/order">Pedido</a></li>
+      <li><a href="#/admin">Admin — Dashboard</a></li>
+      <li><a href="#/admin/orders">Admin — Pedidos</a></li>
+      <li><a href="#/admin/categories">Admin — Categorias</a></li>
+      <li><a href="#/admin/products">Admin — Produtos</a></li>
+      <li><a href="#/admin/promotions">Admin — Promoções</a></li>
+      <li><a href="#/admin/coupons">Admin — Cupons</a></li>
+      <li><a href="#/admin/support">Suporte — Fila do chat</a></li>
+      <li><a href="#/admin/docs">Admin — Documentação</a></li>
+    </ul>
+  </details>
+</nav>
+
+<div id="modal-root"></div>
+<div id="toast-root" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* ===== Textos (6 idiomas). Admin/suporte: en e pt-BR; os demais caem no inglês. ===== */
+const LANGS = { en: "English", fr: "Français", de: "Deutsch", "pt-BR": "Português (BR)", "zh-Hant": "繁體中文", "zh-Hans": "简体中文" };
+const I18N = {
+  en: {
+    skip: "Skip to content", region: "Region", language: "Language", timezone: "Time zone", signIn: "Sign in", cart: "Cart",
+    navGold: "Gold", navRaids: "Raids", navDungeons: "Dungeons", navHow: "How it works", navSupport: "Support",
+    heroBadge: "WoW Retail · US & EU", heroTitle: "Your WoW progress, without the grind",
+    heroText: "Gold, raid carries and Mythic+ dungeons. Priced in USDT, scheduled in your time zone, in your language.",
+    heroCta: "Buy gold", heroCta2: "Book a raid",
+    statUsdt: "Pay in USDT or by card", statUsdtSub: "One price, no surprise exchange rates",
+    statTz: "Your time zone, detected", statTzSub: "Raid times shown in {tz}",
+    statSafe: "Self-play, account safe", statSafeSub: "We never ask for your Battle.net password",
+    categories: "Categories", viewAll: "View all", upcoming: "Upcoming raids", upcomingSub: "Times in your time zone ({tz})",
+    services: "Services", tabAll: "All", bestSellers: "Best sellers",
+    advTitle: "Why players choose us",
+    adv1: "USDT or card", adv1t: "Crypto with no chargebacks, or card with 3-D Secure.",
+    adv2: "Self-play only", adv2t: "You play along. We never touch your account.",
+    adv3: "6 languages, your time", adv3t: "Everything in your language and time zone.",
+    adv4: "Proof of delivery", adv4t: "Every order closes with proof attached.",
+    payBanner: "Pay in USDT or by card", payBannerText: "Prices are set in USDT. Card payments are converted at a rate locked for 15 minutes.",
+    browse: "Browse services", accepted: "Accepted payments",
+    seatsLeft: "{n} seats left", soldOut: "Sold out", startsIn: "Starts in", endsIn: "Ends in", from: "from",
+    serverTime: "Server time: {time}", chooseSlot: "Choose slot", details: "Details", add: "Add to cart", added: "Added to cart",
+    promo: "-{p}% · limited time", estimateNote: "≈ {v} (estimate; you are charged in USDT)",
+    realm: "Realm", faction: "Faction", alliance: "Alliance", horde: "Horde", character: "Character name", characterHint: "The character that receives the gold",
+    amount: "Amount", perK: "per 1,000 gold", difficulty: "Difficulty", loot: "Loot option", lootNone: "Clear only", lootArmor: "Armor-type priority", lootFull: "Full loot funnel",
+    slot: "Date and time", keyLevel: "Key level", runs: "Runs", timed: "Timed (in time)",
+    selfPlay: "Self-play: you play your own character. We never ask for your Battle.net password.",
+    total: "Total", subtotal: "Subtotal", discount: "Discount", coupon: "Coupon", apply: "Apply", remove: "Remove",
+    couponInvalid: "Invalid or expired coupon.", couponPlaceholder: "Coupon code",
+    bestRule: "Coupon and promotion don't stack — the bigger discount applies.",
+    viaPromo: "promotion (-{p}%)", viaCoupon: "coupon {c}", emptyCart: "Your cart is empty.", checkout: "Checkout", continue: "Continue shopping",
+    email: "Email", emailHint: "Order updates are sent here. No account needed.",
+    payMethod: "Payment method", usdt: "USDT (crypto)", usdtSub: "Lowest fee · no chargebacks", card: "Card", cardSub: "Visa, Mastercard · 3-D Secure",
+    network: "Network", networkHint: "TRC-20 has the lowest network fee.",
+    quote: "Card amount", quoteLocked: "Rate locked for", charged: "You will be charged",
+    terms: "I agree to the Terms and the Refund policy.", pay: "Pay {v}",
+    invoiceTitle: "Send exactly", invoiceNet: "Send only USDT on {net}. Other networks are lost.", address: "Address", copy: "Copy", copied: "Copied",
+    expiresIn: "Invoice expires in", waiting: "Waiting for payment…", simPaid: "Simulate: paid", simPartial: "Simulate: partial",
+    partial: "Partial payment received. Send the remaining {v} to complete.",
+    orderTitle: "Order {id}", stPending: "Pending", stPaid: "Paid", stProgress: "In progress", stDone: "Completed",
+    stPendingT: "Waiting for payment confirmation", stPaidT: "Payment confirmed by the provider", stProgressT: "A booster is assigned", stDoneT: "Delivered with proof",
+    talkSupport: "Talk to support", orderEmailNote: "We also emailed this to {e}.",
+    supportTitle: "Support", online: "Online · replies in a few minutes", offline: "Offline · back {when}",
+    chatWarn: "We will never ask for your Battle.net password or card details.",
+    chatHello: "Hi! How can we help?", chatPlaceholder: "Type a message…", send: "Send", attach: "Attach image",
+    chatAuto: "Thanks! An agent is reading your message.", chatEmailAsk: "Leave your email so we can reply if you leave:",
+    offlineForm: "Leave a message and we will email you.",
+    footerServices: "Services", footerAccount: "Account", footerCompany: "Company", myOrders: "My orders",
+    terms2: "Terms", refund: "Refund policy", privacy: "Privacy", faq: "FAQ", reportProblem: "Report a problem",
+    newsletter: "Newsletter", newsletterText: "Promotions and new raid slots.", subscribe: "Subscribe",
+    footerCopy: "Not affiliated with Blizzard Entertainment.", showingIn: "Times shown in {tz}",
+    errNote: "Error code {c} · ID {id}",
+    searchLabel: "Search products", searchPh: "Search gold, raids, Mythic+…", searchMin: "Type at least 2 characters.",
+    products: "Products", filters: "Filters", fCategory: "Category", fRegion: "Region", fAll: "All", fPrice: "Price (USDT)", fMin: "Min", fMax: "Max",
+    fPromo: "On sale", fAvail: "Available only", sort: "Sort by", sRelevance: "Relevance", sBest: "Best sellers", sPriceAsc: "Lowest price", sPriceDesc: "Highest price",
+    results: "{n} products", resultsFor: "for “{q}”", clearAll: "Clear filters", noResults: "No products found",
+    noResultsText: "Try another word, remove a filter or browse a category.", removeFilter: "Remove filter {f}", unavailable: "Unavailable",
+  },
+  "pt-BR": {
+    skip: "Pular para o conteúdo", region: "Região", language: "Idioma", timezone: "Fuso horário", signIn: "Entrar", cart: "Carrinho",
+    navGold: "Gold", navRaids: "Raids", navDungeons: "Masmorras", navHow: "Como funciona", navSupport: "Suporte",
+    heroBadge: "WoW Retail · US e EU", heroTitle: "Seu progresso no WoW, sem o grind",
+    heroText: "Gold, raids e masmorras Mítica+. Preço em USDT, horários no seu fuso, no seu idioma.",
+    heroCta: "Comprar gold", heroCta2: "Agendar raid",
+    statUsdt: "Pague em USDT ou cartão", statUsdtSub: "Um preço só, sem surpresa de câmbio",
+    statTz: "Seu fuso, detectado", statTzSub: "Horários das raids em {tz}",
+    statSafe: "Self-play, conta segura", statSafeSub: "Nunca pedimos sua senha da Battle.net",
+    categories: "Categorias", viewAll: "Ver todos", upcoming: "Próximas raids", upcomingSub: "Horários no seu fuso ({tz})",
+    services: "Serviços", tabAll: "Todos", bestSellers: "Mais vendidos",
+    advTitle: "Por que jogadores escolhem a gente",
+    adv1: "USDT ou cartão", adv1t: "Cripto sem chargeback, ou cartão com 3-D Secure.",
+    adv2: "Só self-play", adv2t: "Você joga junto. Nunca mexemos na sua conta.",
+    adv3: "6 idiomas, seu horário", adv3t: "Tudo no seu idioma e no seu fuso.",
+    adv4: "Prova de entrega", adv4t: "Todo pedido fecha com prova anexada.",
+    payBanner: "Pague em USDT ou cartão", payBannerText: "Os preços são em USDT. No cartão, a cotação fica travada por 15 minutos.",
+    browse: "Ver serviços", accepted: "Pagamentos aceitos",
+    seatsLeft: "{n} vagas", soldOut: "Esgotado", startsIn: "Começa em", endsIn: "Termina em", from: "a partir de",
+    serverTime: "Horário do servidor: {time}", chooseSlot: "Escolher horário", details: "Detalhes", add: "Adicionar ao carrinho", added: "Adicionado ao carrinho",
+    promo: "-{p}% · por tempo limitado", estimateNote: "≈ {v} (estimativa; a cobrança é em USDT)",
+    realm: "Realm", faction: "Facção", alliance: "Aliança", horde: "Horda", character: "Nome do personagem", characterHint: "O personagem que recebe o gold",
+    amount: "Quantidade", perK: "por 1.000 de gold", difficulty: "Dificuldade", loot: "Opção de loot", lootNone: "Só o clear", lootArmor: "Prioridade por armadura", lootFull: "Loot completo",
+    slot: "Data e hora", keyLevel: "Nível da chave", runs: "Runs", timed: "No tempo (timed)",
+    selfPlay: "Self-play: você joga com o seu personagem. Nunca pedimos sua senha da Battle.net.",
+    total: "Total", subtotal: "Subtotal", discount: "Desconto", coupon: "Cupom", apply: "Aplicar", remove: "Remover",
+    couponInvalid: "Cupom inválido ou expirado.", couponPlaceholder: "Código do cupom",
+    bestRule: "Cupom e promoção não acumulam — vale o maior desconto.",
+    viaPromo: "promoção (-{p}%)", viaCoupon: "cupom {c}", emptyCart: "Seu carrinho está vazio.", checkout: "Finalizar compra", continue: "Continuar comprando",
+    email: "E-mail", emailHint: "As atualizações do pedido chegam aqui. Não precisa de conta.",
+    payMethod: "Forma de pagamento", usdt: "USDT (cripto)", usdtSub: "Menor taxa · sem chargeback", card: "Cartão", cardSub: "Visa, Mastercard · 3-D Secure",
+    network: "Rede", networkHint: "TRC-20 tem a menor taxa de rede.",
+    quote: "Valor no cartão", quoteLocked: "Cotação travada por", charged: "Você será cobrado",
+    terms: "Concordo com os Termos e a Política de reembolso.", pay: "Pagar {v}",
+    invoiceTitle: "Envie exatamente", invoiceNet: "Envie só USDT na rede {net}. Outras redes são perdidas.", address: "Endereço", copy: "Copiar", copied: "Copiado",
+    expiresIn: "A fatura expira em", waiting: "Aguardando pagamento…", simPaid: "Simular: pago", simPartial: "Simular: parcial",
+    partial: "Pagamento parcial recebido. Envie os {v} restantes para concluir.",
+    orderTitle: "Pedido {id}", stPending: "Pendente", stPaid: "Pago", stProgress: "Em andamento", stDone: "Concluído",
+    stPendingT: "Aguardando confirmação do pagamento", stPaidT: "Pagamento confirmado pelo provedor", stProgressT: "Um booster foi atribuído", stDoneT: "Entregue com prova",
+    talkSupport: "Falar com o suporte", orderEmailNote: "Também enviamos isto para {e}.",
+    supportTitle: "Suporte", online: "Online · responde em poucos minutos", offline: "Offline · volta {when}",
+    chatWarn: "Nunca pediremos sua senha da Battle.net nem dados do cartão.",
+    chatHello: "Olá! Como podemos ajudar?", chatPlaceholder: "Escreva uma mensagem…", send: "Enviar", attach: "Anexar imagem",
+    chatAuto: "Obrigado! Um atendente está lendo sua mensagem.", chatEmailAsk: "Deixe seu e-mail para responder caso você saia:",
+    offlineForm: "Deixe uma mensagem e respondemos por e-mail.",
+    footerServices: "Serviços", footerAccount: "Conta", footerCompany: "Empresa", myOrders: "Meus pedidos",
+    terms2: "Termos", refund: "Política de reembolso", privacy: "Privacidade", faq: "Perguntas frequentes", reportProblem: "Reportar problema",
+    newsletter: "Newsletter", newsletterText: "Promoções e novos horários de raid.", subscribe: "Assinar",
+    footerCopy: "Sem afiliação com a Blizzard Entertainment.", showingIn: "Horários em {tz}",
+    errNote: "Código do erro {c} · ID {id}",
+    searchLabel: "Buscar produtos", searchPh: "Buscar gold, raids, Mítica+…", searchMin: "Digite pelo menos 2 caracteres.",
+    products: "Produtos", filters: "Filtros", fCategory: "Categoria", fRegion: "Região", fAll: "Todas", fPrice: "Preço (USDT)", fMin: "Mín.", fMax: "Máx.",
+    fPromo: "Em promoção", fAvail: "Só disponíveis", sort: "Ordenar por", sRelevance: "Relevância", sBest: "Mais vendidos", sPriceAsc: "Menor preço", sPriceDesc: "Maior preço",
+    results: "{n} produtos", resultsFor: "para “{q}”", clearAll: "Limpar filtros", noResults: "Nenhum produto encontrado",
+    noResultsText: "Tente outra palavra, tire um filtro ou veja uma categoria.", removeFilter: "Remover filtro {f}", unavailable: "Indisponível",
+    // admin / suporte
+    aDashboard: "Painel", aOrders: "Pedidos", aCategories: "Categorias", aProducts: "Produtos", aPromotions: "Promoções", aCoupons: "Cupons",
+    aSupport: "Suporte", aTeam: "Equipe", aDocs: "Documentação", aRole: "Papel", aRoleAdmin: "Admin", aRoleSupport: "Suporte",
+    aToday: "Pedidos hoje", aPaid: "Pagos aguardando", aInProgress: "Em andamento", aOpenChats: "Conversas abertas",
+    aRecent: "Pedidos recentes", aNew: "Novo", aEdit: "Editar", aSave: "Salvar", aCancel: "Cancelar", aActive: "Ativa", aInactive: "Inativa",
+    aName: "Nome", aSlug: "Slug", aKind: "Tipo", aOrder: "Ordem", aImage: "Imagem", aStatus: "Status", aCustomer: "Cliente", aItems: "Itens", aValue: "Valor",
+    aMethod: "Pagamento", aActions: "Ações", aAssign: "Assumir", aComplete: "Concluir", aProof: "Prova de entrega", aProofHint: "Print do envio de gold ou log da raid/run (RN-52).",
+    aCategory: "Categoria", aRegion: "Região", aPrice: "Preço (USDT)", aType: "Tipo", aPercent: "Percentual", aFixed: "Valor fixo (USDT)",
+    aScope: "Aplica a", aScopeStore: "Loja toda", aStart: "Início", aEnd: "Fim", aTzNote: "No seu fuso ({tz}); gravado em UTC.",
+    aCode: "Código", aMaxUses: "Limite de usos", aPerEmail: "Por cliente", aMinOrder: "Pedido mínimo (USDT)", aUses: "Usos",
+    aForbidden: "Sem permissão", aForbiddenText: "Esta área é só para admin (RN-06).", aKindHint: "O tipo define os campos do pedido (RN-13).",
+    aQueue: "Fila", aReply: "Responder", aResolve: "Resolver", aLangs: "Seus idiomas: pt-BR, en", aCatalogNote: "Nome e descrição são iguais em todos os idiomas (RN-84).",
+    aDocsText: "Documentação do projeto (pasta docs/), visível só para admin e suporte (RN-74).",
+    aAudit: "Toda alteração fica registrada com antes e depois (RN-71).",
+  },
+  fr: {
+    skip: "Aller au contenu", region: "Région", language: "Langue", timezone: "Fuseau horaire", signIn: "Connexion", cart: "Panier",
+    navGold: "Or", navRaids: "Raids", navDungeons: "Donjons", navHow: "Fonctionnement", navSupport: "Assistance",
+    heroBadge: "WoW Retail · US et EU", heroTitle: "Progressez dans WoW, sans le farm",
+    heroText: "Or, raids et donjons Mythique+. Prix en USDT, horaires dans votre fuseau, dans votre langue.",
+    heroCta: "Acheter de l'or", heroCta2: "Réserver un raid",
+    statUsdt: "Payez en USDT ou par carte", statUsdtSub: "Un seul prix, sans surprise de change",
+    statTz: "Votre fuseau, détecté", statTzSub: "Horaires des raids en {tz}",
+    statSafe: "Self-play, compte sécurisé", statSafeSub: "Nous ne demandons jamais votre mot de passe Battle.net",
+    categories: "Catégories", viewAll: "Tout voir", upcoming: "Prochains raids", upcomingSub: "Horaires dans votre fuseau ({tz})",
+    services: "Services", tabAll: "Tous", bestSellers: "Meilleures ventes", advTitle: "Pourquoi les joueurs nous choisissent",
+    adv1: "USDT ou carte", adv1t: "Crypto sans rétrofacturation, ou carte avec 3-D Secure.", adv2: "Self-play uniquement", adv2t: "Vous jouez avec nous. Nous ne touchons jamais à votre compte.",
+    adv3: "6 langues, votre heure", adv3t: "Tout dans votre langue et votre fuseau.", adv4: "Preuve de livraison", adv4t: "Chaque commande se termine avec une preuve.",
+    payBanner: "Payez en USDT ou par carte", payBannerText: "Les prix sont en USDT. Par carte, le taux est bloqué 15 minutes.",
+    browse: "Voir les services", accepted: "Paiements acceptés", seatsLeft: "{n} places", soldOut: "Complet", startsIn: "Commence dans", endsIn: "Se termine dans", from: "dès",
+    serverTime: "Heure du serveur : {time}", chooseSlot: "Choisir un créneau", details: "Détails", add: "Ajouter au panier", added: "Ajouté au panier",
+    promo: "-{p}% · durée limitée", estimateNote: "≈ {v} (estimation ; facturé en USDT)", total: "Total", checkout: "Commander", pay: "Payer {v}",
+    footerCopy: "Non affilié à Blizzard Entertainment.", showingIn: "Horaires en {tz}", chatWarn: "Nous ne demanderons jamais votre mot de passe Battle.net ni vos données de carte.",
+    searchLabel: "Rechercher des produits", searchPh: "Rechercher or, raids, Mythique+…", searchMin: "Saisissez au moins 2 caractères.",
+    chatHello: "Bonjour ! Comment pouvons-nous aider ?", supportTitle: "Assistance", online: "En ligne · réponse en quelques minutes",
+  },
+  de: {
+    skip: "Zum Inhalt springen", region: "Region", language: "Sprache", timezone: "Zeitzone", signIn: "Anmelden", cart: "Warenkorb",
+    navGold: "Gold", navRaids: "Raids", navDungeons: "Dungeons", navHow: "So funktioniert's", navSupport: "Support",
+    heroBadge: "WoW Retail · US & EU", heroTitle: "Dein WoW-Fortschritt, ohne Grind",
+    heroText: "Gold, Raids und Mythisch+-Dungeons. Preise in USDT, Termine in deiner Zeitzone, in deiner Sprache.",
+    heroCta: "Gold kaufen", heroCta2: "Raid buchen",
+    statUsdt: "Bezahlung in USDT oder per Karte", statUsdtSub: "Ein Preis, keine Wechselkursüberraschungen",
+    statTz: "Deine Zeitzone, automatisch erkannt", statTzSub: "Raidzeiten in {tz}",
+    statSafe: "Self-Play, Account sicher", statSafeSub: "Wir fragen nie nach deinem Battle.net-Passwort",
+    categories: "Kategorien", viewAll: "Alle anzeigen", upcoming: "Kommende Raids", upcomingSub: "Zeiten in deiner Zeitzone ({tz})",
+    services: "Services", tabAll: "Alle", bestSellers: "Bestseller", advTitle: "Warum Spieler uns wählen",
+    adv1: "USDT oder Karte", adv1t: "Krypto ohne Rückbuchungen oder Karte mit 3-D Secure.", adv2: "Nur Self-Play", adv2t: "Du spielst mit. Wir greifen nie auf deinen Account zu.",
+    adv3: "6 Sprachen, deine Zeit", adv3t: "Alles in deiner Sprache und Zeitzone.", adv4: "Liefernachweis", adv4t: "Jede Bestellung endet mit einem Nachweis.",
+    payBanner: "Bezahlung in USDT oder per Karte", payBannerText: "Preise sind in USDT. Bei Karte wird der Kurs 15 Minuten fixiert.",
+    browse: "Services ansehen", accepted: "Akzeptierte Zahlungen", seatsLeft: "{n} Plätze frei", soldOut: "Ausgebucht", startsIn: "Beginnt in", endsIn: "Endet in", from: "ab",
+    serverTime: "Serverzeit: {time}", chooseSlot: "Termin wählen", details: "Details", add: "In den Warenkorb", added: "Zum Warenkorb hinzugefügt",
+    promo: "-{p}% · nur für kurze Zeit", estimateNote: "≈ {v} (Schätzung; Abrechnung in USDT)", total: "Gesamt", checkout: "Zur Kasse", pay: "{v} bezahlen",
+    footerCopy: "Nicht mit Blizzard Entertainment verbunden.", showingIn: "Zeiten in {tz}", chatWarn: "Wir fragen nie nach deinem Battle.net-Passwort oder deinen Kartendaten.",
+    searchLabel: "Produkte suchen", searchPh: "Gold, Raids, Mythisch+ suchen…", searchMin: "Mindestens 2 Zeichen eingeben.",
+    chatHello: "Hallo! Wie können wir helfen?", supportTitle: "Support", online: "Online · Antwort in wenigen Minuten",
+  },
+  "zh-Hant": {
+    skip: "跳至內容", region: "地區", language: "語言", timezone: "時區", signIn: "登入", cart: "購物車",
+    navGold: "金幣", navRaids: "團隊副本", navDungeons: "地城", navHow: "運作方式", navSupport: "客服",
+    heroBadge: "WoW 正式版 · 美服與歐服", heroTitle: "輕鬆推進你的 WoW 進度",
+    heroText: "金幣、團隊副本代打與傳奇+地城。以 USDT 計價，依你的時區排程，使用你的語言。",
+    heroCta: "購買金幣", heroCta2: "預約團隊副本",
+    statUsdt: "以 USDT 或信用卡付款", statUsdtSub: "單一價格，沒有匯率意外", statTz: "自動偵測你的時區", statTzSub: "團隊副本時間以 {tz} 顯示",
+    statSafe: "親自上線，帳號安全", statSafeSub: "我們絕不索取你的 Battle.net 密碼",
+    categories: "分類", viewAll: "查看全部", upcoming: "即將開始的團隊副本", upcomingSub: "以你的時區顯示（{tz}）",
+    services: "服務", tabAll: "全部", bestSellers: "熱銷", advTitle: "玩家選擇我們的理由",
+    adv1: "USDT 或信用卡", adv1t: "加密貨幣無退單，或信用卡 3-D Secure 驗證。", adv2: "僅限親自上線", adv2t: "你一起遊玩，我們不碰你的帳號。",
+    adv3: "6 種語言，你的時間", adv3t: "一切以你的語言和時區呈現。", adv4: "交付證明", adv4t: "每筆訂單都附交付證明。",
+    payBanner: "以 USDT 或信用卡付款", payBannerText: "價格以 USDT 計。信用卡付款的匯率鎖定 15 分鐘。",
+    browse: "瀏覽服務", accepted: "接受的付款方式", seatsLeft: "剩 {n} 個名額", soldOut: "已額滿", startsIn: "距離開始", endsIn: "距離結束", from: "起",
+    serverTime: "伺服器時間：{time}", chooseSlot: "選擇時段", details: "詳情", add: "加入購物車", added: "已加入購物車",
+    promo: "-{p}% · 限時", estimateNote: "≈ {v}（估計值；以 USDT 收費）", total: "總計", checkout: "結帳", pay: "付款 {v}",
+    footerCopy: "與 Blizzard Entertainment 無關。", showingIn: "時間以 {tz} 顯示", chatWarn: "我們絕不會索取你的 Battle.net 密碼或信用卡資料。",
+    searchLabel: "搜尋商品", searchPh: "搜尋金幣、團隊副本、傳奇+…", searchMin: "請至少輸入 2 個字元。",
+    chatHello: "你好！需要什麼協助？", supportTitle: "客服", online: "線上 · 幾分鐘內回覆",
+  },
+  "zh-Hans": {
+    skip: "跳到内容", region: "地区", language: "语言", timezone: "时区", signIn: "登录", cart: "购物车",
+    navGold: "金币", navRaids: "团队副本", navDungeons: "地下城", navHow: "如何运作", navSupport: "客服",
+    heroBadge: "WoW 正式服 · 美服和欧服", heroTitle: "轻松推进你的 WoW 进度",
+    heroText: "金币、团队副本代打与史诗钥石地下城。以 USDT 计价，按你的时区安排，使用你的语言。",
+    heroCta: "购买金币", heroCta2: "预约团队副本",
+    statUsdt: "使用 USDT 或银行卡付款", statUsdtSub: "统一价格，没有汇率意外", statTz: "自动识别你的时区", statTzSub: "团队副本时间按 {tz} 显示",
+    statSafe: "本人上线，账号安全", statSafeSub: "我们绝不索要你的 Battle.net 密码",
+    categories: "分类", viewAll: "查看全部", upcoming: "即将开始的团队副本", upcomingSub: "按你的时区显示（{tz}）",
+    services: "服务", tabAll: "全部", bestSellers: "热销", advTitle: "玩家选择我们的理由",
+    adv1: "USDT 或银行卡", adv1t: "加密货币无拒付，或银行卡 3-D Secure 验证。", adv2: "仅限本人上线", adv2t: "你一起游戏，我们不碰你的账号。",
+    adv3: "6 种语言，你的时间", adv3t: "一切以你的语言和时区呈现。", adv4: "交付证明", adv4t: "每笔订单都附交付证明。",
+    payBanner: "使用 USDT 或银行卡付款", payBannerText: "价格以 USDT 计。银行卡付款的汇率锁定 15 分钟。",
+    browse: "浏览服务", accepted: "支持的付款方式", seatsLeft: "剩余 {n} 个名额", soldOut: "已满", startsIn: "距离开始", endsIn: "距离结束", from: "起",
+    serverTime: "服务器时间：{time}", chooseSlot: "选择时段", details: "详情", add: "加入购物车", added: "已加入购物车",
+    promo: "-{p}% · 限时", estimateNote: "≈ {v}（估算；按 USDT 收费）", total: "总计", checkout: "结算", pay: "支付 {v}",
+    footerCopy: "与 Blizzard Entertainment 无关。", showingIn: "时间按 {tz} 显示", chatWarn: "我们绝不会索要你的 Battle.net 密码或银行卡信息。",
+    searchLabel: "搜索商品", searchPh: "搜索金币、团队副本、史诗钥石…", searchMin: "请至少输入 2 个字符。",
+    chatHello: "你好！需要什么帮助？", supportTitle: "客服", online: "在线 · 几分钟内回复",
+  },
+};
+// textos do admin em inglês
+Object.assign(I18N.en, {
+  aDashboard: "Dashboard", aOrders: "Orders", aCategories: "Categories", aProducts: "Products", aPromotions: "Promotions", aCoupons: "Coupons",
+  aSupport: "Support", aTeam: "Team", aDocs: "Docs", aRole: "Role", aRoleAdmin: "Admin", aRoleSupport: "Support",
+  aToday: "Orders today", aPaid: "Paid, waiting", aInProgress: "In progress", aOpenChats: "Open chats",
+  aRecent: "Recent orders", aNew: "New", aEdit: "Edit", aSave: "Save", aCancel: "Cancel", aActive: "Active", aInactive: "Inactive",
+  aName: "Name", aSlug: "Slug", aKind: "Kind", aOrder: "Order", aImage: "Image", aStatus: "Status", aCustomer: "Customer", aItems: "Items", aValue: "Amount",
+  aMethod: "Payment", aActions: "Actions", aAssign: "Assign", aComplete: "Complete", aProof: "Proof of delivery", aProofHint: "Gold mail screenshot or raid/run log (RN-52).",
+  aCategory: "Category", aRegion: "Region", aPrice: "Price (USDT)", aType: "Type", aPercent: "Percent", aFixed: "Fixed (USDT)",
+  aScope: "Applies to", aScopeStore: "Whole store", aStart: "Starts", aEnd: "Ends", aTzNote: "In your time zone ({tz}); stored in UTC.",
+  aCode: "Code", aMaxUses: "Max uses", aPerEmail: "Per customer", aMinOrder: "Min. order (USDT)", aUses: "Uses",
+  aForbidden: "No permission", aForbiddenText: "Admin only (RN-06).", aKindHint: "The kind defines the order fields (RN-13).",
+  aQueue: "Queue", aReply: "Reply", aResolve: "Resolve", aLangs: "Your languages: pt-BR, en", aCatalogNote: "Name and description are the same in every language (RN-84).",
+  aDocsText: "Project documentation (docs/ folder), visible to admin and support only (RN-74).",
+  aAudit: "Every change is logged with before and after (RN-71).",
+});
+
+/* ===== Dados de exemplo (no app real vêm do banco; categorias e produtos são criados pelo admin) ===== */
+const TZS = ["America/Los_Angeles", "America/New_York", "America/Sao_Paulo", "Europe/London", "Europe/Paris", "Europe/Berlin", "Asia/Taipei", "Asia/Shanghai", "Australia/Sydney"];
+const SERVER_TZ = { US: "America/New_York", EU: "Europe/Paris" };
+const LOCAL_CCY = { en: ["USD", 1], fr: ["EUR", 0.92], de: ["EUR", 0.92], "pt-BR": ["BRL", 5.35], "zh-Hant": ["TWD", 32.1], "zh-Hans": ["CNY", 7.15] };
+const ICONS = {
+  gold: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="7" rx="7" ry="3"/><path d="M5 7v5c0 1.7 3.1 3 7 3s7-1.3 7-3V7"/><path d="M5 12v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/></svg>',
+  raid: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 4 6v6c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>',
+  dungeon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-6a3 3 0 0 1 6 0v6"/></svg>',
+  info: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg>',
+  shield: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 5 6v6c0 4 3 7.5 7 9 4-1.5 7-5 7-9V6z"/></svg>',
+  clock: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  coin: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9h6M12 9v7"/></svg>',
+  globe: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
+  proof: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg>',
+};
+const CATEGORIES = [
+  { slug: "gold", kind: "gold", name: "Gold", desc: "Fast, safe gold delivery by mail or face to face.", order: 1, active: true },
+  { slug: "raids", kind: "raid", name: "Raids", desc: "Current raid in Normal, Heroic and Mythic, with fixed schedules.", order: 2, active: true },
+  { slug: "mythic-plus", kind: "dungeon", name: "Mythic+", desc: "Keys from +2 to +15, timed or untimed, single or bundles.", order: 3, active: true },
+];
+const now = Date.now(), H = 3600e3, D = 24 * H;
+const PRODUCTS = [
+  { id: "gold-us", cat: "gold", region: "US", name: "Gold — US realms", price: 45, unit: "perK", best: true },
+  { id: "gold-eu", cat: "gold", region: "EU", name: "Gold — EU realms", price: 38, unit: "perK", best: true },
+  { id: "raid-normal-us", cat: "raids", region: "US", name: "Current raid — Normal", price: 3900 },
+  { id: "raid-heroic-us", cat: "raids", region: "US", name: "Current raid — Heroic", price: 7900, best: true },
+  { id: "raid-mythic-us", cat: "raids", region: "US", name: "Current raid — Mythic (1 boss)", price: 14900 },
+  { id: "raid-heroic-eu", cat: "raids", region: "EU", name: "Current raid — Heroic", price: 7500, best: true },
+  { id: "raid-normal-eu", cat: "raids", region: "EU", name: "Current raid — Normal", price: 3700 },
+  { id: "mplus-us", cat: "mythic-plus", region: "US", name: "Mythic+ key", price: 1200, best: true },
+  { id: "mplus-eu", cat: "mythic-plus", region: "EU", name: "Mythic+ key", price: 1100, best: true },
+  { id: "gold-us-express", cat: "gold", region: "US", name: "Gold — US express", price: 55, unit: "perK", desc: "Delivery within 1 hour." },
+  { id: "mplus-bundle-us", cat: "mythic-plus", region: "US", name: "Mythic+ — 4 keys bundle", price: 4200, desc: "Four keys of the same level, best value." },
+  { id: "mplus-15-us", cat: "mythic-plus", region: "US", name: "Mythic+ +15 timed", price: 2900, desc: "High key, timed, for the seasonal achievement." },
+  { id: "mplus-bundle-eu", cat: "mythic-plus", region: "EU", name: "Mythic+ — 4 keys bundle", price: 3900, desc: "Four keys of the same level, best value." },
+];
+const SALES = { "gold-us": 980, "gold-eu": 870, "raid-heroic-us": 640, "raid-heroic-eu": 590, "mplus-us": 520, "mplus-eu": 470, "mplus-bundle-us": 260 };
+const SLOTS = [
+  { id: "s1", product: "raid-heroic-us", startsAt: now + 5 * H, seats: 3 },
+  { id: "s2", product: "raid-heroic-us", startsAt: now + D + 3 * H, seats: 8 },
+  { id: "s3", product: "raid-normal-us", startsAt: now + 2 * D, seats: 0 },
+  { id: "s4", product: "raid-mythic-us", startsAt: now + 3 * D + 2 * H, seats: 2 },
+  { id: "s5", product: "raid-heroic-eu", startsAt: now + 9 * H, seats: 5 },
+  { id: "s6", product: "raid-normal-eu", startsAt: now + D + 6 * H, seats: 10 },
+];
+const PROMO = { scope: "gold", percent: 15, endsAt: now + 2 * D + 5 * H }; // RN-21: promoção por tempo na categoria Gold
+const COUPONS = { WOW10: { percent: 10 }, RAID20: { percent: 20 } };      // RN-25 (no app real, validado no servidor)
+const ORDERS = [
+  { id: "SH-1042", email: "j***@g***.com", items: "Gold US ×200k", total: 7650, method: "USDT TRC-20", status: "paid" },
+  { id: "SH-1041", email: "m***@o***.de", items: "Raid Heroic EU", total: 7500, method: "Card", status: "progress" },
+  { id: "SH-1040", email: "l***@q***.cn", items: "Mythic+ +10 ×4", total: 5280, method: "USDT TRC-20", status: "done" },
+  { id: "SH-1039", email: "a***@y***.fr", items: "Gold EU ×100k", total: 3230, method: "USDT ERC-20", status: "pending" },
+];
+const CHATS = [
+  { id: 1, who: "Visitor · zh-Hant", lang: "zh-Hant", last: "請問美服團隊副本幾點開始？", msgs: [["them", "請問美服團隊副本幾點開始？"]] },
+  { id: 2, who: "j***@g***.com · pt-BR", lang: "pt-BR", last: "Meu gold chegou?", order: "SH-1042", msgs: [["them", "Oi, meu gold chegou? Pedido SH-1042"]] },
+  { id: 3, who: "Visitor · de", lang: "de", last: "Wie lange dauert Mythic+?", msgs: [["them", "Wie lange dauert ein Mythic+ Run?"]] },
+];
+const DOCS = [
+  ["01", "Visão do produto"], ["02", "Regras de negócio (RN)"], ["03", "Stack"], ["04", "Arquitetura"], ["05", "Estrutura de engenharia"],
+  ["06", "UML"], ["07", "Monetização"], ["08", "Plano de execução"], ["09", "Segurança e privacidade"], ["11", "Design system"],
+  ["12", "Agentes"], ["13", "Padrões e qualidade"], ["14", "Pagamentos"], ["15", "Referência de layout"], ["16", "Observabilidade"],
+];
+
+/* ===== Estado ===== */
+const detectedTz = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch { return "UTC"; } })();
+const navLang = (navigator.language || "en").toLowerCase();
+const detectLang = () => navLang.startsWith("pt") ? "pt-BR" : navLang.startsWith("de") ? "de" : navLang.startsWith("fr") ? "fr"
+  : /zh-(tw|hk|mo|hant)/.test(navLang) ? "zh-Hant" : navLang.startsWith("zh") ? "zh-Hans" : "en";
+const state = {
+  lang: detectLang(),                                               // RN-81
+  tz: detectedTz,                                                   // RN-82
+  region: /^America|^Pacific/.test(detectedTz) ? "US" : "EU",       // sugestão pelo fuso (doc 04)
+  cart: [], coupon: null, couponError: false, email: "", method: "usdt", network: "TRC-20",
+  quoteUntil: 0, invoiceUntil: 0, paidPartial: false, orderStatus: "pending",
+  role: "admin", chatOpen: false, chat: [], chatSel: 1, filter: "all",
+};
+if (!TZS.includes(state.tz)) TZS.unshift(state.tz);
+
+/* ===== Utilidades ===== */
+const $ = (s, el = document) => el.querySelector(s);
+const val = (form, name) => form.elements.namedItem(name)?.value ?? "";
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+function t(key, vars = {}) {
+  const raw = I18N[state.lang]?.[key] ?? I18N.en[key] ?? key;
+  return raw.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
+}
+const nf = (opts) => new Intl.NumberFormat(state.lang, opts);
+const usdt = (cents) => `${nf({ minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(cents / 100)} USDT`;
+function estimate(cents) {
+  const [ccy, rate] = LOCAL_CCY[state.lang];
+  return nf({ style: "currency", currency: ccy, maximumFractionDigits: ccy === "TWD" ? 0 : 2 }).format((cents / 100) * rate);
+}
+const fmtTime = (ms, tz = state.tz, withDay = true) => new Intl.DateTimeFormat(state.lang, {
+  timeZone: tz, ...(withDay ? { weekday: "short", day: "2-digit", month: "short" } : {}), hour: "2-digit", minute: "2-digit",
+}).format(ms);
+const tzLabel = (tz) => tz.replace(/_/g, " ").split("/").pop();
+function cd(ms) {
+  let s = Math.max(0, Math.floor((ms - Date.now()) / 1000));
+  const d = Math.floor(s / 86400); s %= 86400;
+  const p = (n) => String(n).padStart(2, "0");
+  return `${d ? `<b>${d}d</b>` : ""}<b>${p(Math.floor(s / 3600))}</b><b>${p(Math.floor((s % 3600) / 60))}</b><b>${p(s % 60)}</b>`;
+}
+const countdown = (ms) => `<span class="countdown" data-until="${ms}" role="timer" aria-live="off">${cd(ms)}</span>`;
+const catOf = (p) => CATEGORIES.find((c) => c.slug === p.cat);
+const promoFor = (p) => (PROMO.scope === p.cat && Date.now() < PROMO.endsAt ? PROMO.percent : 0);
+const finalPrice = (p) => Math.round(p.price * (100 - promoFor(p)) / 100); // RN-24 arredonda para o centavo
+function toast(msg) {
+  const root = $("#toast-root");
+  root.innerHTML = `<div class="toast">${esc(msg)}</div>`;
+  clearTimeout(toast.t); toast.t = setTimeout(() => (root.innerHTML = ""), 2200);
+}
+
+/* ===== Componentes ===== */
+function priceTag(p, qty = 1) {
+  const pct = promoFor(p), base = p.price * qty, fin = finalPrice(p) * qty;
+  return `<div><div class="price">${pct ? `<s>${usdt(base)}</s>` : ""}${usdt(fin)}</div>
+    <div class="estimate">≈ ${estimate(fin)}${p.unit ? ` · ${t(p.unit)}` : ""}</div></div>`;
+}
+function productCard(p) {
+  const c = catOf(p), pct = promoFor(p);
+  return `<a class="card hover" href="#/p/${p.id}">
+    <div class="thumb">${ICONS[c.kind]}<span class="tag badge ${pct ? "badge-err" : ""}">${pct ? t("promo", { p: pct }) : p.region}</span></div>
+    <div class="stack" style="gap:10px"><h3>${esc(p.name)}</h3><div class="row between">${priceTag(p)}<span class="badge">${p.region}</span></div></div></a>`;
+}
+function slotCard(s) {
+  const p = PRODUCTS.find((x) => x.id === s.product);
+  return `<div class="card stack" style="gap:12px">
+    <div class="row between"><span class="badge ${s.seats ? "badge-ok" : "badge-err"}">${s.seats ? t("seatsLeft", { n: s.seats }) : t("soldOut")}</span><span class="badge">${p.region}</span></div>
+    <h3>${esc(p.name)}</h3>
+    <div><div style="color:var(--heading);font-weight:700">${fmtTime(s.startsAt)}</div>
+    <div class="xs muted">${t("serverTime", { time: fmtTime(s.startsAt, SERVER_TZ[p.region], false) })}</div></div>
+    <div class="row between"><span class="xs muted">${t("startsIn")}</span>${countdown(s.startsAt)}</div>
+    <div class="row between">${priceTag(p)}<a class="btn btn-primary btn-sm ${s.seats ? "" : "disabled"}" href="#/p/${p.id}" ${s.seats ? "" : 'aria-disabled="true" tabindex="-1" style="opacity:.5;pointer-events:none"'}>${t("chooseSlot")}</a></div>
+  </div>`;
+}
+const regionProducts = () => PRODUCTS.filter((p) => p.region === state.region);
+
+/* ===== Páginas da loja ===== */
+function pageHome() {
+  const slots = SLOTS.filter((s) => PRODUCTS.find((p) => p.id === s.product).region === state.region).sort((a, b) => a.startsAt - b.startsAt).slice(0, 3);
+  const prods = regionProducts().filter((p) => state.filter === "all" || p.cat === state.filter);
+  return `
+  <section class="container hero">
+    <div class="stack" style="gap:24px">
+      <span class="badge badge-info" style="align-self:flex-start">${t("heroBadge")}</span>
+      <h1>${t("heroTitle")}</h1>
+      <p class="muted" style="font-size:18px;max-width:560px">${t("heroText")}</p>
+      <div class="row"><a class="btn btn-primary" href="#/c/gold">${t("heroCta")}</a><a class="btn btn-outline" href="#/c/raids">${t("heroCta2")}</a></div>
+    </div>
+    <div class="hero-visual"><div>
+      <div class="hero-stat"><span class="ico">${ICONS.coin}</span><div><strong style="color:var(--heading)">${t("statUsdt")}</strong><div class="small muted">${t("statUsdtSub")}</div></div></div>
+      <div class="hero-stat"><span class="ico">${ICONS.clock}</span><div><strong style="color:var(--heading)">${t("statTz")}</strong><div class="small muted">${t("statTzSub", { tz: tzLabel(state.tz) })}</div></div></div>
+      <div class="hero-stat"><span class="ico">${ICONS.shield.replace('width="18" height="18"', 'width="22" height="22"')}</span><div><strong style="color:var(--heading)">${t("statSafe")}</strong><div class="small muted">${t("statSafeSub")}</div></div></div>
+    </div></div>
+  </section>
+  <section class="container section">
+    <div class="section-head"><h2>${t("categories")}</h2></div>
+    <div class="grid">${CATEGORIES.filter((c) => c.active).sort((a, b) => a.order - b.order).map((c) => `
+      <a class="card hover" href="#/c/${c.slug}"><div class="thumb">${ICONS[c.kind]}</div><h3>${esc(c.name)}</h3><p class="small muted" style="margin-top:6px">${esc(c.desc)}</p></a>`).join("")}</div>
+  </section>
+  <section class="container section">
+    <div class="section-head"><div><h2>${t("upcoming")}</h2><p class="small muted">${t("upcomingSub", { tz: tzLabel(state.tz) })}</p></div><a href="#/c/raids">${t("viewAll")} →</a></div>
+    <div class="grid">${slots.map(slotCard).join("")}</div>
+  </section>
+  <section class="container section">
+    <div class="section-head"><div class="row"><h2>${t("services")}</h2><a href="#/products">${t("viewAll")} →</a></div>
+      <div class="tabs" role="tablist">${[["all", t("tabAll")], ...CATEGORIES.map((c) => [c.slug, c.name])].map(([k, l]) =>
+        `<button class="tab" role="tab" aria-selected="${state.filter === k}" data-action="filter" data-v="${k}">${esc(l)}</button>`).join("")}</div></div>
+    <div class="grid">${prods.map(productCard).join("")}</div>
+  </section>
+  <section class="container section">
+    <div class="section-head"><h2>${t("advTitle")}</h2></div>
+    <div class="grid">${[["coin", "adv1"], ["shield", "adv2"], ["globe", "adv3"], ["proof", "adv4"]].map(([i, k]) => `
+      <div class="card-solid stack" style="gap:10px"><span class="hero-stat" style="padding:0;background:none"><span class="ico">${ICONS[i].replace('width="18" height="18"', 'width="22" height="22"')}</span></span><h3>${t(k)}</h3><p class="small muted">${t(k + "t")}</p></div>`).join("")}</div>
+  </section>
+  <section class="container section">
+    <div class="hero-visual"><div class="row between" style="padding:36px">
+      <div class="stack" style="gap:10px;max-width:640px"><h2>${t("payBanner")}</h2><p class="muted">${t("payBannerText")}</p></div>
+      <a class="btn btn-primary" href="#/c/gold">${t("browse")}</a></div></div>
+    <div class="row" style="margin-top:28px;justify-content:center"><span class="small muted">${t("accepted")}:</span>
+      ${["USDT · TRC-20", "USDT · ERC-20", "Visa", "Mastercard"].map((x) => `<span class="badge">${x}</span>`).join("")}</div>
+  </section>`;
+}
+// RN-100: busca tolerante a erro de digitação. No app real: pg_trgm no PostgreSQL (doc 03).
+const norm = (x) => x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+function lev(a, b) {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  return d[a.length][b.length];
+}
+function searchScore(p, q) {
+  const c = catOf(p);
+  const words = (x) => norm(x).split(/[^a-z0-9]+/).filter(Boolean);
+  const nameW = words(`${p.name} ${c.name}`), bodyW = words(`${p.desc || ""} ${c.desc}`);
+  const near = (list, w) => w.length >= 4 && list.some((x) => lev(x, w) <= 1);
+  let score = 0;
+  for (const w of words(q)) {
+    // nome pesa mais que descrição; erro de digitação pesa menos que acerto exato
+    if (nameW.some((x) => x.startsWith(w))) score += 4;
+    else if (near(nameW, w)) score += 3;
+    else if (bodyW.some((x) => x.startsWith(w))) score += 1;
+    else if (near(bodyW, w)) score += 0.5;
+    else return 0;
+  }
+  return score;
+}
+const available = (p) => catOf(p).kind !== "raid" || SLOTS.some((s) => s.product === p.id && s.seats > 0); // RN-11
+const SORTS = ["relevance", "best", "price-asc", "price-desc"];
+function readFilters(qp) {
+  // RN-103: valor inválido na URL é ignorado
+  const num = (k) => { const n = Number(qp.get(k)); return qp.get(k) !== null && qp.get(k) !== "" && Number.isFinite(n) && n >= 0 ? n : null; };
+  const q = (qp.get("q") || "").trim();
+  return {
+    q: q.length >= 2 ? q : "",
+    cats: (qp.get("cat") || "").split(",").filter((x) => CATEGORIES.some((c) => c.slug === x)),
+    region: ["US", "EU"].includes(qp.get("region")) ? qp.get("region") : qp.get("region") === "all" ? "all" : state.region,
+    min: num("min"), max: num("max"), promo: qp.get("promo") === "1", avail: qp.get("disponivel") === "1",
+    sort: SORTS.includes(qp.get("sort")) && !(qp.get("sort") === "relevance" && q.length < 2) ? qp.get("sort") : q.length >= 2 ? "relevance" : "best",
+  };
+}
+function filterProducts(f) {
+  return PRODUCTS.map((p) => ({ p, score: f.q ? searchScore(p, f.q) : 1, price: finalPrice(p) }))
+    .filter(({ p, score, price }) => score > 0
+      && (!f.cats.length || f.cats.includes(p.cat))
+      && (f.region === "all" || p.region === f.region)
+      && (f.min === null || price >= f.min * 100) && (f.max === null || price <= f.max * 100)
+      && (!f.promo || promoFor(p) > 0) && (!f.avail || available(p)))
+    .sort((a, b) => f.sort === "relevance" ? b.score - a.score
+      : f.sort === "price-asc" ? a.price - b.price : f.sort === "price-desc" ? b.price - a.price
+      : (SALES[b.p.id] || 0) - (SALES[a.p.id] || 0))
+    .map((x) => x.p);
+}
+function pageProducts(qp) {
+  const f = readFilters(qp);
+  const list = filterProducts(f);
+  const chips = [
+    ...(f.q ? [["q", f.q, `“${f.q}”`]] : []),
+    ...f.cats.map((c) => ["cat", c, CATEGORIES.find((x) => x.slug === c).name]),
+    ...(f.region !== state.region ? [["region", f.region, `${t("fRegion")}: ${f.region === "all" ? t("fAll") : f.region}`]] : []),
+    ...(f.min !== null ? [["min", "", `≥ ${f.min} USDT`]] : []), ...(f.max !== null ? [["max", "", `≤ ${f.max} USDT`]] : []),
+    ...(f.promo ? [["promo", "", t("fPromo")]] : []), ...(f.avail ? [["disponivel", "", t("fAvail")]] : []),
+  ];
+  const isDesktop = window.matchMedia?.("(min-width: 1024px)").matches ?? true;
+  const opt = (v, cur, label) => `<option value="${v}" ${v === cur ? "selected" : ""}>${label}</option>`;
+  return `<div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="#/">Home</a><span>/</span><span>${t("products")}</span></nav>
+    <div class="section-head" style="margin-bottom:20px"><div><h1 style="font-size:clamp(1.75rem,4vw,2.5rem)">${t("products")}</h1>
+      <p class="muted" role="status">${t("results", { n: list.length })}${f.q ? ` ${esc(t("resultsFor", { q: f.q }))}` : ""}</p></div></div>
+    <div class="catalog">
+      <details class="filters card-solid" ${isDesktop ? "open" : ""}>
+        <summary>${t("filters")}${chips.length ? ` <span class="badge badge-info">${chips.length}</span>` : ""}</summary>
+        <form data-action="filters" class="stack" style="gap:0">
+          <label class="field" style="margin-top:14px"><span>${t("searchLabel")}</span><input class="input" type="search" name="q" value="${esc(f.q)}" placeholder="${t("searchPh")}"></label>
+          <div class="group"><strong>${t("fCategory")}</strong>${CATEGORIES.map((c) => `<label class="check"><input type="checkbox" name="cat" value="${c.slug}" ${f.cats.includes(c.slug) ? "checked" : ""}>${esc(c.name)}</label>`).join("")}</div>
+          <div class="group"><strong>${t("fRegion")}</strong>${[["US", "US"], ["EU", "EU"], ["all", t("fAll")]].map(([v, l]) => `<label class="check"><input type="radio" name="region" value="${v}" ${f.region === v ? "checked" : ""}>${l}</label>`).join("")}</div>
+          <div class="group"><strong>${t("fPrice")}</strong><div class="row" style="flex-wrap:nowrap">
+            <label class="sr-only" for="fmin">${t("fMin")}</label><input class="input" id="fmin" name="min" type="number" min="0" step="1" placeholder="${t("fMin")}" value="${f.min ?? ""}">
+            <span class="muted">–</span><label class="sr-only" for="fmax">${t("fMax")}</label><input class="input" id="fmax" name="max" type="number" min="0" step="1" placeholder="${t("fMax")}" value="${f.max ?? ""}"></div></div>
+          <div class="group"><label class="check"><input type="checkbox" name="promo" value="1" ${f.promo ? "checked" : ""}>${t("fPromo")}</label>
+            <label class="check"><input type="checkbox" name="disponivel" value="1" ${f.avail ? "checked" : ""}>${t("fAvail")}</label></div>
+        </form>
+      </details>
+      <div>
+        <div class="toolbar"><div class="row">${chips.map(([k, v, label]) => `<span class="chip">${esc(label)}<button type="button" data-action="unfilter" data-k="${k}" data-v="${esc(v)}" aria-label="${esc(t("removeFilter", { f: label }))}">✕</button></span>`).join("")}
+          ${chips.length ? `<button class="btn btn-ghost btn-sm" data-action="clear-filters">${t("clearAll")}</button>` : ""}</div>
+          <label class="row" style="gap:8px"><span class="small muted">${t("sort")}</span><select class="select" data-action="sort">
+            ${f.q ? opt("relevance", f.sort, t("sRelevance")) : ""}${opt("best", f.sort, t("sBest"))}${opt("price-asc", f.sort, t("sPriceAsc"))}${opt("price-desc", f.sort, t("sPriceDesc"))}</select></label></div>
+        ${list.length ? `<div class="grid">${list.map((p) => available(p) ? productCard(p) : productCard(p).replace(`<span class="tag badge`, `<span class="tag badge badge-err">${t("unavailable")}</span><span hidden class="tag badge`)).join("")}</div>`
+          : `<div class="card-solid empty"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <h2>${t("noResults")}</h2><p class="muted">${t("noResultsText")}</p>
+            <div class="row" style="justify-content:center">${CATEGORIES.map((c) => `<a class="btn btn-outline btn-sm" href="#/c/${c.slug}">${esc(c.name)}</a>`).join("")}</div>
+            <button class="btn btn-primary" data-action="clear-filters">${t("clearAll")}</button></div>`}
+      </div>
+    </div></div>`;
+}
+const hashParams = () => new URLSearchParams(location.hash.split("?")[1] || "");
+function goProducts(params) {
+  params.delete("page");
+  const qs = params.toString();
+  location.hash = `#/products${qs ? `?${qs}` : ""}`;
+}
+function filtersFromForm(form) {
+  const p = new URLSearchParams();
+  const q = val(form, "q").trim(); if (q) p.set("q", q);
+  const cats = [...form.querySelectorAll("input[name=cat]:checked")].map((x) => x.value); if (cats.length) p.set("cat", cats.join(","));
+  const region = form.querySelector("input[name=region]:checked")?.value; if (region && region !== state.region) p.set("region", region);
+  for (const k of ["min", "max"]) if (val(form, k) !== "") p.set(k, val(form, k));
+  if (form.querySelector("input[name=promo]:checked")) p.set("promo", "1");
+  if (form.querySelector("input[name=disponivel]:checked")) p.set("disponivel", "1");
+  const sort = hashParams().get("sort"); if (sort) p.set("sort", sort);
+  return p;
+}
+
+function pageCategory(slug) {
+  const c = CATEGORIES.find((x) => x.slug === slug) || CATEGORIES[0];
+  const prods = regionProducts().filter((p) => p.cat === c.slug);
+  const slots = c.kind === "raid" ? SLOTS.filter((s) => prods.some((p) => p.id === s.product)) : [];
+  return `<div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="#/">Home</a><span>/</span><span>${esc(c.name)}</span></nav>
+    <div class="section-head"><div class="stack" style="gap:8px"><h1 style="font-size:clamp(1.75rem,4vw,2.5rem)">${esc(c.name)}</h1><p class="muted">${esc(c.desc)}</p></div>
+      <span class="badge badge-info">${t("region")}: ${state.region}</span></div>
+    ${c.slug === PROMO.scope ? `<div class="notice warn" style="margin-bottom:20px">${ICONS.info}<div><strong style="color:var(--heading)">${t("promo", { p: PROMO.percent })}</strong> · ${t("endsIn")} ${countdown(PROMO.endsAt)}</div></div>` : ""}
+    <div class="grid">${prods.map(productCard).join("")}</div>
+    ${slots.length ? `<section class="section"><div class="section-head"><div><h2>${t("upcoming")}</h2><p class="small muted">${t("upcomingSub", { tz: tzLabel(state.tz) })}</p></div></div><div class="grid">${slots.map(slotCard).join("")}</div></section>` : ""}
+  </div>`;
+}
+function optionsFor(p, kind) {
+  if (kind === "gold") return `
+    <div class="form-grid">
+      <label class="field"><span>${t("realm")}</span><select class="select" name="realm">${(p.region === "US" ? ["Area 52", "Illidan", "Stormrage", "Tichondrius"] : ["Kazzak", "Draenor", "Silvermoon", "Ravencrest"]).map((r) => `<option>${r}</option>`).join("")}</select></label>
+      <fieldset class="field" style="border:0;padding:0;margin:0"><legend style="color:var(--foreground);font-weight:600;font-size:14px;margin-bottom:6px">${t("faction")}</legend>
+        <div class="row"><label class="choice" style="flex:1"><input type="radio" name="faction" checked> ${t("alliance")}</label><label class="choice" style="flex:1"><input type="radio" name="faction"> ${t("horde")}</label></div></fieldset>
+    </div>
+    <label class="field"><span>${t("character")}</span><input class="input" name="character" placeholder="Thrall" autocomplete="off"><span class="hint">${t("characterHint")}</span></label>
+    <div class="field"><span style="color:var(--foreground);font-weight:600;font-size:14px">${t("amount")}</span>
+      <div class="row"><div class="stepper"><button type="button" data-action="qty" data-v="-50" aria-label="−">−</button><output id="qty-out">100k</output><button type="button" data-action="qty" data-v="50" aria-label="+">+</button></div>
+      <span class="small muted">${t("perK")}: ${usdt(finalPrice(p))}</span></div></div>`;
+  if (kind === "raid") {
+    const slots = SLOTS.filter((s) => s.product === p.id);
+    return `
+    <div class="form-grid">
+      <label class="field"><span>${t("loot")}</span><select class="select"><option>${t("lootNone")}</option><option>${t("lootArmor")}</option><option>${t("lootFull")}</option></select></label>
+    </div>
+    <fieldset class="field" style="border:0;padding:0;margin:0"><legend style="color:var(--foreground);font-weight:600;font-size:14px;margin-bottom:6px">${t("slot")} · ${tzLabel(state.tz)}</legend>
+      <div class="choices">${slots.length ? slots.map((s, i) => `<label class="choice" style="${s.seats ? "" : "opacity:.5"}"><input type="radio" name="slot" ${i === 0 && s.seats ? "checked" : ""} ${s.seats ? "" : "disabled"}>
+        <span style="flex:1"><strong style="color:var(--heading)">${fmtTime(s.startsAt)}</strong><br><span class="xs muted">${t("serverTime", { time: fmtTime(s.startsAt, SERVER_TZ[p.region], false) })}</span></span>
+        <span class="badge ${s.seats ? "badge-ok" : "badge-err"}">${s.seats ? t("seatsLeft", { n: s.seats }) : t("soldOut")}</span></label>`).join("") : `<p class="muted small">—</p>`}</div></fieldset>`;
+  }
+  return `
+    <div class="form-grid">
+      <label class="field"><span>${t("keyLevel")}</span><select class="select" name="key">${Array.from({ length: 14 }, (_, i) => `<option ${i === 8 ? "selected" : ""}>+${i + 2}</option>`).join("")}</select></label>
+      <label class="field"><span>${t("runs")}</span><select class="select" name="runs">${[1, 2, 4, 8].map((n) => `<option>${n}</option>`).join("")}</select></label>
+    </div>
+    <label class="choice"><input type="checkbox" checked> ${t("timed")}</label>`;
+}
+function pageProduct(id) {
+  const p = PRODUCTS.find((x) => x.id === id) || PRODUCTS[0];
+  const c = catOf(p);
+  state.qty = state.qty || 100;
+  const qty = c.kind === "gold" ? state.qty : 1;
+  return `<div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="#/">Home</a><span>/</span><a href="#/c/${c.slug}">${esc(c.name)}</a><span>/</span><span>${esc(p.name)}</span></nav>
+    <div class="two-col">
+      <div class="stack" style="gap:20px">
+        <div class="thumb" style="aspect-ratio:16/9;margin:0">${ICONS[c.kind]}${promoFor(p) ? `<span class="tag badge badge-err">${t("promo", { p: promoFor(p) })}</span>` : ""}</div>
+        <div class="card-solid stack"><h2>${esc(p.name)}</h2><p class="muted">${esc(c.desc)}</p>
+          <div class="notice">${ICONS.shield}<span>${t("selfPlay")}</span></div></div>
+      </div>
+      <form class="card-solid stack sticky" data-action="add" data-id="${p.id}" style="gap:18px">
+        <div class="row between"><span class="badge">${p.region}</span>${promoFor(p) ? `<span class="xs muted">${t("endsIn")} ${countdown(PROMO.endsAt)}</span>` : ""}</div>
+        ${optionsFor(p, c.kind)}
+        <div class="kv" style="border-top:1px solid var(--border);padding-top:16px"><span>${t("total")}</span><div id="prod-total" style="text-align:right">${priceTag(p, qty)}</div></div>
+        <p class="xs muted">${t("estimateNote", { v: estimate(finalPrice(p) * qty) })}</p>
+        <button class="btn btn-primary btn-block" type="submit">${t("add")}</button>
+      </form>
+    </div></div>`;
+}
+function cartTotals() {
+  const sub = state.cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const promoDisc = state.cart.reduce((s, i) => s + (i.price - i.final) * i.qty, 0);
+  const cp = state.coupon && COUPONS[state.coupon];
+  const couponDisc = cp ? Math.round(sub * cp.percent / 100) : 0;
+  // RN-26: não acumulam, vale o maior (no app real o servidor calcula)
+  const useCoupon = couponDisc > promoDisc;
+  const disc = useCoupon ? couponDisc : promoDisc;
+  const source = !disc ? "" : useCoupon ? t("viaCoupon", { c: state.coupon }) : t("viaPromo", { p: PROMO.percent });
+  return { sub, disc, total: sub - disc, source };
+}
+function summaryBox(cta) {
+  const { sub, disc, total, source } = cartTotals();
+  return `<div class="card-solid stack sticky" style="gap:6px">
+    <div class="kv"><span>${t("subtotal")}</span><span>${usdt(sub)}</span></div>
+    <div class="kv"><span>${t("discount")}${source ? ` <span class="badge badge-ok">${esc(source)}</span>` : ""}</span><span>−${usdt(disc)}</span></div>
+    <div class="kv"><span class="total">${t("total")}</span><div style="text-align:right"><div class="total">${usdt(total)}</div><div class="estimate">≈ ${estimate(total)}</div></div></div>
+    <p class="xs muted" style="margin:8px 0">${t("bestRule")}</p>${cta}</div>`;
+}
+function pageCart() {
+  if (!state.cart.length) return `<div class="container section stack" style="align-items:center;text-align:center"><h1 style="font-size:2rem">${t("cart")}</h1><p class="muted">${t("emptyCart")}</p><a class="btn btn-primary" href="#/">${t("continue")}</a></div>`;
+  return `<div class="container section"><h1 style="font-size:clamp(1.75rem,4vw,2.5rem);margin-bottom:24px">${t("cart")}</h1>
+    <div class="two-col"><div class="stack">
+      ${state.cart.map((i, idx) => `<div class="card-solid row between"><div class="row"><div class="thumb" style="width:72px;aspect-ratio:1;margin:0">${ICONS[i.kind]}</div>
+        <div><strong style="color:var(--heading)">${esc(i.name)}</strong><div class="small muted">${esc(i.detail)}</div></div></div>
+        <div class="row"><div style="text-align:right">${i.final !== i.price ? `<s class="small muted">${usdt(i.price * i.qty)}</s> ` : ""}<strong style="color:var(--heading)">${usdt(i.final * i.qty)}</strong></div>
+        <button class="btn btn-ghost btn-sm" data-action="remove" data-i="${idx}">${t("remove")}</button></div></div>`).join("")}
+      <form class="card-solid stack" data-action="coupon" style="gap:8px"><label class="field"><span>${t("coupon")}</span>
+        <div class="row" style="flex-wrap:nowrap"><input class="input" name="code" placeholder="${t("couponPlaceholder")}" value="${esc(state.coupon || "")}" autocomplete="off"><button class="btn btn-outline" type="submit">${t("apply")}</button></div></label>
+        ${state.couponError ? `<p class="err" role="alert">${t("couponInvalid")}</p>` : ""}<p class="xs muted">WOW10 · RAID20</p></form>
+    </div>${summaryBox(`<a class="btn btn-primary btn-block" href="#/checkout">${t("checkout")}</a>`)}</div></div>`;
+}
+function pageCheckout() {
+  if (!state.cart.length) state.cart.push(cartItem(PRODUCTS.find((p) => p.id === `gold-${state.region.toLowerCase()}`), 100, "Area 52 · Alliance · Thrall"));
+  if (state.method === "card" && state.quoteUntil < Date.now()) state.quoteUntil = Date.now() + 15 * 60e3; // RN-36
+  const { total } = cartTotals();
+  const charged = nf({ style: "currency", currency: "USD" }).format((total / 100) * 1.0003);
+  return `<div class="container section"><h1 style="font-size:clamp(1.75rem,4vw,2.5rem);margin-bottom:24px">${t("checkout")}</h1>
+    <div class="two-col"><form class="stack" data-action="pay">
+      <div class="card-solid stack"><label class="field"><span>${t("email")}</span><input class="input" type="email" required name="email" value="${esc(state.email)}" placeholder="you@example.com" autocomplete="email"><span class="hint">${t("emailHint")}</span></label></div>
+      <div class="card-solid stack"><h3>${t("payMethod")}</h3><div class="choices">
+        <label class="choice"><input type="radio" name="method" value="usdt" ${state.method === "usdt" ? "checked" : ""} data-action="method"><span style="flex:1"><strong style="color:var(--heading)">${t("usdt")}</strong><br><span class="small muted">${t("usdtSub")}</span></span></label>
+        <label class="choice"><input type="radio" name="method" value="card" ${state.method === "card" ? "checked" : ""} data-action="method"><span style="flex:1"><strong style="color:var(--heading)">${t("card")}</strong><br><span class="small muted">${t("cardSub")}</span></span></label></div>
+        ${state.method === "usdt" ? `<label class="field"><span>${t("network")}</span><select class="select" data-action="network"><option ${state.network === "TRC-20" ? "selected" : ""}>TRC-20</option><option ${state.network === "ERC-20" ? "selected" : ""}>ERC-20</option></select><span class="hint">${t("networkHint")}</span></label>`
+          : `<div class="notice">${ICONS.clock.replace('width="22" height="22"', 'width="18" height="18"')}<div><strong style="color:var(--heading)">${t("charged")}: ${charged}</strong><br><span class="small">${t("quoteLocked")} ${countdown(state.quoteUntil)}</span></div></div>`}
+      </div>
+      <label class="choice"><input type="checkbox" required> <span class="small">${t("terms")}</span></label>
+      <button class="btn btn-primary btn-block" type="submit">${t("pay", { v: usdt(total) })}</button>
+    </form>${summaryBox("")}</div></div>`;
+}
+function qrSvg() {
+  let seed = 7, cells = "";
+  for (let y = 0; y < 25; y++) for (let x = 0; x < 25; x++) {
+    seed = (seed * 9301 + 49297) % 233280;
+    const finder = (x < 7 && y < 7) || (x > 17 && y < 7) || (x < 7 && y > 17);
+    const on = finder ? (x % 6 === 0 || y % 6 === 0 || (x % 6 > 1 && x % 6 < 5 && y % 6 > 1 && y % 6 < 5) || x === 24 || y === 24 || x === 18 || y === 18) : seed / 233280 > 0.55;
+    if (on) cells += `<rect x="${x}" y="${y}" width="1" height="1"/>`;
+  }
+  return `<svg class="qr" viewBox="0 0 25 25" role="img" aria-label="QR code"><g fill="#080326">${cells}</g></svg>`;
+}
+function pageInvoice() {
+  if (!state.invoiceUntil || state.invoiceUntil < Date.now()) state.invoiceUntil = Date.now() + 30 * 60e3; // RN-34
+  const { total } = cartTotals();
+  const amount = state.cart.length ? total : 7650;
+  return `<div class="container section" style="max-width:720px"><div class="card-solid stack" style="gap:20px;align-items:center;text-align:center">
+    <span class="badge badge-info">${state.network}</span>
+    <div><p class="muted">${t("invoiceTitle")}</p><div class="total" style="font-size:32px">${usdt(state.paidPartial ? Math.round(amount * 0.4) : amount)}</div></div>
+    <div class="notice warn" style="text-align:left">${ICONS.info}<span>${t("invoiceNet", { net: state.network })}</span></div>
+    ${qrSvg()}
+    <div class="stack" style="gap:6px;width:100%;text-align:left"><span class="small muted">${t("address")}</span>
+      <div class="row" style="flex-wrap:nowrap"><div class="addr" style="flex:1">TQ9f3kVx7Lr2mNpE8sWb4YcH1dJu6GtZaR</div><button class="btn btn-outline btn-sm" data-action="copy">${t("copy")}</button></div></div>
+    ${state.paidPartial ? `<div class="notice warn" role="status">${ICONS.info}<span>${t("partial", { v: usdt(Math.round(amount * 0.4)) })}</span></div>` : `<p class="muted" role="status">${t("waiting")}</p>`}
+    <div class="row"><span class="small muted">${t("expiresIn")}</span>${countdown(state.invoiceUntil)}</div>
+    <div class="row" style="border-top:1px dashed var(--border);padding-top:16px;width:100%;justify-content:center">
+      <span class="xs muted">Protótipo:</span><button class="btn btn-ghost btn-sm" data-action="sim-partial">${t("simPartial")}</button><button class="btn btn-primary btn-sm" data-action="sim-paid">${t("simPaid")}</button></div>
+  </div></div>`;
+}
+function pageOrder() {
+  const steps = ["pending", "paid", "progress", "done"];
+  const cur = steps.indexOf(state.orderStatus);
+  const labels = { pending: ["stPending", "stPendingT"], paid: ["stPaid", "stPaidT"], progress: ["stProgress", "stProgressT"], done: ["stDone", "stDoneT"] };
+  return `<div class="container section"><div class="two-col">
+    <div class="card-solid stack"><div class="row between"><h2>${t("orderTitle", { id: "SH-1043" })}</h2><span class="badge ${cur === 3 ? "badge-ok" : "badge-info"}">${t(labels[state.orderStatus][0])}</span></div>
+      <ol class="timeline">${steps.map((s, i) => `<li class="${i < cur ? "done" : i === cur ? "current" : ""}"><span class="dot">${i < cur ? "✓" : i + 1}</span>
+        <div><strong style="color:var(--heading)">${t(labels[s][0])}</strong><div class="small muted">${t(labels[s][1])}${i <= cur ? ` · ${fmtTime(Date.now() - (cur - i) * 40 * 60e3)}` : ""}</div></div></li>`).join("")}</ol>
+      <p class="small muted">${t("orderEmailNote", { e: state.email || "you@example.com" })}</p>
+      <div class="row"><button class="btn btn-outline" data-action="open-chat">${t("talkSupport")}</button>
+        <button class="btn btn-ghost btn-sm" data-action="advance">Protótipo: avançar status</button></div></div>
+    ${summaryBox("")}</div></div>`;
+}
+
+/* ===== Admin e suporte ===== */
+const ADMIN_NAV = [["", "aDashboard", "both"], ["orders", "aOrders", "both"], ["categories", "aCategories", "admin"], ["products", "aProducts", "admin"],
+  ["promotions", "aPromotions", "admin"], ["coupons", "aCoupons", "admin"], ["support", "aSupport", "both"], ["team", "aTeam", "admin"], ["docs", "aDocs", "both"]];
+const statusBadge = (s) => `<span class="badge ${{ pending: "badge-warn", paid: "badge-info", progress: "badge-info", done: "badge-ok" }[s]}">${t({ pending: "stPending", paid: "stPaid", progress: "stProgress", done: "stDone" }[s])}</span>`;
+function adminShell(tab, body) {
+  const allowed = (who) => who === "both" || state.role === "admin";
+  return `<div class="admin">
+    <aside class="admin-side" aria-label="Admin">
+      <label class="field" style="padding:4px 8px 12px"><span>${t("aRole")}</span><select class="select" data-action="role"><option value="admin" ${state.role === "admin" ? "selected" : ""}>${t("aRoleAdmin")}</option><option value="support" ${state.role === "support" ? "selected" : ""}>${t("aRoleSupport")}</option></select></label>
+      ${ADMIN_NAV.filter(([, , who]) => allowed(who)).map(([k, l]) => `<a href="#/admin${k ? "/" + k : ""}" ${tab === k ? 'aria-current="page"' : ""}>${t(l)}</a>`).join("")}
+      <p class="xs muted" style="margin-top:auto;padding:12px 8px">2FA ✓ · ${t("aAudit")}</p>
+    </aside>
+    <div class="admin-main">${body}</div></div>`;
+}
+function forbidden() { return `<div class="card-solid stack" style="max-width:520px"><span class="badge badge-err" style="align-self:flex-start">403</span><h2>${t("aForbidden")}</h2><p class="muted">${t("aForbiddenText")}</p></div>`; }
+function table(heads, rows) { return `<div class="table-wrap"><table class="table"><thead><tr>${heads.map((h) => `<th scope="col">${h}</th>`).join("")}</tr></thead><tbody>${rows.join("")}</tbody></table></div>`; }
+const head = (title, action) => `<div class="section-head" style="margin-bottom:20px"><h2>${title}</h2>${action ? `<button class="btn btn-primary btn-sm" data-action="modal" data-v="${action}">+ ${t("aNew")}</button>` : ""}</div>`;
+const activeBadge = (a) => `<span class="badge ${a ? "badge-ok" : ""}">${a ? t("aActive") : t("aInactive")}</span>`;
+function pageAdmin(tab = "") {
+  const needsAdmin = ["categories", "products", "promotions", "coupons", "team"].includes(tab);
+  if (needsAdmin && state.role !== "admin") return adminShell(tab, forbidden());
+  const views = {
+    "": () => `${head(t("aDashboard"))}<div class="kpis">${[["aToday", 18], ["aPaid", 4], ["aInProgress", 6], ["aOpenChats", CHATS.length]].map(([k, v]) => `<div class="kpi"><span class="small muted">${t(k)}</span><strong>${v}</strong></div>`).join("")}</div>
+      <h3 style="margin-bottom:12px">${t("aRecent")}</h3>${table(["#", t("aCustomer"), t("aItems"), t("aValue"), t("aStatus")], ORDERS.map((o) => `<tr><td>${o.id}</td><td>${o.email}</td><td>${o.items}</td><td>${usdt(o.total)}</td><td>${statusBadge(o.status)}</td></tr>`))}`,
+    orders: () => `${head(t("aOrders"))}${table(["#", t("aCustomer"), t("aItems"), t("aValue"), t("aMethod"), t("aStatus"), t("aActions")], ORDERS.map((o) => `<tr><td>${o.id}</td><td>${o.email}</td><td>${o.items}</td><td>${usdt(o.total)}</td><td>${o.method}</td><td>${statusBadge(o.status)}</td><td>${o.status === "paid" ? `<button class="btn btn-outline btn-sm" data-action="assign" data-id="${o.id}">${t("aAssign")}</button>` : o.status === "progress" ? `<button class="btn btn-primary btn-sm" data-action="modal" data-v="proof">${t("aComplete")}</button>` : "—"}</td></tr>`))}`,
+    categories: () => `${head(t("aCategories"), "category")}<p class="small muted" style="margin-bottom:12px">${t("aCatalogNote")}</p>${table([t("aOrder"), t("aName"), t("aSlug"), t("aKind"), t("aStatus"), ""], CATEGORIES.map((c) => `<tr><td>${c.order}</td><td>${esc(c.name)}</td><td>${c.slug}</td><td><span class="badge">${c.kind}</span></td><td>${activeBadge(c.active)}</td><td><button class="btn btn-ghost btn-sm" data-action="modal" data-v="category">${t("aEdit")}</button></td></tr>`))}`,
+    products: () => `${head(t("aProducts"), "product")}${table([t("aName"), t("aCategory"), t("aRegion"), t("aPrice"), t("aStatus"), ""], PRODUCTS.map((p) => `<tr><td>${esc(p.name)}</td><td>${catOf(p).name}</td><td>${p.region}</td><td>${usdt(p.price)}</td><td>${activeBadge(true)}</td><td><button class="btn btn-ghost btn-sm" data-action="modal" data-v="product">${t("aEdit")}</button></td></tr>`))}`,
+    promotions: () => `${head(t("aPromotions"), "promotion")}${table([t("aName"), t("aType"), t("aScope"), t("aStart"), t("aEnd"), t("aStatus")], [`<tr><td>Gold week</td><td>${PROMO.percent}%</td><td>Gold</td><td>${fmtTime(now - D)}</td><td>${fmtTime(PROMO.endsAt)}</td><td>${activeBadge(true)}</td></tr>`, `<tr><td>Raid launch</td><td>5 USDT</td><td>Raids</td><td>${fmtTime(now + 5 * D)}</td><td>${fmtTime(now + 8 * D)}</td><td><span class="badge badge-warn">Scheduled</span></td></tr>`])}`,
+    coupons: () => `${head(t("aCoupons"), "coupon")}${table([t("aCode"), t("aType"), t("aScope"), t("aUses"), t("aEnd"), t("aStatus")], [`<tr><td><code>WOW10</code></td><td>10%</td><td>${t("aScopeStore")}</td><td>142 / 500</td><td>${fmtTime(now + 20 * D)}</td><td>${activeBadge(true)}</td></tr>`, `<tr><td><code>RAID20</code></td><td>20%</td><td>Raids</td><td>37 / 100</td><td>${fmtTime(now + 3 * D)}</td><td>${activeBadge(true)}</td></tr>`])}`,
+    team: () => `${head(t("aTeam"))}${table([t("aName"), "E-mail", t("aRole"), "2FA", t("aStatus")], [`<tr><td>Ana</td><td>a***@shop</td><td>Admin</td><td>✓</td><td>${activeBadge(true)}</td></tr>`, `<tr><td>Li</td><td>l***@shop</td><td>Suporte · zh-Hant, en</td><td>✓</td><td>${activeBadge(true)}</td></tr>`])}`,
+    support: () => {
+      const sel = CHATS.find((c) => c.id === state.chatSel) || CHATS[0];
+      return `${head(t("aSupport"))}<p class="small muted" style="margin-bottom:12px">${t("aLangs")}</p><div class="support">
+        <div class="card-solid stack" style="gap:4px;padding:10px"><strong style="padding:6px 8px;color:var(--heading)">${t("aQueue")} (${CHATS.length})</strong>
+          ${CHATS.map((c) => `<button class="conv" data-action="conv" data-id="${c.id}" aria-current="${c.id === sel.id}"><span class="badge">${c.lang}</span><span style="min-width:0"><strong style="color:var(--heading);display:block">${esc(c.who)}</strong><span class="small muted" style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.last)}</span></span></button>`).join("")}</div>
+        <div class="card-solid stack" style="min-height:420px"><div class="row between"><strong style="color:var(--heading)">${esc(sel.who)}</strong>${sel.order ? `<span class="badge badge-info">${sel.order} · ${statusBadge("paid")}</span>` : ""}</div>
+          <div class="chat-body" style="padding:0" aria-live="polite">${sel.msgs.map(([w, m]) => `<div class="msg ${w === "me" ? "me" : "them"}">${esc(m)}</div>`).join("")}</div>
+          <form class="row" data-action="staff-reply" style="flex-wrap:nowrap"><input class="input" name="m" placeholder="${t("chatPlaceholder")}" autocomplete="off"><button class="btn btn-primary">${t("aReply")}</button></form>
+          <div class="row"><button class="btn btn-ghost btn-sm" data-action="resolve">${t("aResolve")}</button></div></div></div>`;
+    },
+    docs: () => `${head(t("aDocs"))}<p class="muted" style="margin-bottom:16px">${t("aDocsText")}</p><div class="grid">${DOCS.map(([n, name]) => `<a class="card hover" href="#/admin/docs"><span class="badge">${n}</span><h3 style="margin-top:10px">${name}</h3></a>`).join("")}</div>`,
+  };
+  return adminShell(tab, (views[tab] || views[""])());
+}
+function modalHtml(kind) {
+  const f = (label, input, hint = "") => `<label class="field"><span>${label}</span>${input}${hint ? `<span class="hint">${hint}</span>` : ""}</label>`;
+  const inp = (n, type = "text", v = "") => `<input class="input" name="${n}" type="${type}" value="${esc(v)}">`;
+  const dt = (n) => `<input class="input" type="datetime-local" name="${n}">`;
+  const bodies = {
+    category: [t("aCategories"), `<div class="form-grid">${f(t("aName"), inp("name", "text", "Gold"))}${f(t("aSlug"), inp("slug", "text", "gold"))}${f(t("aKind"), `<select class="select"><option>gold</option><option>raid</option><option>dungeon</option></select>`, t("aKindHint"))}${f(t("aOrder"), inp("order", "number", "1"))}</div>${f(t("aImage"), `<input class="input" type="file" accept="image/png,image/jpeg,image/webp">`)}<p class="xs muted">${t("aCatalogNote")}</p><label class="choice"><input type="checkbox" checked> ${t("aActive")}</label>`],
+    product: [t("aProducts"), `<div class="form-grid">${f(t("aName"), inp("name", "text", "Current raid — Heroic"))}${f(t("aCategory"), `<select class="select">${CATEGORIES.map((c) => `<option>${c.name}</option>`).join("")}</select>`)}${f(t("aRegion"), `<select class="select"><option>US</option><option>EU</option></select>`)}${f(t("aPrice"), inp("price", "number", "79.00"))}</div><p class="xs muted">${t("aCatalogNote")}</p><label class="choice"><input type="checkbox" checked> ${t("aActive")}</label>`],
+    promotion: [t("aPromotions"), `<div class="form-grid">${f(t("aName"), inp("name", "text", "Gold week"))}${f(t("aType"), `<select class="select"><option>${t("aPercent")}</option><option>${t("aFixed")}</option></select>`)}${f("%", inp("value", "number", "15"), "1–90% (RN-21)")}${f(t("aScope"), `<select class="select"><option>${t("aScopeStore")}</option>${CATEGORIES.map((c) => `<option>${c.name}</option>`).join("")}</select>`)}${f(t("aStart"), dt("s"))}${f(t("aEnd"), dt("e"))}</div><p class="xs muted">${t("aTzNote", { tz: tzLabel(state.tz) })}</p>`],
+    coupon: [t("aCoupons"), `<div class="form-grid">${f(t("aCode"), inp("code", "text", "WOW10"))}${f(t("aType"), `<select class="select"><option>${t("aPercent")}</option><option>${t("aFixed")}</option></select>`)}${f("%", inp("v", "number", "10"))}${f(t("aScope"), `<select class="select"><option>${t("aScopeStore")}</option>${CATEGORIES.map((c) => `<option>${c.name}</option>`).join("")}</select>`)}${f(t("aMaxUses"), inp("max", "number", "500"))}${f(t("aPerEmail"), inp("pe", "number", "1"))}${f(t("aMinOrder"), inp("min", "number", "20"))}${f(t("aStart"), dt("s"))}${f(t("aEnd"), dt("e"))}</div><p class="xs muted">${t("bestRule")} · ${t("aTzNote", { tz: tzLabel(state.tz) })}</p>`],
+    proof: [t("aProof"), `${f(t("aProof"), `<input class="input" type="file" accept="image/*">`, t("aProofHint"))}${f("Nota", `<textarea class="input" rows="3"></textarea>`)}`],
+  };
+  const [title, body] = bodies[kind];
+  return `<div class="modal-back" data-action="close-modal"><form class="modal" role="dialog" aria-modal="true" aria-label="${esc(title)}" data-action="save-modal">
+    <div class="row between"><h3>${esc(title)}</h3><button type="button" class="icon-btn" data-action="close-modal" aria-label="${t("aCancel")}">✕</button></div>
+    ${body}<div class="row" style="justify-content:flex-end"><button type="button" class="btn btn-ghost" data-action="close-modal">${t("aCancel")}</button><button class="btn btn-primary">${t("aSave")}</button></div></form></div>`;
+}
+
+/* ===== Chat (RN-92 a RN-99) ===== */
+function renderChat() {
+  const w = $("#chat-window");
+  w.hidden = !state.chatOpen;
+  $("#chat-launcher").setAttribute("aria-expanded", String(state.chatOpen));
+  if (!state.chatOpen) return;
+  if (!state.chat.length) state.chat.push(["them", t("chatHello")]);
+  w.innerHTML = `<div class="chat-head"><span class="logo-mark" aria-hidden="true">S</span><div style="flex:1"><strong style="color:var(--heading)">${t("supportTitle")}</strong><div class="xs" style="color:var(--success)">● ${t("online")}</div></div>
+    <button class="icon-btn" data-action="close-chat" aria-label="Close" style="width:36px;height:36px">✕</button></div>
+    <div class="notice" style="margin:10px 10px 0;font-size:12px">${ICONS.shield}<span>${t("chatWarn")}</span></div>
+    <div class="chat-body" id="chat-body" aria-live="polite">${state.chat.map(([w2, m]) => `<div class="msg ${w2}">${esc(m)}</div>`).join("")}</div>
+    <form class="chat-foot" data-action="chat-send"><button type="button" class="icon-btn" aria-label="${t("attach")}" style="flex:0 0 44px">📎</button>
+      <label class="sr-only" for="chat-input">${t("chatPlaceholder")}</label><textarea class="input" id="chat-input" rows="1" placeholder="${t("chatPlaceholder")}"></textarea>
+      <button class="btn btn-primary" style="padding:0 16px">${t("send")}</button></form>`;
+  const b = $("#chat-body"); b.scrollTop = b.scrollHeight;
+}
+// RN-95: no app real o servidor mascara cartão (Luhn) antes de gravar; aqui só demonstra o efeito
+const maskCard = (s) => s.replace(/\b(?:\d[ -]?){13,19}\b/g, "•••• •••• •••• ••••");
+
+/* ===== Header, footer, roteador ===== */
+function renderChrome() {
+  document.documentElement.lang = state.lang;
+  const nav = [["#/c/gold", "navGold"], ["#/c/raids", "navRaids"], ["#/c/mythic-plus", "navDungeons"], ["#/", "navHow"], ["#/order", "navSupport"]];
+  const here = location.hash || "#/";
+  $("#main-nav").innerHTML = nav.map(([h, k]) => `<a href="${h}" ${here === h && h !== "#/" ? 'aria-current="page"' : ""}>${t(k)}</a>`).join("");
+  const opts = (list, cur, label = (x) => x) => list.map((v) => `<option value="${v}" ${v === cur ? "selected" : ""}>${esc(label(v))}</option>`).join("");
+  $("#sel-region").innerHTML = opts(["US", "EU"], state.region);
+  $("#sel-lang").innerHTML = opts(Object.keys(LANGS), state.lang, (k) => LANGS[k]);
+  $("#sel-tz").innerHTML = opts(TZS, state.tz, (z) => `${tzLabel(z)}${z === detectedTz ? " ✓" : ""}`);
+  $("#mobile-panel").innerHTML = `<form class="search" role="search" data-action="search">
+      <label class="sr-only" for="q-m" data-i18n="searchLabel">Search products</label>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input class="input" id="q-m" name="q" type="search" autocomplete="off" data-search-input />
+    </form>` + nav.map(([h, k]) => `<a href="${h}">${t(k)}</a>`).join("") +
+    `<div class="row">${["region", "lang", "tz"].map((p) => `<label class="field" style="flex:1;min-width:140px"><span>${t(p === "lang" ? "language" : p === "tz" ? "timezone" : "region")}</span><select class="select" data-pref="${p}">${p === "region" ? opts(["US", "EU"], state.region) : p === "lang" ? opts(Object.keys(LANGS), state.lang, (k) => LANGS[k]) : opts(TZS, state.tz, tzLabel)}</select></label>`).join("")}</div>`;
+  const n = state.cart.reduce((s, i) => s + 1, 0);
+  const c = $("#cart-count"); c.hidden = !n; c.textContent = n;
+  $("#cart-btn").setAttribute("aria-label", `${t("cart")} (${n})`);
+  document.querySelectorAll("[data-i18n]").forEach((el) => (el.textContent = t(el.dataset.i18n)));
+  const current = new URLSearchParams(location.hash.split("?")[1] || "").get("q") || "";
+  document.querySelectorAll("[data-search-input]").forEach((el) => { el.placeholder = t("searchPh"); if (document.activeElement !== el) el.value = current; });
+  $("#footer-grid").innerHTML = `
+    <div><a class="logo" href="#/"><span class="logo-mark">S</span>Shop</a><p class="small muted" style="margin-top:12px">${t("heroText")}</p></div>
+    <div><h4>${t("footerServices")}</h4><ul>${CATEGORIES.map((c2) => `<li><a href="#/c/${c2.slug}">${esc(c2.name)}</a></li>`).join("")}</ul></div>
+    <div><h4>${t("footerAccount")}</h4><ul><li><a href="#/order">${t("myOrders")}</a></li><li><a href="#/cart">${t("cart")}</a></li><li><a href="#" data-action="open-chat">${t("reportProblem")}</a></li></ul></div>
+    <div><h4>${t("footerCompany")}</h4><ul><li><a href="#/">${t("terms2")}</a></li><li><a href="#/">${t("refund")}</a></li><li><a href="#/">${t("privacy")}</a></li><li><a href="#/">${t("faq")}</a></li></ul></div>
+    <form data-action="newsletter"><h4>${t("newsletter")}</h4><p class="small muted" style="margin-bottom:10px">${t("newsletterText")}</p><div class="row" style="flex-wrap:nowrap"><label class="sr-only" for="nl">${t("email")}</label><input class="input" id="nl" type="email" placeholder="you@example.com"><button class="btn btn-outline">${t("subscribe")}</button></div></form>`;
+  $("#footer-copy").textContent = `© 2026 Shop · ${t("footerCopy")}`;
+  $("#footer-tz").textContent = t("showingIn", { tz: `${tzLabel(state.tz)} (${state.tz})` });
+}
+function route() {
+  const [path, qs = ""] = location.hash.slice(1).split("?");
+  const [, a, b] = (path || "/").split("/");
+  const isAdmin = a === "admin";
+  document.querySelector("footer").hidden = isAdmin;
+  const html = a === "products" ? pageProducts(new URLSearchParams(qs)) : a === "c" ? pageCategory(b) : a === "p" ? pageProduct(b) : a === "cart" ? pageCart() : a === "checkout" ? pageCheckout()
+    : a === "invoice" ? pageInvoice() : a === "order" ? pageOrder() : isAdmin ? pageAdmin(b || "") : pageHome();
+  $("#app").innerHTML = html;
+  renderChrome();
+  renderChat();
+}
+function cartItem(p, qty, detail) {
+  const c = catOf(p);
+  return { id: p.id, kind: c.kind, name: p.name, detail, qty, price: p.price, final: finalPrice(p) };
+}
+function rerender() { const y = scrollY; route(); scrollTo(0, y); }
+
+/* ===== Eventos ===== */
+document.addEventListener("change", (e) => {
+  const el = e.target;
+  if (el.dataset.pref) { state[el.dataset.pref] = el.value; rerender(); toast(`${t(el.dataset.pref === "lang" ? "language" : el.dataset.pref === "tz" ? "timezone" : "region")}: ${el.selectedOptions[0].textContent}`); }
+  if (el.dataset.action === "method") { state.method = el.value; rerender(); }
+  if (el.dataset.action === "network") { state.network = el.value; }
+  if (el.dataset.action === "role") { state.role = el.value; rerender(); }
+  if (el.form?.dataset.action === "filters" && el.name !== "q") goProducts(filtersFromForm(el.form)); // RN-103: filtro vai para a URL
+  if (el.dataset.action === "sort") { const p = hashParams(); p.set("sort", el.value); goProducts(p); }
+});
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-action]");
+  if (!el || el.tagName === "FORM" || el.tagName === "INPUT" || el.tagName === "SELECT") return;
+  const a = el.dataset.action;
+  if (a === "close-modal" && e.target !== el && el.classList.contains("modal-back")) return; // clique dentro do modal
+  if (a === "filter") { state.filter = el.dataset.v; rerender(); }
+  if (a === "qty") {
+    state.qty = Math.max(50, Math.min(5000, (state.qty || 100) + Number(el.dataset.v)));
+    $("#qty-out").textContent = `${state.qty}k`;
+    const p = PRODUCTS.find((x) => x.id === $("form[data-id]").dataset.id);
+    $("#prod-total").innerHTML = priceTag(p, state.qty);
+  }
+  if (a === "remove") { state.cart.splice(Number(el.dataset.i), 1); rerender(); }
+  if (a === "copy") { el.textContent = t("copied"); }
+  if (a === "sim-partial") { state.paidPartial = true; rerender(); }
+  if (a === "sim-paid") { state.orderStatus = "paid"; state.paidPartial = false; location.hash = "#/order"; }
+  if (a === "advance") { const s = ["pending", "paid", "progress", "done"]; state.orderStatus = s[(s.indexOf(state.orderStatus) + 1) % 4]; rerender(); }
+  if (a === "open-chat") { e.preventDefault(); state.chatOpen = true; renderChat(); $("#chat-input")?.focus(); }
+  if (a === "close-chat") { state.chatOpen = false; renderChat(); $("#chat-launcher").focus(); }
+  if (a === "modal") { $("#modal-root").innerHTML = modalHtml(el.dataset.v); $("#modal-root input, #modal-root select")?.focus(); }
+  if (a === "close-modal") { $("#modal-root").innerHTML = ""; }
+  if (a === "assign") { ORDERS.find((o) => o.id === el.dataset.id).status = "progress"; rerender(); }
+  if (a === "conv") { state.chatSel = Number(el.dataset.id); rerender(); }
+  if (a === "resolve") { toast(`${t("aResolve")} ✓`); }
+  if (a === "clear-filters") { location.hash = "#/products"; }
+  if (a === "unfilter") {
+    const p = hashParams(), k = el.dataset.k;
+    if (k === "cat") { const rest = (p.get("cat") || "").split(",").filter((x) => x && x !== el.dataset.v); if (rest.length) p.set("cat", rest.join(",")); else p.delete("cat"); }
+    else p.delete(k);
+    goProducts(p);
+  }
+});
+document.addEventListener("submit", (e) => {
+  const f = e.target, a = f.dataset.action;
+  if (!a) return;
+  e.preventDefault();
+  if (a === "add") {
+    const p = PRODUCTS.find((x) => x.id === f.dataset.id), kind = catOf(p).kind;
+    const faction = [...f.querySelectorAll("input[name=faction]")].findIndex((r) => r.checked);
+    const detail = kind === "gold" ? `${val(f, "realm")} · ${faction === 0 ? t("alliance") : t("horde")} · ${val(f, "character") || "—"}`
+      : kind === "raid" ? t("slot") + ": " + (f.querySelector("input[name=slot]:checked")?.closest("label").querySelector("strong").textContent || "—")
+      : `${val(f, "key")} × ${val(f, "runs")}`;
+    state.cart.push(cartItem(p, kind === "gold" ? state.qty : 1, detail));
+    renderChrome(); toast(t("added"));
+  }
+  if (a === "coupon") {
+    const code = val(f, "code").trim().toUpperCase();
+    state.couponError = !!code && !COUPONS[code];
+    state.coupon = COUPONS[code] ? code : null;
+    rerender();
+  }
+  if (a === "pay") { state.email = val(f, "email"); if (state.method === "usdt") location.hash = "#/invoice"; else { state.orderStatus = "paid"; location.hash = "#/order"; } }
+  if (a === "chat-send") {
+    const box = $("#chat-input"), msg = box.value.trim();
+    if (!msg) return;
+    state.chat.push(["me", maskCard(msg)]); box.value = ""; renderChat();
+    setTimeout(() => { state.chat.push(["them", t("chatAuto")]); if (state.chat.length === 3) state.chat.push(["sys", t("chatEmailAsk")]); renderChat(); }, 1100);
+  }
+  if (a === "staff-reply") { const m = val(f, "m").trim(); if (m) { CHATS.find((c) => c.id === state.chatSel).msgs.push(["me", m]); rerender(); } }
+  if (a === "save-modal") { $("#modal-root").innerHTML = ""; toast(`${t("aSave")} ✓ · ${t("aAudit")}`); }
+  if (a === "newsletter") { toast(`${t("subscribe")} ✓`); }
+  if (a === "search") {
+    const q = val(f, "q").trim();
+    if (q.length === 1) { toast(t("searchMin")); return; } // RN-100: mínimo de 2 caracteres
+    const p = new URLSearchParams(); if (q) p.set("q", q);
+    goProducts(p);
+  }
+  if (a === "filters") { goProducts(filtersFromForm(f)); }
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") { if ($("#modal-root").innerHTML) $("#modal-root").innerHTML = ""; else if (state.chatOpen) { state.chatOpen = false; renderChat(); } }
+  if (e.key === "Enter" && !e.shiftKey && e.target.id === "chat-input") { e.preventDefault(); e.target.form.requestSubmit(); }
+});
+$("#chat-launcher").addEventListener("click", () => { state.chatOpen = !state.chatOpen; renderChat(); if (state.chatOpen) $("#chat-input")?.focus(); });
+$("#menu-btn").addEventListener("click", (e) => { const p = $("#mobile-panel"); p.hidden = !p.hidden; e.currentTarget.setAttribute("aria-expanded", String(!p.hidden)); });
+setInterval(() => document.querySelectorAll("[data-until]").forEach((el) => (el.innerHTML = cd(Number(el.dataset.until)))), 1000);
+window.addEventListener("hashchange", () => { $("#mobile-panel").hidden = true; route(); scrollTo(0, 0); $("#app").focus({ preventScroll: true }); });
+const params = new URLSearchParams(location.search);
+if (params.has("clean")) document.body.classList.add("clean");
+// ?demo=1: estados preenchidos (carrinho com itens), útil para capturar no Figma
+if (params.has("demo")) {
+  state.region = "US";
+  state.cart.push(cartItem(PRODUCTS.find((p) => p.id === "gold-us"), 200, "Area 52 · Alliance · Jaina"));
+  state.cart.push(cartItem(PRODUCTS.find((p) => p.id === "raid-heroic-us"), 1, fmtTime(SLOTS[0].startsAt)));
+  state.email = "jaina@example.com";
+}
+route();
+</script>
+</body>
+</html>

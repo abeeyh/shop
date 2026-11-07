@@ -1,3 +1,4 @@
+import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import pino, { type TransportTargetOptions } from "pino";
 import { env } from "./env";
 
@@ -31,19 +32,32 @@ export function maskEmail(email: string): string {
   return `${user[0]}***@${host[0] ?? ""}***${tld}`;
 }
 
-function transport() {
-  const targets: TransportTargetOptions[] = [];
-  if (env.BETTERSTACK_SOURCE_TOKEN && env.BETTERSTACK_INGEST_HOST) {
-    targets.push({
+// Só nome e código: mensagens de erro de banco trazem os parâmetros da query (dados pessoais).
+export function errorSummary(err: unknown): { errName: string; errCode?: string } {
+  const e = err as { name?: unknown; code?: unknown; cause?: { code?: unknown } } | null;
+  const code = e?.cause?.code ?? e?.code;
+  return {
+    errName: typeof e?.name === "string" ? e.name : "UnknownError",
+    ...(typeof code === "string" ? { errCode: code } : {}),
+  };
+}
+
+// Sem Better Stack: stdout direto, sem worker (o host coleta o stdout).
+// shortcut: o transport do Better Stack roda num worker cujas dependências o build standalone
+// não copia (pino-abstract-transport); resolver antes de configurar o token em produção (issue #11).
+function destination() {
+  if (env.NODE_ENV === "test" || !env.BETTERSTACK_SOURCE_TOKEN || !env.BETTERSTACK_INGEST_HOST)
+    return undefined;
+  const targets: TransportTargetOptions[] = [
+    {
       target: "@logtail/pino",
       options: {
         sourceToken: env.BETTERSTACK_SOURCE_TOKEN,
         options: { endpoint: `https://${env.BETTERSTACK_INGEST_HOST}` },
       },
-    });
-  }
-  // stdout sempre: o host também coleta, e local/test não dependem do Better Stack
-  targets.push({ target: "pino/file", options: { destination: 1 } });
+    },
+    { target: "pino/file", options: { destination: 1 } },
+  ];
   return pino.transport({ targets });
 }
 
@@ -56,5 +70,5 @@ export const logger = pino(
     redact: { paths: REDACT_PATHS, censor: "[redacted]" },
     timestamp: pino.stdTimeFunctions.isoTime,
   },
-  env.NODE_ENV === "test" ? undefined : transport(),
+  destination(),
 );

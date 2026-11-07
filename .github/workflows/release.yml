@@ -1,4 +1,4 @@
-# docs/13 §6: release-please na main; depois da release, back-merge main → hom
+# docs/13 §6: release-please na main; depois da release, back-merge main → hom e main → dev
 name: Release
 
 on:
@@ -17,7 +17,7 @@ jobs:
       tag_name: ${{ steps.rp.outputs.tag_name }}
     steps:
       - id: rp
-        uses: googleapis/release-please-action@v4
+        uses: googleapis/release-please-action@v5
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
@@ -28,11 +28,14 @@ jobs:
     if: needs.release-please.outputs.release_created == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Abrir PR main → hom
+      - name: Abrir PRs main → hom e main → dev
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.release-please.outputs.tag_name }}
         run: |
-          gh pr create --repo "${{ github.repository }}" --base hom --head main \
-            --title "chore: back-merge ${{ needs.release-please.outputs.tag_name }} para hom" \
-            --body "Sincroniza hom com a release ${{ needs.release-please.outputs.tag_name }} (docs/13 §5). Merge commit, sem squash." \
-            || echo "Nada a sincronizar ou PR já aberto."
+          for base in hom dev; do
+            gh pr create --repo "${{ github.repository }}" --base "$base" --head main \
+              --title "chore: back-merge $TAG para $base" \
+              --body "Sincroniza $base com a release $TAG (docs/13 §5). Merge commit, sem squash." \
+              || echo "Nada a sincronizar em $base ou PR já aberto."
+          done

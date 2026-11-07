@@ -56,7 +56,7 @@ Todo log é uma linha JSON:
 | Regra | Detalhe |
 |-------|---------|
 | Níveis | `fatal` (app caiu) · `error` (falhou, precisa de ação) · `warn` (anormal, mas tratado) · `info` (evento de negócio) · `debug` (só local/homologação) |
-| `requestId` | Gerado no middleware em toda requisição, devolvido no header `x-request-id`, presente em todo log e evento do Sentry |
+| `requestId` | Gerado em `src/proxy.ts` em toda requisição (o `x-request-id` vindo do cliente é ignorado), repassado à app e devolvido no header `x-request-id`. No servidor: `logger.child({ requestId: getRequestId(await headers()) })` (`src/lib/request-id.ts`). Presente em todo log e evento do Sentry |
 | `event` | Nome estável `dominio.acao_resultado` (ex.: `order.paid`, `checkout.quote_expired`) — dá para buscar e criar alerta |
 | Eventos obrigatórios (`info`) | pedido criado/pago/expirado/concluído, webhook recebido/duplicado/inválido, cotação travada, login de admin, mudança de preço, promoção criada/alterada, cupom criado/aplicado/rejeitado, conversa aberta/assumida/resolvida, convite de equipe enviado/aceito, conta de equipe desativada |
 | Proibido logar | **corpo de mensagem do chat**, senha, token, cookie, header `Authorization`, dados de cartão, chave/seed de carteira, e-mail completo, IP fora do log de acesso (ver [09](09-seguranca-privacidade.md)) |
@@ -86,7 +86,7 @@ flowchart LR
 
 | Severidade | Exemplo | Prazo de resposta | Caminho |
 |------------|---------|-------------------|---------|
-| **S1** | Checkout fora do ar, pagamento confirmado sem pedido pago, vazamento de dados | Imediato | `hotfix/*` a partir de `main` ([13 §5](13-padroes-qualidade.md#5-branches-e-prs)) |
+| **S1** | Checkout fora do ar, pagamento confirmado sem pedido pago, vazamento de dados | Imediato | `hotfix/*` a partir de `main` ([13 §5](13-padroes-qualidade.md#5-tarefas-branches-e-prs)) |
 | **S2** | Funcionalidade quebrada sem alternativa (ex.: fuso errado na agenda) | 1 dia útil | `fix/*` → `hom` → `main` |
 | **S3** | Defeito com alternativa ou visual | Próxima release | `fix/*` → `hom` |
 
@@ -99,6 +99,8 @@ flowchart LR
 |--------|----------|-------|
 | Erro novo em produção | Primeiro evento de um grupo novo no Sentry | E-mail/Discord |
 | Pico de erros | > N erros em 5 min (N em configuração) | E-mail/Discord |
+| Rate limit indisponível | `rate_limit.unavailable` (no máximo 1 por minuto por instância) | E-mail/Discord |
+| Requisição sem IP em production | `rate_limit.unknown_ip` (CDN ou `CLIENT_IP_HEADER` errados) | E-mail/Discord |
 | Webhook falhando | `webhook.signature_invalid` ou `webhook.processing_failed` > 3 em 10 min | E-mail/Discord |
 | Pedido pago sem progresso | `order.paid` sem `order.in_progress` em X horas | E-mail |
 | Conversa sem resposta | Conversa `aberta` há mais de 15 min dentro do horário de atendimento | E-mail/Discord |
@@ -144,11 +146,16 @@ O Marco Civil (art. 15) obriga guardar por **6 meses** os registros de acesso à
 | `port` | int, opcional | porta de origem, se a CDN/proxy informar *(confirmar com advogado se é exigida)* |
 | `user_id` / `session_id` | texto, opcional | quem estava logado |
 | `method`, `route` | texto | rota **sem** query string (pode ter dados pessoais) |
-| `status` | int | código HTTP |
 | `request_id` | texto | liga ao log do Better Stack e ao Sentry |
 
-- Gravado só para páginas e chamadas de API (não para assets estáticos), depois da resposta (`after()` do Next.js), para não atrasar o usuário.
-- Cron diário `/api/cron/purge-access-logs` apaga registros com mais de 6 meses (RN de retenção em [09 §4](09-seguranca-privacidade.md#4-lgpd)).
+- Gravado em `src/proxy.ts` para páginas e chamadas de API (não para assets estáticos nem `/api/health`), com `event.waitUntil` depois da resposta, para não atrasar o usuário. Código em `src/features/access-log`.
+- Sem código HTTP: o proxy roda antes da página e ainda não sabe o status final. O Marco Civil exige data/hora e IP.
+- **Pré-requisito de production:** a origem só aceita tráfego da CDN (allowlist de IPs da CDN, túnel ou mTLS — definir na #2). Sem isso, quem acessar a origem direto forja `CLIENT_IP_HEADER`: escapa do rate limit, esgota a cota de outra pessoa e grava o IP dela no log legal.
+- IP lido do header em `CLIENT_IP_HEADER`, que deve ser um header que a CDN/proxy **sobrescreve** (ex.: `cf-connecting-ip`). **Obrigatório em `production`** (o app não sobe sem ele): `x-forwarded-for` vindo direto do cliente é forjável, e o registro legal poderia incriminar outra pessoa. Em local/homologação, vazio = `x-forwarded-for`. Definir com a hospedagem (#2).
+- Rota gravada sem query string e com segmentos que parecem token (≥ 32 caracteres, letras e números) trocados por `:token` — ex.: link de redefinir senha.
+- Pool de conexões próprio (2 conexões, timeout de 3 s) e no máximo 50 gravações pendentes: com o banco lento ou fora, o log de acesso falha rápido e não disputa conexões com checkout e webhooks. Erro logado só com nome/código (a mensagem do banco traz os parâmetros: IP e rota).
+- *Pendente:* rate limit compartilhado no proxy (Valkey) contra flood de requisições — entra com a integração do Valkey.
+- Cron diário `/api/cron/purge-access-logs` (`Authorization: Bearer <CRON_SECRET>`) apaga registros com mais de 6 meses — o corte ajusta fim de mês (31/ago → 28/fev) para nunca apagar antes do prazo (RN de retenção em [09 §4](09-seguranca-privacidade.md#4-lgpd)).
 - Índice em `occurred_at`. *shortcut: DELETE diário simples; trocar por partição mensal se a tabela passar de alguns milhões de linhas.*
 - Acesso restrito: sem tela no admin; consulta só por pedido formal (ordem judicial), registrada no log de auditoria.
 - Falha ao gravar o log de acesso é `logger.error` + alerta, mas **não** derruba a requisição do usuário.

@@ -3,7 +3,7 @@ import { Inter, Mulish } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { routing } from "@/i18n/routing";
+import { canonicalLocale, routing } from "@/i18n/routing";
 import "../globals.css";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin", "latin-ext"] });
@@ -25,7 +25,10 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} className={`${inter.variable} ${mulish.variable} h-full antialiased`}>
+    <html
+      lang={canonicalLocale(locale)}
+      className={`${inter.variable} ${mulish.variable} h-full antialiased`}
+    >
       <body className="flex min-h-full flex-col font-sans">
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>

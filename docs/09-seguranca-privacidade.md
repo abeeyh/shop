@@ -66,7 +66,18 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 - Verificação de e-mail; tokens de uso único com validade curta.
 - Vínculo de contas OAuth ↔ senha só com e-mails verificados.
 - Senhas vazadas recusadas (HIBP por k-anonimato).
-- Rate limit em store compartilhado (não em memória).
+- Rate limit em store compartilhado (não em memória): Valkey, janela fixa atômica (`src/lib/rate-limit.ts`, limites em `RATE_LIMITS`):
+
+  | Onde | Limite | Se o Valkey cair |
+  |------|--------|------------------|
+  | Toda página/API, por IP, no proxy (antes do log de acesso) | 300/min | passa (disponibilidade) + alerta `rate_limit.unavailable` 1×/min |
+  | Busca (RN-105) | 30/min | passa |
+  | Login, cupom, reporte, chat (quando existirem) | definir na issue | **bloqueia** (`failClosed`) |
+
+  Chave: IPv4 por endereço; **IPv6 pelo prefixo /64** (um cliente costuma ter o /64 inteiro e trocaria de endereço para fugir do limite). Sem IP válido → balde único `ip:unknown` (em production gera alerta `rate_limit.unknown_ip`: indica CDN mal configurada).
+  Valkey lento ou travado: timeout de 150 ms e **disjuntor** de 5 s — após uma falha, as requisições seguintes nem consultam o Valkey (verificado com o container congelado: latência normal).
+  Rotas com ponto no caminho (ex.: `/api/x.json`) passam pelo proxy; só arquivos estáticos conhecidos ficam fora.
+  Bloqueado → 429 com `Retry-After` e `{ error: { code: "rate_limited", requestId } }`. `/api/health` fica fora. `VALKEY_URL` é obrigatório em production.
 - Cookie `httpOnly`, `Secure`, `SameSite=Lax`; trocar senha encerra outras sessões.
 - CSRF: origens confiáveis configuradas.
 
