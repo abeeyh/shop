@@ -3,6 +3,7 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { buttonVariants } from "@/components/atoms/Button";
+import { CardGridSkeleton, LoadingRegion } from "@/components/molecules/Skeletons";
 import {
   CategoryCard,
   categoryHref,
@@ -17,21 +18,17 @@ import { getRegion, getTimezone } from "@/lib/preferences";
 
 const BEST_SELLERS = 8;
 
-async function HomeCatalog({ locale }: { locale: string }) {
+// #88: cada seção da home chega sozinha (streaming); a mais lenta não segura as outras
+async function HomeCategories({ locale }: { locale: string }) {
   await connection();
-  const [region, timeZone] = await Promise.all([getRegion(), getTimezone()]);
-  const [categories, products, t, c, promos] = await Promise.all([
+  const [categories, t] = await Promise.all([
     listCategories(),
-    listProducts({ region, limit: BEST_SELLERS }),
     getTranslations({ locale, namespace: "Home" }),
-    getTranslations({ locale, namespace: "Catalog" }),
-    activePromotions(),
   ]);
   // RN-13: categorias do admin; os botões do topo apontam para a primeira de cada tipo
   const firstOf = (kind: string) => categories.find((x) => x.kind === kind);
   const gold = firstOf("gold");
   const raid = firstOf("raid");
-  const unit = (u: string) => (u === "per_1k_gold" ? c("perK") : u);
 
   return (
     <>
@@ -73,9 +70,28 @@ async function HomeCatalog({ locale }: { locale: string }) {
           ))}
         </div>
       </section>
+    </>
+  );
+}
 
-      <UpcomingRaids locale={locale} region={region} timeZone={timeZone} limit={3} />
+async function HomeRaids({ locale }: { locale: string }) {
+  await connection();
+  const [region, timeZone] = await Promise.all([getRegion(), getTimezone()]);
+  return <UpcomingRaids locale={locale} region={region} timeZone={timeZone} limit={3} />;
+}
 
+async function HomeBestSellers({ locale }: { locale: string }) {
+  await connection();
+  const region = await getRegion();
+  const [products, t, c, promos] = await Promise.all([
+    listProducts({ region, limit: BEST_SELLERS }),
+    getTranslations({ locale, namespace: "Home" }),
+    getTranslations({ locale, namespace: "Catalog" }),
+    activePromotions(),
+  ]);
+  const unit = (u: string) => (u === "per_1k_gold" ? c("perK") : u);
+  return (
+    <>
       <section className="pt-14" aria-labelledby="mais-vendidos">
         <h2
           id="mais-vendidos"
@@ -103,6 +119,14 @@ async function HomeCatalog({ locale }: { locale: string }) {
   );
 }
 
+const HomeSkeleton = ({ label, count }: { label: string; count: number }) => (
+  <div className="pt-14">
+    <LoadingRegion label={label}>
+      <CardGridSkeleton count={count} />
+    </LoadingRegion>
+  </div>
+);
+
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
   setRequestLocale(locale);
@@ -122,8 +146,14 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         </h1>
         <p className="max-w-xl text-lg text-pretty text-muted-foreground">{t("subtitle")}</p>
       </section>
-      <Suspense fallback={<p className="text-muted-foreground">{c("loading")}</p>}>
-        <HomeCatalog locale={locale} />
+      <Suspense fallback={<HomeSkeleton label={c("loading")} count={4} />}>
+        <HomeCategories locale={locale} />
+      </Suspense>
+      <Suspense fallback={null}>
+        <HomeRaids locale={locale} />
+      </Suspense>
+      <Suspense fallback={<HomeSkeleton label={c("loading")} count={BEST_SELLERS} />}>
+        <HomeBestSellers locale={locale} />
       </Suspense>
     </div>
   );

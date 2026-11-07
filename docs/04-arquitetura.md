@@ -39,13 +39,14 @@ Regras com lado visual: **o servidor decide e manda o resultado; o front mostra;
 |-------|-----------------|-----------------|-----------------------------|
 | RN-11 esgotado | se o produto/slot tem estoque | botão desabilitado, selo "esgotado" | adicionar ao carrinho e criar o checkout |
 | RN-13 / RN-19 catálogo | categorias e produtos ativos | lista vinda do banco | carrinho (produto inativo é recusado) |
-| RN-18 estimativa em moeda local | valor ≈ com a cotação em cache (`lib/fx`) | texto "≈" já calculado | — (nunca usada para cobrar) |
+| RN-18 estimativa em moeda local | valor ≈ com a cotação em cache — *bloqueado até a API de cotação (#63, #86)* | texto "≈" já calculado | — (nunca usada para cobrar) |
 | RN-21–RN-23 promoção | se está ativa agora e o preço final | preço riscado + contagem até `endsAt` enviado pelo servidor | carrinho e checkout (promoção vencida não vale) |
 | RN-26 promoção × cupom | qual desconto é maior | "desconto aplicado: …" | checkout (recalcula) |
 | RN-36 cotação do cartão | taxa travada por 15 min | contagem de validade | criação do pagamento (cotação vencida é recusada) |
 | RN-82 / RN-83 fuso | valida o cookie `tz` (lista IANA) | detecta o fuso no navegador e formata horários com `Intl` | gravação da preferência |
 | RN-90 erro | código estável + `requestId` | mensagem traduzida pelo código | — |
 | RN-100–RN-103 busca e filtros | resultado, contagem, ordem e paginação (consulta em `catalog/queries.ts`) | campo, painel de filtros, chips dos filtros ativos | cada requisição (URL validada com zod) |
+| Listas do admin (#88) | página no banco: pedidos e reportes com `LIMIT/OFFSET` + total (`count(*) over()`), 50 por página; auditoria por cursor (keyset `(created_at, id)`, só cresce) | links de página | cada requisição (página/cursor inválido volta à primeira) |
 
 Validação no formulário (zod no cliente) é só conveniência: o mesmo `schemas.ts` roda de novo no servidor.
 

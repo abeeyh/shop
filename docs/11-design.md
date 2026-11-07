@@ -150,6 +150,7 @@ Se o componente **conhece o domínio**, fica na feature; se é genérico, em `sr
 |-------|-----------|-------|
 | Átomo | `Button` (variantes `primary`, `gradient-outline`, `ghost`, `destructive`), `IconButton`, `Input`, `Label`, `Avatar`, `Badge`, `Switch`, `Tooltip`, `Separator`, `Skeleton`, `Spinner` | `components/atoms` |
 | Molécula | `FormField`, `PasswordField`, `CopyField`, `Toast`, `LocaleSwitcher`, `TimezoneSwitcher`, `RegionSwitcher`, `PriceTag` (USDT + estimativa; preço original riscado em promoção) | `components/molecules` |
+| Molécula | `Pagination` (página na URL), `LoadingRegion` + `CardGridSkeleton` / `TableSkeleton` / `TitleSkeleton` (esqueletos com a forma do conteúdo, `role="status"` com texto para leitor de tela; `Skeleton` sem animação com `prefers-reduced-motion`) | `components/molecules` |
 | Molécula | `SearchField` (busca no cabeçalho, `role="search"`), `FilterChip` (filtro ativo removível), `SectionHeading` (título + link "ver todos"), `FilterTabs`, `Countdown`, `GradientCard` (moldura com gradiente) | `components/molecules` |
 | Organismo | `Header` (menu + seletores de região/idioma/fuso + carrinho + conta), `Footer` (4 colunas + newsletter), `Carousel` (CSS scroll-snap, sem biblioteca) | `components/organisms` |
 | Template | `MarketingTemplate`, `AuthTemplate`, `AppTemplate` | `components/templates` |
@@ -160,6 +161,8 @@ Se o componente **conhece o domínio**, fica na feature; se é genérico, em `sr
 - Um componente por arquivo, `PascalCase.tsx`, props tipadas, `className` repassado com `cn()`.
 - Variantes com `class-variance-authority`.
 - Nenhum texto fixo: tudo via sistema de tradução (mesmo com um idioma só).
+- Carregamento (#88): nunca tela vazia nem texto "Carregando…" solto — `loading.tsx` (loja e admin) e fallbacks de `<Suspense>` usam os esqueletos com a mesma grade do conteúdo (sem pulo de layout). Seções independentes ficam em `<Suspense>` separados para chegarem sozinhas (streaming).
+- Lazy loading: código que só serve depois de um clique entra com `next/dynamic` (ex.: a conversa do chat, com SSE, só baixa quando o cliente abre).
 
 ## 6. Reuso de componentes (obrigatório)
 

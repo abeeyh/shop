@@ -162,6 +162,11 @@ test.describe("admin", () => {
     await expect(page.getByText(`Updated Category: E2E Keys ${id}`).first()).toBeVisible();
     await expect(page.getByText(`Created Product: E2E Key Product ${id}`)).toBeVisible();
     await expect(page.getByText(E2E_ADMIN.email).first()).toBeVisible();
+    // #88: cursor e página inválidos na URL voltam para a primeira página (sem erro)
+    await page.goto("/en/admin/auditoria?antes=2026-02-30T00:00:00.000000Z_x");
+    await expect(page.getByText(`Created Product: E2E Key Product ${id}`)).toBeVisible();
+    await page.goto("/en/admin/pedidos?todos=1&pagina=-3");
+    await expect(page.getByRole("heading", { level: 1, name: "Orders" })).toBeVisible();
 
     // RN-50/RN-52: pedido pago → equipe inicia → conclui com prova → cliente vê no pedido
     const buyer = await browser.newContext({ baseURL });

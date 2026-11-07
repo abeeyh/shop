@@ -1,7 +1,8 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
-import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { auditLog, categories, couponRedemptions, coupons, products, promotions, users } from "@/db/schema";
+import { ADMIN_PAGE_SIZE, type Cursor } from "@/lib/pagination";
 import { saveAudited } from "./audit";
 import type { CategoryInput, CouponInput, ProductInput, PromotionInput } from "./schemas";
 
@@ -165,9 +166,10 @@ export const saveCouponRow = (staffId: string, id: string | null, v: CouponInput
     },
   );
 
-// lista de auditoria (mais recentes primeiro)
-export const listAudit = (limit = 100) =>
-  db
+// RN-71 / #88: auditoria por cursor (mais recentes primeiro). Keyset em vez de OFFSET: a tabela só
+// cresce. Busca uma linha a mais para saber se existe página seguinte.
+export async function listAudit(before: Cursor | null, limit = ADMIN_PAGE_SIZE) {
+  const rows = await db
     .select({
       id: auditLog.id,
       entity: auditLog.entity,
@@ -177,8 +179,16 @@ export const listAudit = (limit = 100) =>
       after: auditLog.after,
       createdAt: auditLog.createdAt,
       staffEmail: users.email,
+      cursorAt: sql<string>`to_char(${auditLog.createdAt} at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"')`,
     })
     .from(auditLog)
     .innerJoin(users, eq(auditLog.staffId, users.id))
-    .orderBy(desc(auditLog.createdAt))
-    .limit(limit);
+    .where(
+      before
+        ? sql`(${auditLog.createdAt}, ${auditLog.id}) < (${before.at}::timestamptz, ${before.id}::uuid)`
+        : undefined,
+    )
+    .orderBy(desc(auditLog.createdAt), desc(auditLog.id))
+    .limit(limit + 1);
+  return { rows: rows.slice(0, limit), more: rows.length > limit };
+}

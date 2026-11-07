@@ -322,7 +322,9 @@
       "actions": {
         "create": "创建",
         "update": "修改"
-      }
+      },
+      "older": "更早",
+      "newest": "最新"
     },
     "orders": {
       "todo": "待处理",

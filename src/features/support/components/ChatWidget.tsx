@@ -1,12 +1,18 @@
 "use client";
 
 import { MessageCircle, X } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useActionState, useState } from "react";
 import { buttonVariants } from "@/components/atoms/Button";
 import { Input, Textarea } from "@/components/atoms/Input";
 import { LocalTime } from "@/components/molecules/LocalTime";
 import { sendChatMessage, startChat, type ChatState } from "../chat-actions";
-import { ChatThread } from "./ChatThread";
+import { Skeleton } from "@/components/atoms/Skeleton";
+
+// #88: lazy loading — conversa (EventSource, polling, máscara de envio) só baixa ao abrir o chat
+const ChatThread = dynamic(() => import("./ChatThread").then((m) => m.ChatThread), {
+  loading: () => <Skeleton className="h-64 w-full" />,
+});
 
 type Labels = {
   open: string;
