@@ -435,3 +435,43 @@ export const staffInvites = pgTable("staff_invites", {
     .references(() => users.id),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+// Chat de suporte (RN-92 a RN-98). Visitante identificado por cookie com token (só o hash aqui).
+export const conversationStatus = pgEnum("conversation_status", ["aberta", "em_atendimento", "resolvida"]);
+export const supportConversations = pgTable(
+  "support_conversations",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    guestEmail: text("guest_email").notNull(), // dado pessoal — nunca em log
+    guestName: text("guest_name"),
+    orderId: uuid("order_id").references(() => orders.id),
+    locale: text("locale").notNull(), // RN-98
+    status: conversationStatus("status").notNull().default("aberta"),
+    assignedTo: text("assigned_to").references(() => users.id),
+    guestTokenHash: text("guest_token_hash").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    lastMessageAt: timestamp("last_message_at", { withTimezone: true }).notNull().defaultNow(),
+    resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("support_conversations_status_idx").on(t.status, t.createdAt),
+    index("support_conversations_email_idx").on(t.guestEmail, t.status),
+  ],
+);
+
+export const messageAuthor = pgEnum("message_author", ["customer", "staff", "system"]);
+// id sequencial: o cliente busca "o que perdeu" a partir do último id (retomada do SSE)
+export const supportMessages = pgTable(
+  "support_messages",
+  {
+    id: bigserial("id", { mode: "number" }).primaryKey(),
+    conversationId: uuid("conversation_id")
+      .notNull()
+      .references(() => supportConversations.id, { onDelete: "cascade" }),
+    authorType: messageAuthor("author_type").notNull(),
+    authorId: text("author_id").references(() => users.id),
+    body: text("body").notNull(), // já mascarado (RN-95)
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("support_messages_conversation_idx").on(t.conversationId, t.id)],
+);

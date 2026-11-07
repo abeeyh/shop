@@ -255,6 +255,36 @@ test.describe("admin", () => {
     await expect(sp).toHaveURL(/\/en\/admin\/entrar$/); // RN-05: sessões derrubadas na hora
     await support.close();
 
+    // RN-92 a RN-95: visitante abre o chat, o suporte responde em tempo real, cartão é mascarado
+    const visitor = await browser.newContext({ baseURL });
+    const vp = await visitor.newPage();
+    await vp.goto("/en");
+    await vp.getByRole("button", { name: "Chat with support" }).click();
+    await expect(
+      vp.getByText("We will never ask for your Battle.net password or card details."),
+    ).toBeVisible();
+    await vp.getByLabel("Email").fill(`e2e-visitor-${id}@example.com`);
+    await vp.getByLabel("Name (optional)").fill(`E2E Visitor ${id}`);
+    await vp.getByLabel("How can we help?").fill("My card is 4111 1111 1111 1111, can you help?");
+    await vp.getByRole("button", { name: "Start chat" }).click();
+    await expect(vp.getByText("My card is [cartão removido], can you help?")).toBeVisible();
+
+    await page.goto("/en/admin/suporte");
+    await page.getByRole("link", { name: `E2E Visitor ${id}` }).click();
+    await expect(page.getByTestId("conversation-status")).toHaveText("Open");
+    await expect(page.getByText("My card is [cartão removido], can you help?")).toBeVisible();
+    await page.getByPlaceholder("Write a message").fill("Hi! Which realm?");
+    await page.getByRole("button", { name: "Send" }).click();
+    await expect(vp.getByText("Hi! Which realm?")).toBeVisible(); // SSE: sem recarregar
+    await vp.getByPlaceholder("Write a message").fill("Area 52, thanks");
+    await vp.getByRole("button", { name: "Send" }).click();
+    await expect(page.getByText("Area 52, thanks")).toBeVisible();
+    await page.reload();
+    await expect(page.getByTestId("conversation-status")).toHaveText("In progress"); // respondeu = assumiu
+    await page.getByRole("button", { name: "Mark as resolved" }).click();
+    await expect(page.getByTestId("conversation-status")).toHaveText("Resolved");
+    await visitor.close();
+
     // RN-02: depois de sair, o login pede o código
     await page.getByRole("button", { name: "Sign out" }).click();
     await expect(page).toHaveURL(/\/en\/admin\/entrar$/);

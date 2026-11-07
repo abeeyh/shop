@@ -179,10 +179,10 @@ sequenceDiagram
 | `/api/health` | API | Público; só status (sem versão de dependências nem dados) — usado pelo Better Stack Uptime |
 | `/[locale]/reportar?pagina=&erro=` | Página + Server Action | Público (RN-91): 5/h por IP (`failClosed`) + campo-isca; CAPTCHA entra com a decisão do Turnstile. Link no rodapé e na tela de erro |
 | `/[locale]/admin/reportes` | Página + Server Action | Suporte e admin (RN-06); "resolvido" entra na auditoria (RN-07) |
-| `/api/support/conversations` | API (POST) | Público, CAPTCHA para visitante, rate limit (RN-92, RN-97) |
-| `/api/support/conversations/[id]/messages` | API (GET/POST) | Dono da conversa (sessão ou cookie da conversa) ou equipe |
+| Abrir conversa e mandar mensagem | Server Actions (`startChat`, `sendChatMessage`, `staffReply`) | Público com rate limit (RN-92, RN-97: 5 conversas/h por IP, 3 abertas por e-mail, 20 mensagens/min por conversa); CAPTCHA com a decisão do Turnstile (#29) |
+| `/api/support/conversations/[id]/messages?after=` | API (GET) | Dono da conversa (cookie `chat` com token; só o hash no banco) ou equipe com 2FA — retomada pelo último `id` |
 | `/api/support/conversations/[id]/stream` | API (SSE) | Idem; ping a cada 25 s |
-| `/api/support/stream` | API (SSE) | Equipe — avisos da fila |
+| `/api/support/stream` | — | *Ainda não: a fila `/admin/suporte` atualiza a cada 15 s* |
 | `/[locale]/admin/suporte` | Página | Suporte e admin com 2FA (fila, conversa, dados do pedido) |
 | `/[locale]/admin/equipe` | Página + Server Actions | Só admin (convidar, desativar, papéis, idiomas); horário com #30 |
 | `/[locale]/admin/convite/[token]` | Página + Server Action | Quem tem o link: cria nome e senha (12+, recusa senha vazada — HIBP); 2FA no primeiro login |

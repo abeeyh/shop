@@ -203,7 +203,8 @@
       "orders": "Commandes",
       "reports": "Signalements",
       "docs": "Documentation interne",
-      "team": "Équipe"
+      "team": "Équipe",
+      "support": "Support"
     },
     "login": {
       "title": "Connexion (équipe)",
@@ -374,6 +375,18 @@
         "pwned": "Ce mot de passe figure dans une fuite de données. Choisissez-en un autre.",
         "expired": "Cette invitation est invalide, déjà utilisée ou expirée. Demandez-en une nouvelle à un admin."
       }
+    },
+    "support": {
+      "customer": "Client",
+      "language": "Langue",
+      "statuses": {
+        "aberta": "Ouverte",
+        "em_atendimento": "En cours",
+        "resolvida": "Résolue"
+      },
+      "assume": "Prendre la conversation",
+      "resolve": "Marquer comme résolue",
+      "you": "Vous"
     }
   },
   "Errors": {
@@ -400,5 +413,24 @@
     "title": "Accès refusé",
     "message": "Votre compte n'a pas la permission d'accéder à cet écran.",
     "back": "Retour à l'admin"
+  },
+  "Chat": {
+    "open": "Discuter avec le support",
+    "close": "Fermer le chat",
+    "title": "Support",
+    "notice": "Nous ne vous demanderons jamais votre mot de passe Battle.net ni vos données de carte.",
+    "email": "E-mail",
+    "name": "Nom (facultatif)",
+    "message": "Comment pouvons-nous vous aider ?",
+    "start": "Démarrer la conversation",
+    "you": "Vous",
+    "team": "Support",
+    "placeholder": "Écrivez un message",
+    "send": "Envoyer",
+    "errors": {
+      "error": "Vérifiez les champs et réessayez.",
+      "limited": "Trop de messages ou de conversations. Patientez un instant.",
+      "closed": "Cette conversation est fermée depuis plus de 7 jours. Ouvrez-en une nouvelle."
+    }
   }
 }

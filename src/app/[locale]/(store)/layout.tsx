@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/organisms/SiteFooter";
 import { SearchField } from "@/components/molecules/SearchField";
 import { SiteHeader } from "@/components/organisms/SiteHeader";
 import { countItems, getCartId } from "@/features/cart";
+import { ChatLauncher } from "@/features/support/ChatLauncher";
 import { ReportLink } from "@/features/support/components/ReportLink";
 import { categoryHref, listCategories } from "@/features/catalog";
 import {
@@ -123,6 +124,9 @@ export default async function StoreLayout({ children, params }: LayoutProps<"/[l
         copyright={footer("copyright")}
         extra={<ReportLink locale={locale} label={footer("report")} />}
       />
+      <Suspense fallback={null}>
+        <ChatLauncher locale={locale} />
+      </Suspense>
     </>
   );
 }

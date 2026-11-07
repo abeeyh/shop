@@ -203,7 +203,8 @@
       "orders": "訂單",
       "reports": "問題回報",
       "docs": "內部文件",
-      "team": "團隊"
+      "team": "團隊",
+      "support": "客服"
     },
     "login": {
       "title": "團隊登入",
@@ -374,6 +375,18 @@
         "pwned": "此密碼曾出現在資料外洩中，請換一個。",
         "expired": "此邀請無效、已使用或已過期，請向管理員索取新的邀請。"
       }
+    },
+    "support": {
+      "customer": "客戶",
+      "language": "語言",
+      "statuses": {
+        "aberta": "待處理",
+        "em_atendimento": "處理中",
+        "resolvida": "已解決"
+      },
+      "assume": "接手此對話",
+      "resolve": "標記為已解決",
+      "you": "你"
     }
   },
   "Errors": {
@@ -400,5 +413,24 @@
     "title": "沒有權限",
     "message": "你的帳號沒有此頁面的權限。",
     "back": "返回管理後台"
+  },
+  "Chat": {
+    "open": "聯絡客服",
+    "close": "關閉聊天",
+    "title": "客服",
+    "notice": "我們絕不會向你索取 Battle.net 密碼或信用卡資料。",
+    "email": "電子郵件",
+    "name": "名字（選填）",
+    "message": "需要什麼協助？",
+    "start": "開始對話",
+    "you": "你",
+    "team": "客服",
+    "placeholder": "輸入訊息",
+    "send": "送出",
+    "errors": {
+      "error": "請檢查欄位後再試一次。",
+      "limited": "訊息或對話太多，請稍候再試。",
+      "closed": "此對話已結束超過 7 天，請開啟新的對話。"
+    }
   }
 }

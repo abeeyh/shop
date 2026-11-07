@@ -18,7 +18,12 @@ export async function getStaff() {
   if (Date.now() - new Date(session.session.createdAt).getTime() > MAX_SESSION_MS) return null;
   const [profile] = await db.select().from(staffProfiles).where(eq(staffProfiles.userId, session.user.id));
   if (!profile?.active) return null;
-  return { user: session.user, role: profile.role, twoFactor: session.user.twoFactorEnabled === true };
+  return {
+    user: session.user,
+    role: profile.role,
+    languages: profile.languages,
+    twoFactor: session.user.twoFactorEnabled === true,
+  };
 }
 
 // Toda página e Server Action do admin começa aqui (action é endpoint público — docs/09)
