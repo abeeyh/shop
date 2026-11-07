@@ -56,7 +56,7 @@ gantt
 
 - [x] Carrinho com total recalculado no servidor (RN-20).
 - [x] Adapter `crypto` + fatura + IPN assinado e idempotente (RN-30, RN-32, RN-33, RN-35, RN-37). *Coberto com o adapter fake (mesma assinatura do NOWPayments); sandbox real depende da conta.*
-- [ ] Reserva de gold/vaga e expiração em 30 min (RN-34).
+- [x] Reserva de gold/vaga e expiração em 30 min (RN-34). *Agendar `/api/cron/expire-orders` a cada minuto na hospedagem (#2).*
 
 **Pronto quando:** pagamento de teste em USDT (sandbox) leva o pedido a `pago`; pagamento a menor leva a `pagamento_parcial`; IPN repetido não duplica.
 

@@ -81,7 +81,7 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 | RN-31 | ~~Moeda de cobrança BRL.~~ *(revogada em 2026-11-06 — substituída por RN-35)* |
 | RN-32 | Pedido só muda para **pago** por webhook/IPN assinado do provedor; retorno do navegador não confirma pagamento. *(proposta — confirmar)* |
 | RN-33 | Webhook repetido não gera efeito duplicado (idempotência pelo ID do evento). *(proposta — confirmar)* |
-| RN-34 | Vaga de raid e gold são reservados ao criar o checkout e liberados se o pagamento não for confirmado em 30 min. *(proposta — confirmar)* |
+| RN-34 | Vaga de raid e gold são reservados ao criar o checkout e liberados se o pagamento não for confirmado em 30 min. No MVP o gold não tem estoque cadastrado, então só a vaga de raid é reservada; pedido `pagamento_parcial` mantém a vaga até o admin resolver. *(proposta — confirmar)* |
 | RN-35 | Meios de pagamento: **USDT** (cripto, via gateway) e **cartão**. O valor-base é sempre o preço em USDT. *(aprovada em 2026-11-06)* |
 | RN-36 | Cartão: valor cobrado = preço final em USDT (já com desconto) × cotação USDT→moeda do cartão, **travada no início do checkout** por 15 min; a cotação e o valor cobrado ficam gravados no pedido. *(proposta — confirmar)* |
 | RN-37 | USDT: redes aceitas TRC-20 e ERC-20 *(proposta — confirmar)*; pagamento a menor deixa o pedido `pagamento_parcial` (sem entrega); a maior gera crédito ou devolução manual pelo admin. *(proposta — confirmar)* |

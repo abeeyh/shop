@@ -1,7 +1,7 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
-import { asc, eq } from "drizzle-orm";
+import { and, asc, eq, gt, inArray, isNotNull, lt, sql, type SQL } from "drizzle-orm";
 import { db } from "@/db";
-import { orderItems, orders, paymentEvents } from "@/db/schema";
+import { orderItems, orders, paymentEvents, raidSlots } from "@/db/schema";
 import { PAY_CURRENCY } from "@/lib/payments/crypto";
 import { nextStatus, settle, type Network, type OrderStatus, type PaymentOutcome } from "./rules";
 
@@ -22,8 +22,31 @@ export type NewOrder = {
   }[];
 };
 
+export class SoldOutError extends Error {}
+
+type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
+
+// RN-34 / RN-11: reserva a vaga na mesma transação do pedido; sem vaga (ou horário passado) = nada
+// é criado. Condição no UPDATE: dois checkouts simultâneos não passam da capacidade.
+async function reserveSeat(tx: Tx, slotId: string) {
+  const [ok] = await tx
+    .update(raidSlots)
+    .set({ reserved: sql`${raidSlots.reserved} + 1`, updatedAt: new Date() })
+    .where(
+      and(
+        eq(raidSlots.id, slotId),
+        eq(raidSlots.active, true),
+        lt(raidSlots.reserved, raidSlots.capacity),
+        gt(raidSlots.startsAt, sql`now()`),
+      ),
+    )
+    .returning({ id: raidSlots.id });
+  if (!ok) throw new SoldOutError();
+}
+
 export async function insertOrder({ items, ...order }: NewOrder): Promise<string> {
   return db.transaction(async (tx) => {
+    for (const i of items) if (i.raidSlotId) await reserveSeat(tx, i.raidSlotId);
     const [row] = await tx.insert(orders).values(order).returning({ id: orders.id });
     await tx.insert(orderItems).values(items.map((i) => ({ ...i, orderId: row!.id })));
     return row!.id;
@@ -37,9 +60,42 @@ export async function setInvoice(id: string, provider: string, providerPaymentId
     .where(eq(orders.id, id));
 }
 
-export async function markExpired(id: string) {
-  await db.update(orders).set({ status: "expirado", updatedAt: new Date() }).where(eq(orders.id, id));
+// RN-34/RN-50: só pedido `pendente` expira (o IPN trava a linha; pago no meio do caminho não expira)
+// e as vagas voltam na mesma transação
+async function expireWhere(where: SQL | undefined): Promise<number> {
+  return db.transaction(async (tx) => {
+    const expired = await tx
+      .update(orders)
+      .set({ status: "expirado", updatedAt: new Date() })
+      .where(and(eq(orders.status, "pendente"), where))
+      .returning({ id: orders.id });
+    if (!expired.length) return 0;
+    const seats = await tx
+      .select({ slotId: orderItems.raidSlotId, n: sql<number>`count(*)::int` })
+      .from(orderItems)
+      .where(
+        and(
+          inArray(
+            orderItems.orderId,
+            expired.map((o) => o.id),
+          ),
+          isNotNull(orderItems.raidSlotId),
+        ),
+      )
+      .groupBy(orderItems.raidSlotId);
+    for (const s of seats)
+      await tx
+        .update(raidSlots)
+        .set({ reserved: sql`greatest(${raidSlots.reserved} - ${s.n}, 0)`, updatedAt: new Date() })
+        .where(eq(raidSlots.id, s.slotId!));
+    return expired.length;
+  });
 }
+
+export const markExpired = (id: string) => expireWhere(eq(orders.id, id));
+
+// cron /api/cron/expire-orders: pendente com prazo vencido (RN-34)
+export const expireDueOrders = (now = new Date()) => expireWhere(lt(orders.expiresAt, now));
 
 export async function getOrder(id: string) {
   const [order] = await db.select().from(orders).where(eq(orders.id, id));
