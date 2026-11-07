@@ -146,6 +146,7 @@ sequenceDiagram
 - `coupon_redemptions` (coupon_id, order_id, email, status `reserved|used|released`) — RN-27
 - `audit_log` (id, admin_id, entity, entity_id, action, before jsonb, after jsonb, created_at) — RN-71
 - `raid_slots` (id, product_id, region, starts_at timestamptz, capacity, reserved)
+- `carts` (id, created_at, updated_at) + `cart_items` (id, cart_id, product_id, raid_slot_id?, quantity > 0, options jsonb) — carrinho do visitante, id em cookie httpOnly (30 dias); **sem preço gravado**: o total é recalculado a cada leitura (RN-20). Tabela de preço (faixas de M+, multiplicador de loot, passo do gold) em `src/features/pricing/rules.ts` (RN-15 a RN-17)
 - `orders` (id, email, locale, timezone, region, status, subtotal_usdt_cents, discount_usdt_cents, discount_source `promotion|coupon|none`, discount_ref, total_usdt_cents, payment_method `usdt|card`, network, tx_hash, quote_rate, charged_amount, charged_currency, provider_payment_id, created_at)
 - `order_items` (order_id, product_id, options jsonb, unit_price_usdt_cents, discount_usdt_cents, quantity, raid_slot_id, character_name, realm, faction)
 - `deliveries` (order_id, proof_url, note, delivered_at, admin_id) — RN-52

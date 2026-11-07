@@ -11,7 +11,8 @@
     "timezone": "Fuseau horaire",
     "menu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
-    "detecting": "Détection…"
+    "detecting": "Détection…",
+    "cart": "Panier ({n} articles)"
   },
   "Home": {
     "badge": "WoW Retail · US et EU",
@@ -82,5 +83,61 @@
     "pagination": "Pages",
     "prev": "Précédent",
     "next": "Suivant"
+  },
+  "Buy": {
+    "realm": "Royaume",
+    "faction": "Faction",
+    "alliance": "Alliance",
+    "horde": "Horde",
+    "character": "Nom du personnage",
+    "characterHint": "Le personnage qui reçoit l'or (lettres uniquement).",
+    "quantity": "Quantité (milliers de pièces d'or)",
+    "slot": "Date et heure",
+    "loot": "Option de butin",
+    "lootNone": "Clear uniquement",
+    "lootArmor": "Priorité par type d'armure (+30 %)",
+    "lootFull": "Butin complet (+80 %)",
+    "keyLevel": "Niveau de clé",
+    "runs": "Runs",
+    "timed": "Dans les temps (+20 %)",
+    "total": "Total",
+    "add": "Ajouter au panier",
+    "added": "Ajouté au panier",
+    "viewCart": "Voir le panier",
+    "unit": {
+      "raid": "par raid",
+      "dungeon": "par run, jusqu'à +10",
+      "gold": "pour 1 000 pièces d'or"
+    },
+    "errors": {
+      "realm": "Indiquez le royaume.",
+      "character": "Utilisez 2 à 12 lettres, sans espaces ni symboles.",
+      "quantity": "Choisissez de 50k à 5 000k, par paliers de 50k.",
+      "slotId": "Ce créneau n'est plus disponible. Choisissez-en un autre.",
+      "product": "Ce produit n'est plus disponible.",
+      "faction": "Choisissez une faction.",
+      "keyLevel": "Choisissez un niveau de +2 à +15.",
+      "runs": "Choisissez de 1 à 10 runs.",
+      "loot": "Choisissez une option de butin."
+    }
+  },
+  "Cart": {
+    "title": "Panier",
+    "empty": "Votre panier est vide.",
+    "browse": "Voir les produits",
+    "remove": "Retirer",
+    "subtotal": "Sous-total",
+    "note": "Les remises et coupons s'appliquent au paiement.",
+    "unavailable": "N'est plus disponible — exclu du total.",
+    "removeUnavailable": "Retirez les articles indisponibles pour continuer.",
+    "alliance": "Alliance",
+    "horde": "Horde",
+    "loot": {
+      "none": "Clear uniquement",
+      "armor": "Priorité par type d'armure",
+      "full": "Butin complet"
+    },
+    "runs": "{n, plural, one {# run} other {# runs}}",
+    "timed": "dans les temps"
   }
 }

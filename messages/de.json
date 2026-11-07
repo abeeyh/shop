@@ -11,7 +11,8 @@
     "timezone": "Zeitzone",
     "menu": "Menü öffnen",
     "closeMenu": "Menü schließen",
-    "detecting": "Wird erkannt…"
+    "detecting": "Wird erkannt…",
+    "cart": "Warenkorb ({n} Artikel)"
   },
   "Home": {
     "badge": "WoW Retail · US & EU",
@@ -82,5 +83,61 @@
     "pagination": "Seiten",
     "prev": "Zurück",
     "next": "Weiter"
+  },
+  "Buy": {
+    "realm": "Realm",
+    "faction": "Fraktion",
+    "alliance": "Allianz",
+    "horde": "Horde",
+    "character": "Charaktername",
+    "characterHint": "Der Charakter, der das Gold erhält (nur Buchstaben).",
+    "quantity": "Menge (tausend Gold)",
+    "slot": "Datum und Uhrzeit",
+    "loot": "Loot-Option",
+    "lootNone": "Nur Clear",
+    "lootArmor": "Rüstungstyp-Priorität (+30 %)",
+    "lootFull": "Voller Loot (+80 %)",
+    "keyLevel": "Schlüsselstufe",
+    "runs": "Runs",
+    "timed": "In der Zeit (+20 %)",
+    "total": "Gesamt",
+    "add": "In den Warenkorb",
+    "added": "Zum Warenkorb hinzugefügt",
+    "viewCart": "Warenkorb ansehen",
+    "unit": {
+      "raid": "pro Raid",
+      "dungeon": "pro Run, bis +10",
+      "gold": "pro 1.000 Gold"
+    },
+    "errors": {
+      "realm": "Gib den Realm an.",
+      "character": "2–12 Buchstaben, ohne Leer- oder Sonderzeichen.",
+      "quantity": "Wähle 50k bis 5.000k in Schritten von 50k.",
+      "slotId": "Dieser Termin ist nicht mehr verfügbar. Wähle einen anderen.",
+      "product": "Dieses Produkt ist nicht mehr verfügbar.",
+      "faction": "Wähle eine Fraktion.",
+      "keyLevel": "Wähle eine Stufe von +2 bis +15.",
+      "runs": "Wähle 1 bis 10 Runs.",
+      "loot": "Wähle eine Loot-Option."
+    }
+  },
+  "Cart": {
+    "title": "Warenkorb",
+    "empty": "Dein Warenkorb ist leer.",
+    "browse": "Produkte ansehen",
+    "remove": "Entfernen",
+    "subtotal": "Zwischensumme",
+    "note": "Rabatte und Gutscheine werden an der Kasse angewendet.",
+    "unavailable": "Nicht mehr verfügbar — nicht in der Summe.",
+    "removeUnavailable": "Entferne die nicht verfügbaren Artikel, um fortzufahren.",
+    "alliance": "Allianz",
+    "horde": "Horde",
+    "loot": {
+      "none": "Nur Clear",
+      "armor": "Rüstungstyp-Priorität",
+      "full": "Voller Loot"
+    },
+    "runs": "{n, plural, one {# Run} other {# Runs}}",
+    "timed": "in der Zeit"
   }
 }
