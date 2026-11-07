@@ -7,11 +7,7 @@
     "badge": "Em breve",
     "title": "Seu progresso no WoW, sem o grind",
     "subtitle": "Gold, raids e masmorras Mítica+ para Retail US e EU — preço em USDT, horários no seu fuso.",
-    "categories": {
-      "gold": "Gold",
-      "raids": "Raids",
-      "dungeons": "Masmorras"
-    },
+    "tags": ["Gold", "Raids", "Masmorras"],
     "payment": "Pague em USDT ou cartão"
   }
 }

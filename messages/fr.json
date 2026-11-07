@@ -7,11 +7,7 @@
     "badge": "Bientôt disponible",
     "title": "Progressez dans WoW, sans le farm",
     "subtitle": "Or, raids et donjons Mythique+ pour Retail US et EU — prix en USDT, horaires dans votre fuseau.",
-    "categories": {
-      "gold": "Or",
-      "raids": "Raids",
-      "dungeons": "Donjons"
-    },
+    "tags": ["Or", "Raids", "Donjons"],
     "payment": "Paiement en USDT ou par carte"
   }
 }

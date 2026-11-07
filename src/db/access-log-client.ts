@@ -1,3 +1,4 @@
+import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { drizzle } from "drizzle-orm/postgres-js";
 import { env } from "@/lib/env";
 

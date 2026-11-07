@@ -1,3 +1,4 @@
+import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { isIP } from "node:net";
 
 export const RETENTION_MONTHS = 6; // Marco Civil art. 15

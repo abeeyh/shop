@@ -54,6 +54,25 @@ const eslintConfig = defineConfig([
     },
   },
   {
+    // docs/04 regra de ouro: componente só exibe. Regra, banco e segredos chegam por props,
+    // vindos da página (servidor). O build também quebra via "server-only".
+    files: ["src/components/**", "src/features/*/components/**"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["**/rules", "**/queries", "@/db", "@/db/*", "@/lib/env", "@/lib/logger", "@/lib/cron"],
+              message:
+                "Componente não decide regra nem acessa banco/segredo: receba o resultado por props (docs/04).",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     // scripts de linha de comando escrevem no terminal
     files: ["scripts/**"],
     rules: { "no-console": "off" },
