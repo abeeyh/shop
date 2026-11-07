@@ -11,7 +11,8 @@
     "timezone": "Time zone",
     "menu": "Open menu",
     "closeMenu": "Close menu",
-    "detecting": "Detecting…"
+    "detecting": "Detecting…",
+    "cart": "Cart ({n} items)"
   },
   "Home": {
     "badge": "WoW Retail · US & EU",
@@ -82,5 +83,61 @@
     "pagination": "Pages",
     "prev": "Previous",
     "next": "Next"
+  },
+  "Buy": {
+    "realm": "Realm",
+    "faction": "Faction",
+    "alliance": "Alliance",
+    "horde": "Horde",
+    "character": "Character name",
+    "characterHint": "The character that receives the gold (letters only).",
+    "quantity": "Amount (thousands of gold)",
+    "slot": "Date and time",
+    "loot": "Loot option",
+    "lootNone": "Clear only",
+    "lootArmor": "Armor-type priority (+30%)",
+    "lootFull": "Full loot funnel (+80%)",
+    "keyLevel": "Key level",
+    "runs": "Runs",
+    "timed": "Timed (+20%)",
+    "total": "Total",
+    "add": "Add to cart",
+    "added": "Added to cart",
+    "viewCart": "View cart",
+    "unit": {
+      "raid": "per raid",
+      "dungeon": "per run, up to +10",
+      "gold": "per 1,000 gold"
+    },
+    "errors": {
+      "realm": "Enter the realm name.",
+      "character": "Use 2–12 letters, no spaces or symbols.",
+      "quantity": "Choose 50k to 5,000k, in steps of 50k.",
+      "slotId": "This time is no longer available. Choose another.",
+      "product": "This product is no longer available.",
+      "faction": "Choose a faction.",
+      "keyLevel": "Choose a key level from +2 to +15.",
+      "runs": "Choose 1 to 10 runs.",
+      "loot": "Choose a loot option."
+    }
+  },
+  "Cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty.",
+    "browse": "Browse products",
+    "remove": "Remove",
+    "subtotal": "Subtotal",
+    "note": "Discounts and coupons are applied at checkout.",
+    "unavailable": "No longer available — removed from the total.",
+    "removeUnavailable": "Remove the unavailable items to continue.",
+    "alliance": "Alliance",
+    "horde": "Horde",
+    "loot": {
+      "none": "Clear only",
+      "armor": "Armor-type priority",
+      "full": "Full loot funnel"
+    },
+    "runs": "{n, plural, one {# run} other {# runs}}",
+    "timed": "timed"
   }
 }

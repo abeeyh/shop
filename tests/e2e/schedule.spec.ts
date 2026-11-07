@@ -49,8 +49,8 @@ test.describe("agenda", () => {
     const context = await browser.newContext({ timezoneId: "America/New_York", baseURL });
     const page = await context.newPage();
     await page.goto("/en/wow/raids/raid-heroic-us");
-    await expect(page.getByRole("heading", { name: "Available times" })).toBeVisible();
-    await expect(page.getByRole("timer")).toHaveCount(4);
+    // #17: horários viram opções do formulário de compra
+    await expect(page.getByRole("group", { name: "Date and time" }).getByRole("radio")).toHaveCount(4);
     await context.close();
   });
 });

@@ -36,6 +36,13 @@
       "when": 1794026627610,
       "tag": "0004_misty_demogoblin",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794027455884,
+      "tag": "0005_lovely_prima",
+      "breakpoints": true
     }
   ]
 }

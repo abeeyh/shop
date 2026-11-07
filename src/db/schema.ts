@@ -104,3 +104,27 @@ export const raidSlots = pgTable(
     ),
   ],
 );
+
+// Carrinho (RN-01 visitante, RN-20 total recalculado no servidor). Identificado por cookie httpOnly.
+export const carts = pgTable("carts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  ...timestamps,
+});
+
+export const cartItems = pgTable(
+  "cart_items",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    cartId: uuid("cart_id")
+      .notNull()
+      .references(() => carts.id, { onDelete: "cascade" }),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id),
+    raidSlotId: uuid("raid_slot_id").references(() => raidSlots.id),
+    quantity: integer("quantity").notNull(), // gold: milhares; M+: runs; raid: 1
+    options: jsonb("options").notNull().default({}), // validado por tipo (features/cart/schemas.ts)
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("cart_items_cart_idx").on(t.cartId), check("cart_items_quantity", sql`${t.quantity} > 0`)],
+);

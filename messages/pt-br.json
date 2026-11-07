@@ -11,7 +11,8 @@
     "timezone": "Fuso horário",
     "menu": "Abrir menu",
     "closeMenu": "Fechar menu",
-    "detecting": "Detectando…"
+    "detecting": "Detectando…",
+    "cart": "Carrinho ({n} itens)"
   },
   "Home": {
     "badge": "WoW Retail · US e EU",
@@ -82,5 +83,61 @@
     "pagination": "Páginas",
     "prev": "Anterior",
     "next": "Próxima"
+  },
+  "Buy": {
+    "realm": "Realm",
+    "faction": "Facção",
+    "alliance": "Aliança",
+    "horde": "Horda",
+    "character": "Nome do personagem",
+    "characterHint": "O personagem que recebe o gold (só letras).",
+    "quantity": "Quantidade (milhares de gold)",
+    "slot": "Data e hora",
+    "loot": "Opção de loot",
+    "lootNone": "Só o clear",
+    "lootArmor": "Prioridade por armadura (+30%)",
+    "lootFull": "Loot completo (+80%)",
+    "keyLevel": "Nível da chave",
+    "runs": "Runs",
+    "timed": "No tempo (+20%)",
+    "total": "Total",
+    "add": "Adicionar ao carrinho",
+    "added": "Adicionado ao carrinho",
+    "viewCart": "Ver carrinho",
+    "unit": {
+      "raid": "por raid",
+      "dungeon": "por run, até +10",
+      "gold": "por 1.000 de gold"
+    },
+    "errors": {
+      "realm": "Informe o nome do realm.",
+      "character": "Use de 2 a 12 letras, sem espaços ou símbolos.",
+      "quantity": "Escolha de 50k a 5.000k, de 50k em 50k.",
+      "slotId": "Esse horário não está mais disponível. Escolha outro.",
+      "product": "Este produto não está mais disponível.",
+      "faction": "Escolha uma facção.",
+      "keyLevel": "Escolha um nível de +2 a +15.",
+      "runs": "Escolha de 1 a 10 runs.",
+      "loot": "Escolha uma opção de loot."
+    }
+  },
+  "Cart": {
+    "title": "Carrinho",
+    "empty": "Seu carrinho está vazio.",
+    "browse": "Ver produtos",
+    "remove": "Remover",
+    "subtotal": "Subtotal",
+    "note": "Descontos e cupons são aplicados no checkout.",
+    "unavailable": "Não está mais disponível — fora do total.",
+    "removeUnavailable": "Remova os itens indisponíveis para continuar.",
+    "alliance": "Aliança",
+    "horde": "Horda",
+    "loot": {
+      "none": "Só o clear",
+      "armor": "Prioridade por armadura",
+      "full": "Loot completo"
+    },
+    "runs": "{n, plural, one {# run} other {# runs}}",
+    "timed": "no tempo"
   }
 }

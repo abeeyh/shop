@@ -54,7 +54,7 @@ gantt
 
 ## F2 — Checkout em USDT
 
-- [ ] Carrinho com total recalculado no servidor (RN-20).
+- [x] Carrinho com total recalculado no servidor (RN-20).
 - [ ] Adapter `crypto` + fatura + IPN assinado e idempotente (RN-30, RN-32, RN-33, RN-35, RN-37).
 - [ ] Reserva de gold/vaga e expiração em 30 min (RN-34).
 

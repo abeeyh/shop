@@ -99,6 +99,13 @@ classDiagram
     +chargedAmount: int?
     +chargedCurrency: string?
   }
+  class Cart {
+    +id: uuid
+  }
+  class CartItem {
+    +quantity: int
+    +options: json
+  }
   class OrderItem {
     +unitPriceUsdtCents: int
     +quantity: int
@@ -117,6 +124,9 @@ classDiagram
     +type: string
   }
   Category "1" *-- "*" Product
+  Cart "1" *-- "*" CartItem
+  CartItem "*" --> "1" Product
+  CartItem "*" --> "0..1" RaidSlot
   Product "1" *-- "*" RaidSlot
   Promotion "*" --> "*" Product : aplica a
   Promotion "*" --> "*" Category : aplica a
