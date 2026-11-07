@@ -28,7 +28,6 @@ export function ProductCard({ p, cta, flag }: { p: ProductCardData; cta: string;
         <h3 className="font-heading text-[15px] font-semibold text-heading">
           <Link
             href={p.href}
-            scroll={false}
             className="after:absolute after:inset-0 after:rounded-lg after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-ring"
           >
             {p.name}

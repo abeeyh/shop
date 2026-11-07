@@ -132,7 +132,9 @@
     "savedCharacter": "已保存的角色",
     "savedNone": "— 输入其他角色 —",
     "saveCharacter": "将此角色保存到我的账号",
-    "buyNow": "立即购买"
+    "buyNow": "立即购买",
+    "goToPayment": "前往付款",
+    "keepShopping": "继续购物"
   },
   "Cart": {
     "title": "购物车",

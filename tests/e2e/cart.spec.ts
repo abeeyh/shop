@@ -97,16 +97,36 @@ test.describe("carrinho", () => {
   });
 });
 
-// #102: da lista ao pagamento em poucos cliques — gaveta da compra + "Comprar agora"
-test("#102: lista → gaveta → Comprar agora cai no pagamento com o item", async ({ page }) => {
+// #102/#109: da lista ao pagamento em poucos cliques — página do produto + "Comprar agora"
+test("#109: lista → página do produto → Comprar agora cai no pagamento com o item", async ({ page }) => {
   await page.goto("/en/wow/mythic-plus");
   await page.getByRole("link", { name: "Mythic+ Key" }).click();
-  const drawer = page.getByRole("dialog");
-  await drawer.getByLabel("Realm").fill("Area 52");
-  await drawer.getByLabel("Character name").fill("Thrall");
-  await drawer.getByRole("button", { name: "Buy now" }).click();
+  await expect(page).toHaveURL(/\/en\/wow\/mythic-plus\/mythic-plus-key$/);
+  await page.getByLabel("Realm").filter({ visible: true }).fill("Area 52");
+  await page.getByLabel("Character name").filter({ visible: true }).fill("Thrall");
+  await page.getByRole("button", { name: "Buy now" }).click();
   await expect(page).toHaveURL(/\/en\/carrinho#pagar$/, { timeout: 15_000 });
-  await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(page.getByText("Area 52 · Alliance · Thrall · +6")).toBeVisible();
   await expect(page.getByRole("button", { name: "Pay with USDT" })).toBeVisible();
+});
+
+// #109: adicionar abre o carrinho na barra lateral; continuar comprando fecha; ir ao pagamento leva ao checkout
+test("#109: adicionar mostra o carrinho na barra lateral", async ({ page }) => {
+  await page.goto("/en/wow/mythic-plus/mythic-plus-key");
+  await page.getByLabel("Realm").fill("Area 52");
+  await page.getByLabel("Character name").fill("Thrall");
+  await page.getByRole("button", { name: "Add to cart" }).click();
+  const sheet = page.getByRole("dialog", { name: "Added to cart" });
+  await expect(sheet).toBeVisible({ timeout: 15_000 });
+  await expect(sheet.getByText("Mythic+ Key")).toBeVisible();
+  await expect(sheet.getByText("Area 52 · Alliance · Thrall · +6")).toBeVisible();
+  await sheet.getByRole("button", { name: "Keep shopping" }).click();
+  await expect(sheet).toBeHidden();
+  // de novo (o React limpa os campos depois de uma action que deu certo): abre outra vez
+  await page.getByLabel("Realm").fill("Area 52");
+  await page.getByLabel("Character name").fill("Thrall");
+  await page.getByRole("button", { name: "Add to cart" }).click();
+  await expect(sheet).toBeVisible({ timeout: 15_000 });
+  await sheet.getByRole("link", { name: "Go to payment" }).click();
+  await expect(page).toHaveURL(/\/en\/carrinho#pagar$/);
 });

@@ -29,12 +29,10 @@ type Props = {
   locale: string;
   product: CatalogProduct;
   timeZone: string | null;
-  bare?: boolean; // #102: dentro da gaveta, sem o card em volta
 };
 
-// card fixo ao rolar na página do produto; na gaveta, só o conteúdo
-function Shell({ bare, children }: { bare?: boolean; children: React.ReactNode }) {
-  if (bare) return <div className="flex flex-col gap-4">{children}</div>;
+// card fixo ao rolar na página do produto
+function Shell({ children }: { children: React.ReactNode }) {
   return (
     <GradientCard tone="solid" className="flex flex-col gap-4 lg:sticky lg:top-32">
       {children}
@@ -56,9 +54,9 @@ const ERROR_KEYS = [
 ] as const;
 
 // RN-106: sob consulta — sem preço nem carrinho; o cliente pede o orçamento no chat
-function OnRequest({ product, t, bare }: { product: CatalogProduct; t: T; bare?: boolean }) {
+function OnRequest({ product, t }: { product: CatalogProduct; t: T }) {
   return (
-    <Shell bare={bare}>
+    <Shell>
       <p className="font-heading text-xl font-bold text-heading">{t("onRequest")}</p>
       <p className="text-sm text-muted-foreground">{t("onRequestNote")}</p>
       <ChatOpenButton label={t("askPrice")} message={t("askPriceMessage", { name: product.name })} />
@@ -119,7 +117,7 @@ const unitLabel = (
   return hasVariants ? c("from") : t("unit.service");
 };
 
-export async function BuyBox({ locale, product, timeZone, bare }: Props) {
+export async function BuyBox({ locale, product, timeZone }: Props) {
   const [t, c, s, promos, account] = await Promise.all([
     getTranslations({ locale, namespace: "Buy" }),
     getTranslations({ locale, namespace: "Catalog" }),
@@ -128,8 +126,7 @@ export async function BuyBox({ locale, product, timeZone, bare }: Props) {
     accountCharacters(),
   ]);
   // produto com opções mostra o seletor mesmo sob consulta: o cliente pergunta pela combinação certa
-  if (product.priceOnRequest && !product.optionAxes.length)
-    return <OnRequest product={product} t={t} bare={bare} />;
+  if (product.priceOnRequest && !product.optionAxes.length) return <OnRequest product={product} t={t} />;
   const kind = product.categoryKind === "gold" ? "gold" : "service";
   const slots = kind === "service" ? await slotOptions(product.slug, s) : [];
   const d = DEFAULTS[kind];
@@ -144,7 +141,7 @@ export async function BuyBox({ locale, product, timeZone, bare }: Props) {
   const errors = errorLabels(t, kind, product.maxQuantity);
 
   return (
-    <Shell bare={bare}>
+    <Shell>
       <PriceTag
         price={product.priceOnRequest ? t("onRequest") : formatUsdt(locale, price.cents)}
         original={price.originalCents ? formatUsdt(locale, price.originalCents) : undefined}
@@ -191,6 +188,13 @@ export async function BuyBox({ locale, product, timeZone, bare }: Props) {
           buyNow: t("buyNow"),
           added: t("added"),
           viewCart: t("viewCart"),
+          sheet: {
+            title: t("added"),
+            close: c("close"),
+            total: t("total"),
+            checkout: t("goToPayment"),
+            keepShopping: t("keepShopping"),
+          },
           errors,
         }}
       />

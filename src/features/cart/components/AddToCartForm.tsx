@@ -7,6 +7,7 @@ import { Select } from "@/components/atoms/Select";
 import { LocalTime } from "@/components/molecules/LocalTime";
 import { ChatOpenButton } from "@/features/support";
 import { addToCart, quoteItem, type AddState } from "../actions";
+import { CartSheet } from "./CartSheet";
 import { VariantPicker, type PickerAxis, type PickerVariant } from "./VariantPicker";
 
 type Slot = { id: string; startsAt: string; seats: string; bookable: boolean };
@@ -32,6 +33,7 @@ type Labels = {
   buyNow: string;
   added: string;
   viewCart: string;
+  sheet: { title: string; close: string; total: string; checkout: string; keepShopping: string };
   errors: Record<string, string>;
 };
 
@@ -231,6 +233,21 @@ function Submit({
   );
 }
 
+// #109: cada adição que deu certo (resposta nova da action) abre a barra lateral com o carrinho
+// atualizado; fechar guarda qual resposta foi dispensada
+function AddedSheet({ state, p }: { state: AddState; p: Props }) {
+  const [dismissed, setDismissed] = useState<AddState | null>(null);
+  if (state.status !== "ok" || !state.cart || dismissed === state) return null;
+  return (
+    <CartSheet
+      cart={state.cart}
+      checkoutHref={`${p.cartHref}#pagar`}
+      labels={p.labels.sheet}
+      onClose={() => setDismissed(state)}
+    />
+  );
+}
+
 // RN-15 a RN-17: o formulário só coleta; o servidor valida, calcula o preço (RN-20) e confere a vaga (RN-11).
 // Gold e serviço pedem o mesmo personagem (realm, facção, nome); serviço tem adicionais e horário/agendamento.
 export function AddToCartForm(p: Props) {
@@ -355,6 +372,7 @@ export function AddToCartForm(p: Props) {
         </label>
       ) : null}
       <Submit p={p} variant={variant} quote={quote} pending={pending} />
+      <AddedSheet state={state} p={p} />
       <p role="status" className="min-h-5 text-center text-sm">
         {state.status === "ok" ? (
           <>

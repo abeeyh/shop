@@ -132,7 +132,9 @@
     "savedCharacter": "Personagem salvo",
     "savedNone": "— digitar outro —",
     "saveCharacter": "Salvar este personagem na minha conta",
-    "buyNow": "Comprar agora"
+    "buyNow": "Comprar agora",
+    "goToPayment": "Ir para o pagamento",
+    "keepShopping": "Continuar comprando"
   },
   "Cart": {
     "title": "Carrinho",
