@@ -62,11 +62,11 @@ gantt
 
 ## F3 — Admin e entrega
 
-- [ ] Dashboard admin com 2FA (RN-02, RN-70): **categorias e produtos** (RN-13, RN-19, RN-72, RN-73), preços, slots, pedidos.
-- [ ] **Promoções por tempo** (RN-21 a RN-24) e **cupons** (RN-25 a RN-29) com regra "vale o maior" (RN-26).
-- [ ] Auditoria de alterações de preço, promoção e cupom (RN-71).
-- [ ] Fluxo `pago → em_andamento → concluido` com prova de entrega (RN-50, RN-52).
-- [ ] "Reportar problema" e lista de reportes no admin (RN-90, RN-91).
+- [ ] Dashboard admin com 2FA (RN-02, RN-70): **categorias e produtos** (RN-13, RN-19, RN-72, RN-73), preços, slots, pedidos. *Feito: login com 2FA, categorias, produtos e preços (#20). Faltam slots e pedidos (#23).*
+- [x] **Promoções por tempo** (RN-21 a RN-24) e **cupons** (RN-25 a RN-29) com regra "vale o maior" (RN-26). *Datas digitadas em UTC no admin. Ordenação por preço final e filtro "em promoção": #74.*
+- [x] Auditoria de alterações de preço, promoção e cupom (RN-71). *Pedidos entram com o fluxo de entrega (#23 — RN-07).*
+- [x] Fluxo `pago → em_andamento → concluido` com prova de entrega (RN-50, RN-52). *Prova como link https até existir o storage de arquivos.*
+- [x] "Reportar problema" e lista de reportes no admin (RN-90, RN-91). *CAPTCHA pendente da decisão do Turnstile.*
 
 **Pronto quando:** admin cria categoria, produto, promoção e cupom pelo dashboard; um pedido de teste recebe o maior desconto correto; e o admin conclui o pedido com prova anexada, visível ao cliente no idioma dele.
 
@@ -83,7 +83,7 @@ gantt
 - [ ] Chat próprio: SSE + PostgreSQL + pub/sub do Valkey; widget em todas as páginas; fila no dashboard (RN-92, RN-93, RN-98).
 - [ ] E-mail de mensagem nova com link assinado (RN-94); aviso de credenciais e mascaramento (RN-95); anexos de imagem (RN-96); limites e CAPTCHA (RN-97).
 - [ ] Horário de atendimento e modo offline (RN-99).
-- [ ] Documentação interna `/admin/docs` para admin e suporte (RN-74).
+- [x] Documentação interna `/admin/docs` para admin e suporte (RN-74). *Texto puro; renderizar Markdown/Mermaid pede uma dependência (decisão de stack).*
 
 **Pronto quando:** um visitante em `zh-Hant` abre conversa, um atendente de suporte responde em tempo real pelo dashboard, o visitante fecha a aba e recebe o e-mail com o link, retoma a conversa; e o suporte não consegue abrir a tela de preços ou cupons (403).
 

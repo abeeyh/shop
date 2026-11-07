@@ -18,6 +18,9 @@ describe.skipIf(!process.env.DATABASE_URL)("reserva de vaga (RN-34)", () => {
     locale: "en",
     network: "trc20" as const,
     subtotalUsdtCents: 100,
+    discountUsdtCents: 0,
+    discountSource: "none" as const,
+    discountRef: null,
     totalUsdtCents: 100,
     expiresAt: new Date(Date.now() + 30 * 60_000),
     items: [
@@ -27,6 +30,8 @@ describe.skipIf(!process.env.DATABASE_URL)("reserva de vaga (RN-34)", () => {
         productName: "t",
         options: {},
         unitPriceUsdtCents: 100,
+        discountUsdtCents: 0,
+        promotionId: null,
         quantity: 1,
       },
     ],
@@ -38,7 +43,10 @@ describe.skipIf(!process.env.DATABASE_URL)("reserva de vaga (RN-34)", () => {
     ({ db } = await import("@/db"));
     q = await import("./queries");
     s = await import("@/db/schema");
-    const [p] = await db.select({ id: s.products.id }).from(s.products).limit(1);
+    const [p] = await db
+      .select({ id: s.products.id })
+      .from(s.products)
+      .where(eq(s.products.slug, "mplus-us")); // produto do seed, nunca um criado pelo E2E
     productId = p!.id;
     const [slot] = await db
       .insert(s.raidSlots)

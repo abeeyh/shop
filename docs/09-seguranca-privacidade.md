@@ -65,14 +65,21 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 - Senhas com scrypt/argon2; nunca em log.
 - Verificação de e-mail; tokens de uso único com validade curta.
 - Vínculo de contas OAuth ↔ senha só com e-mails verificados.
-- Senhas vazadas recusadas (HIBP por k-anonimato).
+- Senhas vazadas recusadas (HIBP por k-anonimato). *Entra com o convite da equipe (#27), quando a pessoa define a própria senha; hoje a conta inicial sai de `pnpm admin:create` com senha gerada.*
 - Rate limit em store compartilhado (não em memória): Valkey, janela fixa atômica (`src/lib/rate-limit.ts`, limites em `RATE_LIMITS`):
 
   | Onde | Limite | Se o Valkey cair |
   |------|--------|------------------|
   | Toda página/API, por IP, no proxy (antes do log de acesso) | 300/min | passa (disponibilidade) + alerta `rate_limit.unavailable` 1×/min |
   | Busca (RN-105) | 30/min | passa |
-  | Login, cupom, reporte, chat (quando existirem) | definir na issue | **bloqueia** (`failClosed`) |
+  | Login da equipe: senha por IP e por e-mail; código do 2FA por IP (o Better Auth ainda limita a 5 tentativas por desafio e bloqueia a conta por 15 min após 10 falhas) | 10 a cada 10 min | **bloqueia** (`failClosed`) |
+
+  Risco aceito: o limite de cupom "por cliente" (RN-25) conta o e-mail normalizado (sem `+tag`, sem pontos no Gmail), mas sem conta nem verificação de e-mail é só uma barreira leve.
+  Risco aceito: pedido em `pagamento_parcial` não expira e segura vaga e uso de cupom até o admin resolver (fluxo do admin em #23).
+  Risco aceito: quem sabe o e-mail de um admin consegue travar o login dele por 10 min de cada vez (limite por e-mail). Monitorar `auth.login_failed`; se virar problema, contar só falhas no balde por e-mail.
+  | Cupom (RN-28), por IP | 10/hora | **bloqueia** (`failClosed`) |
+  | Checkout (cada um reserva vaga e cupom), por IP | 10 a cada 10 min | **bloqueia** (`failClosed`) |
+  | Reporte, chat (quando existirem) | definir na issue | **bloqueia** (`failClosed`) |
 
   Chave: IPv4 por endereço; **IPv6 pelo prefixo /64** (um cliente costuma ter o /64 inteiro e trocaria de endereço para fugir do limite). Sem IP válido → balde único `ip:unknown` (em production gera alerta `rate_limit.unknown_ip`: indica CDN mal configurada).
   Valkey lento ou travado: timeout de 150 ms e **disjuntor** de 5 s — após uma falha, as requisições seguintes nem consultam o Valkey (verificado com o container congelado: latência normal).

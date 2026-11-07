@@ -35,7 +35,8 @@
   },
   "Footer": {
     "about": "World of Warcraft 正式服美服和欧服的金币、团队副本与史诗钥石。",
-    "copyright": "© 2026 Shop · 与 Blizzard Entertainment 无关。"
+    "copyright": "© 2026 Shop · 与 Blizzard Entertainment 无关。",
+    "report": "反馈问题"
   },
   "NotFound": {
     "title": "找不到页面",
@@ -119,7 +120,8 @@
       "keyLevel": "请选择 +2 至 +15 的等级。",
       "runs": "请选择 1 至 10 场。",
       "loot": "请选择战利品选项。"
-    }
+    },
+    "promoEnds": "促销剩余时间"
   },
   "Cart": {
     "title": "购物车",
@@ -138,7 +140,16 @@
       "full": "完整战利品"
     },
     "runs": "{n} 场",
-    "timed": "限时"
+    "timed": "限时",
+    "coupon": "优惠码",
+    "applyCoupon": "使用",
+    "removeCoupon": "移除",
+    "couponInvalid": "优惠码无效或已过期。",
+    "couponNotBetter": "你的优惠码折扣低于当前促销，因此使用促销（两者不可叠加）。",
+    "couponNotApplicable": "该优惠码不适用于购物车中的商品，或未达到最低订单金额。",
+    "discountCoupon": "优惠码 {code}",
+    "discountPromotion": "促销",
+    "total": "总计"
   },
   "Checkout": {
     "email": "电子邮箱",
@@ -150,7 +161,10 @@
       "email": "请输入有效的电子邮箱。",
       "empty": "你的购物车是空的。",
       "unavailable": "请移除无法购买的商品以继续。",
-      "payment": "无法创建付款，请稍后再试。"
+      "payment": "无法创建付款，请稍后再试。",
+      "coupon": "该优惠码已达到使用上限，请移除后继续。",
+      "changed": "价格已变动（促销已结束或优惠码已变更），请确认新的总额后再试一次。",
+      "limited": "结算尝试次数过多，请稍等几分钟再试。"
     }
   },
   "Order": {
@@ -171,6 +185,183 @@
       "expirado": "已过期",
       "reembolsado": "已退款",
       "contestado": "争议中"
+    },
+    "discount": "优惠码折扣",
+    "delivered": "已交付 — 谢谢！",
+    "proof": "查看交付证明"
+  },
+  "Admin": {
+    "title": "管理后台",
+    "nav": {
+      "categories": "分类",
+      "products": "商品",
+      "store": "商店",
+      "signOut": "退出",
+      "promotions": "促销活动",
+      "coupons": "优惠码",
+      "audit": "审计日志",
+      "orders": "订单",
+      "reports": "问题反馈",
+      "docs": "内部文档"
+    },
+    "login": {
+      "title": "团队登录",
+      "email": "电子邮箱",
+      "password": "密码",
+      "submit": "登录"
+    },
+    "code": {
+      "title": "验证码",
+      "hint": "请输入验证器 App 显示的 6 位验证码。",
+      "code": "验证码",
+      "submit": "验证"
+    },
+    "setup": {
+      "title": "启用双重验证",
+      "intro": "管理后台需要双重验证。请确认密码以获取设置密钥。",
+      "password": "密码",
+      "start": "获取密钥",
+      "secret": "设置密钥（添加到验证器 App）",
+      "backupCodes": "备用码（请离线保存）",
+      "code": "App 验证码",
+      "confirm": "启用并继续"
+    },
+    "errors": {
+      "invalid": "电子邮箱、密码或验证码无效。",
+      "limited": "尝试次数过多，请稍等几分钟再试。"
+    },
+    "dashboard": {
+      "title": "你好，{name}"
+    },
+    "fields": {
+      "name": "名称",
+      "slug": "别名（网址）",
+      "kind": "类型",
+      "description": "描述",
+      "imageUrl": "图片网址（https）",
+      "sortOrder": "排序",
+      "active": "启用",
+      "category": "分类",
+      "region": "地区",
+      "price": "价格（USDT）",
+      "type": "折扣类型",
+      "value": "数值（% 或 USDT）",
+      "target": "适用范围",
+      "startsAt": "开始（UTC）",
+      "endsAt": "结束（UTC）",
+      "code": "代码",
+      "maxUses": "总使用次数（留空 = 不限）",
+      "maxUsesPerEmail": "每个邮箱使用次数（留空 = 不限）",
+      "minOrder": "最低订单金额（USDT）"
+    },
+    "kinds": {
+      "gold": "金币",
+      "raid": "团队副本",
+      "dungeon": "史诗钥石+"
+    },
+    "form": {
+      "newCategory": "新建分类",
+      "newProduct": "新建商品",
+      "edit": "编辑 {name}",
+      "save": "保存",
+      "saved": "已保存",
+      "cancel": "取消编辑",
+      "editLink": "编辑",
+      "newPromotion": "新建促销",
+      "newCoupon": "新建优惠码"
+    },
+    "table": {
+      "activeProducts": "启用中的商品",
+      "status": "状态",
+      "active": "启用",
+      "inactive": "停用",
+      "uses": "使用次数"
+    },
+    "formErrors": {
+      "generic": "请检查字段。",
+      "name": "名称至少需要 2 个字符。",
+      "slug": "别名：小写字母、数字和连字符，且不能重复。",
+      "kind": "请选择类型。",
+      "description": "描述过长。",
+      "imageUrl": "图片必须是 https 网址。",
+      "sortOrder": "排序需为 0 至 999。",
+      "categoryId": "请选择分类。",
+      "region": "请选择地区。",
+      "price": "USDT 价格最多 2 位小数，且大于零。",
+      "activeProducts": "停用分类前，请先停用或移动其中启用的商品。",
+      "type": "请选择折扣类型。",
+      "value": "百分比 1 至 90，或大于零的 USDT 金额。",
+      "target": "请选择折扣适用范围。",
+      "startsAt": "请输入开始日期和时间。",
+      "endsAt": "结束时间必须晚于开始时间。",
+      "code": "代码：2–40 个字母、数字、连字符或下划线，且不能重复。",
+      "maxUses": "请输入 1 以上的整数。",
+      "maxUsesPerEmail": "请输入 1 以上的整数。",
+      "minOrder": "USDT 最低金额最多 2 位小数。"
+    },
+    "discount": {
+      "percent": "百分比",
+      "fixed": "固定金额（USDT）",
+      "store": "全店"
+    },
+    "audit": {
+      "when": "时间（UTC）",
+      "who": "人员",
+      "what": "项目",
+      "changes": "变更内容",
+      "entities": {
+        "category": "分类",
+        "product": "商品",
+        "promotion": "促销",
+        "coupon": "优惠码"
+      },
+      "actions": {
+        "create": "创建",
+        "update": "修改"
+      }
+    },
+    "orders": {
+      "todo": "待处理",
+      "all": "全部",
+      "order": "订单",
+      "tx": "交易",
+      "proof": "交付证明",
+      "start": "开始交付",
+      "complete": "标记为已完成",
+      "proofUrl": "交付证明链接（https — 截图或日志）",
+      "note": "给客户的备注",
+      "proofError": "请提供交付证明的 https 链接。",
+      "stale": "其他人已更新此订单，请刷新页面。"
+    },
+    "reports": {
+      "new": "新反馈",
+      "resolved": "已解决",
+      "onlyNew": "只看新反馈",
+      "page": "页面",
+      "ids": "错误 ID · 请求 ID",
+      "context": "语言 · 地区 · 时区 · 版本",
+      "browser": "浏览器",
+      "resolve": "标记为已解决"
     }
+  },
+  "Errors": {
+    "title": "出错了",
+    "message": "无法完成此操作，请重试；如果持续发生，请附上下方 ID 反馈。",
+    "code": "代码",
+    "id": "错误 ID",
+    "retry": "重试",
+    "report": "反馈此问题"
+  },
+  "Report": {
+    "title": "反馈问题",
+    "intro": "请告诉我们发生了什么。我们会自动附上页面、语言、时区和浏览器信息，绝不包含密码或支付数据。",
+    "errorId": "错误 ID",
+    "description": "发生了什么？",
+    "email": "电子邮箱（选填）",
+    "emailHint": "需要回复时再填写。",
+    "submit": "提交反馈",
+    "sent": "谢谢！你的反馈已发送给团队。",
+    "invalid": "请至少用 10 个字描述问题，并检查电子邮箱。",
+    "limited": "你的网络连接反馈次数过多，请一小时后再试。"
   }
 }

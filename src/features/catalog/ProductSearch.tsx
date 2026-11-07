@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { buttonVariants } from "@/components/atoms/Button";
+import { activePromotions } from "@/features/discounts/queries";
 import { clientIp, rateLimitKey } from "@/lib/client-ip";
 import { env } from "@/lib/env";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
@@ -169,10 +170,11 @@ type Props = { locale: string; region: "US" | "EU"; raw: Record<string, string |
 
 // RN-100 a RN-105: busca e filtros na URL, aplicados no servidor
 export async function ProductSearch({ locale, region, raw }: Props) {
-  const [categories, t, c] = await Promise.all([
+  const [categories, t, c, promos] = await Promise.all([
     listCategories(),
     getTranslations({ locale, namespace: "Search" }),
     getTranslations({ locale, namespace: "Catalog" }),
+    activePromotions(),
   ]);
   const f = parseFilters(raw, { region, categories: categories.map((x) => x.slug) });
   const base = `/${locale}/produtos`;
@@ -209,7 +211,7 @@ export async function ProductSearch({ locale, region, raw }: Props) {
                       {t("unavailable")}
                     </span>
                   )}
-                  <ProductCard p={toProductCard(locale, p, unit)} />
+                  <ProductCard p={toProductCard(locale, p, unit, promos)} />
                 </div>
               ))}
             </div>

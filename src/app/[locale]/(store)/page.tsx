@@ -11,6 +11,7 @@ import {
   ProductCard,
   toProductCard,
 } from "@/features/catalog";
+import { activePromotions } from "@/features/discounts/queries";
 import { UpcomingRaids } from "@/features/schedule/UpcomingRaids";
 import { getRegion, getTimezone } from "@/lib/preferences";
 
@@ -19,11 +20,12 @@ const BEST_SELLERS = 8;
 async function HomeCatalog({ locale }: { locale: string }) {
   await connection();
   const [region, timeZone] = await Promise.all([getRegion(), getTimezone()]);
-  const [categories, products, t, c] = await Promise.all([
+  const [categories, products, t, c, promos] = await Promise.all([
     listCategories(),
     listProducts({ region, limit: BEST_SELLERS }),
     getTranslations({ locale, namespace: "Home" }),
     getTranslations({ locale, namespace: "Catalog" }),
+    activePromotions(),
   ]);
   // RN-13: categorias do admin; os botões do topo apontam para a primeira de cada tipo
   const firstOf = (kind: string) => categories.find((x) => x.kind === kind);
@@ -90,7 +92,7 @@ async function HomeCatalog({ locale }: { locale: string }) {
         {products.length ? (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,260px),1fr))] gap-5">
             {products.map((p) => (
-              <ProductCard key={p.id} p={toProductCard(locale, p, unit)} />
+              <ProductCard key={p.id} p={toProductCard(locale, p, unit, promos)} />
             ))}
           </div>
         ) : (

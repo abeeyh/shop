@@ -5,7 +5,8 @@ import { connection } from "next/server";
 import { z } from "zod";
 import { GradientCard } from "@/components/molecules/GradientCard";
 import { formatUsdt } from "@/features/catalog";
-import { getOrder, isOrderToken, PaymentBox } from "@/features/orders";
+import { DeliveryBox, getOrder, isOrderToken, PaymentBox } from "@/features/orders";
+import { getDelivery } from "@/features/orders/staff";
 
 export const instant = false;
 
@@ -26,7 +27,10 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/[l
     z.uuid().safeParse(id).success && isOrderToken(id, typeof token === "string" ? token : undefined);
   const order = valid ? await getOrder(id) : null;
   if (!order) notFound();
-  const t = await getTranslations({ locale, namespace: "Order" });
+  const [t, delivery] = await Promise.all([
+    getTranslations({ locale, namespace: "Order" }),
+    order.status === "concluido" ? getDelivery(order.id) : null, // RN-52
+  ]);
 
   return (
     <div className="mx-auto grid w-full max-w-2xl gap-6 px-4 py-10">
@@ -42,10 +46,16 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/[l
           {order.items.map((i) => (
             <li key={i.id} className="flex justify-between gap-4">
               <span>{i.productName}</span>
-              <span>{formatUsdt(locale, i.unitPriceUsdtCents * i.quantity)}</span>
+              <span>{formatUsdt(locale, i.unitPriceUsdtCents * i.quantity - i.discountUsdtCents)}</span>
             </li>
           ))}
         </ul>
+        {order.discountSource === "coupon" ? (
+          <p className="flex justify-between gap-4 text-sm text-link">
+            <span>{t("discount")}</span>
+            <span>−{formatUsdt(locale, order.discountUsdtCents)}</span>
+          </p>
+        ) : null}
         <p className="flex items-baseline justify-between border-t border-border pt-4">
           <span>{t("total")}</span>
           <span className="font-heading text-2xl font-bold text-heading">
@@ -64,6 +74,7 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/[l
           payUrl={order.payUrl}
           t={t}
         />
+        <DeliveryBox delivery={delivery} t={t} />
       </GradientCard>
     </div>
   );

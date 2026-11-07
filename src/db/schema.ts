@@ -108,6 +108,7 @@ export const raidSlots = pgTable(
 // Carrinho (RN-01 visitante, RN-20 total recalculado no servidor). Identificado por cookie httpOnly.
 export const carts = pgTable("carts", {
   id: uuid("id").primaryKey().defaultRandom(),
+  couponCode: text("coupon_code"), // RN-25: guardado em minúsculas; validado a cada leitura (RN-27)
   ...timestamps,
 });
 
@@ -152,6 +153,8 @@ export const orders = pgTable(
     subtotalUsdtCents: integer("subtotal_usdt_cents").notNull(),
     discountUsdtCents: integer("discount_usdt_cents").notNull().default(0),
     totalUsdtCents: integer("total_usdt_cents").notNull(),
+    discountSource: text("discount_source").notNull().default("none"), // promotion | coupon | none (RN-29)
+    discountRef: text("discount_ref"), // id do cupom (a promoção fica em cada item)
     paymentMethod: text("payment_method").notNull().default("usdt"), // RN-35
     network: paymentNetwork("network"),
     provider: text("provider"),
@@ -160,6 +163,7 @@ export const orders = pgTable(
     paidUsdtCents: integer("paid_usdt_cents"), // valor recebido segundo o IPN (RN-37)
     txHash: text("tx_hash"),
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(), // RN-34
+    assignedTo: text("assigned_to"), // equipe que assumiu a entrega (pago → em_andamento)
     ...timestamps,
   },
   (t) => [
@@ -181,7 +185,9 @@ export const orderItems = pgTable(
     raidSlotId: uuid("raid_slot_id").references(() => raidSlots.id),
     productName: text("product_name").notNull(), // cópia: o admin pode renomear depois
     options: jsonb("options").notNull(), // realm/facção/personagem, loot, nível… (RN-15 a RN-17)
-    unitPriceUsdtCents: integer("unit_price_usdt_cents").notNull(),
+    unitPriceUsdtCents: integer("unit_price_usdt_cents").notNull(), // preço original (RN-29)
+    discountUsdtCents: integer("discount_usdt_cents").notNull().default(0), // desconto da linha inteira
+    promotionId: uuid("promotion_id"),
     quantity: integer("quantity").notNull(),
   },
   (t) => [
@@ -204,3 +210,210 @@ export const paymentEvents = pgTable("payment_events", {
   txHash: text("tx_hash"),
   receivedAt: timestamp("received_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+// Autenticação (Better Auth — docs/03). Só equipe no MVP: cliente compra sem conta (RN-01).
+// Ids em texto: gerados pelo Better Auth.
+export const users = pgTable("users", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  emailVerified: boolean("email_verified").notNull().default(false),
+  image: text("image"),
+  twoFactorEnabled: boolean("two_factor_enabled").notNull().default(false), // RN-02, RN-05
+  ...timestamps,
+});
+
+export const sessions = pgTable(
+  "sessions",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    token: text("token").notNull().unique(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    ipAddress: text("ip_address"),
+    userAgent: text("user_agent"),
+    ...timestamps,
+  },
+  (t) => [index("sessions_user_idx").on(t.userId)],
+);
+
+export const accounts = pgTable(
+  "accounts",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    accountId: text("account_id").notNull(),
+    providerId: text("provider_id").notNull(),
+    password: text("password"), // hash (scrypt) — nunca a senha
+    accessToken: text("access_token"),
+    refreshToken: text("refresh_token"),
+    idToken: text("id_token"),
+    accessTokenExpiresAt: timestamp("access_token_expires_at", { withTimezone: true }),
+    refreshTokenExpiresAt: timestamp("refresh_token_expires_at", { withTimezone: true }),
+    scope: text("scope"),
+    ...timestamps,
+  },
+  (t) => [index("accounts_user_idx").on(t.userId)],
+);
+
+export const verifications = pgTable("verifications", {
+  id: text("id").primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  ...timestamps,
+});
+
+export const twoFactors = pgTable(
+  "two_factors",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    secret: text("secret").notNull(), // criptografado pelo Better Auth
+    backupCodes: text("backup_codes").notNull(),
+    verified: boolean("verified").notNull().default(true),
+    failedVerificationCount: integer("failed_verification_count").notNull().default(0),
+    lockedUntil: timestamp("locked_until", { withTimezone: true }),
+  },
+  (t) => [index("two_factors_user_idx").on(t.userId), index("two_factors_secret_idx").on(t.secret)],
+);
+
+// Equipe (RN-04 a RN-06): quem não tem linha aqui não entra no admin
+export const staffRole = pgEnum("staff_role", ["suporte", "admin"]);
+export const staffProfiles = pgTable("staff_profiles", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  role: staffRole("role").notNull(),
+  languages: text("languages")
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
+  active: boolean("active").notNull().default(true),
+  invitedBy: text("invited_by"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// Promoções e cupons (RN-21 a RN-29). Um alvo por registro: loja, uma categoria ou um produto.
+export const discountType = pgEnum("discount_type", ["percent", "fixed"]);
+export const discountScope = pgEnum("discount_scope", ["store", "category", "product"]);
+
+const discountColumns = {
+  id: uuid("id").primaryKey().defaultRandom(),
+  type: discountType("type").notNull(),
+  value: integer("value").notNull(), // percent 1–90 ou centavos de USDT
+  scope: discountScope("scope").notNull(),
+  categoryId: uuid("category_id").references(() => categories.id),
+  productId: uuid("product_id").references(() => products.id),
+  startsAt: timestamp("starts_at", { withTimezone: true }).notNull(), // UTC (RN-83)
+  endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
+  active: boolean("active").notNull().default(true),
+};
+
+export const promotions = pgTable(
+  "promotions",
+  { ...discountColumns, name: text("name").notNull(), ...timestamps },
+  (t) => [
+    index("promotions_window_idx").on(t.active, t.endsAt),
+    check("promotions_window", sql`${t.endsAt} > ${t.startsAt}`),
+    check("promotions_value", sql`${t.value} > 0`),
+  ],
+);
+
+export const coupons = pgTable(
+  "coupons",
+  {
+    ...discountColumns,
+    code: text("code").notNull().unique(), // minúsculas (RN-25)
+    maxUses: integer("max_uses"),
+    maxUsesPerEmail: integer("max_uses_per_email"),
+    minOrderUsdtCents: integer("min_order_usdt_cents").notNull().default(0),
+    ...timestamps,
+  },
+  (t) => [
+    check("coupons_window", sql`${t.endsAt} > ${t.startsAt}`),
+    check("coupons_value", sql`${t.value} > 0`),
+  ],
+);
+
+export const redemptionStatus = pgEnum("redemption_status", ["reserved", "used", "released"]);
+// RN-27: reservado no checkout, usado no pagamento, liberado na expiração
+export const couponRedemptions = pgTable(
+  "coupon_redemptions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    couponId: uuid("coupon_id")
+      .notNull()
+      .references(() => coupons.id),
+    orderId: uuid("order_id")
+      .notNull()
+      .unique()
+      .references(() => orders.id),
+    email: text("email").notNull(),
+    status: redemptionStatus("status").notNull().default("reserved"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("coupon_redemptions_coupon_idx").on(t.couponId, t.status)],
+);
+
+// Auditoria do dashboard (RN-71, RN-07): quem, quando, antes e depois. Só cresce — nunca editada.
+export const auditLog = pgTable(
+  "audit_log",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    staffId: text("staff_id")
+      .notNull()
+      .references(() => users.id),
+    entity: text("entity").notNull(), // category | product | promotion | coupon (e pedido com #23)
+    entityId: text("entity_id").notNull(),
+    action: text("action").notNull(), // create | update
+    before: jsonb("before"),
+    after: jsonb("after").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("audit_log_created_idx").on(t.createdAt),
+    index("audit_log_entity_idx").on(t.entity, t.entityId),
+  ],
+);
+
+// Prova de entrega (RN-52). shortcut: link https para print/log; upload de arquivo entra com o storage (S3)
+export const deliveries = pgTable("deliveries", {
+  orderId: uuid("order_id")
+    .primaryKey()
+    .references(() => orders.id),
+  staffId: text("staff_id")
+    .notNull()
+    .references(() => users.id),
+  proofUrl: text("proof_url").notNull(),
+  note: text("note").notNull().default(""),
+  deliveredAt: timestamp("delivered_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// Reportes de problema (RN-91) — 1 ano (docs/16). E-mail opcional; nada mais de dado pessoal.
+export const bugReportStatus = pgEnum("bug_report_status", ["novo", "resolvido"]);
+export const bugReports = pgTable(
+  "bug_reports",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    description: text("description").notNull(),
+    email: text("email"),
+    page: text("page").notNull(), // só o caminho, sem query (pode ter token do pedido)
+    errorId: text("error_id"), // digest do erro mostrado na tela (RN-90)
+    requestId: text("request_id").notNull(),
+    locale: text("locale").notNull(),
+    region: text("region"),
+    timezone: text("timezone"),
+    userAgent: text("user_agent"),
+    release: text("release").notNull(),
+    status: bugReportStatus("status").notNull().default("novo"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("bug_reports_status_created_idx").on(t.status, t.createdAt)],
+);

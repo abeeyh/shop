@@ -66,7 +66,7 @@ Todo log é uma linha JSON:
 ## 4. Captura de erros
 
 - Servidor: `instrumentation.ts` + `onRequestError` do Next.js enviam ao Sentry; todo `catch` que não resolve o erro chama `logger.error` com `err`.
-- Navegador: `global-error.tsx` e error boundaries por rota; erro na tela mostra **mensagem genérica + código + ID do erro** (RN-90), nunca stack trace.
+- Navegador: error boundary em `app/[locale]/error.tsx`; erro na tela mostra **mensagem genérica + código (`E_INTERNAL`) + ID do erro** (RN-90), nunca stack trace. O ID é o `digest` do Next; `src/instrumentation.ts` (`onRequestError`) grava `request.error` com o mesmo `digest` e o `requestId` (sem query string).
 - Sentry configurado com `sendDefaultPii: false`, filtro `beforeSend` que remove as chaves proibidas e **Session Replay desligado** (ou com todo texto e input mascarados).
 - Source maps enviados no CI e **não publicados** no site.
 - Cada evento leva: `release`, `environment`, `requestId`, `feature`, `locale`, `region`, `timezone`.

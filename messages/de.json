@@ -35,7 +35,8 @@
   },
   "Footer": {
     "about": "Gold, Raids und Mythisch+ für World of Warcraft Retail US und EU.",
-    "copyright": "© 2026 Shop · Nicht mit Blizzard Entertainment verbunden."
+    "copyright": "© 2026 Shop · Nicht mit Blizzard Entertainment verbunden.",
+    "report": "Problem melden"
   },
   "NotFound": {
     "title": "Seite nicht gefunden",
@@ -119,7 +120,8 @@
       "keyLevel": "Wähle eine Stufe von +2 bis +15.",
       "runs": "Wähle 1 bis 10 Runs.",
       "loot": "Wähle eine Loot-Option."
-    }
+    },
+    "promoEnds": "Aktion endet in"
   },
   "Cart": {
     "title": "Warenkorb",
@@ -138,7 +140,16 @@
       "full": "Voller Loot"
     },
     "runs": "{n, plural, one {# Run} other {# Runs}}",
-    "timed": "in der Zeit"
+    "timed": "in der Zeit",
+    "coupon": "Gutscheincode",
+    "applyCoupon": "Einlösen",
+    "removeCoupon": "Entfernen",
+    "couponInvalid": "Ungültiger oder abgelaufener Gutschein.",
+    "couponNotBetter": "Dein Gutschein ergibt weniger Rabatt als die laufende Aktion, daher gilt die Aktion (nicht kombinierbar).",
+    "couponNotApplicable": "Dieser Gutschein gilt nicht für die Artikel im Warenkorb oder der Mindestbestellwert ist nicht erreicht.",
+    "discountCoupon": "Gutschein {code}",
+    "discountPromotion": "Aktion",
+    "total": "Gesamt"
   },
   "Checkout": {
     "email": "E-Mail",
@@ -150,7 +161,10 @@
       "email": "Gib eine gültige E-Mail an.",
       "empty": "Dein Warenkorb ist leer.",
       "unavailable": "Entferne die nicht verfügbaren Artikel, um fortzufahren.",
-      "payment": "Die Zahlung konnte nicht erstellt werden. Versuche es gleich noch einmal."
+      "payment": "Die Zahlung konnte nicht erstellt werden. Versuche es gleich noch einmal.",
+      "coupon": "Dieser Gutschein hat sein Nutzungslimit erreicht. Entferne ihn, um fortzufahren.",
+      "changed": "Der Preis hat sich geändert (eine Aktion ist abgelaufen oder der Gutschein wurde geändert). Prüfe die neue Summe und versuche es erneut.",
+      "limited": "Zu viele Bestellversuche. Warte ein paar Minuten und versuche es erneut."
     }
   },
   "Order": {
@@ -171,6 +185,183 @@
       "expirado": "Abgelaufen",
       "reembolsado": "Erstattet",
       "contestado": "Angefochten"
+    },
+    "discount": "Gutscheinrabatt",
+    "delivered": "Geliefert — danke!",
+    "proof": "Liefernachweis ansehen"
+  },
+  "Admin": {
+    "title": "Admin",
+    "nav": {
+      "categories": "Kategorien",
+      "products": "Produkte",
+      "store": "Shop",
+      "signOut": "Abmelden",
+      "promotions": "Aktionen",
+      "coupons": "Gutscheine",
+      "audit": "Änderungsprotokoll",
+      "orders": "Bestellungen",
+      "reports": "Problemmeldungen",
+      "docs": "Interne Dokumentation"
+    },
+    "login": {
+      "title": "Anmeldung (Team)",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "submit": "Anmelden"
+    },
+    "code": {
+      "title": "Bestätigungscode",
+      "hint": "Gib den 6-stelligen Code aus deiner Authenticator-App ein.",
+      "code": "Code",
+      "submit": "Bestätigen"
+    },
+    "setup": {
+      "title": "Zwei-Faktor aktivieren",
+      "intro": "Der Admin erfordert Zwei-Faktor-Authentifizierung. Bestätige dein Passwort, um den Einrichtungsschlüssel zu erhalten.",
+      "password": "Passwort",
+      "start": "Schlüssel erzeugen",
+      "secret": "Einrichtungsschlüssel (in der Authenticator-App hinzufügen)",
+      "backupCodes": "Backup-Codes (offline aufbewahren)",
+      "code": "Code aus der App",
+      "confirm": "Aktivieren und weiter"
+    },
+    "errors": {
+      "invalid": "E-Mail, Passwort oder Code ungültig.",
+      "limited": "Zu viele Versuche. Warte ein paar Minuten und versuche es erneut."
+    },
+    "dashboard": {
+      "title": "Hallo, {name}"
+    },
+    "fields": {
+      "name": "Name",
+      "slug": "Slug (URL)",
+      "kind": "Typ",
+      "description": "Beschreibung",
+      "imageUrl": "Bild-URL (https)",
+      "sortOrder": "Reihenfolge",
+      "active": "Aktiv",
+      "category": "Kategorie",
+      "region": "Region",
+      "price": "Preis (USDT)",
+      "type": "Rabattart",
+      "value": "Wert (% oder USDT)",
+      "target": "Gilt für",
+      "startsAt": "Beginn (UTC)",
+      "endsAt": "Ende (UTC)",
+      "code": "Code",
+      "maxUses": "Nutzungen insgesamt (leer = unbegrenzt)",
+      "maxUsesPerEmail": "Nutzungen pro E-Mail (leer = unbegrenzt)",
+      "minOrder": "Mindestbestellwert (USDT)"
+    },
+    "kinds": {
+      "gold": "Gold",
+      "raid": "Raid",
+      "dungeon": "Mythisch+"
+    },
+    "form": {
+      "newCategory": "Neue Kategorie",
+      "newProduct": "Neues Produkt",
+      "edit": "{name} bearbeiten",
+      "save": "Speichern",
+      "saved": "Gespeichert",
+      "cancel": "Bearbeiten abbrechen",
+      "editLink": "Bearbeiten",
+      "newPromotion": "Neue Aktion",
+      "newCoupon": "Neuer Gutschein"
+    },
+    "table": {
+      "activeProducts": "Aktive Produkte",
+      "status": "Status",
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "uses": "Nutzungen"
+    },
+    "formErrors": {
+      "generic": "Prüfe die Felder.",
+      "name": "Der Name braucht mindestens 2 Zeichen.",
+      "slug": "Slug: Kleinbuchstaben, Zahlen und Bindestriche, nicht schon vergeben.",
+      "kind": "Wähle einen Typ.",
+      "description": "Beschreibung zu lang.",
+      "imageUrl": "Das Bild muss eine https-URL sein.",
+      "sortOrder": "Reihenfolge von 0 bis 999.",
+      "categoryId": "Wähle eine Kategorie.",
+      "region": "Wähle eine Region.",
+      "price": "Preis in USDT mit höchstens 2 Nachkommastellen, größer als null.",
+      "activeProducts": "Deaktiviere oder verschiebe die aktiven Produkte, bevor du die Kategorie deaktivierst.",
+      "type": "Wähle eine Rabattart.",
+      "value": "Prozent von 1 bis 90 oder ein USDT-Betrag größer als null.",
+      "target": "Wähle, wofür der Rabatt gilt.",
+      "startsAt": "Gib Datum und Uhrzeit des Beginns an.",
+      "endsAt": "Das Ende muss nach dem Beginn liegen.",
+      "code": "Code: 2–40 Buchstaben, Zahlen, Bindestrich oder Unterstrich, nicht schon vergeben.",
+      "maxUses": "Ganze Zahl ab 1.",
+      "maxUsesPerEmail": "Ganze Zahl ab 1.",
+      "minOrder": "Mindestwert in USDT mit höchstens 2 Nachkommastellen."
+    },
+    "discount": {
+      "percent": "Prozent",
+      "fixed": "Fester Betrag (USDT)",
+      "store": "Ganzer Shop"
+    },
+    "audit": {
+      "when": "Wann (UTC)",
+      "who": "Wer",
+      "what": "Was",
+      "changes": "Änderungen",
+      "entities": {
+        "category": "Kategorie",
+        "product": "Produkt",
+        "promotion": "Aktion",
+        "coupon": "Gutschein"
+      },
+      "actions": {
+        "create": "Erstellt",
+        "update": "Geändert"
+      }
+    },
+    "orders": {
+      "todo": "Offen",
+      "all": "Alle",
+      "order": "Bestellung",
+      "tx": "Transaktion",
+      "proof": "Liefernachweis",
+      "start": "Lieferung starten",
+      "complete": "Als abgeschlossen markieren",
+      "proofUrl": "Link zum Liefernachweis (https — Screenshot oder Log)",
+      "note": "Hinweis für den Kunden",
+      "proofError": "Gib einen https-Link zum Liefernachweis an.",
+      "stale": "Jemand anderes hat diese Bestellung schon weitergesetzt. Lade die Seite neu."
+    },
+    "reports": {
+      "new": "Neu",
+      "resolved": "Erledigt",
+      "onlyNew": "Nur neue",
+      "page": "Seite",
+      "ids": "Fehler-ID · Request-ID",
+      "context": "Sprache · Region · Zeitzone · Version",
+      "browser": "Browser",
+      "resolve": "Als erledigt markieren"
     }
+  },
+  "Errors": {
+    "title": "Etwas ist schiefgelaufen",
+    "message": "Das hat nicht geklappt. Versuche es erneut — wenn es wieder passiert, melde es mit der ID unten.",
+    "code": "Code",
+    "id": "Fehler-ID",
+    "retry": "Erneut versuchen",
+    "report": "Dieses Problem melden"
+  },
+  "Report": {
+    "title": "Problem melden",
+    "intro": "Erzähl uns, was passiert ist. Seite, Sprache, Zeitzone und Browser hängen wir automatisch an — nie Passwörter oder Zahlungsdaten.",
+    "errorId": "Fehler-ID",
+    "description": "Was ist passiert?",
+    "email": "E-Mail (optional)",
+    "emailHint": "Nur wenn du eine Antwort möchtest.",
+    "submit": "Meldung senden",
+    "sent": "Danke! Deine Meldung ist beim Team angekommen.",
+    "invalid": "Beschreibe das Problem mit mindestens 10 Zeichen und prüfe die E-Mail.",
+    "limited": "Zu viele Meldungen von deiner Verbindung. Versuche es in einer Stunde erneut."
   }
 }

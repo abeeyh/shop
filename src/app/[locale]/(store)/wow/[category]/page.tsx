@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { getCategory, listProducts, ProductCard, toProductCard } from "@/features/catalog";
+import { activePromotions } from "@/features/discounts/queries";
 import { UpcomingRaids } from "@/features/schedule/UpcomingRaids";
 import { getRegion, getTimezone } from "@/lib/preferences";
 
@@ -25,9 +26,10 @@ export default async function CategoryPage({ params }: PageProps<"/[locale]/wow/
   if (!category) notFound();
 
   const [region, timeZone] = await Promise.all([getRegion(), getTimezone()]);
-  const [products, c] = await Promise.all([
+  const [products, c, promos] = await Promise.all([
     listProducts({ region, categorySlug: category.slug }),
     getTranslations({ locale, namespace: "Catalog" }),
+    activePromotions(),
   ]);
   const unit = (u: string) => (u === "per_1k_gold" ? c("perK") : u);
 
@@ -54,7 +56,7 @@ export default async function CategoryPage({ params }: PageProps<"/[locale]/wow/
       {products.length ? (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,260px),1fr))] gap-5">
           {products.map((p) => (
-            <ProductCard key={p.id} p={toProductCard(locale, p, unit)} />
+            <ProductCard key={p.id} p={toProductCard(locale, p, unit, promos)} />
           ))}
         </div>
       ) : (

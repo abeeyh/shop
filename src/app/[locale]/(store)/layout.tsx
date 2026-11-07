@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/organisms/SiteFooter";
 import { SearchField } from "@/components/molecules/SearchField";
 import { SiteHeader } from "@/components/organisms/SiteHeader";
 import { countItems, getCartId } from "@/features/cart";
+import { ReportLink } from "@/features/support/components/ReportLink";
 import { categoryHref, listCategories } from "@/features/catalog";
 import {
   MobileMenu,
@@ -116,7 +117,12 @@ export default async function StoreLayout({ children, params }: LayoutProps<"/[l
       <main id="conteudo" className="flex-1">
         {children}
       </main>
-      <SiteFooter about={footer("about")} columns={[]} copyright={footer("copyright")} />
+      <SiteFooter
+        about={footer("about")}
+        columns={[]}
+        copyright={footer("copyright")}
+        extra={<ReportLink locale={locale} label={footer("report")} />}
+      />
     </>
   );
 }

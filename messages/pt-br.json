@@ -35,7 +35,8 @@
   },
   "Footer": {
     "about": "Gold, raids e Mítica+ para World of Warcraft Retail US e EU.",
-    "copyright": "© 2026 Shop · Sem afiliação com a Blizzard Entertainment."
+    "copyright": "© 2026 Shop · Sem afiliação com a Blizzard Entertainment.",
+    "report": "Reportar problema"
   },
   "NotFound": {
     "title": "Página não encontrada",
@@ -119,7 +120,8 @@
       "keyLevel": "Escolha um nível de +2 a +15.",
       "runs": "Escolha de 1 a 10 runs.",
       "loot": "Escolha uma opção de loot."
-    }
+    },
+    "promoEnds": "A promoção termina em"
   },
   "Cart": {
     "title": "Carrinho",
@@ -138,7 +140,16 @@
       "full": "Loot completo"
     },
     "runs": "{n, plural, one {# run} other {# runs}}",
-    "timed": "no tempo"
+    "timed": "no tempo",
+    "coupon": "Código do cupom",
+    "applyCoupon": "Aplicar",
+    "removeCoupon": "Remover",
+    "couponInvalid": "Cupom inválido ou expirado.",
+    "couponNotBetter": "Seu cupom dá um desconto menor que a promoção atual, então vale a promoção (eles não acumulam).",
+    "couponNotApplicable": "Este cupom não vale para os itens do carrinho ou o pedido mínimo não foi atingido.",
+    "discountCoupon": "Cupom {code}",
+    "discountPromotion": "Promoção",
+    "total": "Total"
   },
   "Checkout": {
     "email": "E-mail",
@@ -150,7 +161,10 @@
       "email": "Informe um e-mail válido.",
       "empty": "Seu carrinho está vazio.",
       "unavailable": "Remova os itens indisponíveis para continuar.",
-      "payment": "Não conseguimos criar o pagamento. Tente de novo em instantes."
+      "payment": "Não conseguimos criar o pagamento. Tente de novo em instantes.",
+      "coupon": "Este cupom atingiu o limite de usos. Remova-o para continuar.",
+      "changed": "O preço mudou (uma promoção acabou ou o cupom mudou). Confira o novo total e tente de novo.",
+      "limited": "Muitas tentativas de checkout. Aguarde alguns minutos e tente de novo."
     }
   },
   "Order": {
@@ -171,6 +185,183 @@
       "expirado": "Expirado",
       "reembolsado": "Reembolsado",
       "contestado": "Contestado"
+    },
+    "discount": "Desconto do cupom",
+    "delivered": "Entregue — obrigado!",
+    "proof": "Ver a prova de entrega"
+  },
+  "Admin": {
+    "title": "Admin",
+    "nav": {
+      "categories": "Categorias",
+      "products": "Produtos",
+      "store": "Loja",
+      "signOut": "Sair",
+      "promotions": "Promoções",
+      "coupons": "Cupons",
+      "audit": "Auditoria",
+      "orders": "Pedidos",
+      "reports": "Reportes de problema",
+      "docs": "Documentação interna"
+    },
+    "login": {
+      "title": "Entrar (equipe)",
+      "email": "E-mail",
+      "password": "Senha",
+      "submit": "Entrar"
+    },
+    "code": {
+      "title": "Código de verificação",
+      "hint": "Digite o código de 6 dígitos do seu app autenticador.",
+      "code": "Código",
+      "submit": "Verificar"
+    },
+    "setup": {
+      "title": "Ative o 2FA",
+      "intro": "O admin exige autenticação em dois fatores. Confirme sua senha para receber a chave de configuração.",
+      "password": "Senha",
+      "start": "Gerar chave",
+      "secret": "Chave de configuração (adicione no app autenticador)",
+      "backupCodes": "Códigos de backup (guarde fora do computador)",
+      "code": "Código do app",
+      "confirm": "Ativar e continuar"
+    },
+    "errors": {
+      "invalid": "E-mail, senha ou código inválido.",
+      "limited": "Muitas tentativas. Aguarde alguns minutos e tente de novo."
+    },
+    "dashboard": {
+      "title": "Olá, {name}"
+    },
+    "fields": {
+      "name": "Nome",
+      "slug": "Slug (URL)",
+      "kind": "Tipo",
+      "description": "Descrição",
+      "imageUrl": "URL da imagem (https)",
+      "sortOrder": "Ordem",
+      "active": "Ativo",
+      "category": "Categoria",
+      "region": "Região",
+      "price": "Preço (USDT)",
+      "type": "Tipo de desconto",
+      "value": "Valor (% ou USDT)",
+      "target": "Vale para",
+      "startsAt": "Início (UTC)",
+      "endsAt": "Fim (UTC)",
+      "code": "Código",
+      "maxUses": "Usos no total (vazio = sem limite)",
+      "maxUsesPerEmail": "Usos por e-mail (vazio = sem limite)",
+      "minOrder": "Pedido mínimo (USDT)"
+    },
+    "kinds": {
+      "gold": "Gold",
+      "raid": "Raid",
+      "dungeon": "Mythic+"
+    },
+    "form": {
+      "newCategory": "Nova categoria",
+      "newProduct": "Novo produto",
+      "edit": "Editar {name}",
+      "save": "Salvar",
+      "saved": "Salvo",
+      "cancel": "Cancelar edição",
+      "editLink": "Editar",
+      "newPromotion": "Nova promoção",
+      "newCoupon": "Novo cupom"
+    },
+    "table": {
+      "activeProducts": "Produtos ativos",
+      "status": "Status",
+      "active": "Ativo",
+      "inactive": "Inativo",
+      "uses": "Usos"
+    },
+    "formErrors": {
+      "generic": "Confira os campos.",
+      "name": "O nome precisa de 2 caracteres ou mais.",
+      "slug": "Slug: letras minúsculas, números e hífen, sem repetir outro item.",
+      "kind": "Escolha um tipo.",
+      "description": "Descrição longa demais.",
+      "imageUrl": "A imagem precisa ser uma URL https.",
+      "sortOrder": "A ordem vai de 0 a 999.",
+      "categoryId": "Escolha uma categoria.",
+      "region": "Escolha uma região.",
+      "price": "Preço em USDT com até 2 casas decimais, maior que zero.",
+      "activeProducts": "Desative ou mova os produtos ativos antes de desativar a categoria.",
+      "type": "Escolha o tipo de desconto.",
+      "value": "Percentual de 1 a 90, ou valor em USDT maior que zero.",
+      "target": "Escolha onde o desconto vale.",
+      "startsAt": "Informe a data e a hora de início.",
+      "endsAt": "O fim precisa ser depois do início.",
+      "code": "Código: 2 a 40 letras, números, hífen ou sublinhado, sem repetir outro cupom.",
+      "maxUses": "Use um número inteiro de 1 ou mais.",
+      "maxUsesPerEmail": "Use um número inteiro de 1 ou mais.",
+      "minOrder": "Mínimo em USDT com até 2 casas decimais."
+    },
+    "discount": {
+      "percent": "Percentual",
+      "fixed": "Valor fixo (USDT)",
+      "store": "Loja toda"
+    },
+    "audit": {
+      "when": "Quando (UTC)",
+      "who": "Quem",
+      "what": "O quê",
+      "changes": "Alterações",
+      "entities": {
+        "category": "Categoria",
+        "product": "Produto",
+        "promotion": "Promoção",
+        "coupon": "Cupom"
+      },
+      "actions": {
+        "create": "Criou",
+        "update": "Alterou"
+      }
+    },
+    "orders": {
+      "todo": "A fazer",
+      "all": "Todos",
+      "order": "Pedido",
+      "tx": "Transação",
+      "proof": "Prova de entrega",
+      "start": "Iniciar entrega",
+      "complete": "Marcar como concluído",
+      "proofUrl": "Link da prova de entrega (https — print ou log)",
+      "note": "Observação para o cliente",
+      "proofError": "Informe um link https para a prova de entrega.",
+      "stale": "Outra pessoa já moveu este pedido. Recarregue a página."
+    },
+    "reports": {
+      "new": "Novo",
+      "resolved": "Resolvido",
+      "onlyNew": "Só os novos",
+      "page": "Página",
+      "ids": "ID do erro · ID da requisição",
+      "context": "Idioma · região · fuso · versão",
+      "browser": "Navegador",
+      "resolve": "Marcar como resolvido"
     }
+  },
+  "Errors": {
+    "title": "Algo deu errado",
+    "message": "Não conseguimos concluir isso. Tente de novo — se continuar, reporte com o ID abaixo.",
+    "code": "Código",
+    "id": "ID do erro",
+    "retry": "Tentar de novo",
+    "report": "Reportar este problema"
+  },
+  "Report": {
+    "title": "Reportar problema",
+    "intro": "Conte o que aconteceu. Anexamos sozinhos a página, o idioma, o fuso e o navegador — nunca senhas ou dados de pagamento.",
+    "errorId": "ID do erro",
+    "description": "O que aconteceu?",
+    "email": "E-mail (opcional)",
+    "emailHint": "Só se quiser resposta.",
+    "submit": "Enviar reporte",
+    "sent": "Obrigado! Seu reporte foi enviado para a equipe.",
+    "invalid": "Descreva o problema com pelo menos 10 caracteres e confira o e-mail.",
+    "limited": "Muitos reportes da sua conexão. Tente de novo em uma hora."
   }
 }

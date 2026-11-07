@@ -45,6 +45,7 @@ export async function searchProducts(f: Filters) {
       priceUsdtCents: products.priceUsdtCents,
       unit: products.unit,
       salesCount: products.salesCount,
+      categoryId: products.categoryId,
       categorySlug: categories.slug,
       categoryKind: categories.kind,
       categoryName: categories.name,

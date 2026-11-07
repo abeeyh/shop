@@ -35,7 +35,8 @@
   },
   "Footer": {
     "about": "Or, raids et Mythique+ pour World of Warcraft Retail US et EU.",
-    "copyright": "© 2026 Shop · Non affilié à Blizzard Entertainment."
+    "copyright": "© 2026 Shop · Non affilié à Blizzard Entertainment.",
+    "report": "Signaler un problème"
   },
   "NotFound": {
     "title": "Page introuvable",
@@ -119,7 +120,8 @@
       "keyLevel": "Choisissez un niveau de +2 à +15.",
       "runs": "Choisissez de 1 à 10 runs.",
       "loot": "Choisissez une option de butin."
-    }
+    },
+    "promoEnds": "La promotion se termine dans"
   },
   "Cart": {
     "title": "Panier",
@@ -138,7 +140,16 @@
       "full": "Butin complet"
     },
     "runs": "{n, plural, one {# run} other {# runs}}",
-    "timed": "dans les temps"
+    "timed": "dans les temps",
+    "coupon": "Code promo",
+    "applyCoupon": "Appliquer",
+    "removeCoupon": "Retirer",
+    "couponInvalid": "Coupon invalide ou expiré.",
+    "couponNotBetter": "Votre coupon offre une remise inférieure à la promotion en cours : la promotion s'applique (non cumulables).",
+    "couponNotApplicable": "Ce coupon ne s'applique pas aux articles du panier ou le minimum de commande n'est pas atteint.",
+    "discountCoupon": "Coupon {code}",
+    "discountPromotion": "Promotion",
+    "total": "Total"
   },
   "Checkout": {
     "email": "E-mail",
@@ -150,7 +161,10 @@
       "email": "Indiquez un e-mail valide.",
       "empty": "Votre panier est vide.",
       "unavailable": "Retirez les articles indisponibles pour continuer.",
-      "payment": "Impossible de créer le paiement. Réessayez dans un instant."
+      "payment": "Impossible de créer le paiement. Réessayez dans un instant.",
+      "coupon": "Ce coupon a atteint sa limite d'utilisation. Retirez-le pour continuer.",
+      "changed": "Le prix a changé (une promotion s'est terminée ou le coupon a changé). Vérifiez le nouveau total et réessayez.",
+      "limited": "Trop de tentatives de paiement. Patientez quelques minutes puis réessayez."
     }
   },
   "Order": {
@@ -171,6 +185,183 @@
       "expirado": "Expiré",
       "reembolsado": "Remboursé",
       "contestado": "Contesté"
+    },
+    "discount": "Remise du coupon",
+    "delivered": "Livré — merci !",
+    "proof": "Voir la preuve de livraison"
+  },
+  "Admin": {
+    "title": "Admin",
+    "nav": {
+      "categories": "Catégories",
+      "products": "Produits",
+      "store": "Boutique",
+      "signOut": "Se déconnecter",
+      "promotions": "Promotions",
+      "coupons": "Coupons",
+      "audit": "Journal d'audit",
+      "orders": "Commandes",
+      "reports": "Signalements",
+      "docs": "Documentation interne"
+    },
+    "login": {
+      "title": "Connexion (équipe)",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "submit": "Se connecter"
+    },
+    "code": {
+      "title": "Code de vérification",
+      "hint": "Saisissez le code à 6 chiffres de votre application d'authentification.",
+      "code": "Code",
+      "submit": "Vérifier"
+    },
+    "setup": {
+      "title": "Activez la double authentification",
+      "intro": "L'admin exige la double authentification. Confirmez votre mot de passe pour obtenir la clé de configuration.",
+      "password": "Mot de passe",
+      "start": "Obtenir la clé",
+      "secret": "Clé de configuration (à ajouter dans l'application)",
+      "backupCodes": "Codes de secours (à conserver hors ligne)",
+      "code": "Code de l'application",
+      "confirm": "Activer et continuer"
+    },
+    "errors": {
+      "invalid": "E-mail, mot de passe ou code invalide.",
+      "limited": "Trop de tentatives. Patientez quelques minutes puis réessayez."
+    },
+    "dashboard": {
+      "title": "Bonjour, {name}"
+    },
+    "fields": {
+      "name": "Nom",
+      "slug": "Slug (URL)",
+      "kind": "Type",
+      "description": "Description",
+      "imageUrl": "URL de l'image (https)",
+      "sortOrder": "Ordre",
+      "active": "Actif",
+      "category": "Catégorie",
+      "region": "Région",
+      "price": "Prix (USDT)",
+      "type": "Type de remise",
+      "value": "Valeur (% ou USDT)",
+      "target": "S'applique à",
+      "startsAt": "Début (UTC)",
+      "endsAt": "Fin (UTC)",
+      "code": "Code",
+      "maxUses": "Utilisations au total (vide = illimité)",
+      "maxUsesPerEmail": "Utilisations par e-mail (vide = illimité)",
+      "minOrder": "Commande minimale (USDT)"
+    },
+    "kinds": {
+      "gold": "Or",
+      "raid": "Raid",
+      "dungeon": "Mythique+"
+    },
+    "form": {
+      "newCategory": "Nouvelle catégorie",
+      "newProduct": "Nouveau produit",
+      "edit": "Modifier {name}",
+      "save": "Enregistrer",
+      "saved": "Enregistré",
+      "cancel": "Annuler la modification",
+      "editLink": "Modifier",
+      "newPromotion": "Nouvelle promotion",
+      "newCoupon": "Nouveau coupon"
+    },
+    "table": {
+      "activeProducts": "Produits actifs",
+      "status": "Statut",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "uses": "Utilisations"
+    },
+    "formErrors": {
+      "generic": "Vérifiez les champs.",
+      "name": "Le nom doit contenir au moins 2 caractères.",
+      "slug": "Slug : minuscules, chiffres et tirets, non utilisé par un autre élément.",
+      "kind": "Choisissez un type.",
+      "description": "Description trop longue.",
+      "imageUrl": "L'image doit être une URL https.",
+      "sortOrder": "L'ordre va de 0 à 999.",
+      "categoryId": "Choisissez une catégorie.",
+      "region": "Choisissez une région.",
+      "price": "Prix en USDT avec 2 décimales max., supérieur à zéro.",
+      "activeProducts": "Désactivez ou déplacez les produits actifs avant de désactiver la catégorie.",
+      "type": "Choisissez un type de remise.",
+      "value": "Pourcentage de 1 à 90, ou montant en USDT supérieur à zéro.",
+      "target": "Choisissez où la remise s'applique.",
+      "startsAt": "Indiquez la date et l'heure de début.",
+      "endsAt": "La fin doit être après le début.",
+      "code": "Code : 2 à 40 lettres, chiffres, tiret ou tiret bas, non utilisé par un autre coupon.",
+      "maxUses": "Utilisez un nombre entier de 1 ou plus.",
+      "maxUsesPerEmail": "Utilisez un nombre entier de 1 ou plus.",
+      "minOrder": "Minimum en USDT avec 2 décimales max."
+    },
+    "discount": {
+      "percent": "Pourcentage",
+      "fixed": "Montant fixe (USDT)",
+      "store": "Toute la boutique"
+    },
+    "audit": {
+      "when": "Quand (UTC)",
+      "who": "Qui",
+      "what": "Quoi",
+      "changes": "Modifications",
+      "entities": {
+        "category": "Catégorie",
+        "product": "Produit",
+        "promotion": "Promotion",
+        "coupon": "Coupon"
+      },
+      "actions": {
+        "create": "Création",
+        "update": "Modification"
+      }
+    },
+    "orders": {
+      "todo": "À traiter",
+      "all": "Toutes",
+      "order": "Commande",
+      "tx": "Transaction",
+      "proof": "Preuve de livraison",
+      "start": "Démarrer la livraison",
+      "complete": "Marquer comme terminée",
+      "proofUrl": "Lien de la preuve de livraison (https — capture ou log)",
+      "note": "Note pour le client",
+      "proofError": "Ajoutez un lien https vers la preuve de livraison.",
+      "stale": "Quelqu'un a déjà fait avancer cette commande. Rechargez la page."
+    },
+    "reports": {
+      "new": "Nouveau",
+      "resolved": "Résolu",
+      "onlyNew": "Nouveaux uniquement",
+      "page": "Page",
+      "ids": "ID d'erreur · ID de requête",
+      "context": "Langue · région · fuseau · version",
+      "browser": "Navigateur",
+      "resolve": "Marquer comme résolu"
     }
+  },
+  "Errors": {
+    "title": "Une erreur s'est produite",
+    "message": "Impossible de terminer l'opération. Réessayez — si cela continue, signalez-le avec l'ID ci-dessous.",
+    "code": "Code",
+    "id": "ID d'erreur",
+    "retry": "Réessayer",
+    "report": "Signaler ce problème"
+  },
+  "Report": {
+    "title": "Signaler un problème",
+    "intro": "Dites-nous ce qui s'est passé. Nous joignons automatiquement la page, la langue, le fuseau et le navigateur — jamais de mot de passe ni de données de paiement.",
+    "errorId": "ID d'erreur",
+    "description": "Que s'est-il passé ?",
+    "email": "E-mail (facultatif)",
+    "emailHint": "Seulement si vous voulez une réponse.",
+    "submit": "Envoyer",
+    "sent": "Merci ! Votre signalement a été transmis à l'équipe.",
+    "invalid": "Décrivez le problème en au moins 10 caractères et vérifiez l'e-mail.",
+    "limited": "Trop de signalements depuis votre connexion. Réessayez dans une heure."
   }
 }

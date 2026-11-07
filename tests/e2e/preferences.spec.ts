@@ -66,9 +66,9 @@ test.describe("celular", () => {
     await page.goto("/pt-br");
     await page.getByRole("button", { name: "Abrir menu" }).click();
     const menu = page.locator("#menu-mobile");
-    await expect(menu.getByRole("link", { name: "Raids" })).toBeVisible();
+    await expect(menu.getByRole("link", { name: "Raids", exact: true })).toBeVisible();
     await expect(menu.getByLabel("Idioma")).toBeVisible();
-    await menu.getByRole("link", { name: "Raids" }).click();
+    await menu.getByRole("link", { name: "Raids", exact: true }).click();
     await expect(page).toHaveURL(/\/pt-br\/wow\/raids$/);
     await expect(menu).toBeHidden();
   });

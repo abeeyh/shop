@@ -36,3 +36,13 @@ export const outcomeOf = (providerStatus: string): PaymentOutcome | null =>
 export function settle(outcome: PaymentOutcome, paidCents: number, totalCents: number): PaymentOutcome {
   return outcome === "paid" && paidCents < totalCents ? "partial" : outcome;
 }
+
+// RN-50 / RN-52: passos da equipe depois do pagamento; concluir exige prova de entrega
+export type StaffStep = "start" | "complete";
+export const STAFF_STEPS: Record<StaffStep, { from: OrderStatus; to: OrderStatus }> = {
+  start: { from: "pago", to: "em_andamento" },
+  complete: { from: "em_andamento", to: "concluido" },
+};
+
+export const nextStaffStep = (status: OrderStatus): StaffStep | null =>
+  (Object.keys(STAFF_STEPS) as StaffStep[]).find((s) => STAFF_STEPS[s].from === status) ?? null;

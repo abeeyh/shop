@@ -6,6 +6,7 @@ const PORT = Number(process.env.E2E_PORT ?? 3100);
 // PW_CHANNEL=chrome usa o Chrome instalado na máquina (sem baixar o Chromium do Playwright).
 export default defineConfig({
   testDir: "tests/e2e",
+  globalSetup: "./tests/e2e/global-setup.ts", // conta de admin do E2E recriada a cada rodada
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
