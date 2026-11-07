@@ -3,6 +3,9 @@ import { expect, test } from "@playwright/test";
 // #56: busca e página de produtos com filtros. RN-100 a RN-104.
 const titles = (page: import("@playwright/test").Page) =>
   page.locator("main h3").filter({ visible: true }).allTextContents();
+// #88: o esqueleto (loading.tsx) aparece antes; espera a contagem de resultados chegar
+const results = (page: import("@playwright/test").Page) =>
+  expect(page.getByText(/\d+ products?/).first()).toBeVisible();
 
 test("RN-100: busca do cabeçalho tolera erro de digitação e ordena por relevância", async ({
   page,
@@ -36,6 +39,7 @@ test("RN-101/RN-103: filtro de categoria vai para a URL, vira chip e o chip remo
 
 test("RN-102: ordenação por menor preço", async ({ page }) => {
   await page.goto("/en/produtos?region=all&sort=price-asc");
+  await results(page);
   const prices = await page.locator("main .text-xl").filter({ visible: true }).allTextContents();
   const values = prices.map((p) => Number(p.replace(/[^\d.]/g, "")));
   expect(values.length).toBeGreaterThan(5);
@@ -44,7 +48,7 @@ test("RN-102: ordenação por menor preço", async ({ page }) => {
 
 test("RN-103: parâmetros inválidos na URL são ignorados", async ({ page }) => {
   await page.goto("/en/produtos?min=abc&max=-1&sort=hack&cat=nope&page=0&region=BR");
-  await expect(page.getByRole("status")).toContainText(/\d+ products?/);
+  await results(page);
   expect((await titles(page)).length).toBeGreaterThan(0);
 });
 
