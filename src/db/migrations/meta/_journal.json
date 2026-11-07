@@ -8,6 +8,13 @@
       "when": 1794012552741,
       "tag": "0000_flowery_excalibur",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794024598838,
+      "tag": "0001_absurd_inhumans",
+      "breakpoints": true
     }
   ]
 }
