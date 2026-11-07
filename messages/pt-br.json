@@ -35,7 +35,8 @@
   },
   "Footer": {
     "about": "Gold, raids e Mítica+ para World of Warcraft Retail US e EU.",
-    "copyright": "© 2026 Shop · Sem afiliação com a Blizzard Entertainment."
+    "copyright": "© 2026 Shop · Sem afiliação com a Blizzard Entertainment.",
+    "report": "Reportar problema"
   },
   "NotFound": {
     "title": "Página não encontrada",
@@ -199,7 +200,8 @@
       "promotions": "Promoções",
       "coupons": "Cupons",
       "audit": "Auditoria",
-      "orders": "Pedidos"
+      "orders": "Pedidos",
+      "reports": "Reportes de problema"
     },
     "login": {
       "title": "Entrar (equipe)",
@@ -329,6 +331,36 @@
       "note": "Observação para o cliente",
       "proofError": "Informe um link https para a prova de entrega.",
       "stale": "Outra pessoa já moveu este pedido. Recarregue a página."
+    },
+    "reports": {
+      "new": "Novo",
+      "resolved": "Resolvido",
+      "onlyNew": "Só os novos",
+      "page": "Página",
+      "ids": "ID do erro · ID da requisição",
+      "context": "Idioma · região · fuso · versão",
+      "browser": "Navegador",
+      "resolve": "Marcar como resolvido"
     }
+  },
+  "Errors": {
+    "title": "Algo deu errado",
+    "message": "Não conseguimos concluir isso. Tente de novo — se continuar, reporte com o ID abaixo.",
+    "code": "Código",
+    "id": "ID do erro",
+    "retry": "Tentar de novo",
+    "report": "Reportar este problema"
+  },
+  "Report": {
+    "title": "Reportar problema",
+    "intro": "Conte o que aconteceu. Anexamos sozinhos a página, o idioma, o fuso e o navegador — nunca senhas ou dados de pagamento.",
+    "errorId": "ID do erro",
+    "description": "O que aconteceu?",
+    "email": "E-mail (opcional)",
+    "emailHint": "Só se quiser resposta.",
+    "submit": "Enviar reporte",
+    "sent": "Obrigado! Seu reporte foi enviado para a equipe.",
+    "invalid": "Descreva o problema com pelo menos 10 caracteres e confira o e-mail.",
+    "limited": "Muitos reportes da sua conexão. Tente de novo em uma hora."
   }
 }
