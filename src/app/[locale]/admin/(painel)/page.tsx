@@ -14,6 +14,7 @@ const SECTIONS = [
   ["promocoes", "promotions"],
   ["cupons", "coupons"],
   ["auditoria", "audit"],
+  ["docs", "docs"],
 ] as const;
 
 export default async function AdminHome({ params }: PageProps<"/[locale]/admin">) {

@@ -201,7 +201,8 @@
       "coupons": "Coupons",
       "audit": "Audit log",
       "orders": "Orders",
-      "reports": "Problem reports"
+      "reports": "Problem reports",
+      "docs": "Internal docs"
     },
     "login": {
       "title": "Staff sign in",

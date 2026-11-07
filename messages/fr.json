@@ -201,7 +201,8 @@
       "coupons": "Coupons",
       "audit": "Journal d'audit",
       "orders": "Commandes",
-      "reports": "Signalements"
+      "reports": "Signalements",
+      "docs": "Documentation interne"
     },
     "login": {
       "title": "Connexion (équipe)",

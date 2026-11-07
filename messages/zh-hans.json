@@ -201,7 +201,8 @@
       "coupons": "优惠码",
       "audit": "审计日志",
       "orders": "订单",
-      "reports": "问题反馈"
+      "reports": "问题反馈",
+      "docs": "内部文档"
     },
     "login": {
       "title": "团队登录",

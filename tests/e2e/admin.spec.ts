@@ -32,6 +32,10 @@ test.describe("admin", () => {
   test("RN-02: sem sessão o painel manda para o login; senha errada é recusada", async ({ page }) => {
     await page.goto("/en/admin/categorias");
     await expect(page).toHaveURL(/\/en\/admin\/entrar$/);
+    // RN-74: documentação interna não existe para visitante (404, sem redirecionar ao login)
+    await page.goto("/en/admin/docs");
+    await expect(page).toHaveURL(/\/en\/admin\/docs$/);
+    await expect(page.getByRole("link", { name: /Regras de negócio/ })).toHaveCount(0);
     await login(page, "senha-errada-123");
     await expect(page.getByText("Invalid email, password or code.")).toBeVisible();
   });
@@ -191,6 +195,11 @@ test.describe("admin", () => {
     await expect(card.getByText("/en/produtos")).toBeVisible();
     await card.getByRole("button", { name: "Mark as resolved" }).click();
     await expect(page.getByText(`E2E report ${id}`)).toHaveCount(0); // sai da lista de novos
+
+    // RN-74: equipe lê os docs do repositório
+    await page.goto("/en/admin/docs");
+    await page.getByRole("link", { name: "02 — Regras de negócio" }).click();
+    await expect(page.getByText("RN-74").first()).toBeVisible();
 
     // RN-02: depois de sair, o login pede o código
     await page.getByRole("button", { name: "Sign out" }).click();
