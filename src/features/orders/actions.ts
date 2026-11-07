@@ -8,7 +8,7 @@ import { env } from "@/lib/env";
 import { errorSummary, logger } from "@/lib/logger";
 import { createInvoice } from "@/lib/payments/crypto";
 import { orderPath } from "./link";
-import { insertOrder, markExpired, setInvoice } from "./queries";
+import { insertOrder, markExpired, setInvoice, SoldOutError } from "./queries";
 import { NETWORKS, PAYMENT_WINDOW_MINUTES } from "./rules";
 
 export type CheckoutState = { error: "" | "email" | "empty" | "unavailable" | "payment" };
@@ -30,7 +30,7 @@ export async function placeOrder(_prev: CheckoutState, form: FormData): Promise<
   if (!cartId || cart.lines.length === 0) return { error: "empty" };
   if (cart.hasUnavailable) return { error: "unavailable" };
 
-  const orderId = await insertOrder({
+  const order = {
     email: email.toLowerCase(),
     locale,
     network,
@@ -45,7 +45,15 @@ export async function placeOrder(_prev: CheckoutState, form: FormData): Promise<
       unitPriceUsdtCents: l.unitCents,
       quantity: l.quantity,
     })),
-  });
+  };
+
+  let orderId: string;
+  try {
+    orderId = await insertOrder(order);
+  } catch (err) {
+    if (err instanceof SoldOutError) return { error: "unavailable" }; // vaga acabou entre a tela e o clique
+    throw err;
+  }
 
   let payUrl: string;
   try {
