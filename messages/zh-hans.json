@@ -37,7 +37,8 @@
     "hot": "热门",
     "buy": "购买",
     "subcategories": "子分类",
-    "close": "关闭"
+    "close": "关闭",
+    "breadcrumb": "导航路径"
   },
   "Footer": {
     "about": "World of Warcraft 正式服美服的金币、团队副本、史诗钥石与成就。",
@@ -134,7 +135,8 @@
     "saveCharacter": "将此角色保存到我的账号",
     "buyNow": "立即购买",
     "goToPayment": "前往付款",
-    "keepShopping": "继续购物"
+    "keepShopping": "继续购物",
+    "unavailableItem": "已无法购买 — 不计入总额。"
   },
   "Cart": {
     "title": "购物车",

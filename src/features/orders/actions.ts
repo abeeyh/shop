@@ -4,7 +4,7 @@ import { refresh } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { getCustomer } from "@/features/account/session";
+import { getCustomer } from "@/features/account";
 import { cartSummary, clearCart, getCartId, setCartCoupon } from "@/features/cart";
 import { canonicalEmail } from "@/features/discounts/queries";
 import { routing } from "@/i18n/routing";

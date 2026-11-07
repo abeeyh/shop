@@ -40,7 +40,7 @@ export function Popover({ label, icon, children, className }: Props) {
       >
         {icon}
       </summary>
-      <div className="absolute right-0 z-50 mt-2 w-72 rounded-lg border border-border bg-popover p-4 shadow-2xl shadow-black/50">
+      <div className="absolute right-0 z-50 mt-2 w-72 rounded-lg border border-border bg-popover p-4 shadow-2xl">
         {children}
       </div>
     </details>

@@ -33,7 +33,14 @@ type Labels = {
   buyNow: string;
   added: string;
   viewCart: string;
-  sheet: { title: string; close: string; total: string; checkout: string; keepShopping: string };
+  sheet: {
+    title: string;
+    close: string;
+    total: string;
+    checkout: string;
+    keepShopping: string;
+    unavailable: string;
+  };
   errors: Record<string, string>;
 };
 
@@ -304,6 +311,7 @@ export function AddToCartForm(p: Props) {
           maxLength={40}
           className={input}
           aria-invalid={invalid("realm")}
+          aria-describedby={invalid("realm") ? "err-realm" : undefined}
         />
         {error("realm")}
       </label>
@@ -336,7 +344,7 @@ export function AddToCartForm(p: Props) {
           autoComplete="off"
           className={input}
           aria-invalid={invalid("character")}
-          aria-describedby="hint-character"
+          aria-describedby={invalid("character") ? "hint-character err-character" : "hint-character"}
         />
         <span id="hint-character" className="text-xs text-muted-foreground">
           {p.labels.characterHint}

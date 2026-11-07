@@ -15,6 +15,9 @@ test.describe("checkout USDT", () => {
     const status = page.getByTestId("order-status");
     await expect(status).toHaveText("Awaiting payment");
     await expect(page.getByText("Pay on the ERC-20 network only")).toBeVisible();
+    // análise de 2026-11-07: a combinação e os adicionais aparecem; o personagem não (link compartilhável)
+    await expect(page.getByText("+10 · Armor Stack")).toBeVisible();
+    await expect(page.getByText("Thrall")).toHaveCount(0);
 
     const base = {
       payment_id: Date.now() + Math.random(),

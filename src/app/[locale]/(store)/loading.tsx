@@ -7,7 +7,7 @@ import { CardGridSkeleton, LoadingRegion, TitleSkeleton } from "@/components/mol
 export default function StoreLoading() {
   const t = useTranslations("Catalog");
   return (
-    <div className="mx-auto w-full max-w-[1350px] px-4 py-14 sm:px-5">
+    <div className="mx-auto w-full max-w-[1200px] px-4 py-14 sm:px-5">
       <LoadingRegion label={t("loading")}>
         <TitleSkeleton />
         <CardGridSkeleton />

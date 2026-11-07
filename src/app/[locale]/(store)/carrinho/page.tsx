@@ -87,7 +87,7 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
   }
 
   return (
-    <div className="mx-auto w-full max-w-[1350px] px-4 py-10 sm:px-5">
+    <div className="mx-auto w-full max-w-[1200px] px-4 py-10 sm:px-5">
       <h1 className="mb-6 font-heading text-[clamp(1.75rem,4vw,2.5rem)] font-bold text-heading">
         {t("title")}
       </h1>

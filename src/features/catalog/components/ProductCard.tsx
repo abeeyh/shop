@@ -64,7 +64,7 @@ export function ProductCard({ p, cta, flag }: { p: ProductCardData; cta: string;
       </div>
       {/* no celular a linha toda é o botão: o rótulo "Comprar" só aparece a partir de sm */}
       <span aria-hidden="true" className="hidden sm:block">
-        <span className={buttonVariants({ size: "sm" })}>{cta}</span>
+        <span className={buttonVariants({ variant: "gradient-outline", size: "sm" })}>{cta}</span>
       </span>
     </div>
   );

@@ -7,6 +7,13 @@ import { GradientCard } from "@/components/molecules/GradientCard";
 import { formatUsdt } from "@/features/catalog";
 import { DeliveryBox, getOrder, isOrderToken, needsScheduling, PaymentBox } from "@/features/orders";
 import { ChatOpenButton } from "@/features/support";
+
+// #100: combinação e adicionais comprados (o personagem não aparece: o link pode ser compartilhado)
+function chosen(options: unknown): string {
+  const o = (options ?? {}) as { variant?: unknown; addons?: unknown };
+  const list = (v: unknown) => (Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : []);
+  return [...list(o.variant), ...list(o.addons)].join(" · ");
+}
 import { getDelivery } from "@/features/orders/staff";
 
 export const instant = false;
@@ -46,7 +53,12 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/[l
         <ul className="grid gap-2 border-t border-border pt-4 text-sm">
           {order.items.map((i) => (
             <li key={i.id} className="flex justify-between gap-4">
-              <span>{i.productName}</span>
+              <span>
+                {i.productName}
+                {chosen(i.options) ? (
+                  <span className="block text-xs text-muted-foreground">{chosen(i.options)}</span>
+                ) : null}
+              </span>
               <span>{formatUsdt(locale, i.unitPriceUsdtCents * i.quantity - i.discountUsdtCents)}</span>
             </li>
           ))}

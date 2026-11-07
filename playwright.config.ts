@@ -39,6 +39,8 @@ export default defineConfig({
       PORT: String(PORT),
       HOSTNAME: "127.0.0.1",
       RATE_LIMIT_REQUESTS_PER_MIN: "100000",
+      // suíte em paralelo no Docker local passa de 150 ms às vezes: o disjuntor bloquearia login/checkout
+      VALKEY_COMMAND_TIMEOUT_MS: "1000",
       NOWPAYMENTS_IPN_SECRET: E2E_IPN_SECRET, // verifica o IPN; sem API key o checkout fica bloqueado
     },
     reuseExistingServer: !process.env.CI,

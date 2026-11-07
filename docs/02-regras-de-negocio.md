@@ -115,7 +115,7 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 |----|-------|
 | RN-80 | Idiomas: `en` (padrão), `fr`, `de`, `pt-BR`, `zh-Hant` (tradicional), `zh-Hans` (simplificado). *(aprovada em 2026-11-06)* |
 | RN-81 | Primeiro acesso: idioma detectado pelo navegador (`Accept-Language`); se não for um dos 6, usa `en`. A escolha manual fica salva e tem prioridade. *(aprovada em 2026-11-06)* |
-| RN-82 | Fuso horário detectado automaticamente pelo navegador (IANA, ex.: `America/Sao_Paulo`) e **alterável** pelo usuário; a escolha fica salva (cookie e, se logado, perfil). *(aprovada em 2026-11-06)* |
+| RN-82 | Fuso horário detectado automaticamente pelo navegador (IANA, ex.: `America/Sao_Paulo`) e **alterável** pelo usuário; a escolha fica salva (cookie e, se logado, perfil — **perfil pendente: #113**). *(aprovada em 2026-11-06)* |
 | RN-84 | Conteúdo do catálogo cadastrado pelo admin (nome e descrição de categorias e produtos) é **o mesmo em todos os idiomas**; só os textos fixos da interface são traduzidos (RN-80). *(aprovada em 2026-11-06)* |
 | RN-83 | Todo horário é guardado em **UTC**; exibido no fuso escolhido (RN-82), com o horário do servidor US (`America/New_York`) disponível como referência. *(proposta — confirmar)* |
 
@@ -125,7 +125,7 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 |----|-------|
 | RN-90 | Todo erro mostrado ao usuário traz mensagem genérica no idioma dele + **código estável** + **ID do erro** (`requestId`); nunca stack trace. *(proposta — confirmar)* |
 | RN-91 | Em qualquer página o usuário pode **reportar um problema** (descrição + e-mail opcional); o reporte salva automaticamente página, `requestId`, idioma, região, fuso, navegador e versão, e chega ao admin. Limite: 5 reportes por hora por IP. *(proposta — confirmar)* |
-| RN-92 | **Chat de suporte**: qualquer visitante abre uma conversa pelo botão de chat em qualquer página. Visitante informa e-mail (nome opcional) e passa por CAPTCHA; logado ou na página do pedido, a conversa já vem ligada à conta/pedido. *(aprovada em 2026-11-06)* |
+| RN-92 | **Chat de suporte**: qualquer visitante abre uma conversa pelo botão de chat em qualquer página. Visitante informa e-mail (nome opcional) e passa por CAPTCHA; logado ou na página do pedido, a conversa já vem ligada à conta/pedido. *(aprovada em 2026-11-06)* *Ligação com a conta logada pendente: #113.* |
 | RN-93 | Estados da conversa: `aberta → em_atendimento → resolvida`; `resolvida → aberta` se o cliente responder em até 7 dias; depois disso, nova conversa. Fila por ordem de chegada; cada conversa tem um atendente responsável. *(proposta — confirmar)* |
 | RN-94 | Mensagens em tempo real. Se o cliente não estiver na página, recebe e-mail no idioma dele com link assinado para retomar a conversa (validade 7 dias). Visitante retoma pelo cookie da conversa ou pelo link. *(proposta — confirmar)* |
 | RN-95 | O chat mostra fixo, no idioma do cliente: "Nunca pediremos sua senha da Battle.net nem dados do cartão". Número de cartão (validação Luhn) e frase-semente de carteira detectados numa mensagem são **mascarados antes de gravar**. Atendente nunca pede credenciais (RN-03). *(proposta — confirmar)* |

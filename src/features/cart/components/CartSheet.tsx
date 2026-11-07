@@ -9,7 +9,14 @@ export type MiniCart = {
   total: string;
 };
 
-type Labels = { title: string; close: string; total: string; checkout: string; keepShopping: string };
+type Labels = {
+  title: string;
+  close: string;
+  total: string;
+  checkout: string;
+  keepShopping: string;
+  unavailable: string; // item indisponível: dito em texto, não só com opacidade
+};
 
 // #109: depois de adicionar, o carrinho aparece na lateral — ir ao pagamento ou continuar comprando.
 // Só exibe: itens e total vêm do servidor já calculados (docs/04 "o front só exibe").
@@ -35,6 +42,7 @@ export function CartSheet({
             <div className="min-w-0">
               <p className="font-heading text-sm font-semibold text-heading">{l.name}</p>
               <p className="text-xs text-muted-foreground">{l.detail}</p>
+              {l.available ? null : <p className="text-xs text-error-text">{labels.unavailable}</p>}
             </div>
             <span className="shrink-0 font-heading text-sm font-bold text-gold">{l.total}</span>
           </li>

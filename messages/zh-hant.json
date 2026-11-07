@@ -37,7 +37,8 @@
     "hot": "熱門",
     "buy": "購買",
     "subcategories": "子分類",
-    "close": "關閉"
+    "close": "關閉",
+    "breadcrumb": "導覽路徑"
   },
   "Footer": {
     "about": "World of Warcraft 正式版美服的金幣、團隊副本、傳奇+與成就。",
@@ -134,7 +135,8 @@
     "saveCharacter": "將此角色儲存到我的帳號",
     "buyNow": "立即購買",
     "goToPayment": "前往付款",
-    "keepShopping": "繼續購物"
+    "keepShopping": "繼續購物",
+    "unavailableItem": "已無法購買 — 不計入總額。"
   },
   "Cart": {
     "title": "購物車",
