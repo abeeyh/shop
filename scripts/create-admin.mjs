@@ -7,7 +7,7 @@ import { existsSync } from "node:fs";
 import { hashPassword } from "better-auth/crypto";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
-import { accounts, auditLog, deliveries, staffProfiles, users } from "../src/db/schema.ts";
+import { accounts, auditLog, deliveries, staffInvites, staffProfiles, users } from "../src/db/schema.ts";
 
 if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 const [email, flag] = process.argv.slice(2);
@@ -41,6 +41,7 @@ await db.transaction(async (tx) => {
     // só com --reset (local): a auditoria dessa conta de teste sai junto
     await tx.delete(auditLog).where(eq(auditLog.staffId, existing.id));
     await tx.delete(deliveries).where(eq(deliveries.staffId, existing.id));
+    await tx.delete(staffInvites).where(eq(staffInvites.invitedBy, existing.id));
     await tx.delete(users).where(eq(users.id, existing.id)); // cascata: sessões, 2FA, perfil
   }
   const id = randomUUID();

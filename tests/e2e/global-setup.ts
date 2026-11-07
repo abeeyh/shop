@@ -25,6 +25,8 @@ export default async function globalSetup() {
   await sql`delete from products where slug like 'e2e-%' and id not in (select product_id from order_items)`;
   await sql`update categories set active = false where slug like 'e2e-%'`;
   await sql`delete from categories where slug like 'e2e-%' and id not in (select category_id from products)`;
+  // contas de suporte criadas por convite no E2E (cascata: sessões, senha, 2FA, perfil)
+  await sql`delete from users where email like 'e2e-support-%@shop.test'`;
   await sql.end();
   // tentativas de login das rodadas anteriores (rate limit de login — docs/09 §2)
   const valkeyUrl = process.env.VALKEY_URL;

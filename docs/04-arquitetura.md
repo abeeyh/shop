@@ -153,7 +153,8 @@ sequenceDiagram
 - `payment_events` (provider, provider_event_id **único** = `payment_id:status:valor pago`, order_id, type, payment_id, pay_currency, paid_usdt_cents, tx_hash, received_at) — idempotência (RN-33) e conciliação; IPN que não bate com o pedido (rede/valor) fica registrado e sem efeito
 - `users`, `sessions`, `accounts` (hash scrypt da senha), `verifications`, `two_factors` (segredo TOTP criptografado) — Better Auth, só equipe no MVP (cliente compra sem conta — RN-01). Sem rota `/api/auth`: login e 2FA rodam em Server Actions via `auth.api`; telemetria do Better Auth desligada
 - `access_logs` (occurred_at, ip, port?, user_id?, session_id?, method, route, request_id) — log de acesso legal, 6 meses ([16 §9](16-observabilidade.md#9-log-de-acesso-obrigação-legal))
-- `staff_profiles` (user_id, role `suporte|admin`, languages text[], active, invited_by, created_at) — RN-04 a RN-06; clientes não têm linha aqui
+- `staff_profiles` (user_id, role `suporte|admin`, languages text[], active, invited_by, created_at) — RN-04 a RN-06; clientes não têm linha aqui. Desativar apaga as sessões na hora (RN-05)
+- `staff_invites` (id, email, role, languages, token_hash (sha-256), expires_at (7 dias), used_at, invited_by) — RN-04: o link do convite é mostrado uma vez ao admin (e-mail entra com o provedor)
 - `support_hours` (weekday, starts_at_utc, ends_at_utc) — RN-99
 - `support_conversations` (id, user_id?, guest_email?, guest_name?, order_id?, locale, status `aberta|em_atendimento|resolvida`, assigned_to?, guest_token_hash?, created_at, last_message_at, resolved_at) — RN-92, RN-93
 - `support_messages` (id, conversation_id, author_type `customer|staff|system`, author_id?, body, created_at, read_at) — corpo já mascarado (RN-95)
@@ -183,6 +184,7 @@ sequenceDiagram
 | `/api/support/conversations/[id]/stream` | API (SSE) | Idem; ping a cada 25 s |
 | `/api/support/stream` | API (SSE) | Equipe — avisos da fila |
 | `/[locale]/admin/suporte` | Página | Suporte e admin com 2FA (fila, conversa, dados do pedido) |
-| `/[locale]/admin/equipe` | Página | Só admin (convidar, desativar, papéis, idiomas, horário) |
+| `/[locale]/admin/equipe` | Página + Server Actions | Só admin (convidar, desativar, papéis, idiomas); horário com #30 |
+| `/[locale]/admin/convite/[token]` | Página + Server Action | Quem tem o link: cria nome e senha (12+, recusa senha vazada — HIBP); 2FA no primeiro login |
 | `/[locale]/admin/docs`, `/[locale]/admin/docs/[slug]` | Página | Admin e suporte com 2FA (RN-74); lê `docs/*.md` incluídos no build (`outputFileTracingIncludes`) — sem cópia; visitante e cliente recebem 404; Markdown mostrado como texto (renderizar exige dependência nova) |
 | `/[locale]/admin/bug-reports` | Página | Admin com 2FA |

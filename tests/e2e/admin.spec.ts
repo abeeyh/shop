@@ -27,6 +27,8 @@ async function login(page: Page, password = E2E_ADMIN.password) {
 }
 
 test.describe("admin", () => {
+  // o 1º passo ativa o 2FA da conta: repetir o teste na mesma rodada não faz sentido
+  test.describe.configure({ retries: 0 });
   test.skip(({ isMobile }) => isMobile, "uma conta de admin por rodada; o fluxo é de servidor");
 
   test("RN-02: sem sessão o painel manda para o login; senha errada é recusada", async ({ page }) => {
@@ -46,6 +48,7 @@ test.describe("admin", () => {
     baseURL,
     request,
   }) => {
+    test.setTimeout(120_000); // percorre o admin inteiro numa sessão (2FA é ativado uma vez por rodada)
     // outro aparelho entra só com a senha antes da ativação
     const other = await browser.newContext({ baseURL });
     const otherPage = await other.newPage();
@@ -99,6 +102,7 @@ test.describe("admin", () => {
     // RN-73: categoria com produto ativo não pode ser desativada
     await page.goto("/en/admin/categorias");
     await page.getByRole("link", { name: `Edit E2E Keys ${id}` }).click();
+    await expect(page.getByRole("heading", { name: `Edit E2E Keys ${id}` })).toBeVisible(); // navegação terminou
     await page.getByLabel("Active").uncheck();
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByText(/Deactivate or move the active products/)).toBeVisible();
@@ -139,11 +143,13 @@ test.describe("admin", () => {
     // tira o produto e a categoria do teste da vitrine (RN-72: desativa, não apaga)
     await page.goto("/en/admin/produtos");
     await page.getByRole("link", { name: `Edit E2E Key Product ${id}` }).click();
+    await expect(page.getByRole("heading", { name: `Edit E2E Key Product ${id}` })).toBeVisible(); // navegação terminou
     await page.getByLabel("Active").uncheck();
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");
     await page.goto("/en/admin/categorias");
     await page.getByRole("link", { name: `Edit E2E Keys ${id}` }).click();
+    await expect(page.getByRole("heading", { name: `Edit E2E Keys ${id}` })).toBeVisible(); // navegação terminou
     await page.getByLabel("Active").uncheck();
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");
@@ -200,6 +206,54 @@ test.describe("admin", () => {
     await page.goto("/en/admin/docs");
     await page.getByRole("link", { name: "02 — Regras de negócio" }).click();
     await expect(page.getByText("RN-74").first()).toBeVisible();
+
+    // RN-04 a RN-06: convite de suporte → aceite → 2FA → 403 em preços/categorias; desativar derruba
+    const supportEmail = `e2e-support-${id}@shop.test`;
+    await page.goto("/en/admin/equipe");
+    await page.getByLabel("Email").fill(supportEmail);
+    await page.locator('select[name="role"]').first().selectOption("admin"); // convite errado (admin)…
+    await page.getByRole("button", { name: "Create invite link" }).click();
+    const wrongLink = (await page.getByTestId("invite-link").textContent())!.trim();
+    await page.goto("/en/admin/equipe"); // …e o certo (suporte) para o mesmo e-mail invalida o primeiro
+    await page.getByLabel("Email").fill(supportEmail);
+    await page.getByRole("button", { name: "Create invite link" }).click();
+    const link = (await page.getByTestId("invite-link").textContent())!.trim();
+    expect(link).not.toBe(wrongLink);
+    const support = await browser.newContext({ baseURL });
+    const sp = await support.newPage();
+    await sp.goto(new URL(wrongLink).pathname);
+    await expect(
+      sp.getByText("This invite is invalid, already used or expired.", { exact: false }),
+    ).toBeVisible();
+    await sp.goto(new URL(link).pathname);
+    await sp.getByLabel("Your name").fill("Suporte E2E");
+    const supportPassword = `Sup0rt-${id}-${Math.random().toString(36).slice(2)}`;
+    await sp.locator('input[name="password"]').fill(supportPassword);
+    await sp.getByLabel("Confirm password").fill(supportPassword);
+    await sp.getByRole("button", { name: "Create access" }).click();
+    await expect(sp).toHaveURL(/\/en\/admin\/entrar$/);
+    await sp.getByLabel("Email").fill(supportEmail);
+    await sp.locator('input[name="password"]:visible').fill(supportPassword);
+    await sp.getByRole("button", { name: "Sign in" }).click();
+    await expect(sp).toHaveURL(/\/en\/admin\/2fa$/);
+    await sp.locator('input[name="password"]:visible').fill(supportPassword);
+    await sp.getByRole("button", { name: "Get setup key" }).click();
+    const supportSecret = (await sp.getByTestId("totp-secret").textContent())!.trim();
+    await sp.getByLabel("Code from the app").fill(totp(supportSecret));
+    await sp.getByRole("button", { name: "Turn on and continue" }).click();
+    await expect(sp).toHaveURL(/\/en\/admin$/);
+    await sp.goto("/en/admin/cupons");
+    await expect(sp.getByRole("heading", { name: "No access" })).toBeVisible();
+    await sp.goto("/en/admin/pedidos");
+    await expect(sp.getByRole("heading", { name: "Orders" })).toBeVisible();
+    await page.goto("/en/admin/equipe");
+    const member = page.getByRole("form", { name: supportEmail });
+    await member.getByLabel("Active").uncheck();
+    await member.getByRole("button", { name: "Save" }).click();
+    await expect(member.getByRole("status")).toHaveText("Saved");
+    await sp.goto("/en/admin/pedidos");
+    await expect(sp).toHaveURL(/\/en\/admin\/entrar$/); // RN-05: sessões derrubadas na hora
+    await support.close();
 
     // RN-02: depois de sair, o login pede o código
     await page.getByRole("button", { name: "Sign out" }).click();

@@ -202,7 +202,8 @@
       "audit": "Journal d'audit",
       "orders": "Commandes",
       "reports": "Signalements",
-      "docs": "Documentation interne"
+      "docs": "Documentation interne",
+      "team": "Équipe"
     },
     "login": {
       "title": "Connexion (équipe)",
@@ -342,6 +343,37 @@
       "context": "Langue · région · fuseau · version",
       "browser": "Navigateur",
       "resolve": "Marquer comme résolu"
+    },
+    "team": {
+      "role": "Rôle",
+      "admin": "Admin",
+      "support": "Support",
+      "languages": "Langues prises en charge",
+      "invite": "Inviter dans l'équipe",
+      "sendInvite": "Créer un lien d'invitation",
+      "link": "Lien d'invitation (valable 7 jours — envoyez-le à la personne ; affiché une seule fois)",
+      "twoFactorOn": "2FA activée",
+      "twoFactorOff": "2FA pas encore activée",
+      "errors": {
+        "email": "Indiquez un e-mail valide.",
+        "emailTaken": "Cet e-mail a déjà un compte.",
+        "self": "Vous ne pouvez pas désactiver ni rétrograder votre propre compte.",
+        "lastAdmin": "Il doit rester au moins un admin actif."
+      }
+    },
+    "accept": {
+      "title": "Rejoindre l'équipe",
+      "intro": "Créez votre accès pour {email}. La double authentification est activée à la première connexion.",
+      "name": "Votre nom",
+      "confirm": "Confirmez le mot de passe",
+      "hint": "Au moins 12 caractères. Les mots de passe présents dans des fuites connues sont refusés.",
+      "submit": "Créer l'accès",
+      "errors": {
+        "invalid": "Vérifiez le nom et utilisez un mot de passe d'au moins 12 caractères.",
+        "mismatch": "Les mots de passe ne correspondent pas.",
+        "pwned": "Ce mot de passe figure dans une fuite de données. Choisissez-en un autre.",
+        "expired": "Cette invitation est invalide, déjà utilisée ou expirée. Demandez-en une nouvelle à un admin."
+      }
     }
   },
   "Errors": {
@@ -363,5 +395,10 @@
     "sent": "Merci ! Votre signalement a été transmis à l'équipe.",
     "invalid": "Décrivez le problème en au moins 10 caractères et vérifiez l'e-mail.",
     "limited": "Trop de signalements depuis votre connexion. Réessayez dans une heure."
+  },
+  "Forbidden": {
+    "title": "Accès refusé",
+    "message": "Votre compte n'a pas la permission d'accéder à cet écran.",
+    "back": "Retour à l'admin"
   }
 }

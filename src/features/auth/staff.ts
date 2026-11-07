@@ -1,7 +1,7 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
-import { notFound, redirect } from "next/navigation";
+import { forbidden, redirect } from "next/navigation";
 import { db } from "@/db";
 import { staffProfiles } from "@/db/schema";
 import { auth } from "./auth";
@@ -26,6 +26,6 @@ export async function requireStaff(locale: string, roles: StaffRole[] = ["admin"
   const staff = await getStaff();
   if (!staff) redirect(`/${locale}/admin/entrar`);
   if (!staff.twoFactor) redirect(`/${locale}/admin/2fa`); // RN-02: painel só com 2FA ativo
-  if (!roles.includes(staff.role)) notFound(); // RN-06
+  if (!roles.includes(staff.role)) forbidden(); // RN-06: 403 (ex.: suporte em preços e cupons)
   return staff;
 }

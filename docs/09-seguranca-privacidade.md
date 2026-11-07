@@ -65,7 +65,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 - Senhas com scrypt/argon2; nunca em log.
 - Verificação de e-mail; tokens de uso único com validade curta.
 - Vínculo de contas OAuth ↔ senha só com e-mails verificados.
-- Senhas vazadas recusadas (HIBP por k-anonimato). *Entra com o convite da equipe (#27), quando a pessoa define a própria senha; hoje a conta inicial sai de `pnpm admin:create` com senha gerada.*
+- Senhas vazadas recusadas (HIBP por k-anonimato: só 5 caracteres do SHA-1 saem) no aceite do convite; HIBP fora do ar não bloqueia (log `auth.hibp_unavailable`). A conta inicial (`pnpm admin:create`) usa senha gerada.
 - Rate limit em store compartilhado (não em memória): Valkey, janela fixa atômica (`src/lib/rate-limit.ts`, limites em `RATE_LIMITS`):
 
   | Onde | Limite | Se o Valkey cair |
