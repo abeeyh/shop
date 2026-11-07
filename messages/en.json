@@ -202,7 +202,8 @@
       "audit": "Audit log",
       "orders": "Orders",
       "reports": "Problem reports",
-      "docs": "Internal docs"
+      "docs": "Internal docs",
+      "team": "Team"
     },
     "login": {
       "title": "Staff sign in",
@@ -342,6 +343,36 @@
       "context": "Language · region · time zone · version",
       "browser": "Browser",
       "resolve": "Mark as resolved"
+    },
+    "team": {
+      "role": "Role",
+      "admin": "Admin",
+      "support": "Support",
+      "languages": "Languages served",
+      "invite": "Invite to the team",
+      "sendInvite": "Create invite link",
+      "link": "Invite link (valid for 7 days — send it to the person; shown only once)",
+      "twoFactorOn": "2FA on",
+      "twoFactorOff": "2FA not set up yet",
+      "errors": {
+        "email": "Enter a valid email.",
+        "emailTaken": "This email already has an account.",
+        "self": "You can't deactivate or demote your own account."
+      }
+    },
+    "accept": {
+      "title": "Join the team",
+      "intro": "Create your access for {email}. You'll turn on two-factor authentication on the first sign-in.",
+      "name": "Your name",
+      "confirm": "Confirm password",
+      "hint": "At least 12 characters. Passwords found in known leaks are refused.",
+      "submit": "Create access",
+      "errors": {
+        "invalid": "Check your name and use a password with at least 12 characters.",
+        "mismatch": "The passwords don't match.",
+        "pwned": "This password appeared in a data leak. Choose another one.",
+        "expired": "This invite is invalid, already used or expired. Ask an admin for a new one."
+      }
     }
   },
   "Errors": {
@@ -363,5 +394,10 @@
     "sent": "Thanks! Your report was sent to our team.",
     "invalid": "Describe the problem in at least 10 characters and check the email.",
     "limited": "Too many reports from your connection. Try again in an hour."
+  },
+  "Forbidden": {
+    "title": "No access",
+    "message": "Your account doesn't have permission for this screen.",
+    "back": "Back to the admin"
   }
 }

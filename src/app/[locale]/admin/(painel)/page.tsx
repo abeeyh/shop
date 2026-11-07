@@ -13,6 +13,7 @@ const SECTIONS = [
   ["produtos", "products"],
   ["promocoes", "promotions"],
   ["cupons", "coupons"],
+  ["equipe", "team"],
   ["auditoria", "audit"],
   ["docs", "docs"],
 ] as const;

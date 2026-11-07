@@ -202,7 +202,8 @@
       "audit": "Änderungsprotokoll",
       "orders": "Bestellungen",
       "reports": "Problemmeldungen",
-      "docs": "Interne Dokumentation"
+      "docs": "Interne Dokumentation",
+      "team": "Team"
     },
     "login": {
       "title": "Anmeldung (Team)",
@@ -342,6 +343,36 @@
       "context": "Sprache · Region · Zeitzone · Version",
       "browser": "Browser",
       "resolve": "Als erledigt markieren"
+    },
+    "team": {
+      "role": "Rolle",
+      "admin": "Admin",
+      "support": "Support",
+      "languages": "Betreute Sprachen",
+      "invite": "Ins Team einladen",
+      "sendInvite": "Einladungslink erstellen",
+      "link": "Einladungslink (7 Tage gültig — schick ihn der Person; wird nur jetzt angezeigt)",
+      "twoFactorOn": "2FA aktiv",
+      "twoFactorOff": "2FA noch nicht eingerichtet",
+      "errors": {
+        "email": "Gib eine gültige E-Mail an.",
+        "emailTaken": "Für diese E-Mail gibt es schon ein Konto.",
+        "self": "Du kannst dein eigenes Konto nicht deaktivieren oder herabstufen."
+      }
+    },
+    "accept": {
+      "title": "Dem Team beitreten",
+      "intro": "Erstelle deinen Zugang für {email}. Die Zwei-Faktor-Authentifizierung wird bei der ersten Anmeldung aktiviert.",
+      "name": "Dein Name",
+      "confirm": "Passwort bestätigen",
+      "hint": "Mindestens 12 Zeichen. Passwörter aus bekannten Datenlecks werden abgelehnt.",
+      "submit": "Zugang erstellen",
+      "errors": {
+        "invalid": "Prüfe den Namen und nutze ein Passwort mit mindestens 12 Zeichen.",
+        "mismatch": "Die Passwörter stimmen nicht überein.",
+        "pwned": "Dieses Passwort ist in einem Datenleck aufgetaucht. Wähle ein anderes.",
+        "expired": "Diese Einladung ist ungültig, schon benutzt oder abgelaufen. Bitte einen Admin um eine neue."
+      }
     }
   },
   "Errors": {
@@ -363,5 +394,10 @@
     "sent": "Danke! Deine Meldung ist beim Team angekommen.",
     "invalid": "Beschreibe das Problem mit mindestens 10 Zeichen und prüfe die E-Mail.",
     "limited": "Zu viele Meldungen von deiner Verbindung. Versuche es in einer Stunde erneut."
+  },
+  "Forbidden": {
+    "title": "Kein Zugriff",
+    "message": "Dein Konto hat keine Berechtigung für diese Seite.",
+    "back": "Zurück zum Admin"
   }
 }

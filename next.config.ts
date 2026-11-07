@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
+  // RN-06: forbidden() → 403 para suporte em tela só de admin (experimental; rever quando estabilizar)
+  experimental: { authInterrupts: true },
   // transport do pino carregado por string num worker: precisa ficar fora do bundle
   serverExternalPackages: ["@logtail/pino"],
   // RN-74: /admin/docs lê os arquivos de docs/ do próprio build (fonte única, sem cópia)

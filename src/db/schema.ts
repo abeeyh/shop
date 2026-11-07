@@ -417,3 +417,21 @@ export const bugReports = pgTable(
   },
   (t) => [index("bug_reports_status_created_idx").on(t.status, t.createdAt)],
 );
+
+// Convite de equipe (RN-04): só admin cria; o link leva um token que só existe aqui como hash
+export const staffInvites = pgTable("staff_invites", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  email: text("email").notNull(),
+  role: staffRole("role").notNull(),
+  languages: text("languages")
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
+  tokenHash: text("token_hash").notNull().unique(), // sha-256 do token do link
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  usedAt: timestamp("used_at", { withTimezone: true }),
+  invitedBy: text("invited_by")
+    .notNull()
+    .references(() => users.id),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
