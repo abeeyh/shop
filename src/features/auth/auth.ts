@@ -27,7 +27,8 @@ export const auth = betterAuth({
     },
   }),
   // autoSignIn desligado: cadastro novo e e-mail já usado têm a mesma resposta (docs/09 "Nunca")
-  emailAndPassword: { enabled: true, minPasswordLength: 12, autoSignIn: false },
+  // #107: 8+; maiúscula, minúscula e número conferidos nas actions (lib/password.ts)
+  emailAndPassword: { enabled: true, minPasswordLength: 8, autoSignIn: false },
   // cliente: 7 dias; a equipe tem teto de 12 h conferido em getStaff (features/auth/staff.ts)
   session: { expiresIn: 60 * 60 * 24 * 7, updateAge: 60 * 60 * 24 },
   advanced: { ipAddress: { ipAddressHeaders: [env.CLIENT_IP_HEADER ?? "x-forwarded-for"] } },

@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process";
 import Valkey from "iovalkey";
 import postgres from "postgres";
 
-export const E2E_ADMIN = { email: "e2e-admin@shop.test", password: "e2e-admin-password-123" };
+export const E2E_ADMIN = { email: "e2e-admin@shop.test", password: "E2e-admin-password-123" };
 
 // Recria o admin do E2E sem 2FA (o teste ativa). --reset só roda em APP_ENV=local.
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);

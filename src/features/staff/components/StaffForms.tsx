@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { buttonVariants } from "@/components/atoms/Button";
 import { Input } from "@/components/atoms/Input";
 import { Select } from "@/components/atoms/Select";
+import { PASSWORD_MAX, PASSWORD_MIN, PASSWORD_PATTERN } from "@/lib/password";
 import {
   acceptStaffInvite,
   inviteStaff,
@@ -208,8 +209,9 @@ export function AcceptForm({
           name="password"
           type="password"
           required
-          minLength={12}
-          maxLength={200}
+          minLength={PASSWORD_MIN}
+          maxLength={PASSWORD_MAX}
+          pattern={PASSWORD_PATTERN}
           autoComplete="new-password"
           aria-describedby="password-hint"
         />
@@ -223,8 +225,8 @@ export function AcceptForm({
           name="confirm"
           type="password"
           required
-          minLength={12}
-          maxLength={200}
+          minLength={PASSWORD_MIN}
+          maxLength={PASSWORD_MAX}
           autoComplete="new-password"
         />
       </label>

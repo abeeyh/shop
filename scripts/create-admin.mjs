@@ -1,6 +1,6 @@
 // Cria uma conta de admin (RN-04: equipe nunca vem do cadastro público; os convites entram com #27).
 // Uso: node scripts/create-admin.mjs <email> [--reset]
-//   Senha: ADMIN_PASSWORD (mín. 12) ou gerada e mostrada uma vez. O 2FA é ativado no primeiro login (RN-02).
+//   Senha: ADMIN_PASSWORD (8+ com maiúscula, minúscula e número — #107) ou gerada e mostrada uma vez. O 2FA é ativado no primeiro login (RN-02).
 //   --reset apaga e recria a conta (só em APP_ENV=local — usado pelo E2E).
 import { randomBytes, randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
@@ -8,6 +8,7 @@ import { hashPassword } from "better-auth/crypto";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { accounts, auditLog, deliveries, staffInvites, staffProfiles, users } from "../src/db/schema.ts";
+import { isStrongPassword } from "../src/lib/password.ts";
 
 if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 const [email, flag] = process.argv.slice(2);
@@ -23,9 +24,10 @@ if (reset && (process.env.APP_ENV !== "local" || !isLocalDb)) {
   console.error("--reset só com APP_ENV=local e DATABASE_URL em localhost.");
   process.exit(1);
 }
-const password = process.env.ADMIN_PASSWORD ?? randomBytes(18).toString("base64url");
-if (password.length < 12) {
-  console.error("ADMIN_PASSWORD precisa de 12 caracteres ou mais.");
+// gerada: base64url de 18 bytes + "Aa1" garante as três classes da regra
+const password = process.env.ADMIN_PASSWORD ?? `${randomBytes(18).toString("base64url")}Aa1`;
+if (!isStrongPassword(password)) {
+  console.error("ADMIN_PASSWORD: 8+ caracteres com maiúscula, minúscula e número (#107).");
   process.exit(1);
 }
 

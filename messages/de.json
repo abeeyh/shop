@@ -408,10 +408,10 @@
       "intro": "Erstelle deinen Zugang für {email}. Die Zwei-Faktor-Authentifizierung wird bei der ersten Anmeldung aktiviert.",
       "name": "Dein Name",
       "confirm": "Passwort bestätigen",
-      "hint": "Mindestens 12 Zeichen. Passwörter aus bekannten Datenlecks werden abgelehnt.",
+      "hint": "Mindestens 8 Zeichen mit Groß- und Kleinbuchstaben und einer Zahl. Passwörter aus bekannten Datenlecks werden abgelehnt.",
       "submit": "Zugang erstellen",
       "errors": {
-        "invalid": "Prüfe den Namen und nutze ein Passwort mit mindestens 12 Zeichen.",
+        "invalid": "Prüfe den Namen und nutze ein Passwort mit mindestens 8 Zeichen, Groß- und Kleinbuchstaben und einer Zahl.",
         "mismatch": "Die Passwörter stimmen nicht überein.",
         "pwned": "Dieses Passwort ist in einem Datenleck aufgetaucht. Wähle ein anderes.",
         "expired": "Diese Einladung ist ungültig, schon benutzt oder abgelaufen. Bitte einen Admin um eine neue."
@@ -499,7 +499,7 @@
     "signup": {
       "title": "Konto erstellen",
       "intro": "Optional: Du kannst ohne Konto kaufen. Mit Konto siehst du deine Bestellungen und speicherst deine Charaktere.",
-      "passwordHint": "Mindestens 12 Zeichen. Geleakte Passwörter werden abgelehnt.",
+      "passwordHint": "Mindestens 8 Zeichen mit Groß- und Kleinbuchstaben und einer Zahl. Geleakte Passwörter werden abgelehnt.",
       "submit": "Konto erstellen",
       "done": "Falls das Konto erstellt werden konnte, melde dich mit E-Mail und Passwort an.",
       "hasAccount": "Schon ein Konto?"
@@ -521,7 +521,7 @@
     },
     "errors": {
       "invalid": "E-Mail oder Passwort falsch.",
-      "signupInvalid": "Gib eine gültige E-Mail und ein Passwort mit mindestens 12 Zeichen ein.",
+      "signupInvalid": "Gib eine gültige E-Mail und ein Passwort mit mindestens 8 Zeichen, Groß- und Kleinbuchstaben und einer Zahl ein.",
       "limited": "Zu viele Versuche. Versuche es in ein paar Minuten erneut.",
       "pwned": "Dieses Passwort ist in einem Datenleck aufgetaucht. Wähle ein anderes.",
       "character": "Gib den Realm und einen Namen mit 2–12 Buchstaben ein.",
