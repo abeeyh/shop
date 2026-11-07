@@ -45,10 +45,10 @@ gantt
 
 ## F1 — Vitrine (idiomas, região, fuso)
 
-- [ ] next-intl com 6 idiomas, detecção e seletor (RN-80, RN-81); checagem de chaves no CI.
-- [ ] Seletores de região US/EU (RN-14) e de fuso com detecção automática (RN-82, RN-83).
-- [ ] Catálogo Gold / Raids / Dungeons com preço em USDT e estimativa em moeda local (RN-12, RN-13, RN-18).
-- [ ] Agenda de raids com slots em UTC exibidos no fuso escolhido (RN-16, RN-83).
+- [x] next-intl com 6 idiomas, detecção e seletor (RN-80, RN-81); checagem de chaves no CI.
+- [x] Seletores de região US/EU (RN-14) e de fuso com detecção automática (RN-82, RN-83).
+- [x] Catálogo do banco com preço em USDT e estimativa em moeda local (RN-12, RN-13, RN-18). *Cotações reais: #63.*
+- [x] Agenda de raids com slots em UTC exibidos no fuso escolhido (RN-16, RN-83).
 
 **Pronto quando:** em homologação, um visitante de outro país vê o site no idioma e fuso dele, troca os dois e vê preços em USDT.
 

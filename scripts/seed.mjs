@@ -2,8 +2,8 @@
 // Idempotente: atualiza pelo slug. Uso: pnpm db:seed (lê DATABASE_URL; .env.local se existir).
 import { existsSync } from "node:fs";
 import { drizzle } from "drizzle-orm/postgres-js";
-import { sql } from "drizzle-orm";
-import { categories, products } from "../src/db/schema.ts";
+import { and, eq, gt, sql } from "drizzle-orm";
+import { categories, products, raidSlots } from "../src/db/schema.ts";
 
 if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 if (!process.env.DATABASE_URL) {
@@ -123,5 +123,33 @@ for (const [slug, cat, region, name, price, unit, sales, description] of PRODUCT
     .values(values)
     .onConflictDoUpdate({ target: products.slug, set: { ...values, updatedAt: sql`now()` } });
 }
-console.log(`seed: ${CATEGORIES.length} categorias, ${PRODUCTS.length} produtos`);
+// Agenda (RN-16): próximas 4 noites — 01:00 UTC (noite nos EUA) e 19:00 UTC (noite na Europa).
+// Só insere se o produto não tem horários futuros (não apaga horário que um pedido possa referenciar).
+const DAY = 24 * 60 * 60 * 1000;
+const slotTimes = (hourUtc) => {
+  const base = new Date();
+  base.setUTCHours(hourUtc, 0, 0, 0);
+  if (base.getTime() < Date.now() + 2 * 60 * 60 * 1000) base.setTime(base.getTime() + DAY);
+  return [0, 1, 2, 3].map((d) => new Date(base.getTime() + d * DAY));
+};
+let slots = 0;
+for (const [slug, cat, region] of PRODUCTS) {
+  if (cat !== "raids") continue;
+  const [p] = await db.select({ id: products.id }).from(products).where(eq(products.slug, slug));
+  const future = await db
+    .select({ id: raidSlots.id })
+    .from(raidSlots)
+    .where(and(eq(raidSlots.productId, p.id), gt(raidSlots.startsAt, new Date())));
+  if (future.length) continue;
+  const times = slotTimes(region === "US" ? 1 : 19);
+  // o primeiro horário da Normal US sai esgotado, para a vitrine mostrar o estado (RN-11)
+  const rows = times.map((startsAt, i) => {
+    const capacity = slug.includes("mythic") ? 4 : 10;
+    const reserved = slug === "raid-normal-us" && i === 0 ? capacity : i;
+    return { productId: p.id, startsAt, capacity, reserved };
+  });
+  await db.insert(raidSlots).values(rows);
+  slots += rows.length;
+}
+console.log(`seed: ${CATEGORIES.length} categorias, ${PRODUCTS.length} produtos, ${slots} horários novos`);
 await db.$client.end();

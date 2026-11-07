@@ -15,6 +15,13 @@
       "when": 1794024598838,
       "tag": "0001_absurd_inhumans",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794026132715,
+      "tag": "0002_slow_mockingbird",
+      "breakpoints": true
     }
   ]
 }

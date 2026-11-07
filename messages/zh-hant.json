@@ -40,5 +40,16 @@
     "title": "找不到頁面",
     "text": "你要找的頁面不存在或已無法使用。",
     "back": "返回首頁"
+  },
+  "Schedule": {
+    "upcoming": "即將開始的團隊副本",
+    "inYourTimezone": "以你的時區顯示（{tz}）",
+    "inBrowserTimezone": "以你瀏覽器的時區顯示",
+    "seatsLeft": "剩 {n} 個名額",
+    "soldOut": "已額滿",
+    "startsIn": "距離開始",
+    "serverTime": "伺服器時間：",
+    "details": "查看時段",
+    "slotsTitle": "可預約時段"
   }
 }

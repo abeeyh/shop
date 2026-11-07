@@ -40,5 +40,16 @@
     "title": "Page not found",
     "text": "The page you are looking for does not exist or is no longer available.",
     "back": "Back to home"
+  },
+  "Schedule": {
+    "upcoming": "Upcoming raids",
+    "inYourTimezone": "Times in your time zone ({tz})",
+    "inBrowserTimezone": "Times in your browser's time zone",
+    "seatsLeft": "{n, plural, one {# seat left} other {# seats left}}",
+    "soldOut": "Sold out",
+    "startsIn": "Starts in",
+    "serverTime": "Server time:",
+    "details": "View times",
+    "slotsTitle": "Available times"
   }
 }

@@ -4,7 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { getCategory, listProducts, ProductCard, toProductCard } from "@/features/catalog";
-import { getRegion } from "@/lib/preferences";
+import { UpcomingRaids } from "@/features/schedule/UpcomingRaids";
+import { getRegion, getTimezone } from "@/lib/preferences";
 
 // Bloqueia até ler o banco para responder 404 de verdade a categoria inexistente
 export const instant = false;
@@ -23,7 +24,7 @@ export default async function CategoryPage({ params }: PageProps<"/[locale]/wow/
   const category = await getCategory(slug);
   if (!category) notFound();
 
-  const region = await getRegion();
+  const [region, timeZone] = await Promise.all([getRegion(), getTimezone()]);
   const [products, c] = await Promise.all([
     listProducts({ region, categorySlug: category.slug }),
     getTranslations({ locale, namespace: "Catalog" }),
@@ -59,6 +60,9 @@ export default async function CategoryPage({ params }: PageProps<"/[locale]/wow/
       ) : (
         <p className="text-muted-foreground">{c("empty")}</p>
       )}
+      {category.kind === "raid" ? (
+        <UpcomingRaids locale={locale} region={region} timeZone={timeZone} categorySlug={category.slug} />
+      ) : null}
     </div>
   );
 }
