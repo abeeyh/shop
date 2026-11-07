@@ -18,7 +18,8 @@ Dê dois cliques em `design/prototipo.html` (Chrome ou Edge). Parâmetros de URL
 
 | Loja | Admin e suporte |
 |------|-----------------|
-| `#/` home | `#/admin` painel |
+| `#/` home (busca no cabeçalho) | `#/admin` painel |
+| `#/products` produtos com busca e filtros (`?q=&cat=&region=&min=&max=&promo=1&disponivel=1&sort=`) | |
 | `#/c/gold`, `#/c/raids`, `#/c/mythic-plus` categoria | `#/admin/orders` pedidos (assumir, concluir com prova) |
 | `#/p/gold-us` produto gold (realm, facção, quantidade) | `#/admin/categories`, `#/admin/products` (modais) |
 | `#/p/raid-heroic-us` produto raid (horário no seu fuso) | `#/admin/promotions`, `#/admin/coupons` |
@@ -31,6 +32,7 @@ Dê dois cliques em `design/prototipo.html` (Chrome ou Edge). Parâmetros de URL
 ## Interações que dá para testar
 
 - **Idioma** (6), **região** (US/EU) e **fuso** no cabeçalho: horários de raid e contagens mudam na hora (RN-80 a RN-83, RN-14).
+- **Busca** no cabeçalho (mínimo 2 caracteres, tolera erro de digitação: experimente "mithic") e **página de produtos** com filtros de categoria, região, preço, promoção e disponibilidade, ordenação, chips removíveis e estado vazio (RN-100 a RN-104). Os filtros ficam na URL.
 - **Promoção** em Gold com preço riscado e contagem até o fim (RN-21, RN-22).
 - **Cupons** `WOW10` e `RAID20`: o carrinho aplica o maior desconto entre cupom e promoção (RN-26). Código inválido mostra erro genérico (RN-28).
 - **Checkout**: cartão mostra a cotação travada por 15 min (RN-36); USDT leva à fatura com rede em destaque (RN-37).

@@ -13,6 +13,7 @@ flowchart LR
   subgraph Shop
     UC0([Escolher idioma, região e fuso])
     UC1([Navegar por categorias e produtos])
+    UC13([Buscar e filtrar produtos])
     UC2([Escolher slot de raid])
     UC3([Pagar em USDT ou cartão])
     UC4([Acompanhar pedido])
@@ -25,6 +26,7 @@ flowchart LR
     UC6([Atribuir, entregar, provar entrega, reembolsar])
     UC7([Confirmar pagamento])
   end
+  C --> UC13
   C --> UC0 & UC1 & UC2 & UC3 & UC4 & UC9 & UC10
   A --> UC5 & UC6 & UC8 & UC11 & UC12
   S --> UC6 & UC11

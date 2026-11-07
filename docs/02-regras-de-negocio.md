@@ -6,7 +6,7 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 
 - Uma regra por linha, verificável (dá para escrever um teste).
 - IDs **estáveis**: nunca renumerar. Regra removida fica com *(revogada em AAAA-MM-DD)*.
-- Faixas de IDs: conta 01–09, catálogo 10–19, carrinho/descontos/cupons 20–29, checkout/pagamento 30–49, pedidos 50–69, admin 70–79, idioma/fuso 80–89, suporte/erros 90–99.
+- Faixas de IDs: conta 01–09, catálogo 10–19, carrinho/descontos/cupons 20–29, checkout/pagamento 30–49, pedidos 50–69, admin 70–79, idioma/fuso 80–89, suporte/erros 90–99, busca e filtros 100–109.
 - Valores que podem mudar (limites, prazos, preços) ficam aqui e no objeto de configuração do código — nunca espalhados.
 - Proposta ainda não aprovada: marque *(proposta — confirmar)*.
 
@@ -36,6 +36,17 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 | RN-17 | Dungeon: nível da chave Mythic+, quantidade de runs e opção "timed"; preço calculado por tabela de configuração. *(proposta — confirmar)* |
 | RN-19 | **Produtos são criados pelo admin dentro de uma categoria**: nome, descrição, imagem, região (US/EU), preço-base em USDT (RN-12), opções do tipo da categoria e ativo. Textos iguais em todos os idiomas (RN-84). Produto desativado sai da vitrine, mas continua visível nos pedidos antigos. *(aprovada em 2026-11-06)* |
 | RN-18 | Preço em outra moeda (EUR, BRL, TWD, CNY…) é só **estimativa** exibida com "≈"; a cobrança é sempre pelo valor em USDT (RN-35). *(proposta — confirmar)* |
+
+## Busca e filtros
+
+| ID | Regra |
+|----|-------|
+| RN-100 | Campo de **busca por produto** no cabeçalho de todas as páginas da loja. Busca em nome e descrição de produtos e categorias ativos (texto único, RN-84), tolerante a erro de digitação; mínimo de 2 caracteres. *(aprovada em 2026-11-06)* |
+| RN-101 | **Página de produtos com filtros**: categoria, região (US/EU), faixa de preço em USDT, "em promoção" e "só disponíveis" (com estoque ou vaga — RN-11). *(aprovada em 2026-11-06; lista de filtros: proposta — confirmar)* |
+| RN-102 | Ordenação: relevância (com busca), mais vendidos (padrão sem busca), menor preço e maior preço — preço sempre o **final**, já com promoção ativa (RN-21). *(proposta — confirmar)* |
+| RN-103 | Busca, filtros, ordenação e página ficam na URL (link compartilhável) e são **aplicados no servidor**; valor inválido na URL é ignorado (volta ao padrão). 24 produtos por página. *(proposta — confirmar)* |
+| RN-104 | Sem resultado: mensagem no idioma do usuário, botão "limpar filtros" e sugestão das categorias; produto inativo nunca aparece. *(proposta — confirmar)* |
+| RN-105 | Busca com rate limit compartilhado (#48): 30 buscas por minuto por IP. *(proposta — confirmar)* |
 
 ## Carrinho
 

@@ -45,6 +45,7 @@ Regras com lado visual: **o servidor decide e manda o resultado; o front mostra;
 | RN-36 cotação do cartão | taxa travada por 15 min | contagem de validade | criação do pagamento (cotação vencida é recusada) |
 | RN-82 / RN-83 fuso | valida o cookie `tz` (lista IANA) | detecta o fuso no navegador e formata horários com `Intl` | gravação da preferência |
 | RN-90 erro | código estável + `requestId` | mensagem traduzida pelo código | — |
+| RN-100–RN-103 busca e filtros | resultado, contagem, ordem e paginação (consulta em `catalog/queries.ts`) | campo, painel de filtros, chips dos filtros ativos | cada requisição (URL validada com zod) |
 
 Validação no formulário (zod no cliente) é só conveniência: o mesmo `schemas.ts` roda de novo no servidor.
 
@@ -137,7 +138,7 @@ sequenceDiagram
 ## Modelo de dados (resumo)
 
 - `categories` (id, kind `gold|raid|dungeon`, name, slug, description, image_url, sort_order, active) — RN-13; texto único para todos os idiomas (RN-84)
-- `products` (id, category_id, region `US|EU`, name, slug, description, image_url, price_usdt_cents, unit, options jsonb, active) — RN-19
+- `products` (id, category_id, region `US|EU`, name, slug, description, image_url, price_usdt_cents, unit, options jsonb, active, sales_count) — RN-19; índice `pg_trgm` (GIN) em `name` e `description` para a busca (RN-100)
 - `promotions` (id, name, type `percent|fixed`, value, scope `store|category|product`, starts_at, ends_at, active) + `promotion_targets` (promotion_id, category_id?, product_id?) — RN-21 a RN-24
 - `coupons` (id, code único (minúsculas), type `percent|fixed`, value, scope, starts_at, ends_at, max_uses, max_uses_per_email, min_order_usdt_cents, active) + `coupon_targets` — RN-25
 - `coupon_redemptions` (coupon_id, order_id, email, status `reserved|used|released`) — RN-27
@@ -161,6 +162,7 @@ sequenceDiagram
 | Rota | Tipo | Acesso |
 |------|------|--------|
 | `/[locale]` | Página | Público |
+| `/[locale]/wow/produtos?q=&cat=&region=&min=&max=&promo=1&disponivel=1&sort=&page=` | Página (busca e filtros — RN-100 a RN-103) | Público |
 | `/[locale]/wow/gold`, `/[locale]/wow/raids`, `/[locale]/wow/dungeons`, `/[locale]/wow/<categoria>/[slug]` | Página | Público |
 | `/[locale]/carrinho`, `/[locale]/checkout` | Página + Server Actions | Público (visitante — RN-01) |
 | `/[locale]/pedido/[id]` | Página | Dono do pedido (sessão ou link assinado) |
