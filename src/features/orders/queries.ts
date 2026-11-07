@@ -1,8 +1,9 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { and, asc, eq, gt, inArray, isNotNull, lt, sql, type SQL } from "drizzle-orm";
 import { db } from "@/db";
-import { orderItems, orders, paymentEvents, raidSlots } from "@/db/schema";
+import { couponRedemptions, coupons, orderItems, orders, paymentEvents, raidSlots } from "@/db/schema";
 import { PAY_CURRENCY } from "@/lib/payments/crypto";
+import { inWindow } from "@/features/pricing/rules";
 import { nextStatus, settle, type Network, type OrderStatus, type PaymentOutcome } from "./rules";
 
 export type NewOrder = {
@@ -10,6 +11,9 @@ export type NewOrder = {
   locale: string;
   network: Network;
   subtotalUsdtCents: number;
+  discountUsdtCents: number;
+  discountSource: "promotion" | "coupon" | "none";
+  discountRef: string | null; // id do cupom
   totalUsdtCents: number;
   expiresAt: Date;
   items: {
@@ -18,11 +22,14 @@ export type NewOrder = {
     productName: string;
     options: unknown;
     unitPriceUsdtCents: number;
+    discountUsdtCents: number;
+    promotionId: string | null;
     quantity: number;
   }[];
 };
 
 export class SoldOutError extends Error {}
+export class CouponLimitError extends Error {}
 
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
@@ -44,11 +51,38 @@ async function reserveSeat(tx: Tx, slotId: string) {
   if (!ok) throw new SoldOutError();
 }
 
+// RN-25/RN-27: limites de uso conferidos com a linha do cupom travada (dois checkouts não passam)
+async function reserveCoupon(tx: Tx, couponId: string, email: string, orderId: string) {
+  const [c] = await tx
+    .select({
+      max: coupons.maxUses,
+      perEmail: coupons.maxUsesPerEmail,
+      active: coupons.active,
+      startsAt: coupons.startsAt,
+      endsAt: coupons.endsAt,
+    })
+    .from(coupons)
+    .where(eq(coupons.id, couponId))
+    .for("update");
+  if (!c || !inWindow(c, new Date())) throw new CouponLimitError(); // desativado/vencido no meio
+  const open = and(
+    eq(couponRedemptions.couponId, couponId),
+    inArray(couponRedemptions.status, ["reserved", "used"]),
+  );
+  const total = await tx.$count(couponRedemptions, open);
+  const mine = await tx.$count(couponRedemptions, and(open, eq(couponRedemptions.email, email)));
+  if ((c.max !== null && total >= c.max) || (c.perEmail !== null && mine >= c.perEmail))
+    throw new CouponLimitError();
+  await tx.insert(couponRedemptions).values({ couponId, orderId, email });
+}
+
 export async function insertOrder({ items, ...order }: NewOrder): Promise<string> {
   return db.transaction(async (tx) => {
     for (const i of items) if (i.raidSlotId) await reserveSeat(tx, i.raidSlotId);
     const [row] = await tx.insert(orders).values(order).returning({ id: orders.id });
     await tx.insert(orderItems).values(items.map((i) => ({ ...i, orderId: row!.id })));
+    if (order.discountSource === "coupon" && order.discountRef)
+      await reserveCoupon(tx, order.discountRef, order.email, row!.id);
     return row!.id;
   });
 }
@@ -70,18 +104,15 @@ async function expireWhere(where: SQL | undefined): Promise<number> {
       .where(and(eq(orders.status, "pendente"), where))
       .returning({ id: orders.id });
     if (!expired.length) return 0;
+    const ids = expired.map((o) => o.id);
+    await tx // RN-27: cupom reservado volta a valer
+      .update(couponRedemptions)
+      .set({ status: "released" })
+      .where(and(inArray(couponRedemptions.orderId, ids), eq(couponRedemptions.status, "reserved")));
     const seats = await tx
       .select({ slotId: orderItems.raidSlotId, n: sql<number>`count(*)::int` })
       .from(orderItems)
-      .where(
-        and(
-          inArray(
-            orderItems.orderId,
-            expired.map((o) => o.id),
-          ),
-          isNotNull(orderItems.raidSlotId),
-        ),
-      )
+      .where(and(inArray(orderItems.orderId, ids), isNotNull(orderItems.raidSlotId)))
       .groupBy(orderItems.raidSlotId);
     for (const s of seats)
       await tx
@@ -184,6 +215,11 @@ export async function applyPaymentEvent(e: PaymentEvent): Promise<ApplyResult> {
       .update(orders)
       .set({ status: d.status, paidUsdtCents: d.paid, txHash: e.txHash ?? null, updatedAt: new Date() })
       .where(eq(orders.id, e.orderId));
+    if (d.status === "pago")
+      await tx // RN-27: o cupom conta como usado quando o pedido é pago
+        .update(couponRedemptions)
+        .set({ status: "used" })
+        .where(eq(couponRedemptions.orderId, e.orderId));
     return d.status;
   });
 }

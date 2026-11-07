@@ -15,14 +15,27 @@ export default async function globalSetup() {
   }
   // dados criados pelo E2E do admin numa rodada anterior saem da vitrine (slugs e2e-*)
   const sql = postgres(process.env.DATABASE_URL!, { max: 1 });
-  await sql`delete from products where slug like 'e2e-%'`;
-  await sql`delete from categories where slug like 'e2e-%'`;
+  const e2eProducts = sql`select id from products where slug like 'e2e-%'`;
+  await sql`delete from coupon_redemptions where coupon_id in (select id from coupons where code like 'e2e%')`;
+  await sql`delete from coupons where code like 'e2e%' or product_id in (${e2eProducts})`;
+  await sql`delete from promotions where name like 'E2E%' or product_id in (${e2eProducts})`;
+  await sql`delete from cart_items where product_id in (${e2eProducts})`;
+  // RN-72: com pedido não apaga — só desativa
+  await sql`update products set active = false where slug like 'e2e-%'`;
+  await sql`delete from products where slug like 'e2e-%' and id not in (select product_id from order_items)`;
+  await sql`update categories set active = false where slug like 'e2e-%'`;
+  await sql`delete from categories where slug like 'e2e-%' and id not in (select category_id from products)`;
   await sql.end();
   // tentativas de login das rodadas anteriores (rate limit de login — docs/09 §2)
   const valkeyUrl = process.env.VALKEY_URL;
   if (valkeyUrl && isLocal(valkeyUrl)) {
     const valkey = new Valkey(valkeyUrl);
-    const keys = [...(await valkey.keys("rl:login:*")), ...(await valkey.keys("rl:totp:*"))];
+    const keys = [
+      ...(await valkey.keys("rl:login:*")),
+      ...(await valkey.keys("rl:totp:*")),
+      ...(await valkey.keys("rl:checkout:*")),
+      ...(await valkey.keys("rl:coupon:*")),
+    ];
     if (keys.length) await valkey.del(...keys);
     valkey.disconnect();
   }

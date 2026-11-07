@@ -64,47 +64,80 @@ test.describe("admin", () => {
 
     const id = Date.now().toString(36);
     await page.goto("/en/admin/categorias");
-    await page.getByLabel("Name").fill(`E2E Raids ${id}`);
-    await page.getByLabel("Slug (URL)").fill(`e2e-raids-${id}`);
-    await page.getByLabel("Type").selectOption("raid");
+    await page.getByLabel("Name").fill(`E2E Keys ${id}`);
+    await page.getByLabel("Slug (URL)").fill(`e2e-keys-${id}`);
+    await page.getByLabel("Type").selectOption("dungeon"); // M+: vai ao carrinho sem horário
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");
-    await expect(page.getByRole("cell", { name: new RegExp(`E2E Raids ${id}`) }).first()).toBeVisible();
+    await expect(page.getByRole("cell", { name: new RegExp(`E2E Keys ${id}`) }).first()).toBeVisible();
 
     await page.goto("/en/admin/produtos");
-    await page.getByLabel("Category").selectOption({ label: `E2E Raids ${id}` });
-    await page.getByLabel("Name").fill(`E2E Raid Product ${id}`);
+    await page.getByLabel("Category").selectOption({ label: `E2E Keys ${id}` });
+    await page.getByLabel("Name").fill(`E2E Key Product ${id}`);
     await page.getByLabel("Slug (URL)").fill(`e2e-product-${id}`);
     await page.getByLabel("Price (USDT)").fill("9.99");
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");
 
     // slug repetido é recusado no campo (o formulário de criação limpa depois de salvar)
-    await page.getByLabel("Name").fill(`E2E Raid Product ${id} 2`);
+    await page.getByLabel("Name").fill(`E2E Key Product ${id} 2`);
     await page.getByLabel("Slug (URL)").fill(`e2e-product-${id}`);
     await page.getByLabel("Price (USDT)").fill("1");
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByText(/^Slug: lowercase/)).toBeVisible();
 
-    await page.goto(`/en/wow/e2e-raids-${id}/e2e-product-${id}`);
-    await expect(page.getByRole("heading", { name: `E2E Raid Product ${id}` })).toBeVisible();
+    await page.goto(`/en/wow/e2e-keys-${id}/e2e-product-${id}`);
+    await expect(page.getByRole("heading", { name: `E2E Key Product ${id}` })).toBeVisible();
     await expect(page.getByText("9.99").first()).toBeVisible();
 
     // RN-73: categoria com produto ativo não pode ser desativada
     await page.goto("/en/admin/categorias");
-    await page.getByRole("link", { name: `Edit E2E Raids ${id}` }).click();
+    await page.getByRole("link", { name: `Edit E2E Keys ${id}` }).click();
     await page.getByLabel("Active").uncheck();
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByText(/Deactivate or move the active products/)).toBeVisible();
 
+    // RN-21/RN-22: promoção de 10% no produto → riscado + contagem na página do produto
+    await page.goto("/en/admin/promocoes");
+    await page.getByLabel("Name").fill(`E2E Promo ${id}`);
+    await page.getByLabel("Value (% or USDT)").fill("10");
+    await page.getByLabel("Applies to").selectOption({ label: `E2E Key Product ${id}` });
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByRole("status")).toHaveText("Saved");
+    await page.goto(`/en/wow/e2e-keys-${id}/e2e-product-${id}`);
+    await expect(page.locator("s").getByText("9.99 USDT")).toBeVisible();
+    await expect(page.getByText("8.99 USDT").first()).toBeVisible();
+    await expect(page.getByRole("timer", { name: "Promotion ends in" })).toBeVisible();
+
+    // RN-25/RN-26: cupom de 50% vence a promoção; código inválido tem mensagem genérica
+    await page.goto("/en/admin/cupons");
+    await page.getByLabel("Code").fill(`e2e${id}`);
+    await page.getByLabel("Value (% or USDT)").fill("50");
+    await page.getByLabel("Applies to").selectOption({ label: `E2E Key Product ${id}` });
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByRole("status")).toHaveText("Saved");
+
+    await page.goto(`/en/wow/e2e-keys-${id}/e2e-product-${id}`);
+    await page.getByRole("button", { name: "Add to cart" }).click();
+    await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible();
+    await page.goto("/en/carrinho");
+    await expect(page.getByTestId("cart-total")).toHaveText("8.99 USDT"); // só a promoção
+    await page.getByPlaceholder("Coupon code").fill("nao-existe");
+    await page.getByRole("button", { name: "Apply" }).click();
+    await expect(page.getByText("Invalid or expired coupon.")).toBeVisible();
+    await page.getByPlaceholder("Coupon code").fill(`E2E${id.toUpperCase()}`); // sem diferenciar maiúsculas
+    await page.getByRole("button", { name: "Apply" }).click();
+    await expect(page.getByText(`Coupon E2E${id.toUpperCase()}`)).toBeVisible();
+    await expect(page.getByTestId("cart-total")).toHaveText("4.99 USDT"); // 9,99 − 5,00 (vale o maior)
+
     // tira o produto e a categoria do teste da vitrine (RN-72: desativa, não apaga)
     await page.goto("/en/admin/produtos");
-    await page.getByRole("link", { name: `Edit E2E Raid Product ${id}` }).click();
+    await page.getByRole("link", { name: `Edit E2E Key Product ${id}` }).click();
     await page.getByLabel("Active").uncheck();
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");
     await page.goto("/en/admin/categorias");
-    await page.getByRole("link", { name: `Edit E2E Raids ${id}` }).click();
+    await page.getByRole("link", { name: `Edit E2E Keys ${id}` }).click();
     await page.getByLabel("Active").uncheck();
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");

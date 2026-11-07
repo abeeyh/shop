@@ -119,7 +119,8 @@
       "keyLevel": "Escolha um nível de +2 a +15.",
       "runs": "Escolha de 1 a 10 runs.",
       "loot": "Escolha uma opção de loot."
-    }
+    },
+    "promoEnds": "A promoção termina em"
   },
   "Cart": {
     "title": "Carrinho",
@@ -138,7 +139,16 @@
       "full": "Loot completo"
     },
     "runs": "{n, plural, one {# run} other {# runs}}",
-    "timed": "no tempo"
+    "timed": "no tempo",
+    "coupon": "Código do cupom",
+    "applyCoupon": "Aplicar",
+    "removeCoupon": "Remover",
+    "couponInvalid": "Cupom inválido ou expirado.",
+    "couponNotBetter": "Seu cupom dá um desconto menor que a promoção atual, então vale a promoção (eles não acumulam).",
+    "couponNotApplicable": "Este cupom não vale para os itens do carrinho ou o pedido mínimo não foi atingido.",
+    "discountCoupon": "Cupom {code}",
+    "discountPromotion": "Promoção",
+    "total": "Total"
   },
   "Checkout": {
     "email": "E-mail",
@@ -150,7 +160,10 @@
       "email": "Informe um e-mail válido.",
       "empty": "Seu carrinho está vazio.",
       "unavailable": "Remova os itens indisponíveis para continuar.",
-      "payment": "Não conseguimos criar o pagamento. Tente de novo em instantes."
+      "payment": "Não conseguimos criar o pagamento. Tente de novo em instantes.",
+      "coupon": "Este cupom atingiu o limite de usos. Remova-o para continuar.",
+      "changed": "O preço mudou (uma promoção acabou ou o cupom mudou). Confira o novo total e tente de novo.",
+      "limited": "Muitas tentativas de checkout. Aguarde alguns minutos e tente de novo."
     }
   },
   "Order": {
@@ -171,7 +184,8 @@
       "expirado": "Expirado",
       "reembolsado": "Reembolsado",
       "contestado": "Contestado"
-    }
+    },
+    "discount": "Desconto do cupom"
   },
   "Admin": {
     "title": "Admin",
@@ -179,7 +193,9 @@
       "categories": "Categorias",
       "products": "Produtos",
       "store": "Loja",
-      "signOut": "Sair"
+      "signOut": "Sair",
+      "promotions": "Promoções",
+      "coupons": "Cupons"
     },
     "login": {
       "title": "Entrar (equipe)",
@@ -220,7 +236,16 @@
       "active": "Ativo",
       "category": "Categoria",
       "region": "Região",
-      "price": "Preço (USDT)"
+      "price": "Preço (USDT)",
+      "type": "Tipo de desconto",
+      "value": "Valor (% ou USDT)",
+      "target": "Vale para",
+      "startsAt": "Início (UTC)",
+      "endsAt": "Fim (UTC)",
+      "code": "Código",
+      "maxUses": "Usos no total (vazio = sem limite)",
+      "maxUsesPerEmail": "Usos por e-mail (vazio = sem limite)",
+      "minOrder": "Pedido mínimo (USDT)"
     },
     "kinds": {
       "gold": "Gold",
@@ -234,13 +259,16 @@
       "save": "Salvar",
       "saved": "Salvo",
       "cancel": "Cancelar edição",
-      "editLink": "Editar"
+      "editLink": "Editar",
+      "newPromotion": "Nova promoção",
+      "newCoupon": "Novo cupom"
     },
     "table": {
       "activeProducts": "Produtos ativos",
       "status": "Status",
       "active": "Ativo",
-      "inactive": "Inativo"
+      "inactive": "Inativo",
+      "uses": "Usos"
     },
     "formErrors": {
       "generic": "Confira os campos.",
@@ -253,7 +281,21 @@
       "categoryId": "Escolha uma categoria.",
       "region": "Escolha uma região.",
       "price": "Preço em USDT com até 2 casas decimais, maior que zero.",
-      "activeProducts": "Desative ou mova os produtos ativos antes de desativar a categoria."
+      "activeProducts": "Desative ou mova os produtos ativos antes de desativar a categoria.",
+      "type": "Escolha o tipo de desconto.",
+      "value": "Percentual de 1 a 90, ou valor em USDT maior que zero.",
+      "target": "Escolha onde o desconto vale.",
+      "startsAt": "Informe a data e a hora de início.",
+      "endsAt": "O fim precisa ser depois do início.",
+      "code": "Código: 2 a 40 letras, números, hífen ou sublinhado, sem repetir outro cupom.",
+      "maxUses": "Use um número inteiro de 1 ou mais.",
+      "maxUsesPerEmail": "Use um número inteiro de 1 ou mais.",
+      "minOrder": "Mínimo em USDT com até 2 casas decimais."
+    },
+    "discount": {
+      "percent": "Percentual",
+      "fixed": "Valor fixo (USDT)",
+      "store": "Loja toda"
     }
   }
 }

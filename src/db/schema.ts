@@ -108,6 +108,7 @@ export const raidSlots = pgTable(
 // Carrinho (RN-01 visitante, RN-20 total recalculado no servidor). Identificado por cookie httpOnly.
 export const carts = pgTable("carts", {
   id: uuid("id").primaryKey().defaultRandom(),
+  couponCode: text("coupon_code"), // RN-25: guardado em minúsculas; validado a cada leitura (RN-27)
   ...timestamps,
 });
 
@@ -152,6 +153,8 @@ export const orders = pgTable(
     subtotalUsdtCents: integer("subtotal_usdt_cents").notNull(),
     discountUsdtCents: integer("discount_usdt_cents").notNull().default(0),
     totalUsdtCents: integer("total_usdt_cents").notNull(),
+    discountSource: text("discount_source").notNull().default("none"), // promotion | coupon | none (RN-29)
+    discountRef: text("discount_ref"), // id do cupom (a promoção fica em cada item)
     paymentMethod: text("payment_method").notNull().default("usdt"), // RN-35
     network: paymentNetwork("network"),
     provider: text("provider"),
@@ -181,7 +184,9 @@ export const orderItems = pgTable(
     raidSlotId: uuid("raid_slot_id").references(() => raidSlots.id),
     productName: text("product_name").notNull(), // cópia: o admin pode renomear depois
     options: jsonb("options").notNull(), // realm/facção/personagem, loot, nível… (RN-15 a RN-17)
-    unitPriceUsdtCents: integer("unit_price_usdt_cents").notNull(),
+    unitPriceUsdtCents: integer("unit_price_usdt_cents").notNull(), // preço original (RN-29)
+    discountUsdtCents: integer("discount_usdt_cents").notNull().default(0), // desconto da linha inteira
+    promotionId: uuid("promotion_id"),
     quantity: integer("quantity").notNull(),
   },
   (t) => [
@@ -293,3 +298,65 @@ export const staffProfiles = pgTable("staff_profiles", {
   invitedBy: text("invited_by"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+// Promoções e cupons (RN-21 a RN-29). Um alvo por registro: loja, uma categoria ou um produto.
+export const discountType = pgEnum("discount_type", ["percent", "fixed"]);
+export const discountScope = pgEnum("discount_scope", ["store", "category", "product"]);
+
+const discountColumns = {
+  id: uuid("id").primaryKey().defaultRandom(),
+  type: discountType("type").notNull(),
+  value: integer("value").notNull(), // percent 1–90 ou centavos de USDT
+  scope: discountScope("scope").notNull(),
+  categoryId: uuid("category_id").references(() => categories.id),
+  productId: uuid("product_id").references(() => products.id),
+  startsAt: timestamp("starts_at", { withTimezone: true }).notNull(), // UTC (RN-83)
+  endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
+  active: boolean("active").notNull().default(true),
+};
+
+export const promotions = pgTable(
+  "promotions",
+  { ...discountColumns, name: text("name").notNull(), ...timestamps },
+  (t) => [
+    index("promotions_window_idx").on(t.active, t.endsAt),
+    check("promotions_window", sql`${t.endsAt} > ${t.startsAt}`),
+    check("promotions_value", sql`${t.value} > 0`),
+  ],
+);
+
+export const coupons = pgTable(
+  "coupons",
+  {
+    ...discountColumns,
+    code: text("code").notNull().unique(), // minúsculas (RN-25)
+    maxUses: integer("max_uses"),
+    maxUsesPerEmail: integer("max_uses_per_email"),
+    minOrderUsdtCents: integer("min_order_usdt_cents").notNull().default(0),
+    ...timestamps,
+  },
+  (t) => [
+    check("coupons_window", sql`${t.endsAt} > ${t.startsAt}`),
+    check("coupons_value", sql`${t.value} > 0`),
+  ],
+);
+
+export const redemptionStatus = pgEnum("redemption_status", ["reserved", "used", "released"]);
+// RN-27: reservado no checkout, usado no pagamento, liberado na expiração
+export const couponRedemptions = pgTable(
+  "coupon_redemptions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    couponId: uuid("coupon_id")
+      .notNull()
+      .references(() => coupons.id),
+    orderId: uuid("order_id")
+      .notNull()
+      .unique()
+      .references(() => orders.id),
+    email: text("email").notNull(),
+    status: redemptionStatus("status").notNull().default("reserved"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("coupon_redemptions_coupon_idx").on(t.couponId, t.status)],
+);

@@ -119,7 +119,8 @@
       "keyLevel": "請選擇 +2 至 +15 的等級。",
       "runs": "請選擇 1 至 10 場。",
       "loot": "請選擇戰利品選項。"
-    }
+    },
+    "promoEnds": "促銷剩餘時間"
   },
   "Cart": {
     "title": "購物車",
@@ -138,7 +139,16 @@
       "full": "完整戰利品"
     },
     "runs": "{n} 場",
-    "timed": "限時"
+    "timed": "限時",
+    "coupon": "優惠碼",
+    "applyCoupon": "套用",
+    "removeCoupon": "移除",
+    "couponInvalid": "優惠碼無效或已過期。",
+    "couponNotBetter": "你的優惠碼折扣低於目前的促銷，因此套用促銷（兩者不可併用）。",
+    "couponNotApplicable": "此優惠碼不適用於購物車中的商品，或未達最低訂單金額。",
+    "discountCoupon": "優惠碼 {code}",
+    "discountPromotion": "促銷",
+    "total": "總計"
   },
   "Checkout": {
     "email": "電子郵件",
@@ -150,7 +160,10 @@
       "email": "請輸入有效的電子郵件。",
       "empty": "你的購物車是空的。",
       "unavailable": "請移除無法購買的商品以繼續。",
-      "payment": "無法建立付款，請稍後再試。"
+      "payment": "無法建立付款，請稍後再試。",
+      "coupon": "此優惠碼已達使用上限，請移除後繼續。",
+      "changed": "價格已變動（促銷已結束或優惠碼已變更），請確認新的總額後再試一次。",
+      "limited": "結帳嘗試次數過多，請稍候幾分鐘再試。"
     }
   },
   "Order": {
@@ -171,7 +184,8 @@
       "expirado": "已過期",
       "reembolsado": "已退款",
       "contestado": "爭議中"
-    }
+    },
+    "discount": "優惠碼折扣"
   },
   "Admin": {
     "title": "管理後台",
@@ -179,7 +193,9 @@
       "categories": "分類",
       "products": "商品",
       "store": "商店",
-      "signOut": "登出"
+      "signOut": "登出",
+      "promotions": "促銷活動",
+      "coupons": "優惠碼"
     },
     "login": {
       "title": "團隊登入",
@@ -220,7 +236,16 @@
       "active": "啟用",
       "category": "分類",
       "region": "地區",
-      "price": "價格（USDT）"
+      "price": "價格（USDT）",
+      "type": "折扣類型",
+      "value": "數值（% 或 USDT）",
+      "target": "適用範圍",
+      "startsAt": "開始（UTC）",
+      "endsAt": "結束（UTC）",
+      "code": "代碼",
+      "maxUses": "總使用次數（留空 = 不限）",
+      "maxUsesPerEmail": "每個電子郵件使用次數（留空 = 不限）",
+      "minOrder": "最低訂單金額（USDT）"
     },
     "kinds": {
       "gold": "金幣",
@@ -234,13 +259,16 @@
       "save": "儲存",
       "saved": "已儲存",
       "cancel": "取消編輯",
-      "editLink": "編輯"
+      "editLink": "編輯",
+      "newPromotion": "新增促銷",
+      "newCoupon": "新增優惠碼"
     },
     "table": {
       "activeProducts": "啟用中的商品",
       "status": "狀態",
       "active": "啟用",
-      "inactive": "停用"
+      "inactive": "停用",
+      "uses": "使用次數"
     },
     "formErrors": {
       "generic": "請檢查欄位。",
@@ -253,7 +281,21 @@
       "categoryId": "請選擇分類。",
       "region": "請選擇地區。",
       "price": "USDT 價格最多 2 位小數，且大於零。",
-      "activeProducts": "停用分類前，請先停用或移動其中啟用的商品。"
+      "activeProducts": "停用分類前，請先停用或移動其中啟用的商品。",
+      "type": "請選擇折扣類型。",
+      "value": "百分比 1 至 90，或大於零的 USDT 金額。",
+      "target": "請選擇折扣適用範圍。",
+      "startsAt": "請輸入開始日期與時間。",
+      "endsAt": "結束時間必須晚於開始時間。",
+      "code": "代碼：2–40 個字母、數字、連字號或底線，且不可重複。",
+      "maxUses": "請輸入 1 以上的整數。",
+      "maxUsesPerEmail": "請輸入 1 以上的整數。",
+      "minOrder": "USDT 最低金額最多 2 位小數。"
+    },
+    "discount": {
+      "percent": "百分比",
+      "fixed": "固定金額（USDT）",
+      "store": "全店"
     }
   }
 }

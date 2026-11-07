@@ -9,6 +9,7 @@ export type ProductCardData = {
   kind: "gold" | "raid" | "dungeon";
   region: string;
   price: string;
+  original?: string; // RN-22: preço sem promoção, riscado
   estimate: string;
   unit?: string;
 };
@@ -23,7 +24,7 @@ export function ProductCard({ p }: { p: ProductCardData }) {
           {p.name}
         </Link>
       </h3>
-      <PriceTag price={p.price} estimate={p.estimate} unit={p.unit} />
+      <PriceTag price={p.price} original={p.original} estimate={p.estimate} unit={p.unit} />
     </GradientCard>
   );
 }

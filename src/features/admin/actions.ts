@@ -7,11 +7,14 @@ import { routing } from "@/i18n/routing";
 import {
   activeProductCount,
   categoryKindOf,
+  isForeignKeyViolation,
   isUniqueViolation,
   saveCategoryRow,
+  saveCouponRow,
   saveProductRow,
+  savePromotionRow,
 } from "./queries";
-import { categoryInput, fieldsOf, productInput } from "./schemas";
+import { categoryInput, couponInput, fieldsOf, productInput, promotionInput } from "./schemas";
 
 export type SaveState = { status: "idle" | "ok" | "error"; fields: string[] };
 
@@ -23,11 +26,12 @@ async function guard(form: FormData) {
   return m.id || null;
 }
 
-async function persist(write: () => Promise<void>): Promise<SaveState> {
+async function persist(write: () => Promise<void>, uniqueField = "slug"): Promise<SaveState> {
   try {
     await write();
   } catch (err) {
-    if (isUniqueViolation(err)) return { status: "error", fields: ["slug"] };
+    if (isUniqueViolation(err)) return { status: "error", fields: [uniqueField] };
+    if (isForeignKeyViolation(err)) return { status: "error", fields: ["target"] };
     throw err;
   }
   refresh();
@@ -52,4 +56,20 @@ export async function saveProduct(_prev: SaveState, form: FormData): Promise<Sav
   const kind = await categoryKindOf(parsed.data.categoryId);
   if (!kind) return { status: "error", fields: ["categoryId"] };
   return persist(() => saveProductRow(id, parsed.data, kind === "gold" ? "per_1k_gold" : null));
+}
+
+// RN-21 a RN-24
+export async function savePromotion(_prev: SaveState, form: FormData): Promise<SaveState> {
+  const id = await guard(form);
+  const parsed = promotionInput.safeParse(Object.fromEntries(form));
+  if (!parsed.success) return { status: "error", fields: fieldsOf(parsed.error) };
+  return persist(() => savePromotionRow(id, parsed.data));
+}
+
+// RN-25; RN-72: cupom nunca é apagado, só desativado
+export async function saveCoupon(_prev: SaveState, form: FormData): Promise<SaveState> {
+  const id = await guard(form);
+  const parsed = couponInput.safeParse(Object.fromEntries(form));
+  if (!parsed.success) return { status: "error", fields: fieldsOf(parsed.error) };
+  return persist(() => saveCouponRow(id, parsed.data), "code");
 }

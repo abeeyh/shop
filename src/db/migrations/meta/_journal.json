@@ -64,6 +64,13 @@
       "when": 1794030488078,
       "tag": "0008_young_wind_dancer",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1794031547058,
+      "tag": "0009_lame_ironclad",
+      "breakpoints": true
     }
   ]
 }
