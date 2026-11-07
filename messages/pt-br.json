@@ -172,5 +172,88 @@
       "reembolsado": "Reembolsado",
       "contestado": "Contestado"
     }
+  },
+  "Admin": {
+    "title": "Admin",
+    "nav": {
+      "categories": "Categorias",
+      "products": "Produtos",
+      "store": "Loja",
+      "signOut": "Sair"
+    },
+    "login": {
+      "title": "Entrar (equipe)",
+      "email": "E-mail",
+      "password": "Senha",
+      "submit": "Entrar"
+    },
+    "code": {
+      "title": "Código de verificação",
+      "hint": "Digite o código de 6 dígitos do seu app autenticador.",
+      "code": "Código",
+      "submit": "Verificar"
+    },
+    "setup": {
+      "title": "Ative o 2FA",
+      "intro": "O admin exige autenticação em dois fatores. Confirme sua senha para receber a chave de configuração.",
+      "password": "Senha",
+      "start": "Gerar chave",
+      "secret": "Chave de configuração (adicione no app autenticador)",
+      "backupCodes": "Códigos de backup (guarde fora do computador)",
+      "code": "Código do app",
+      "confirm": "Ativar e continuar"
+    },
+    "errors": {
+      "invalid": "E-mail, senha ou código inválido.",
+      "limited": "Muitas tentativas. Aguarde alguns minutos e tente de novo."
+    },
+    "dashboard": {
+      "title": "Olá, {name}"
+    },
+    "fields": {
+      "name": "Nome",
+      "slug": "Slug (URL)",
+      "kind": "Tipo",
+      "description": "Descrição",
+      "imageUrl": "URL da imagem (https)",
+      "sortOrder": "Ordem",
+      "active": "Ativo",
+      "category": "Categoria",
+      "region": "Região",
+      "price": "Preço (USDT)"
+    },
+    "kinds": {
+      "gold": "Gold",
+      "raid": "Raid",
+      "dungeon": "Mythic+"
+    },
+    "form": {
+      "newCategory": "Nova categoria",
+      "newProduct": "Novo produto",
+      "edit": "Editar {name}",
+      "save": "Salvar",
+      "saved": "Salvo",
+      "cancel": "Cancelar edição",
+      "editLink": "Editar"
+    },
+    "table": {
+      "activeProducts": "Produtos ativos",
+      "status": "Status",
+      "active": "Ativo",
+      "inactive": "Inativo"
+    },
+    "formErrors": {
+      "generic": "Confira os campos.",
+      "name": "O nome precisa de 2 caracteres ou mais.",
+      "slug": "Slug: letras minúsculas, números e hífen, sem repetir outro item.",
+      "kind": "Escolha um tipo.",
+      "description": "Descrição longa demais.",
+      "imageUrl": "A imagem precisa ser uma URL https.",
+      "sortOrder": "A ordem vai de 0 a 999.",
+      "categoryId": "Escolha uma categoria.",
+      "region": "Escolha uma região.",
+      "price": "Preço em USDT com até 2 casas decimais, maior que zero.",
+      "activeProducts": "Desative ou mova os produtos ativos antes de desativar a categoria."
+    }
   }
 }

@@ -172,5 +172,88 @@
       "reembolsado": "Remboursé",
       "contestado": "Contesté"
     }
+  },
+  "Admin": {
+    "title": "Admin",
+    "nav": {
+      "categories": "Catégories",
+      "products": "Produits",
+      "store": "Boutique",
+      "signOut": "Se déconnecter"
+    },
+    "login": {
+      "title": "Connexion (équipe)",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "submit": "Se connecter"
+    },
+    "code": {
+      "title": "Code de vérification",
+      "hint": "Saisissez le code à 6 chiffres de votre application d'authentification.",
+      "code": "Code",
+      "submit": "Vérifier"
+    },
+    "setup": {
+      "title": "Activez la double authentification",
+      "intro": "L'admin exige la double authentification. Confirmez votre mot de passe pour obtenir la clé de configuration.",
+      "password": "Mot de passe",
+      "start": "Obtenir la clé",
+      "secret": "Clé de configuration (à ajouter dans l'application)",
+      "backupCodes": "Codes de secours (à conserver hors ligne)",
+      "code": "Code de l'application",
+      "confirm": "Activer et continuer"
+    },
+    "errors": {
+      "invalid": "E-mail, mot de passe ou code invalide.",
+      "limited": "Trop de tentatives. Patientez quelques minutes puis réessayez."
+    },
+    "dashboard": {
+      "title": "Bonjour, {name}"
+    },
+    "fields": {
+      "name": "Nom",
+      "slug": "Slug (URL)",
+      "kind": "Type",
+      "description": "Description",
+      "imageUrl": "URL de l'image (https)",
+      "sortOrder": "Ordre",
+      "active": "Actif",
+      "category": "Catégorie",
+      "region": "Région",
+      "price": "Prix (USDT)"
+    },
+    "kinds": {
+      "gold": "Or",
+      "raid": "Raid",
+      "dungeon": "Mythique+"
+    },
+    "form": {
+      "newCategory": "Nouvelle catégorie",
+      "newProduct": "Nouveau produit",
+      "edit": "Modifier {name}",
+      "save": "Enregistrer",
+      "saved": "Enregistré",
+      "cancel": "Annuler la modification",
+      "editLink": "Modifier"
+    },
+    "table": {
+      "activeProducts": "Produits actifs",
+      "status": "Statut",
+      "active": "Actif",
+      "inactive": "Inactif"
+    },
+    "formErrors": {
+      "generic": "Vérifiez les champs.",
+      "name": "Le nom doit contenir au moins 2 caractères.",
+      "slug": "Slug : minuscules, chiffres et tirets, non utilisé par un autre élément.",
+      "kind": "Choisissez un type.",
+      "description": "Description trop longue.",
+      "imageUrl": "L'image doit être une URL https.",
+      "sortOrder": "L'ordre va de 0 à 999.",
+      "categoryId": "Choisissez une catégorie.",
+      "region": "Choisissez une région.",
+      "price": "Prix en USDT avec 2 décimales max., supérieur à zéro.",
+      "activeProducts": "Désactivez ou déplacez les produits actifs avant de désactiver la catégorie."
+    }
   }
 }

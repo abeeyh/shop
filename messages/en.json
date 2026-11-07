@@ -172,5 +172,88 @@
       "reembolsado": "Refunded",
       "contestado": "Disputed"
     }
+  },
+  "Admin": {
+    "title": "Admin",
+    "nav": {
+      "categories": "Categories",
+      "products": "Products",
+      "store": "Store",
+      "signOut": "Sign out"
+    },
+    "login": {
+      "title": "Staff sign in",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in"
+    },
+    "code": {
+      "title": "Two-factor code",
+      "hint": "Enter the 6-digit code from your authenticator app.",
+      "code": "Code",
+      "submit": "Verify"
+    },
+    "setup": {
+      "title": "Turn on two-factor",
+      "intro": "The admin requires two-factor authentication. Confirm your password to get the setup key.",
+      "password": "Password",
+      "start": "Get setup key",
+      "secret": "Setup key (add it to your authenticator app)",
+      "backupCodes": "Backup codes (store them offline)",
+      "code": "Code from the app",
+      "confirm": "Turn on and continue"
+    },
+    "errors": {
+      "invalid": "Invalid email, password or code.",
+      "limited": "Too many attempts. Wait a few minutes and try again."
+    },
+    "dashboard": {
+      "title": "Hello, {name}"
+    },
+    "fields": {
+      "name": "Name",
+      "slug": "Slug (URL)",
+      "kind": "Type",
+      "description": "Description",
+      "imageUrl": "Image URL (https)",
+      "sortOrder": "Order",
+      "active": "Active",
+      "category": "Category",
+      "region": "Region",
+      "price": "Price (USDT)"
+    },
+    "kinds": {
+      "gold": "Gold",
+      "raid": "Raid",
+      "dungeon": "Mythic+"
+    },
+    "form": {
+      "newCategory": "New category",
+      "newProduct": "New product",
+      "edit": "Edit {name}",
+      "save": "Save",
+      "saved": "Saved",
+      "cancel": "Cancel editing",
+      "editLink": "Edit"
+    },
+    "table": {
+      "activeProducts": "Active products",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "formErrors": {
+      "generic": "Check the highlighted fields.",
+      "name": "Name needs 2 or more characters.",
+      "slug": "Slug: lowercase letters, numbers and hyphens, not used by another item.",
+      "kind": "Choose a type.",
+      "description": "Description is too long.",
+      "imageUrl": "Image must be an https URL.",
+      "sortOrder": "Order must be 0 to 999.",
+      "categoryId": "Choose a category.",
+      "region": "Choose a region.",
+      "price": "Price in USDT with up to 2 decimals, greater than zero.",
+      "activeProducts": "Deactivate or move the active products before deactivating the category."
+    }
   }
 }

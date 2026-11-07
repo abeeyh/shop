@@ -30,12 +30,18 @@ const schema = z
     NOWPAYMENTS_SANDBOX: z.stringbool().default(true),
     // assina o link do pedido (/pedido/[id]?t=) — dono sem conta (RN-01)
     ORDER_LINK_SECRET: z.string().min(32).optional(),
+    // assina sessões e criptografa o segredo do 2FA (Better Auth). Obrigatório fora de local.
+    BETTER_AUTH_SECRET: z.string().min(32).optional(),
   })
   .refine((v) => v.APP_ENV !== "production" || v.CLIENT_IP_HEADER, {
     message: "CLIENT_IP_HEADER é obrigatório em production (docs/16 §9)",
     path: ["CLIENT_IP_HEADER"],
   })
   // RN-32: fake e segredos de desenvolvimento (públicos no repo) só em local
+  .refine((v) => v.APP_ENV === "local" || v.BETTER_AUTH_SECRET, {
+    message: "BETTER_AUTH_SECRET é obrigatório fora de local (sessão da equipe — RN-02)",
+    path: ["BETTER_AUTH_SECRET"],
+  })
   .refine((v) => v.APP_ENV === "local" || (v.PAYMENTS_PROVIDER === "nowpayments" && v.ORDER_LINK_SECRET), {
     message: "fora de local exige PAYMENTS_PROVIDER=nowpayments e ORDER_LINK_SECRET (docs/14, RN-32)",
     path: ["PAYMENTS_PROVIDER"],
