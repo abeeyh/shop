@@ -203,7 +203,8 @@
       "orders": "Bestellungen",
       "reports": "Problemmeldungen",
       "docs": "Interne Dokumentation",
-      "team": "Team"
+      "team": "Team",
+      "support": "Support"
     },
     "login": {
       "title": "Anmeldung (Team)",
@@ -374,6 +375,18 @@
         "pwned": "Dieses Passwort ist in einem Datenleck aufgetaucht. Wähle ein anderes.",
         "expired": "Diese Einladung ist ungültig, schon benutzt oder abgelaufen. Bitte einen Admin um eine neue."
       }
+    },
+    "support": {
+      "customer": "Kunde",
+      "language": "Sprache",
+      "statuses": {
+        "aberta": "Offen",
+        "em_atendimento": "In Bearbeitung",
+        "resolvida": "Gelöst"
+      },
+      "assume": "Chat übernehmen",
+      "resolve": "Als gelöst markieren",
+      "you": "Du"
     }
   },
   "Errors": {
@@ -400,5 +413,24 @@
     "title": "Kein Zugriff",
     "message": "Dein Konto hat keine Berechtigung für diese Seite.",
     "back": "Zurück zum Admin"
+  },
+  "Chat": {
+    "open": "Mit dem Support chatten",
+    "close": "Chat schließen",
+    "title": "Support",
+    "notice": "Wir fragen nie nach deinem Battle.net-Passwort oder deinen Kartendaten.",
+    "email": "E-Mail",
+    "name": "Name (optional)",
+    "message": "Wie können wir helfen?",
+    "start": "Chat starten",
+    "you": "Du",
+    "team": "Support",
+    "placeholder": "Nachricht schreiben",
+    "send": "Senden",
+    "errors": {
+      "error": "Prüfe die Felder und versuche es erneut.",
+      "limited": "Zu viele Nachrichten oder Chats. Warte kurz und versuche es erneut.",
+      "closed": "Dieser Chat wurde vor mehr als 7 Tagen geschlossen. Starte einen neuen."
+    }
   }
 }

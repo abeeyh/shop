@@ -80,7 +80,7 @@ gantt
 ## F5 — Suporte e chat
 
 - [x] Papéis `cliente`/`suporte`/`admin`, convite de equipe, 2FA obrigatório, permissões por papel (RN-04 a RN-07). *Convite por link mostrado ao admin até existir o provedor de e-mail.*
-- [ ] Chat próprio: SSE + PostgreSQL + pub/sub do Valkey; widget em todas as páginas; fila no dashboard (RN-92, RN-93, RN-98).
+- [x] Chat próprio: SSE + PostgreSQL + pub/sub do Valkey; widget em todas as páginas; fila no dashboard (RN-92, RN-93, RN-98). *Mascaramento (RN-95) já entrou; fila atualiza por polling de 15 s.*
 - [ ] E-mail de mensagem nova com link assinado (RN-94); aviso de credenciais e mascaramento (RN-95); anexos de imagem (RN-96); limites e CAPTCHA (RN-97).
 - [ ] Horário de atendimento e modo offline (RN-99).
 - [x] Documentação interna `/admin/docs` para admin e suporte (RN-74). *Texto puro; renderizar Markdown/Mermaid pede uma dependência (decisão de stack).*

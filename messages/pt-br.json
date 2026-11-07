@@ -203,7 +203,8 @@
       "orders": "Pedidos",
       "reports": "Reportes de problema",
       "docs": "Documentação interna",
-      "team": "Equipe"
+      "team": "Equipe",
+      "support": "Suporte"
     },
     "login": {
       "title": "Entrar (equipe)",
@@ -374,6 +375,18 @@
         "pwned": "Esta senha apareceu em um vazamento de dados. Escolha outra.",
         "expired": "Este convite é inválido, já foi usado ou expirou. Peça um novo a um admin."
       }
+    },
+    "support": {
+      "customer": "Cliente",
+      "language": "Idioma",
+      "statuses": {
+        "aberta": "Aberta",
+        "em_atendimento": "Em atendimento",
+        "resolvida": "Resolvida"
+      },
+      "assume": "Assumir conversa",
+      "resolve": "Marcar como resolvida",
+      "you": "Você"
     }
   },
   "Errors": {
@@ -400,5 +413,24 @@
     "title": "Sem acesso",
     "message": "Sua conta não tem permissão para esta tela.",
     "back": "Voltar ao admin"
+  },
+  "Chat": {
+    "open": "Falar com o suporte",
+    "close": "Fechar chat",
+    "title": "Suporte",
+    "notice": "Nunca pediremos sua senha da Battle.net nem dados do cartão.",
+    "email": "E-mail",
+    "name": "Nome (opcional)",
+    "message": "Como podemos ajudar?",
+    "start": "Iniciar conversa",
+    "you": "Você",
+    "team": "Suporte",
+    "placeholder": "Escreva uma mensagem",
+    "send": "Enviar",
+    "errors": {
+      "error": "Confira os campos e tente de novo.",
+      "limited": "Muitas mensagens ou conversas. Aguarde um pouco e tente de novo.",
+      "closed": "Esta conversa foi encerrada há mais de 7 dias. Abra uma nova."
+    }
   }
 }
