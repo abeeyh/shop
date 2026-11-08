@@ -1,12 +1,19 @@
 "use client";
 
 import { MessageCircle, X } from "lucide-react";
-import { useActionState, useState } from "react";
+import dynamic from "next/dynamic";
+import { useActionState, useEffect, useState } from "react";
 import { buttonVariants } from "@/components/atoms/Button";
 import { Input, Textarea } from "@/components/atoms/Input";
 import { LocalTime } from "@/components/molecules/LocalTime";
 import { sendChatMessage, startChat, type ChatState } from "../chat-actions";
-import { ChatThread } from "./ChatThread";
+import { CHAT_OPEN_EVENT, type ChatOpenDetail } from "./ChatOpenButton";
+import { Skeleton } from "@/components/atoms/Skeleton";
+
+// #88: lazy loading — conversa (EventSource, polling, máscara de envio) só baixa ao abrir o chat
+const ChatThread = dynamic(() => import("./ChatThread").then((m) => m.ChatThread), {
+  loading: () => <Skeleton className="h-64 w-full" />,
+});
 
 type Labels = {
   open: string;
@@ -46,6 +53,15 @@ export function ChatWidget({
   labels: Labels;
 }) {
   const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState(""); // mensagem pronta vinda de "consultar preço"/"agendar run"
+  useEffect(() => {
+    const onOpen = (e: Event) => {
+      setDraft((e as CustomEvent<ChatOpenDetail>).detail.message);
+      setOpen(true);
+    };
+    window.addEventListener(CHAT_OPEN_EVENT, onOpen);
+    return () => window.removeEventListener(CHAT_OPEN_EVENT, onOpen);
+  }, []);
   const [state, startAction, pending] = useActionState<ChatState, FormData>(startChat, { status: "idle" });
   const id = state.id ?? initialId;
 
@@ -82,8 +98,10 @@ export function ChatWidget({
           ) : null}
           {id ? (
             <ChatThread
+              key={draft}
               conversationId={id}
               viewer="customer"
+              draft={draft}
               action={sendChatMessage}
               labels={{
                 you: labels.you,
@@ -106,7 +124,14 @@ export function ChatWidget({
               </label>
               <label className="grid gap-1 text-sm">
                 <span className="font-semibold text-foreground">{labels.message}</span>
-                <Textarea name="body" required maxLength={2000} className="min-h-20" />
+                <Textarea
+                  key={draft}
+                  name="body"
+                  required
+                  maxLength={2000}
+                  defaultValue={draft}
+                  className="min-h-20"
+                />
               </label>
               <button type="submit" disabled={pending} className={buttonVariants({ variant: "primary" })}>
                 {online ? labels.start : labels.offlineStart}

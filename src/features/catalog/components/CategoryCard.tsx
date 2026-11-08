@@ -1,19 +1,18 @@
 import Link from "next/link";
-import { GradientCard } from "@/components/molecules/GradientCard";
-import { KindThumb } from "./KindIcon";
+import { KindTile, type Kind } from "./KindIcon";
 
-type Props = { href: string; name: string; description: string; kind: "gold" | "raid" | "dungeon" };
+type Props = { href: string; name: string; kind: Kind };
 
-export function CategoryCard({ href, name, description, kind }: Props) {
+// #102: categoria em bloco compacto (ícone + nome) — todas cabem numa olhada, 1 clique até a lista
+export function CategoryCard({ href, name, kind }: Props) {
   return (
-    <GradientCard interactive className="relative">
-      <KindThumb kind={kind} />
-      <h3 className="font-heading text-lg font-semibold text-heading">
-        <Link href={href} className="after:absolute after:inset-0 after:content-['']">
-          {name}
-        </Link>
-      </h3>
-      <p className="mt-1.5 text-sm text-muted-foreground">{description}</p>
-    </GradientCard>
+    <Link
+      href={href}
+      data-spotlight
+      className="flex min-h-16 items-center gap-3 rounded-lg border border-border bg-card/60 px-3.5 py-3 font-heading text-sm font-semibold text-heading transition-colors hover:border-gradient-from/50"
+    >
+      <KindTile kind={kind} />
+      {name}
+    </Link>
   );
 }

@@ -1,6 +1,5 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { canonicalLocale } from "@/i18n/routing";
-import { estimate } from "@/lib/fx";
 import { bestPromotion, type Promotion } from "@/features/pricing/rules";
 import type { ProductCardData } from "./components/ProductCard";
 import type { CatalogProduct } from "./queries";
@@ -12,12 +11,6 @@ export function formatUsdt(locale: string, cents: number): string {
     maximumFractionDigits: 2,
   });
   return `${n.format(cents / 100)} USDT`;
-}
-
-export function formatEstimate(locale: string, cents: number): string {
-  const { currency, amount } = estimate(locale, cents);
-  const money = new Intl.NumberFormat(canonicalLocale(locale), { style: "currency", currency });
-  return `≈ ${money.format(amount)}`;
 }
 
 export const categoryHref = (locale: string, slug: string) => `/${locale}/wow/${slug}`;
@@ -44,10 +37,30 @@ export function promoPrice(
     : { cents: p.priceUsdtCents, originalCents: null, endsAt: null };
 }
 
+export type CardLabels = { unit: (unit: string) => string; onRequest: string; hot: string; from: string };
+type CardProduct = Pick<
+  CatalogProduct,
+  "id" | "slug" | "name" | "categoryId" | "categorySlug" | "categoryKind" | "priceUsdtCents" | "unit"
+> & {
+  priceOnRequest: boolean;
+  hot: boolean;
+  description: string;
+  subcategoryName: string | null;
+  optionAxes: unknown[];
+};
+
+// unidade embaixo do preço: gold "por 1.000"; com opções (#100) "a partir de"
+function unitLabel(p: CardProduct, labels: CardLabels) {
+  if (p.priceOnRequest) return undefined;
+  if (p.unit) return labels.unit(p.unit);
+  return p.optionAxes.length ? labels.from : undefined;
+}
+
+// RN-106: "sob consulta" no lugar do preço (o valor guardado é só um marcador)
 export function toProductCard(
   locale: string,
-  p: CatalogProduct,
-  unitLabel: (unit: string) => string,
+  p: CardProduct,
+  labels: CardLabels,
   promos: Promotion[] = [],
 ): ProductCardData {
   const price = promoPrice(p, promos);
@@ -55,10 +68,19 @@ export function toProductCard(
     href: productHref(locale, p),
     name: p.name,
     kind: p.categoryKind,
-    region: p.region,
-    price: formatUsdt(locale, price.cents),
-    original: price.originalCents ? formatUsdt(locale, price.originalCents) : undefined,
-    estimate: formatEstimate(locale, price.cents),
-    unit: p.unit ? unitLabel(p.unit) : undefined,
+    badge: p.hot ? labels.hot : undefined,
+    tags: p.subcategoryName ? [p.subcategoryName] : [],
+    description: p.description,
+    price: p.priceOnRequest ? labels.onRequest : formatUsdt(locale, price.cents),
+    original: !p.priceOnRequest && price.originalCents ? formatUsdt(locale, price.originalCents) : undefined,
+    unit: unitLabel(p, labels),
   };
 }
+
+// rótulos do card no idioma de quem vê (home, categoria e busca usam os mesmos)
+export const cardLabels = (c: (key: "perK" | "onRequest" | "hot" | "from") => string): CardLabels => ({
+  unit: (u) => (u === "per_1k_gold" ? c("perK") : u),
+  onRequest: c("onRequest"),
+  hot: c("hot"),
+  from: c("from"),
+});

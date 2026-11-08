@@ -8,6 +8,7 @@ import {
   chooseDiscount,
   couponDiscountCents,
   lineTotalCents,
+  itemStillValid,
   unitPriceCents,
   type ItemOptions,
   type Promotion,
@@ -48,20 +49,41 @@ const slotOk = (r: Row) =>
   r.slotStartsAt === null ||
   isBookable({ startsAt: r.slotStartsAt, capacity: r.slotCapacity ?? 0, reserved: r.slotReserved ?? 0 });
 
+// item com opções antigas (antes do #94) ou produto que virou "sob consulta" não pode seguir ao checkout
+const isCurrent = (r: Row) =>
+  !r.priceOnRequest &&
+  itemStillValid(r.options, r.quantity, {
+    isGold: r.categoryKind === "gold",
+    addons: r.addons,
+    maxQuantity: r.maxQuantity,
+    hasSlots: r.hasSlots,
+    slotId: r.slotId,
+    hasVariants: r.hasVariants,
+    variantChosen: r.variantId !== null,
+    variantOk: r.variantOk,
+  });
+
+// #100: com variantes, o preço é o da combinação; o do produto é só o "a partir de"
+const basePrice = (r: Row) =>
+  r.hasVariants && r.variantPriceCents !== null ? r.variantPriceCents : r.basePriceCents;
+
 function priceLine(r: Row, promos: Promotion[], now: Date) {
-  const unitCents = unitPriceCents(r.basePriceCents, r.options as ItemOptions);
+  const current = isCurrent(r);
+  const base = basePrice(r);
+  const unitCents = current ? unitPriceCents(base, r.options as ItemOptions, r.addons) : base;
   const best = bestPromotion({ productId: r.productId, categoryId: r.categoryId, unitCents }, promos, now);
   return {
     id: r.id,
     productId: r.productId,
     categoryId: r.categoryId,
     slotId: r.slotId,
+    variantId: r.variantId,
     unitCents,
     quantity: r.quantity,
     promotionId: best?.promotion.id ?? null,
     promoDiscountCents: (best?.discountCents ?? 0) * r.quantity, // RN-24: por unidade × quantidade
     originalCents: lineTotalCents(unitCents, r.quantity),
-    available: r.productActive && slotOk(r), // RN-11 / RN-19
+    available: current && r.productActive && slotOk(r), // RN-11 / RN-19 / RN-106
   };
 }
 
@@ -108,7 +130,6 @@ export async function cartSummary(locale: string, cartId: string | null) {
       name: r.productName,
       href: productHref(locale, { categorySlug: r.categorySlug, slug: r.productSlug }),
       kind: r.categoryKind,
-      region: r.region,
       options: r.options as ItemOptions,
       slotStartsAt: r.slotStartsAt?.toISOString() ?? null,
       totalCents,

@@ -33,6 +33,7 @@
 │   ├── lib/                   # adapters de serviços externos (payments/, email/), env (zod)
 │   └── components/            # Atomic Design genérico — ver 11-design.md
 │       ├── atoms/  molecules/  organisms/  templates/
+├── scripts/                   # seed, admin, catálogo (scripts/catalog: JSON + mapa + import)
 ├── tests/ (e2e/, factories/)
 ├── Dockerfile
 ├── .env.example

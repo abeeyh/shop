@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openPreferences } from "./helpers";
 
 // #16: agenda de raids no fuso do cliente. RN-11, RN-16, RN-83.
 test.describe("agenda", () => {
@@ -17,6 +18,7 @@ test.describe("agenda", () => {
     await expect(firstTime).not.toHaveText("");
     const before = await firstTime.textContent();
     const serverBefore = await serverTime.textContent();
+    await openPreferences(page);
     await page.locator("#pref-timezone").selectOption("Asia/Tokyo");
     await expect(firstTime).not.toHaveText(before!);
     await expect(serverTime).toHaveText(serverBefore!);
@@ -48,7 +50,7 @@ test.describe("agenda", () => {
   test("página da raid lista os horários disponíveis", async ({ browser, baseURL }) => {
     const context = await browser.newContext({ timezoneId: "America/New_York", baseURL });
     const page = await context.newPage();
-    await page.goto("/en/wow/raids/raid-heroic-us");
+    await page.goto("/en/wow/raids/venomous-abyss-heroic");
     // #17: horários viram opções do formulário de compra
     await expect(page.getByRole("group", { name: "Date and time" }).getByRole("radio")).toHaveCount(4);
     await context.close();

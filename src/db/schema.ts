@@ -1,6 +1,7 @@
 // Tabelas do banco (docs/04 — Modelo de dados). Cada feature acrescenta as suas aqui
 // e gera a migração com `pnpm db:generate`.
 import {
+  type AnyPgColumn,
   bigserial,
   boolean,
   check,
@@ -12,6 +13,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
@@ -34,8 +36,16 @@ export const accessLogs = pgTable(
 );
 
 // Catálogo (docs/04 — Modelo de dados). Criado pelo admin; texto único para todos os idiomas (RN-84).
-export const categoryKind = pgEnum("category_kind", ["gold", "raid", "dungeon"]); // RN-13
-export const gameRegion = pgEnum("game_region", ["US", "EU"]); // RN-14
+// RN-13: o tipo define o ícone e o formulário (gold = realm/facção/quantidade em milhares; o resto = serviço)
+export const categoryKind = pgEnum("category_kind", [
+  "gold",
+  "raid",
+  "dungeon",
+  "pvp",
+  "achievement",
+  "delve",
+]);
+export const gameRegion = pgEnum("game_region", ["US", "EU"]); // RN-14: só US à venda; EU fica no enum (dados antigos)
 
 const timestamps = {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -54,6 +64,29 @@ export const categories = pgTable("categories", {
   ...timestamps,
 });
 
+// Subcategoria opcional dentro da categoria (ex.: Raids → Heroic / Normal) — #94, RN-13
+export const subcategories = pgTable(
+  "subcategories",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    categoryId: uuid("category_id")
+      .notNull()
+      .references(() => categories.id),
+    name: text("name").notNull(),
+    slug: text("slug").notNull(),
+    sortOrder: integer("sort_order").notNull().default(0),
+    active: boolean("active").notNull().default(true),
+    ...timestamps,
+  },
+  (t) => [uniqueIndex("subcategories_category_slug_idx").on(t.categoryId, t.slug)],
+);
+
+// Adicional em % sobre o preço do produto, escolhido pelo cliente (RN-17, ex.: Armor Stack +25%)
+export type ProductAddon = { name: string; percent: number };
+// #100: eixo de opção do produto (ex.: Bosses 2/8…8/8 em slider; Group size em caixas). A combinação
+// escolhida aponta para uma variante com preço próprio (RN-17).
+export type OptionAxis = { name: string; values: string[]; style: "slider" | "boxes" };
+
 export const products = pgTable(
   "products",
   {
@@ -61,7 +94,7 @@ export const products = pgTable(
     categoryId: uuid("category_id")
       .notNull()
       .references(() => categories.id),
-    region: gameRegion("region").notNull(),
+    region: gameRegion("region").notNull().default("US"), // RN-14: loja só US; coluna mantida para pedidos antigos
     name: text("name").notNull(),
     slug: text("slug").notNull().unique(),
     description: text("description").notNull().default(""),
@@ -69,6 +102,14 @@ export const products = pgTable(
     priceUsdtCents: integer("price_usdt_cents").notNull(), // RN-12: inteiro, nunca float
     unit: text("unit"), // ex.: "per_1k_gold"
     options: jsonb("options").notNull().default({}),
+    subcategoryId: uuid("subcategory_id").references(() => subcategories.id),
+    addons: jsonb("addons").$type<ProductAddon[]>().notNull().default([]),
+    maxQuantity: integer("max_quantity").notNull().default(1), // ex.: delve "por tier"
+    priceOnRequest: boolean("price_on_request").notNull().default(false), // RN-106: não vai ao carrinho
+    hot: boolean("hot").notNull().default(false), // destaque "popular" (vem primeiro)
+    sortOrder: integer("sort_order").notNull().default(0),
+    externalId: integer("external_id").unique(), // id no sistema de origem (importação idempotente)
+    optionAxes: jsonb("option_axes").$type<OptionAxis[]>().notNull().default([]), // #100: vazio = sem variantes
     active: boolean("active").notNull().default(true),
     salesCount: integer("sales_count").notNull().default(0),
     ...timestamps,
@@ -79,6 +120,31 @@ export const products = pgTable(
     index("products_name_trgm_idx").using("gin", t.name.op("gin_trgm_ops")),
     index("products_description_trgm_idx").using("gin", t.description.op("gin_trgm_ops")),
     check("products_price_positive", sql`${t.priceUsdtCents} > 0`),
+    check("products_max_quantity", sql`${t.maxQuantity} between 1 and 100`),
+  ],
+);
+
+// #100: variante = uma combinação dos eixos do produto, com preço próprio. Com variantes, o preço do
+// produto é só o "a partir de" (menor preço ativo), mantido pelo admin/importação.
+export const productVariants = pgTable(
+  "product_variants",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    options: jsonb("options").$type<Record<string, string>>().notNull(), // eixo → valor
+    priceUsdtCents: integer("price_usdt_cents").notNull(), // RN-12
+    priceOnRequest: boolean("price_on_request").notNull().default(false), // RN-106
+    note: text("note").notNull().default(""), // ex.: "3-4 items drop"
+    sortOrder: integer("sort_order").notNull().default(0),
+    externalId: integer("external_id").unique(),
+    active: boolean("active").notNull().default(true),
+    ...timestamps,
+  },
+  (t) => [
+    uniqueIndex("product_variants_product_options_idx").on(t.productId, t.options),
+    check("product_variants_price_positive", sql`${t.priceUsdtCents} > 0`),
   ],
 );
 
@@ -123,6 +189,8 @@ export const cartItems = pgTable(
       .notNull()
       .references(() => products.id),
     raidSlotId: uuid("raid_slot_id").references(() => raidSlots.id),
+    // #100: variante escolhida; removida pelo admin → null e o item fica indisponível
+    variantId: uuid("variant_id").references(() => productVariants.id, { onDelete: "set null" }),
     quantity: integer("quantity").notNull(), // gold: milhares; M+: runs; raid: 1
     options: jsonb("options").notNull().default({}), // validado por tipo (features/cart/schemas.ts)
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -148,6 +216,8 @@ export const orders = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     email: text("email").notNull(), // RN-01; dado pessoal — nunca em log (docs/16)
+    // RN-107: conta que fez o pedido (logado); null = visitante ou conta excluída (RN-109)
+    userId: text("user_id").references((): AnyPgColumn => users.id, { onDelete: "set null" }),
     locale: text("locale").notNull(),
     status: orderStatus("status").notNull().default("pendente"),
     subtotalUsdtCents: integer("subtotal_usdt_cents").notNull(),
@@ -168,6 +238,7 @@ export const orders = pgTable(
   },
   (t) => [
     index("orders_status_expires_idx").on(t.status, t.expiresAt),
+    index("orders_user_idx").on(t.userId), // RN-107: "meus pedidos"
     check("orders_amounts", sql`${t.totalUsdtCents} > 0 and ${t.subtotalUsdtCents} >= ${t.totalUsdtCents}`),
   ],
 );
@@ -183,6 +254,7 @@ export const orderItems = pgTable(
       .notNull()
       .references(() => products.id),
     raidSlotId: uuid("raid_slot_id").references(() => raidSlots.id),
+    variantId: uuid("variant_id").references(() => productVariants.id, { onDelete: "set null" }), // #100
     productName: text("product_name").notNull(), // cópia: o admin pode renomear depois
     options: jsonb("options").notNull(), // realm/facção/personagem, loot, nível… (RN-15 a RN-17)
     unitPriceUsdtCents: integer("unit_price_usdt_cents").notNull(), // preço original (RN-29)
@@ -211,8 +283,8 @@ export const paymentEvents = pgTable("payment_events", {
   receivedAt: timestamp("received_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
-// Autenticação (Better Auth — docs/03). Só equipe no MVP: cliente compra sem conta (RN-01).
-// Ids em texto: gerados pelo Better Auth.
+// Autenticação (Better Auth — docs/03). Equipe (convite, RN-04) e cliente com cadastro opcional (RN-107);
+// comprar continua sem conta (RN-01). Ids em texto: gerados pelo Better Auth.
 export const users = pgTable("users", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -490,5 +562,25 @@ export const supportHours = pgTable(
       "support_hours_range",
       sql`${t.weekday} between 0 and 6 and ${t.startMin} between 0 and 1439 and ${t.endMin} between 0 and 1439`,
     ),
+  ],
+);
+
+// RN-108: personagens salvos pelo cliente para compras futuras (opcional; até 10 por conta). Dado pessoal
+// (docs/09): some com a conta (RN-109). Mesmo realm + nome não repete na conta (sem diferenciar maiúsculas).
+export const characters = pgTable(
+  "characters",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    realm: text("realm").notNull(),
+    faction: text("faction").notNull(),
+    name: text("name").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("characters_user_realm_name_idx").on(t.userId, sql`lower(${t.realm})`, sql`lower(${t.name})`),
+    check("characters_faction", sql`${t.faction} in ('alliance', 'horde')`),
   ],
 );

@@ -32,7 +32,7 @@ Regras obrigatórias para todo código. Valem para pessoas e agentes. O que dá 
 | **Regras como funções puras** | `features/<x>/rules.ts` | Testáveis sem banco/rede; citam o ID RN |
 | **Controller fino** | Route Handlers e Server Actions | Só validam (zod), checam sessão e chamam a feature |
 | **Consultas por feature** | `features/<x>/queries.ts` | O ORM já é a abstração: **sem Repository genérico** |
-| **Adapter** | `src/lib/*` | Isola serviços externos; *fake* nos testes |
+| **Adapter** | `src/lib/*` | Isola serviços externos. **Sem implementação fake no código da aplicação**: sem o provedor configurado a ação é bloqueada com o aviso "API ainda não implementada" (#86). Dublês só dentro de `tests/` |
 | **Configuração como dado** | ex.: `plans.ts` | Nada de `if (plan === 'x')` espalhado |
 | **Idempotência** | Webhooks | Evento repetido não duplica efeito |
 | **Erros com código estável** | `{ error: { code, message, requestId } }` | Front reage por código; usuário vê o ID do erro (RN-90) |
@@ -40,7 +40,7 @@ Regras obrigatórias para todo código. Valem para pessoas e agentes. O que dá 
 | **Atomic Design** + variantes `cva` | Componentes | Reuso e consistência |
 | **Schemas na borda** | `features/<x>/schemas.ts` (zod) | Mesmo schema valida form, Server Action e Route Handler |
 | **Máquina de estados** | `features/orders/rules.ts` | Transições do pedido (RN-50) num só lugar; transição inválida é erro |
-| **Adapter de pagamento** | `src/lib/payments/{crypto,card}` | Interface `PaymentProvider`; cada provedor é uma implementação; *fake* nos testes |
+| **Adapter de pagamento** | `src/lib/payments/{crypto,card}` | Interface `PaymentProvider`; cada provedor é uma implementação real; sem chave → checkout bloqueado e webhook 501 |
 
 ### SOLID (aplicado sem cerimônia)
 
@@ -48,7 +48,7 @@ Regras obrigatórias para todo código. Valem para pessoas e agentes. O que dá 
 |-----------|-------------------|--------|
 | **S** — responsabilidade única | `rules.ts` decide, `queries.ts` acessa banco, rota só valida e chama | Não criar classe por verbo |
 | **O** — aberto/fechado | Variantes `cva`; planos, fretes e provedores como dado (configuração) | Sem sistema de plugins "para o futuro" |
-| **L** — substituição | Fake e implementação real do adapter passam nos mesmos testes | — |
+| **L** — substituição | Cada provedor real implementa a mesma interface e passa nos mesmos testes | — |
 | **I** — interfaces enxutas | Adapter expõe só o que a loja usa (`createCheckout`, `verifyWebhook`, `refund`) | — |
 | **D** — inversão de dependência | `rules.ts` não importa framework, banco nem rede; features dependem da interface do adapter, não do SDK | Só onde há serviço externo; ORM direto em `queries.ts` (sem Repository genérico) |
 

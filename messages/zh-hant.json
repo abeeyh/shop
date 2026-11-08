@@ -1,21 +1,22 @@
 {
   "Metadata": {
     "title": "WoW 服務：金幣、團隊副本與傳奇+",
-    "description": "World of Warcraft 美服與歐服的金幣、團隊副本與傳奇+地城。以 USDT 或信用卡付款。"
+    "description": "World of Warcraft 美服的金幣、團隊副本、傳奇+與成就。以 USDT 付款。"
   },
   "Nav": {
     "label": "主選單",
     "skip": "跳至內容",
-    "region": "地區",
     "language": "語言",
     "timezone": "時區",
     "menu": "開啟選單",
     "closeMenu": "關閉選單",
     "detecting": "偵測中…",
-    "cart": "購物車（{n} 項）"
+    "cart": "購物車（{n} 項）",
+    "account": "我的帳號",
+    "preferences": "語言與時區"
   },
   "Home": {
-    "badge": "WoW 正式版 · 美服與歐服",
+    "badge": "WoW 正式版 · 美服",
     "title": "輕鬆推進你的 WoW 進度",
     "subtitle": "金幣、團隊副本代打與傳奇+地城。以 USDT 計價，依你的時區排程，使用你的語言。",
     "ctaGold": "購買金幣",
@@ -26,15 +27,21 @@
   },
   "Catalog": {
     "perK": "每 1,000 金幣",
-    "estimateNote": "以你的貨幣估算；以 USDT 收費。",
+    "from": "起",
+    "estimateNote": "本地貨幣估算：API 尚未實作。以 USDT 收費。",
     "selfPlay": "親自上線：你使用自己的角色遊玩。我們絕不索取你的 Battle.net 密碼。",
-    "empty": "此地區暫無商品。",
-    "region": "地區：{region}",
+    "empty": "暫無商品。",
     "home": "首頁",
-    "loading": "載入中…"
+    "loading": "載入中…",
+    "onRequest": "價格另洽",
+    "hot": "熱門",
+    "buy": "購買",
+    "subcategories": "子分類",
+    "close": "關閉",
+    "breadcrumb": "導覽路徑"
   },
   "Footer": {
-    "about": "World of Warcraft 正式版美服與歐服的金幣、團隊副本與傳奇+。",
+    "about": "World of Warcraft 正式版美服的金幣、團隊副本、傳奇+與成就。",
     "copyright": "© 2026 Shop · 與 Blizzard Entertainment 無關。",
     "report": "回報問題"
   },
@@ -61,7 +68,6 @@
     "min": "請至少輸入 2 個字元。",
     "filters": "篩選",
     "category": "分類",
-    "region": "地區",
     "all": "全部",
     "price": "價格（USDT）",
     "minPrice": "最低",
@@ -84,7 +90,12 @@
     "pagination": "頁數",
     "prev": "上一頁",
     "next": "下一頁",
-    "promo": "促銷中"
+    "promo": "促銷中",
+    "suggestCategories": "分類",
+    "suggestProducts": "商品",
+    "seeAll": "查看「{q}」的所有結果",
+    "suggestEmpty": "沒有建議 — 按 Enter 搜尋。",
+    "onRequest": "價格另洽"
   },
   "Buy": {
     "realm": "伺服器",
@@ -95,21 +106,13 @@
     "characterHint": "接收金幣的角色（僅限文字）。",
     "quantity": "數量（千金幣）",
     "slot": "日期與時間",
-    "loot": "戰利品選項",
-    "lootNone": "僅通關",
-    "lootArmor": "依護甲類型優先（+30%）",
-    "lootFull": "完整戰利品（+80%）",
-    "keyLevel": "鑰石等級",
-    "runs": "場數",
-    "timed": "限時完成（+20%）",
     "total": "總計",
     "add": "加入購物車",
     "added": "已加入購物車",
     "viewCart": "查看購物車",
     "unit": {
-      "raid": "每次團隊副本",
-      "dungeon": "每場，最高 +10",
-      "gold": "每 1,000 金幣"
+      "gold": "每 1,000 金幣",
+      "service": "每次服務"
     },
     "errors": {
       "realm": "請輸入伺服器名稱。",
@@ -118,11 +121,27 @@
       "slotId": "此時段已無法預約，請選擇其他時段。",
       "product": "此商品已無法購買。",
       "faction": "請選擇陣營。",
-      "keyLevel": "請選擇 +2 至 +15 的等級。",
-      "runs": "請選擇 1 至 10 場。",
-      "loot": "請選擇戰利品選項。"
+      "addon": "只能選擇列出的附加項目。",
+      "variant": "此選項已無法選擇，請改選其他。",
+      "quantityService": "請選擇 1 到 {max} 之間的數量。"
     },
-    "promoEnds": "促銷剩餘時間"
+    "promoEnds": "促銷剩餘時間",
+    "characterHintService": "我們邀請進團的角色（僅限字母）。",
+    "quantityService": "數量",
+    "addons": "附加項目",
+    "addon": "{name}（+{percent}%）",
+    "scheduleNote": "無固定時間：付款後，請在聊天中與客服預約你的場次。",
+    "onRequest": "價格另洽",
+    "onRequestNote": "請聯絡客服取得此服務的報價。",
+    "askPrice": "詢問價格",
+    "askPriceMessage": "你好！我想詢問以下服務的報價：{name}",
+    "savedCharacter": "已儲存的角色",
+    "savedNone": "— 輸入其他角色 —",
+    "saveCharacter": "將此角色儲存到我的帳號",
+    "buyNow": "立即購買",
+    "goToPayment": "前往付款",
+    "keepShopping": "繼續購物",
+    "unavailableItem": "已無法購買 — 不計入總額。"
   },
   "Cart": {
     "title": "購物車",
@@ -165,8 +184,14 @@
       "payment": "無法建立付款，請稍後再試。",
       "coupon": "此優惠碼已達使用上限，請移除後繼續。",
       "changed": "價格已變動（促銷已結束或優惠碼已變更），請確認新的總額後再試一次。",
-      "limited": "結帳嘗試次數過多，請稍候幾分鐘再試。"
-    }
+      "limited": "結帳嘗試次數過多，請稍候幾分鐘再試。",
+      "notImplemented": "USDT 付款：API 尚未實作。",
+      "cardNotImplemented": "信用卡：API 尚未實作。目前請以加密貨幣（USDT）付款。"
+    },
+    "method": "付款方式",
+    "crypto": "加密貨幣（USDT）",
+    "card": "信用卡",
+    "payCard": "以信用卡付款"
   },
   "Order": {
     "title": "你的訂單",
@@ -189,7 +214,11 @@
     },
     "discount": "優惠碼折扣",
     "delivered": "已交付 — 感謝你！",
-    "proof": "查看交付證明"
+    "proof": "查看交付證明",
+    "scheduleTitle": "預約你的場次",
+    "scheduleText": "在聊天中聯絡客服，選擇場次的日期與時間。",
+    "scheduleButton": "與客服預約",
+    "scheduleMessage": "你好！我想預約訂單 {order} 的場次。"
   },
   "Admin": {
     "title": "管理後台",
@@ -205,7 +234,9 @@
       "reports": "問題回報",
       "docs": "內部文件",
       "team": "團隊",
-      "support": "客服"
+      "support": "客服",
+      "subcategories": "子分類",
+      "twoFactor": "2FA"
     },
     "login": {
       "title": "團隊登入",
@@ -221,7 +252,7 @@
     },
     "setup": {
       "title": "啟用雙重驗證",
-      "intro": "管理後台需要雙重驗證。請確認密碼以取得設定金鑰。",
+      "intro": "兩步驟驗證為選用，但建議開啟：密碼外洩時仍能保護管理後台。請確認密碼以取得設定金鑰。",
       "password": "密碼",
       "start": "取得金鑰",
       "secret": "設定金鑰（加入驗證器 App）",
@@ -255,12 +286,23 @@
       "code": "代碼",
       "maxUses": "總使用次數（留空 = 不限）",
       "maxUsesPerEmail": "每個電子郵件使用次數（留空 = 不限）",
-      "minOrder": "最低訂單金額（USDT）"
+      "minOrder": "最低訂單金額（USDT）",
+      "subcategory": "子分類",
+      "noSubcategory": "— 無 —",
+      "priceOnRequest": "價格另洽（不顯示價格，開啟聊天）",
+      "addons": "附加項目（每行一個：名稱 | %）",
+      "optionAxes": "選項（每行一個：名稱 | slider 或 boxes | 值, 值…）",
+      "variants": "組合（每行一個：選項=值; 選項=值 | 價格或 - | 備註）",
+      "maxQuantity": "每筆訂單最大數量",
+      "hot": "熱門（醒目顯示）"
     },
     "kinds": {
       "gold": "金幣",
       "raid": "團隊副本",
-      "dungeon": "傳奇+"
+      "dungeon": "傳奇+",
+      "pvp": "PvP",
+      "achievement": "成就",
+      "delve": "探究"
     },
     "form": {
       "newCategory": "新增分類",
@@ -271,7 +313,8 @@
       "cancel": "取消編輯",
       "editLink": "編輯",
       "newPromotion": "新增促銷",
-      "newCoupon": "新增優惠碼"
+      "newCoupon": "新增優惠碼",
+      "newSubcategory": "新增子分類"
     },
     "table": {
       "activeProducts": "啟用中的商品",
@@ -290,7 +333,7 @@
       "sortOrder": "排序需為 0 至 999。",
       "categoryId": "請選擇分類。",
       "region": "請選擇地區。",
-      "price": "USDT 價格最多 2 位小數，且大於零。",
+      "price": "以 USDT 計價，最多 2 位小數，須大於零（或勾選「價格另洽」）。",
       "activeProducts": "停用分類前，請先停用或移動其中啟用的商品。",
       "type": "請選擇折扣類型。",
       "value": "百分比 1 至 90，或大於零的 USDT 金額。",
@@ -300,7 +343,12 @@
       "code": "代碼：2–40 個字母、數字、連字號或底線，且不可重複。",
       "maxUses": "請輸入 1 以上的整數。",
       "maxUsesPerEmail": "請輸入 1 以上的整數。",
-      "minOrder": "USDT 最低金額最多 2 位小數。"
+      "minOrder": "USDT 最低金額最多 2 位小數。",
+      "subcategoryId": "請選擇同一分類下的子分類。",
+      "addons": "每行一個附加項目，格式為「名稱 | 25」（1–100%，名稱不重複，最多 10 個）。",
+      "optionAxes": "最多 4 個選項，格式為「Bosses | slider | 2/8, 3/8」（名稱與值不可重複，最多 30 個值）。",
+      "variants": "每個組合需為每個選項填一個已列出的值、價格（或 - 表示詢價），且不可重複。沒有選項時請留空。",
+      "maxQuantity": "請填寫 1 到 100。"
     },
     "discount": {
       "percent": "百分比",
@@ -316,12 +364,19 @@
         "category": "分類",
         "product": "商品",
         "promotion": "促銷",
-        "coupon": "優惠碼"
+        "coupon": "優惠碼",
+        "subcategory": "子分類",
+        "order": "訂單",
+        "bug_report": "錯誤回報",
+        "staff": "團隊成員",
+        "support_hours": "客服時間"
       },
       "actions": {
         "create": "建立",
         "update": "修改"
-      }
+      },
+      "older": "更早",
+      "newest": "最新"
     },
     "orders": {
       "todo": "待處理",
@@ -368,10 +423,10 @@
       "intro": "為 {email} 建立存取權限。首次登入時會啟用雙重驗證。",
       "name": "你的名字",
       "confirm": "確認密碼",
-      "hint": "至少 12 個字元。出現在已知外洩資料中的密碼會被拒絕。",
+      "hint": "至少 8 個字元，需包含大寫字母、小寫字母與數字。出現在已知外洩資料中的密碼會被拒絕。",
       "submit": "建立存取權限",
       "errors": {
-        "invalid": "請確認名字，並使用至少 12 個字元的密碼。",
+        "invalid": "請確認名字，並使用至少 8 個字元且包含大寫、小寫字母與數字的密碼。",
         "mismatch": "兩次輸入的密碼不一致。",
         "pwned": "此密碼曾出現在資料外洩中，請換一個。",
         "expired": "此邀請無效、已使用或已過期，請向管理員索取新的邀請。"
@@ -444,5 +499,50 @@
     "offlineTitle": "目前不在服務時間 — 請留言，我們會以電子郵件或在此回覆。",
     "offlineStart": "留言",
     "backAt": "恢復服務時間"
+  },
+  "Account": {
+    "title": "我的帳號",
+    "email": "電子郵件",
+    "password": "密碼",
+    "signOut": "登出",
+    "login": {
+      "title": "登入",
+      "submit": "登入",
+      "forgot": "忘記密碼？重設密碼尚未提供（API 尚未實作）。請在聊天中聯絡客服。",
+      "noAccount": "還沒有帳號？"
+    },
+    "signup": {
+      "title": "建立帳號",
+      "intro": "可選：不需帳號也能購買。有帳號就能查看訂單並儲存角色。",
+      "passwordHint": "至少 8 個字元，需包含大寫字母、小寫字母與數字。外洩過的密碼會被拒絕。",
+      "submit": "建立帳號",
+      "hasAccount": "已有帳號？"
+    },
+    "orders": {
+      "title": "我的訂單",
+      "empty": "此帳號尚未下過訂單。"
+    },
+    "characters": {
+      "title": "我的角色",
+      "intro": "已儲存的角色會自動填入購買表單（最多 10 個）。",
+      "add": "儲存角色",
+      "remove": "移除"
+    },
+    "delete": {
+      "title": "刪除帳號",
+      "intro": "刪除你的帳號與已儲存的角色。訂單依稅法保存 5 年，但不再連結帳號。",
+      "submit": "刪除我的帳號"
+    },
+    "errors": {
+      "invalid": "電子郵件或密碼錯誤。",
+      "signupInvalid": "請輸入有效的電子郵件，以及至少 8 個字元且包含大寫、小寫字母與數字的密碼。",
+      "limited": "嘗試次數過多，請幾分鐘後再試。",
+      "pwned": "此密碼曾出現在資料外洩中，請改用其他密碼。",
+      "character": "請輸入伺服器與 2–12 個字母的名稱。",
+      "characterLimit": "最多可儲存 10 個角色。",
+      "characterDuplicate": "此角色已儲存。",
+      "exists": "此電子郵件已有帳號，請直接登入。",
+      "staff": "這是團隊帳號：請從管理後台登入（/admin）。"
+    }
   }
 }

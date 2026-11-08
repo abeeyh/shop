@@ -13,36 +13,168 @@ const imageUrl = z
   .transform((v) => v || null);
 const checkbox = z.preprocess((v) => v === "on" || v === "true", z.boolean());
 
+export const KINDS = ["gold", "raid", "dungeon", "pvp", "achievement", "delve"] as const; // RN-13
+
 // RN-13: categoria com tipo fixo; nome igual em todos os idiomas (RN-84)
 export const categoryInput = z.object({
   name: text(60).min(2),
   slug,
-  kind: z.enum(["gold", "raid", "dungeon"]),
+  kind: z.enum(KINDS),
   description: text(500),
   imageUrl,
   sortOrder: z.coerce.number().int().min(0).max(999),
   active: checkbox,
 });
 
-// RN-19 / RN-12: preço digitado em USDT ("12.50") e gravado em centavos inteiros
-export const productInput = z.object({
+// #94: subcategoria opcional dentro da categoria (ex.: Raids → Heroic); slug único na categoria
+export const subcategoryInput = z.object({
   categoryId: z.uuid(),
-  name: text(80).min(2),
+  name: text(60).min(2),
   slug,
-  region: z.enum(["US", "EU"]),
-  description: text(1000),
-  imageUrl,
-  price: z
-    .string()
-    .trim()
-    .regex(/^\d{1,6}(\.\d{1,2})?$/)
-    .transform((v) => Math.round(Number(v) * 100))
-    .refine((c) => c > 0),
+  sortOrder: z.coerce.number().int().min(0).max(999),
   active: checkbox,
 });
 
+// RN-17: um adicional por linha, "Nome | %" (ex.: "Armor Stack | 25"); nome único, 1–100%
+const ADDON_LINE = /^(\S.{0,38}?\S)\s*\|\s*(\d{1,3})$/; // nome de 2–40 caracteres, sem espaço nas pontas
+const addons = z
+  .string()
+  .max(1000)
+  .transform((v) =>
+    v
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean),
+  )
+  .pipe(z.array(z.string().regex(ADDON_LINE)).max(10))
+  .transform((lines) =>
+    lines.map((l) => {
+      const [, name, percent] = ADDON_LINE.exec(l)!;
+      return { name: name!.trim(), percent: Number(percent) };
+    }),
+  )
+  .refine((list) => list.every((a) => a.percent >= 1 && a.percent <= 100))
+  .refine((list) => new Set(list.map((a) => a.name.toLowerCase())).size === list.length);
+
+// #100: eixos de opção, um por linha — "Bosses | slider | 2/8, 3/8, 4/8" (slider anda na ordem escrita)
+const AXIS_LINE = /^([^|=;]{1,30}?)\s*\|\s*(slider|boxes)\s*\|\s*([^|=;]+)$/; // = e ; separam as combinações
+const lines = (v: string) =>
+  v
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
+const optionAxes = z
+  .string()
+  .max(2000)
+  .transform(lines)
+  .pipe(z.array(z.string().max(400).regex(AXIS_LINE)).max(4))
+  .transform((ls) =>
+    ls.map((l) => {
+      const [, name, style, values] = AXIS_LINE.exec(l)!;
+      const list = values!.split(",").map((x) => x.trim());
+      return { name: name!.trim(), style: style as "slider" | "boxes", values: list };
+    }),
+  )
+  .refine((axes) =>
+    axes.every(
+      (a) =>
+        a.values.length >= 1 &&
+        a.values.length <= 30 &&
+        a.values.every((x) => x.length >= 1 && x.length <= 40) &&
+        new Set(a.values).size === a.values.length,
+    ),
+  )
+  .refine((axes) => new Set(axes.map((a) => a.name)).size === axes.length);
+
+// #100: variantes, uma por linha — "Bosses=3/8; Tidebound Grotto=Included | 74.25 | nota"
+// preço "-" = sob consulta (RN-106); nota opcional (até 160)
+const VARIANT_LINE = /^([^|]+?)\s*\|\s*(-|\d{1,6}(?:\.\d{1,2})?)\s*(?:\|\s*(.{0,160}))?$/;
+const variantLines = z
+  .string()
+  .max(20000)
+  .transform(lines)
+  .pipe(z.array(z.string().max(400).regex(VARIANT_LINE)).max(200)) // linha curta: sem regex lenta
+  .transform((ls) =>
+    ls.map((l) => {
+      const [, opts, price, note] = VARIANT_LINE.exec(l)!;
+      const options = Object.fromEntries(
+        opts!.split(";").map((pair) => pair.split("=").map((x) => x.trim()) as [string, string]),
+      );
+      const onRequest = price === "-";
+      return {
+        options,
+        priceUsdtCents: onRequest ? 1 : Math.round(Number(price) * 100),
+        priceOnRequest: onRequest,
+        note: (note ?? "").trim(),
+      };
+    }),
+  );
+
+// RN-19 / RN-12: preço digitado em USDT ("12.50") e gravado em centavos inteiros.
+// RN-106: "sob consulta" dispensa o preço (guarda 1 centavo só como marcador — nunca é cobrado).
+// #100: com variantes, o preço é o de cada combinação e o do produto vira o menor ("a partir de")
+export const productInput = z
+  .object({
+    categoryId: z.uuid(),
+    subcategoryId: z.union([z.literal(""), z.uuid()]).transform((v) => v || null),
+    name: text(80).min(2),
+    slug,
+    description: text(1000),
+    imageUrl,
+    price: z
+      .string()
+      .trim()
+      .regex(/^(\d{1,6}(\.\d{1,2})?)?$/)
+      .transform((v) => (v ? Math.round(Number(v) * 100) : 0)),
+    priceOnRequest: checkbox,
+    addons,
+    optionAxes: optionAxes.prefault(""),
+    variants: variantLines.prefault(""),
+    maxQuantity: z.coerce.number().int().min(1).max(100),
+    hot: checkbox,
+    sortOrder: z.coerce.number().int().min(0).max(999),
+    active: checkbox,
+  })
+  .superRefine((v, ctx) => {
+    const issue = (path: string) => ctx.addIssue({ code: "custom", path: [path], message: path });
+    // campo que já falhou chega como texto cru: o erro dele já foi registrado
+    const raw = (a: unknown) => !Array.isArray(a) || a.some((x) => typeof x !== "object");
+    if (raw(v.optionAxes) || raw(v.variants)) return;
+    if (v.optionAxes.length === 0) {
+      if (v.variants.length) issue("variants");
+      if (!v.priceOnRequest && v.price <= 0) issue("price");
+      return;
+    }
+    // toda variante tem exatamente um valor válido por eixo, sem combinação repetida
+    const names = v.optionAxes.map((a) => a.name);
+    const ok = v.variants.every(
+      (x) =>
+        Object.keys(x.options).length === names.length &&
+        v.optionAxes.every((a) => a.values.includes(x.options[a.name] ?? "")) &&
+        (x.priceOnRequest || x.priceUsdtCents > 0),
+    );
+    const keys = v.variants.map((x) => names.map((n) => x.options[n]).join("\u0000"));
+    if (!v.variants.length || !ok || new Set(keys).size !== keys.length) issue("variants");
+  })
+  .transform((v) => {
+    // a ordem do slider é a ordem dos valores nos eixos
+    const rank = (o: Record<string, string>) =>
+      v.optionAxes.reduce((r, a) => r * 100 + a.values.indexOf(o[a.name]!), 0);
+    const variants = v.variants.map((x) => ({ ...x, sortOrder: rank(x.options) }));
+    if (!v.optionAxes.length)
+      return { ...v, variants, price: v.priceOnRequest && v.price === 0 ? 1 : v.price };
+    const priced = variants.filter((x) => !x.priceOnRequest).map((x) => x.priceUsdtCents);
+    return {
+      ...v,
+      variants,
+      price: priced.length ? Math.min(...priced) : 1,
+      priceOnRequest: priced.length === 0,
+    };
+  });
+
 export type CategoryInput = z.infer<typeof categoryInput>;
 export type ProductInput = z.infer<typeof productInput>;
+export type SubcategoryInput = z.infer<typeof subcategoryInput>;
 
 export const fieldsOf = (e: z.ZodError) => [...new Set(e.issues.map((i) => String(i.path[0])))];
 

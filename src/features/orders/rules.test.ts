@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { nextStaffStep, nextStatus, outcomeOf, settle, STAFF_STEPS } from "./rules";
+import { needsScheduling, nextStaffStep, nextStatus, outcomeOf, settle, STAFF_STEPS } from "./rules";
 
 describe("estados do pedido (RN-50, RN-37)", () => {
   it("RN-50: pendente → pago | pagamento_parcial | expirado", () => {
@@ -43,5 +43,18 @@ describe("passos da equipe (RN-50, RN-52)", () => {
     expect(nextStaffStep("pendente")).toBeNull();
     expect(nextStaffStep("pagamento_parcial")).toBeNull();
     expect(nextStaffStep("concluido")).toBeNull();
+  });
+});
+
+describe("agendar com o suporte (RN-16, #94)", () => {
+  const service = { options: { kind: "service" }, raidSlotId: null };
+  it("pago com serviço sem horário pede agendamento; com horário ou ainda pendente, não", () => {
+    expect(needsScheduling({ status: "pago", items: [service] })).toBe(true);
+    expect(needsScheduling({ status: "em_andamento", items: [service] })).toBe(true);
+    expect(needsScheduling({ status: "pendente", items: [service] })).toBe(false);
+    expect(needsScheduling({ status: "pago", items: [{ ...service, raidSlotId: "slot" }] })).toBe(false);
+    expect(
+      needsScheduling({ status: "pago", items: [{ options: { kind: "gold" }, raidSlotId: null }] }),
+    ).toBe(false);
   });
 });

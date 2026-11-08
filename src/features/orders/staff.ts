@@ -1,24 +1,28 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
-import { and, asc, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { deliveries, orderItems, orders } from "@/db/schema";
 import { saveAudited } from "@/features/admin/audit";
+import { ADMIN_PAGE_SIZE } from "@/lib/pagination";
 import { STAFF_STEPS, type OrderStatus, type StaffStep } from "./rules";
 
-// Fila da equipe (RN-06): pagos e em andamento primeiro; sem e-mail completo na lista
-export async function listOrdersForStaff(status: OrderStatus[] | null) {
-  return db
+// Fila da equipe (RN-06): sem e-mail completo na lista. #88: só a página pedida sai do banco.
+export async function listOrdersForStaff(status: OrderStatus[] | null, page = 1) {
+  const rows = await db
     .select({
       id: orders.id,
       status: orders.status,
       totalUsdtCents: orders.totalUsdtCents,
       createdAt: orders.createdAt,
       assignedTo: orders.assignedTo,
+      total: sql<number>`count(*) over()`.mapWith(Number),
     })
     .from(orders)
     .where(status ? inArray(orders.status, status) : undefined)
-    .orderBy(desc(orders.createdAt))
-    .limit(200);
+    .orderBy(desc(orders.createdAt), desc(orders.id))
+    .limit(ADMIN_PAGE_SIZE)
+    .offset((page - 1) * ADMIN_PAGE_SIZE);
+  return { rows, total: rows[0]?.total ?? 0 };
 }
 
 export async function getOrderForStaff(id: string) {

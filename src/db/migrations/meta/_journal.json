@@ -113,6 +113,34 @@
       "when": 1794035455720,
       "tag": "0015_shallow_puff_adder",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1794068789788,
+      "tag": "0016_sudden_hercules",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1794069144592,
+      "tag": "0017_flawless_mikhail_rasputin",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1794079953314,
+      "tag": "0018_product_variants",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1794081599988,
+      "tag": "0019_customer_accounts",
+      "breakpoints": true
     }
   ]
 }

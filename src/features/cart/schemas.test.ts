@@ -31,35 +31,53 @@ describe("validação do item do carrinho (RN-15 a RN-17)", () => {
     ).toMatchObject({ ok: false, fields: ["faction"] });
   });
 
-  it("RN-16: raid exige horário (uuid) e opção de loot válida", () => {
-    const slotId = "8f14e45f-ceea-4167-a5a3-5f3c0e6b9a51";
-    expect(parseItem("raid", { slotId, loot: "armor" })).toEqual({
+  const who = { realm: "Area 52", faction: "horde", character: "Thrall" };
+  const rules = { addons: [{ name: "Armor Stack" }], maxQuantity: 3, hasSlots: false };
+
+  it("RN-17 (#94): serviço com adicional do produto e quantidade até o limite", () => {
+    expect(parseItem("dungeon", { ...who, addon: ["Armor Stack"], quantity: "2" }, rules)).toEqual({
       ok: true,
-      item: { options: { kind: "raid", loot: "armor" }, quantity: 1, slotId },
+      item: {
+        options: { kind: "service", ...who, addons: ["Armor Stack"] },
+        quantity: 2,
+      },
     });
-    expect(parseItem("raid", { slotId: "1", loot: "armor" })).toMatchObject({
+    expect(parseItem("delve", { ...who }, rules)).toMatchObject({ ok: true, item: { quantity: 1 } });
+    expect(parseItem("delve", { ...who, quantity: "4" }, rules)).toMatchObject({
       ok: false,
-      fields: ["slotId"],
+      fields: ["quantity"],
     });
   });
 
-  it("RN-17: M+ com nível 2–15, runs 1–10 e timed do checkbox", () => {
-    expect(parseItem("dungeon", { keyLevel: "12", runs: "4", timed: "on" })).toEqual({
-      ok: true,
-      item: { options: { kind: "dungeon", keyLevel: 12, timed: true }, quantity: 4 },
-    });
-    expect(parseItem("dungeon", { keyLevel: "12", runs: "4" })).toMatchObject({
-      ok: true,
-      item: { options: { timed: false } },
-    });
-    expect(parseItem("dungeon", { keyLevel: "16", runs: "11" })).toMatchObject({
+  it("RN-17: adicional que o produto não tem é recusado", () => {
+    expect(parseItem("raid", { ...who, addon: ["Grátis"] }, rules)).toMatchObject({
       ok: false,
-      fields: ["keyLevel", "runs"],
+      fields: ["addon"],
     });
+  });
+
+  it("RN-16 (#94): produto com horários exige o horário; sem horários, não aceita um", () => {
+    const slotId = "8f14e45f-ceea-4167-a5a3-5f3c0e6b9a51";
+    const withSlots = { ...rules, hasSlots: true };
+    expect(parseItem("raid", { ...who, slotId }, withSlots)).toMatchObject({ ok: true, item: { slotId } });
+    expect(parseItem("raid", { ...who }, withSlots)).toMatchObject({ ok: false, fields: ["slotId"] });
+    expect(parseItem("raid", { ...who, slotId }, rules)).toMatchObject({ ok: false, fields: ["slotId"] });
+  });
+
+  it("#100: produto com variantes exige o id da variante; sem variantes, não aceita um", () => {
+    const variant = "1f0e2d3c-4b5a-4697-8877-665544332211";
+    const withVariants = { ...rules, hasVariants: true };
+    expect(parseItem("raid", { ...who, variant }, withVariants)).toMatchObject({
+      ok: true,
+      item: { variantId: variant },
+    });
+    expect(parseItem("raid", { ...who }, withVariants)).toMatchObject({ ok: false, fields: ["variant"] });
+    expect(parseItem("raid", { ...who, variant: "x" }, withVariants)).toMatchObject({ ok: false });
+    expect(parseItem("raid", { ...who, variant }, rules)).toMatchObject({ ok: false, fields: ["variant"] });
   });
 
   it("RN-20: preço enviado pelo cliente é ignorado (não faz parte do schema)", () => {
-    const r = parseItem("dungeon", { keyLevel: "5", runs: "1", price: "1", priceUsdtCents: "1" });
+    const r = parseItem("dungeon", { ...who, price: "1", priceUsdtCents: "1" }, rules);
     expect(r.ok && "price" in r.item).toBe(false);
   });
 });

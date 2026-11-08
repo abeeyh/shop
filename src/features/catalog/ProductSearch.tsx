@@ -1,6 +1,7 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { X } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { Pagination } from "@/components/molecules/Pagination";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { buttonVariants } from "@/components/atoms/Button";
@@ -10,7 +11,7 @@ import { env } from "@/lib/env";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
 import { ProductCard } from "./components/ProductCard";
 import { ProductFilters } from "./components/ProductFilters";
-import { categoryHref, toProductCard } from "./format";
+import { cardLabels, categoryHref, toProductCard } from "./format";
 import { listCategories } from "./queries";
 import { filtersToQuery, PAGE_SIZE, parseFilters, SORTS, type Filters } from "./schemas";
 import { searchProducts } from "./search";
@@ -27,13 +28,7 @@ async function searchAllowed(f: Filters): Promise<boolean> {
 }
 
 // RN-101: filtros ativos viram chips que levam à mesma busca sem aquele filtro
-function buildChips(
-  f: Filters,
-  region: string,
-  categories: Category[],
-  t: T,
-  href: (p: Partial<Filters>) => string,
-): Chip[] {
+function buildChips(f: Filters, categories: Category[], t: T, href: (p: Partial<Filters>) => string): Chip[] {
   const name = (slug: string) => categories.find((x) => x.slug === slug)?.name ?? slug;
   const reset = { page: 1 };
   return [
@@ -42,14 +37,6 @@ function buildChips(
       label: name(slug),
       href: href({ ...reset, categories: f.categories.filter((x) => x !== slug) }),
     })),
-    ...(f.region !== region
-      ? [
-          {
-            label: `${t("region")}: ${f.region === "all" ? t("all") : f.region}`,
-            href: href({ ...reset, region: region as "US" }),
-          },
-        ]
-      : []),
     ...(f.min !== undefined ? [{ label: `≥ ${f.min} USDT`, href: href({ ...reset, min: undefined }) }] : []),
     ...(f.max !== undefined ? [{ label: `≤ ${f.max} USDT`, href: href({ ...reset, max: undefined }) }] : []),
     ...(f.available ? [{ label: t("available"), href: href({ ...reset, available: false }) }] : []),
@@ -112,46 +99,12 @@ function EmptyState({
   );
 }
 
-function Pagination({
-  page,
-  pages,
-  href,
-  t,
-}: {
-  page: number;
-  pages: number;
-  href: (p: Partial<Filters>) => string;
-  t: T;
-}) {
-  if (pages <= 1) return null;
-  const link = buttonVariants({ variant: "ghost", size: "sm" });
-  return (
-    <nav aria-label={t("pagination")} className="mt-8 flex items-center justify-center gap-3">
-      {page > 1 ? (
-        <Link href={href({ page: page - 1 })} className={link}>
-          {t("prev")}
-        </Link>
-      ) : null}
-      <span className="text-sm text-muted-foreground">
-        {page} / {pages}
-      </span>
-      {page < pages ? (
-        <Link href={href({ page: page + 1 })} className={link}>
-          {t("next")}
-        </Link>
-      ) : null}
-    </nav>
-  );
-}
-
 function filterLabels(t: T) {
   return {
     title: t("filters"),
     search: t("label"),
     placeholder: t("placeholder"),
     category: t("category"),
-    region: t("region"),
-    all: t("all"),
     price: t("price"),
     min: t("minPrice"),
     max: t("maxPrice"),
@@ -168,22 +121,22 @@ function filterLabels(t: T) {
   };
 }
 
-type Props = { locale: string; region: "US" | "EU"; raw: Record<string, string | string[] | undefined> };
+type Props = { locale: string; raw: Record<string, string | string[] | undefined> };
 
 // RN-100 a RN-105: busca e filtros na URL, aplicados no servidor
-export async function ProductSearch({ locale, region, raw }: Props) {
+export async function ProductSearch({ locale, raw }: Props) {
   const [categories, t, c, promos] = await Promise.all([
     listCategories(),
     getTranslations({ locale, namespace: "Search" }),
     getTranslations({ locale, namespace: "Catalog" }),
     activePromotions(),
   ]);
-  const f = parseFilters(raw, { region, categories: categories.map((x) => x.slug) });
+  const f = parseFilters(raw, { categories: categories.map((x) => x.slug) });
   const base = `/${locale}/produtos`;
-  const href = (patch: Partial<Filters>) => base + filtersToQuery(f, region, patch);
+  const href = (patch: Partial<Filters>) => base + filtersToQuery(f, patch);
   const allowed = await searchAllowed(f);
   const { items, total } = allowed ? await searchProducts(f) : { items: [], total: 0 };
-  const unit = (u: string) => (u === "per_1k_gold" ? c("perK") : u);
+  const labels = cardLabels(c);
   const status = allowed
     ? `${t("results", { n: total })}${f.q ? ` ${t("resultsFor", { q: f.q })}` : ""}`
     : t("tooMany");
@@ -203,24 +156,27 @@ export async function ProductSearch({ locale, region, raw }: Props) {
           labels={filterLabels(t)}
         />
         <div>
-          <ActiveFilters chips={buildChips(f, region, categories, t, href)} clearHref={base} t={t} />
+          <ActiveFilters chips={buildChips(f, categories, t, href)} clearHref={base} t={t} />
           {items.length ? (
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,240px),1fr))] gap-5">
+            <div className="grid gap-2">
               {items.map((p) => (
-                <div key={p.id} className="relative">
-                  {p.available ? null : (
-                    <span className="absolute top-7 right-7 z-10 rounded-full bg-destructive px-3 py-1 font-heading text-xs font-semibold text-destructive-foreground">
-                      {t("unavailable")}
-                    </span>
-                  )}
-                  <ProductCard p={toProductCard(locale, p, unit, promos)} />
-                </div>
+                <ProductCard
+                  key={p.id}
+                  p={toProductCard(locale, p, labels, promos)}
+                  cta={c("buy")}
+                  flag={p.available ? undefined : t("unavailable")}
+                />
               ))}
             </div>
           ) : allowed ? (
             <EmptyState locale={locale} categories={categories} clearHref={base} t={t} />
           ) : null}
-          <Pagination page={f.page} pages={Math.max(1, Math.ceil(total / PAGE_SIZE))} href={href} t={t} />
+          <Pagination
+            page={f.page}
+            pages={Math.max(1, Math.ceil(total / PAGE_SIZE))}
+            href={(page) => href({ page })}
+            labels={{ nav: t("pagination"), prev: t("prev"), next: t("next") }}
+          />
         </div>
       </div>
     </>

@@ -3,7 +3,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 import { connection } from "next/server";
 import { ProductSearch } from "@/features/catalog/ProductSearch";
-import { getRegion } from "@/lib/preferences";
 
 export const instant = false;
 
@@ -18,16 +17,15 @@ export default async function ProductsPage({ params, searchParams }: PageProps<"
   await connection();
   const { locale } = await params;
   setRequestLocale(locale);
-  const [raw, region, t, c] = await Promise.all([
+  const [raw, t, c] = await Promise.all([
     searchParams,
-    getRegion(),
     getTranslations({ locale, namespace: "Search" }),
     getTranslations({ locale, namespace: "Catalog" }),
   ]);
 
   return (
-    <div className="mx-auto w-full max-w-[1350px] px-4 pb-14 sm:px-5">
-      <nav aria-label="Breadcrumb" className="flex gap-2 py-5 text-sm text-muted-foreground">
+    <div className="mx-auto w-full max-w-[1200px] px-4 pb-14 sm:px-5">
+      <nav aria-label={c("breadcrumb")} className="flex gap-2 py-5 text-sm text-muted-foreground">
         <Link href={`/${locale}`} className="text-link hover:underline">
           {c("home")}
         </Link>
@@ -35,7 +33,7 @@ export default async function ProductsPage({ params, searchParams }: PageProps<"
         <span aria-current="page">{t("title")}</span>
       </nav>
       <h1 className="font-heading text-[clamp(1.75rem,4vw,2.5rem)] font-bold text-heading">{t("title")}</h1>
-      <ProductSearch locale={locale} region={region} raw={raw} />
+      <ProductSearch locale={locale} raw={raw} />
     </div>
   );
 }

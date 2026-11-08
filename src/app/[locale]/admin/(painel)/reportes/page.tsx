@@ -3,13 +3,15 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { buttonVariants } from "@/components/atoms/Button";
 import { GradientCard } from "@/components/molecules/GradientCard";
+import { Pagination } from "@/components/molecules/Pagination";
 import { requireStaff } from "@/features/auth/staff";
 import { markResolved } from "@/features/support/actions";
 import { listReports } from "@/features/support/queries";
+import { pageCount, pageParam } from "@/lib/pagination";
 
 export const instant = false;
 
-type Report = Awaited<ReturnType<typeof listReports>>[number];
+type Report = Awaited<ReturnType<typeof listReports>>["rows"][number];
 type T = Awaited<ReturnType<typeof getTranslations<"Admin">>>;
 
 function ReportCard({ r, t, locale }: { r: Report; t: T; locale: string }) {
@@ -52,15 +54,19 @@ function ReportCard({ r, t, locale }: { r: Report; t: T; locale: string }) {
 // RN-91 / RN-06: reportes de problema para suporte e admin
 export default async function ReportsAdmin({ params, searchParams }: PageProps<"/[locale]/admin/reportes">) {
   await connection();
-  const [{ locale }, { todos }] = await Promise.all([params, searchParams]);
+  const [{ locale }, { todos, pagina }] = await Promise.all([params, searchParams]);
   setRequestLocale(locale);
   await requireStaff(locale, ["admin", "suporte"]);
   const all = todos === "1";
-  const [t, rows] = await Promise.all([
+  const page = pageParam(pagina);
+  const [t, s, { rows, total }] = await Promise.all([
     getTranslations({ locale, namespace: "Admin" }),
-    listReports(all ? null : "novo"),
+    getTranslations({ locale, namespace: "Search" }),
+    listReports(all ? null : "novo", page),
   ]);
   const base = `/${locale}/admin/reportes`;
+  const pageHref = (p: number) =>
+    `${base}?${new URLSearchParams({ ...(all ? { todos: "1" } : {}), pagina: String(p) })}`;
   return (
     <>
       <h1 className="font-heading text-3xl font-bold text-heading">{t("nav.reports")}</h1>
@@ -74,6 +80,12 @@ export default async function ReportsAdmin({ params, searchParams }: PageProps<"
           </li>
         ))}
       </ul>
+      <Pagination
+        page={page}
+        pages={pageCount(total)}
+        href={pageHref}
+        labels={{ nav: s("pagination"), prev: s("prev"), next: s("next") }}
+      />
     </>
   );
 }

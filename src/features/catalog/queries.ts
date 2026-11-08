@@ -1,16 +1,13 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, or, isNull } from "drizzle-orm";
 import { db } from "@/db";
-import { categories, products } from "@/db/schema";
-
-export type Region = "US" | "EU";
+import { categories, products, productVariants, subcategories } from "@/db/schema";
 
 const productColumns = {
   id: products.id,
   slug: products.slug,
   name: products.name,
   description: products.description,
-  region: products.region,
   priceUsdtCents: products.priceUsdtCents,
   unit: products.unit,
   salesCount: products.salesCount,
@@ -18,7 +15,16 @@ const productColumns = {
   categorySlug: categories.slug,
   categoryKind: categories.kind,
   categoryName: categories.name,
+  addons: products.addons, // RN-17
+  maxQuantity: products.maxQuantity,
+  priceOnRequest: products.priceOnRequest, // RN-106
+  hot: products.hot,
+  optionAxes: products.optionAxes, // #100: com eixos, o preço do produto é o "a partir de"
+  subcategoryName: subcategories.name,
 };
+
+// subcategoria desativada esconde os produtos dela; produto sem subcategoria aparece sempre
+const visibleSubcategory = or(isNull(products.subcategoryId), eq(subcategories.active, true));
 
 export type CatalogProduct = Awaited<ReturnType<typeof listProducts>>[number];
 export type CatalogCategory = Awaited<ReturnType<typeof listCategories>>[number];
@@ -43,20 +49,25 @@ export async function getCategory(slug: string) {
   return row ?? null;
 }
 
-// RN-19: só produtos ativos de categorias ativas, da região escolhida (RN-14)
-export async function listProducts(filter: { region: Region; categorySlug?: string; limit?: number }) {
+// RN-19: só produtos ativos de categorias ativas (RN-14: loja só US).
+// Na categoria: ordem do admin (subcategoria → posição → nome). Na home: populares e mais vendidos.
+export async function listProducts(filter: { categorySlug?: string; limit?: number }) {
   const conditions = [
     eq(products.active, true),
     eq(categories.active, true),
-    eq(products.region, filter.region),
+    visibleSubcategory,
     ...(filter.categorySlug ? [eq(categories.slug, filter.categorySlug)] : []),
   ];
+  const order = filter.categorySlug
+    ? [asc(subcategories.sortOrder), asc(products.sortOrder), asc(products.name)]
+    : [desc(products.hot), desc(products.salesCount), asc(products.name)];
   const query = db
     .select(productColumns)
     .from(products)
     .innerJoin(categories, eq(products.categoryId, categories.id))
+    .leftJoin(subcategories, eq(products.subcategoryId, subcategories.id))
     .where(and(...conditions))
-    .orderBy(desc(products.salesCount), asc(products.name));
+    .orderBy(...order);
   return filter.limit ? query.limit(filter.limit) : query;
 }
 
@@ -65,6 +76,29 @@ export async function getProduct(slug: string) {
     .select(productColumns)
     .from(products)
     .innerJoin(categories, eq(products.categoryId, categories.id))
-    .where(and(eq(products.slug, slug), eq(products.active, true), eq(categories.active, true)));
+    .leftJoin(subcategories, eq(products.subcategoryId, subcategories.id))
+    .where(
+      and(
+        eq(products.slug, slug),
+        eq(products.active, true),
+        eq(categories.active, true),
+        visibleSubcategory,
+      ),
+    );
   return row ?? null;
+}
+
+// #100: combinações ativas do produto, na ordem dos eixos (sob consulta aparece, mas não vai ao carrinho)
+export async function listVariants(productId: string) {
+  return db
+    .select({
+      id: productVariants.id,
+      options: productVariants.options,
+      priceUsdtCents: productVariants.priceUsdtCents,
+      priceOnRequest: productVariants.priceOnRequest,
+      note: productVariants.note,
+    })
+    .from(productVariants)
+    .where(and(eq(productVariants.productId, productId), eq(productVariants.active, true)))
+    .orderBy(asc(productVariants.sortOrder));
 }

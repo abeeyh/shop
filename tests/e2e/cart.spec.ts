@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-// #17: carrinho com total recalculado no servidor. RN-11, RN-15 a RN-17, RN-20.
+// #17/#94: carrinho com total recalculado no servidor. RN-11, RN-15 a RN-17, RN-20, RN-106.
 test.describe("carrinho", () => {
   test("RN-15/RN-20: gold — preço vem do servidor, mesmo com campo de preço adulterado", async ({ page }) => {
     await page.goto("/en/wow/gold/gold-us");
@@ -37,32 +37,118 @@ test.describe("carrinho", () => {
     await expect(page.getByText("Your cart is empty.")).toBeVisible();
   });
 
-  test("RN-11/RN-16: horário esgotado fica desabilitado; raid com loot vai para o carrinho", async ({
+  test("RN-11/RN-16: horário esgotado fica desabilitado; raid com horário vai para o carrinho", async ({
     page,
   }) => {
-    await page.goto("/en/wow/raids/raid-normal-us");
+    await page.goto("/en/wow/raids/venomous-abyss-normal");
     const slots = page.locator('input[name="slotId"]');
     await expect(slots.first()).toBeDisabled(); // o primeiro horário do seed está cheio
     await expect(slots.nth(1)).toBeChecked();
-    await page.getByLabel("Loot option").selectOption("armor");
-    await expect(page.locator("output")).toContainText("50.70"); // 39 × 1,3
+    await expect(page.locator("output")).toContainText("2.93"); // 1ª opção: Last boss, 65k gold (#100)
+    await page.getByText("8/8 Saved", { exact: true }).click(); // a opção muda o preço: 140k = 6,30
+    await expect(page.locator("output")).toContainText("6.30");
+    await page.getByLabel("Realm").fill("Area 52");
+    await page.getByLabel("Character name").fill("Thrall");
     await page.getByRole("button", { name: "Add to cart" }).click();
-    await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible();
+    // sob carga (suíte inteira em paralelo) a action passa de 5 s
+    await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible({ timeout: 15_000 });
     await page.goto("/en/carrinho");
-    await expect(page.getByText("Armor-type priority")).toBeVisible();
+    await expect(page.getByText("Area 52 · Alliance · Thrall · 8/8 Saved")).toBeVisible();
   });
 
-  test("RN-17: M+ — nível e timed mudam o preço; remover esvazia o carrinho", async ({ page }) => {
-    await page.goto("/en/wow/mythic-plus/mplus-us");
-    await page.getByLabel("Key level").selectOption("12");
-    await page.getByLabel("Runs").selectOption("2");
-    await page.getByLabel("Timed (+20%)").check();
-    await expect(page.locator("output")).toContainText("37.44"); // 12 × 1,3 × 1,2 × 2
+  test("RN-17 (#94): adicional Armor Stack +25% muda o preço; remover esvazia o carrinho", async ({
+    page,
+  }) => {
+    await page.goto("/en/wow/mythic-plus/mythic-plus-key");
+    await expect(page.locator("output")).toContainText("3.15"); // +6 (1º nível do slider)
+    // #100: o slider anda pelo teclado (4 passos: +6 → +10)
+    const level = page.getByRole("slider", { name: "Key level" });
+    await level.focus();
+    for (const v of ["+7", "+8", "+9", "+10"]) {
+      await level.press("ArrowRight");
+      await expect(level).toHaveAttribute("aria-valuetext", v); // um passo de cada vez (sob carga)
+    }
+    await expect(page.locator("output")).toContainText("4.95");
+    await page.getByLabel("Armor Stack (+25%)").check();
+    await expect(page.locator("output")).toContainText("6.19"); // 4,95 × 1,25 = 6,1875
+    // sem horário: aviso de que a run é agendada com o suporte depois do pagamento
+    await expect(page.getByText(/schedule your run with support/)).toBeVisible();
+    await page.getByLabel("Realm").fill("Area 52");
+    await page.getByLabel("Character name").fill("Thrall");
     await page.getByRole("button", { name: "Add to cart" }).click();
     await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible();
     await page.goto("/en/carrinho");
-    await expect(page.getByText("37.44").first()).toBeVisible();
+    await expect(
+      page.getByText("Armor Stack", { exact: false }).filter({ visible: true }).first(),
+    ).toBeVisible();
+    await expect(page.getByText("6.19").first()).toBeVisible();
     await page.getByRole("button", { name: "Remove" }).click();
     await expect(page.getByText("Your cart is empty.")).toBeVisible();
   });
+
+  test("RN-106 (#94): sob consulta não tem carrinho — abre o chat com o pedido de orçamento", async ({
+    page,
+  }) => {
+    await page.goto("/en/wow/pvp");
+    await expect(page.getByText("Price on request").first()).toBeVisible();
+    // #100: o cliente escolhe a combinação e o pedido de orçamento vai com ela
+    await page.goto("/en/wow/pvp/arena-rating");
+    await expect(page.getByRole("button", { name: "Add to cart" })).toHaveCount(0);
+    await page.getByText("3v3", { exact: true }).click();
+    await page.getByRole("button", { name: "Ask for price" }).click();
+    await expect(page.getByRole("textbox", { name: "How can we help?" })).toHaveValue(
+      "Hi! I'd like a quote for: Arena Rating (3v3 · Up to 1600)",
+    );
+  });
+});
+
+// #102/#109: da lista ao pagamento em poucos cliques — página do produto + "Comprar agora"
+test("#109: lista → página do produto → Comprar agora cai no pagamento com o item", async ({ page }) => {
+  await page.goto("/en/wow/mythic-plus");
+  await page.getByRole("link", { name: "Mythic+ Key" }).click();
+  await expect(page).toHaveURL(/\/en\/wow\/mythic-plus\/mythic-plus-key$/, { timeout: 15_000 });
+  await page.getByLabel("Realm").filter({ visible: true }).fill("Area 52");
+  await page.getByLabel("Character name").filter({ visible: true }).fill("Thrall");
+  await page.getByRole("button", { name: "Buy now" }).click();
+  await expect(page).toHaveURL(/\/en\/carrinho#pagar$/, { timeout: 15_000 });
+  await expect(page.getByText("Area 52 · Alliance · Thrall · +6")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Pay with USDT" })).toBeVisible();
+});
+
+// #109: adicionar abre o carrinho na barra lateral; continuar comprando fecha; ir ao pagamento leva ao checkout
+test("#109: adicionar mostra o carrinho na barra lateral", async ({ page }) => {
+  await page.goto("/en/wow/mythic-plus/mythic-plus-key");
+  await page.getByLabel("Realm").fill("Area 52");
+  await page.getByLabel("Character name").fill("Thrall");
+  await page.getByRole("button", { name: "Add to cart" }).click();
+  const sheet = page.getByRole("dialog", { name: "Added to cart" });
+  await expect(sheet).toBeVisible({ timeout: 15_000 });
+  await expect(sheet.getByText("Mythic+ Key")).toBeVisible();
+  await expect(sheet.getByText("Area 52 · Alliance · Thrall · +6")).toBeVisible();
+  // clique na área vazia DENTRO da barra não fecha (só o fundo escurecido fecha)
+  const box = (await sheet.boundingBox())!;
+  await page.mouse.click(box.x + 20, box.y + box.height - 10);
+  await expect(sheet).toBeVisible();
+  await sheet.getByRole("button", { name: "Keep shopping" }).click();
+  await expect(sheet).toBeHidden();
+  // de novo (o React limpa os campos depois de uma action que deu certo): abre outra vez
+  await page.getByLabel("Realm").fill("Area 52");
+  await page.getByLabel("Character name").fill("Thrall");
+  await page.getByRole("button", { name: "Add to cart" }).click();
+  await expect(sheet).toBeVisible({ timeout: 15_000 });
+  await sheet.getByRole("link", { name: "Go to payment" }).click();
+  await expect(page).toHaveURL(/\/en\/carrinho#pagar$/);
+});
+
+// análise de 2026-11-07: personagem digitado pela metade não trava a prévia do total na combinação anterior
+test("prévia do total acompanha a combinação mesmo com personagem inválido", async ({ page }) => {
+  await page.goto("/en/wow/mythic-plus/mythic-plus-key");
+  await page.getByLabel("Character name").fill("T"); // inválido (2–12 letras)
+  const level = page.getByRole("slider", { name: "Key level" });
+  await level.focus();
+  for (const v of ["+7", "+8", "+9", "+10"]) {
+    await level.press("ArrowRight");
+    await expect(level).toHaveAttribute("aria-valuetext", v);
+  }
+  await expect(page.locator("output")).toContainText("4.95");
 });

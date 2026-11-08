@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { filtersToQuery, parseFilters } from "./schemas";
 
-const defaults = { region: "US" as const, categories: ["gold", "raids", "mythic-plus"] };
+const defaults = { categories: ["gold", "raids", "mythic-plus"] };
 
 describe("filtros da URL (RN-100 a RN-103)", () => {
   it("RN-103: valores inválidos voltam ao padrão", () => {
     const f = parseFilters(
-      { min: "abc", max: "-5", sort: "hack", cat: "nope,gold", region: "BR", page: "0" },
+      { min: "abc", max: "-5", sort: "hack", cat: "nope,gold", region: "EU", page: "0" },
       defaults,
     );
     expect(f).toMatchObject({
@@ -14,9 +14,9 @@ describe("filtros da URL (RN-100 a RN-103)", () => {
       max: undefined,
       sort: "best",
       categories: ["gold"],
-      region: "US",
       page: 1,
     });
+    expect(f).not.toHaveProperty("region"); // #92: loja só US — parâmetro de região é ignorado
   });
 
   it("RN-100: busca com 1 caractere é ignorada e sinalizada; com 2+ ordena por relevância", () => {
@@ -29,30 +29,24 @@ describe("filtros da URL (RN-100 a RN-103)", () => {
     expect(parseFilters({ sort: "price-asc" }, defaults).sort).toBe("price-asc");
   });
 
-  it("região 'all' e disponível", () => {
-    expect(parseFilters({ region: "all", disponivel: "1" }, defaults)).toMatchObject({
-      region: "all",
-      available: true,
-    });
+  it("disponível", () => {
+    expect(parseFilters({ disponivel: "1" }, defaults)).toMatchObject({ available: true });
   });
 
   it("RN-22: filtro em promoção entra e sai da URL", () => {
     const f = parseFilters({ promo: "1" }, defaults);
     expect(f.promo).toBe(true);
-    expect(filtersToQuery(f, "US")).toBe("?promo=1");
-    expect(filtersToQuery(f, "US", { promo: false })).toBe("");
+    expect(filtersToQuery(f)).toBe("?promo=1");
+    expect(filtersToQuery(f, { promo: false })).toBe("");
   });
 
   it("URL só com o que difere do padrão; patch remove filtros (chips, limpar)", () => {
-    const f = parseFilters(
-      { q: "gold", cat: "gold,raids", region: "EU", min: "10", disponivel: "1", page: "2" },
-      defaults,
+    const f = parseFilters({ q: "gold", cat: "gold,raids", min: "10", disponivel: "1", page: "2" }, defaults);
+    expect(filtersToQuery(f)).toBe("?q=gold&cat=gold%2Craids&min=10&disponivel=1&page=2");
+    expect(filtersToQuery(f, { categories: ["raids"], page: 1 })).toBe(
+      "?q=gold&cat=raids&min=10&disponivel=1",
     );
-    expect(filtersToQuery(f, "US")).toBe("?q=gold&cat=gold%2Craids&region=EU&min=10&disponivel=1&page=2");
-    expect(filtersToQuery(f, "US", { categories: ["raids"], page: 1 })).toBe(
-      "?q=gold&cat=raids&region=EU&min=10&disponivel=1",
-    );
-    expect(filtersToQuery(parseFilters({}, defaults), "US")).toBe("");
+    expect(filtersToQuery(parseFilters({}, defaults))).toBe("");
   });
 
   it("formulário GET: categoria repetida e preço vazio", () => {

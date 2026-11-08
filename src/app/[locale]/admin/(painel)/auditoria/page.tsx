@@ -1,9 +1,13 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import Link from "next/link";
 import { connection } from "next/server";
+import { buttonVariants } from "@/components/atoms/Button";
 import { changedFields } from "@/features/admin/diff";
 import { tableCls } from "@/features/admin/fields";
 import { listAudit } from "@/features/admin/queries";
 import { requireStaff } from "@/features/auth/staff";
+import type { Entity } from "@/features/admin/audit";
+import { parseCursor, toCursor } from "@/lib/pagination";
 
 export const instant = false;
 
@@ -11,12 +15,19 @@ const show = (v: unknown) =>
   v === undefined || v === null ? "—" : typeof v === "object" ? JSON.stringify(v) : String(v);
 
 // RN-71: últimas alterações do dashboard (quem, quando, antes → depois)
-export default async function AuditAdmin({ params }: PageProps<"/[locale]/admin/auditoria">) {
+export default async function AuditAdmin({ params, searchParams }: PageProps<"/[locale]/admin/auditoria">) {
   await connection();
-  const { locale } = await params;
+  const [{ locale }, { antes }] = await Promise.all([params, searchParams]);
   setRequestLocale(locale);
   await requireStaff(locale);
-  const [t, rows] = await Promise.all([getTranslations({ locale, namespace: "Admin" }), listAudit()]);
+  const cursor = parseCursor(antes);
+  const [t, { rows, more }] = await Promise.all([
+    getTranslations({ locale, namespace: "Admin" }),
+    listAudit(cursor),
+  ]);
+  const base = `/${locale}/admin/auditoria`;
+  const last = rows.at(-1);
+  const link = buttonVariants({ variant: "ghost", size: "sm" });
   return (
     <>
       <h1 className="font-heading text-3xl font-bold text-heading">{t("nav.audit")}</h1>
@@ -42,8 +53,7 @@ export default async function AuditAdmin({ params }: PageProps<"/[locale]/admin/
                   <td>{r.staffEmail}</td>
                   <td className="text-heading">
                     {t(`audit.actions.${r.action as "create" | "update"}`)}{" "}
-                    {t(`audit.entities.${r.entity as "category" | "product" | "promotion" | "coupon"}`)}:{" "}
-                    {show(after.name ?? after.code)}
+                    {t(`audit.entities.${r.entity as Entity}`)}: {show(after.name ?? after.code)}
                   </td>
                   <td>
                     <ul className="grid gap-0.5 text-xs">
@@ -61,6 +71,20 @@ export default async function AuditAdmin({ params }: PageProps<"/[locale]/admin/
           </tbody>
         </table>
       </div>
+      {cursor || more ? (
+        <nav aria-label={t("nav.audit")} className="flex justify-center gap-3">
+          {cursor ? (
+            <Link href={base} className={link}>
+              {t("audit.newest")}
+            </Link>
+          ) : null}
+          {more && last ? (
+            <Link href={`${base}?antes=${encodeURIComponent(toCursor(last))}`} className={link}>
+              {t("audit.older")}
+            </Link>
+          ) : null}
+        </nav>
+      ) : null}
     </>
   );
 }

@@ -11,7 +11,8 @@ flowchart LR
   P((Provedores de<br/>pagamento))
   S((Suporte))
   subgraph Shop
-    UC0([Escolher idioma, região e fuso])
+    UC0([Escolher idioma e fuso])
+    UC_CONTA([Criar conta, salvar personagens, excluir conta — RN-107 a RN-109])
     UC1([Navegar por categorias e produtos])
     UC13([Buscar e filtrar produtos])
     UC2([Escolher slot de raid])
@@ -39,7 +40,14 @@ flowchart LR
 classDiagram
   class Category {
     +id: string
-    +kind: gold|raid|dungeon
+    +kind: gold|raid|dungeon|pvp|achievement|delve
+    +name: string
+    +slug: string
+    +sortOrder: int
+    +active: boolean
+  }
+  class Subcategory {
+    +id: string
     +name: string
     +slug: string
     +sortOrder: int
@@ -47,11 +55,23 @@ classDiagram
   }
   class Product {
     +id: string
-    +region: US|EU
+    +region: US
     +name: string
     +priceUsdtCents: int
     +unit: string
-    +options: json
+    +addons: name+percent[]
+    +maxQuantity: int
+    +priceOnRequest: boolean
+    +hot: boolean
+    +sortOrder: int
+    +optionAxes: name+values+style[]
+    +active: boolean
+  }
+  class ProductVariant {
+    +options: eixo→valor
+    +priceUsdtCents: int
+    +priceOnRequest: boolean
+    +note: string
     +active: boolean
   }
   class Promotion {
@@ -81,12 +101,19 @@ classDiagram
     +capacity: int
     +reserved: int
   }
+  class Customer {
+    +email: string
+  }
+  class Character {
+    +realm: string
+    +faction: alliance|horde
+    +name: string
+  }
   class Order {
     +id: string
     +email: string
     +locale: string
-    +timezone: string
-    +region: US|EU
+    +region: US
     +status: OrderStatus
     +subtotalUsdtCents: int
     +discountUsdtCents: int
@@ -124,15 +151,22 @@ classDiagram
     +type: string
   }
   Category "1" *-- "*" Product
+  Category "1" --> "0..*" Subcategory
+  Subcategory "0..1" --> "0..*" Product
   Cart "1" *-- "*" CartItem
   CartItem "*" --> "1" Product
   CartItem "*" --> "0..1" RaidSlot
   Product "1" *-- "*" RaidSlot
+  Product "1" *-- "0..*" ProductVariant
+  CartItem "*" --> "0..1" ProductVariant
+  OrderItem "*" --> "0..1" ProductVariant
   Promotion "*" --> "*" Product : aplica a
   Promotion "*" --> "*" Category : aplica a
   Coupon "1" *-- "*" CouponRedemption
   CouponRedemption "*" --> "1" Order
   Order "1" *-- "1..*" OrderItem
+  Customer "1" *-- "0..10" Character
+  Customer "0..1" --> "*" Order : compras logado
   OrderItem "*" --> "1" Product
   OrderItem "*" --> "0..1" RaidSlot
   Order "1" -- "0..1" Delivery

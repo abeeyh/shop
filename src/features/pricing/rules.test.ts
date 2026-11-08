@@ -4,6 +4,8 @@ import {
   chooseDiscount,
   couponDiscountCents,
   discountCents,
+  isCurrentOptions,
+  itemStillValid,
   lineTotalCents,
   unitPriceCents,
   type Promotion,
@@ -21,21 +23,25 @@ describe("preço por tipo de produto", () => {
     expect(lineTotalCents(unit, 200)).toBe(9000); // 200k gold = 90,00 USDT
   });
 
-  it("RN-16: raid — opção de loot multiplica o preço-base", () => {
-    expect(unitPriceCents(7900, { kind: "raid", loot: "none" })).toBe(7900);
-    expect(unitPriceCents(7900, { kind: "raid", loot: "armor" })).toBe(10270);
-    expect(unitPriceCents(7900, { kind: "raid", loot: "full" })).toBe(14220);
+  const svc = (addons: string[]) =>
+    ({ kind: "service", realm: "Area 52", faction: "horde", character: "Thrall", addons }) as const;
+  const armor = [{ name: "Armor Stack", percent: 25 }];
+
+  it("RN-17 (#94): serviço tem preço fixo; adicional soma o % cadastrado no produto", () => {
+    expect(unitPriceCents(495, svc([]), armor)).toBe(495); // Mythic +10 = 110k gold = 4,95 USDT
+    expect(unitPriceCents(495, svc(["Armor Stack"]), armor)).toBe(619); // 618,75 → 619
+    expect(lineTotalCents(unitPriceCents(68, svc([]), []), 3)).toBe(204); // delve: 3 tiers
   });
 
-  it("RN-17: M+ — faixa do nível da chave e timed; arredonda para o centavo", () => {
-    expect(unitPriceCents(1200, { kind: "dungeon", keyLevel: 10, timed: false })).toBe(1200);
-    expect(unitPriceCents(1200, { kind: "dungeon", keyLevel: 11, timed: false })).toBe(1560);
-    expect(unitPriceCents(1200, { kind: "dungeon", keyLevel: 15, timed: true })).toBe(2304);
-    expect(unitPriceCents(1111, { kind: "dungeon", keyLevel: 12, timed: true })).toBe(1733); // 1733,16 → 1733
+  it("RN-17: adicional que o produto não tem não muda o preço (nunca confia no cliente)", () => {
+    expect(unitPriceCents(495, svc(["Armor Stack"]), [])).toBe(495);
+    expect(unitPriceCents(495, svc(["Inventado"]), armor)).toBe(495);
   });
 
-  it("RN-17: nível fora da tabela é erro (nunca preço inventado)", () => {
-    expect(() => unitPriceCents(1200, { kind: "dungeon", keyLevel: 20, timed: false })).toThrow();
+  it("item antigo (raid/dungeon antes do #94) não é opção atual", () => {
+    expect(isCurrentOptions({ kind: "raid", loot: "full" })).toBe(false);
+    expect(isCurrentOptions(svc([]))).toBe(true);
+    expect(isCurrentOptions(null)).toBe(false);
   });
 });
 
@@ -107,5 +113,45 @@ describe("descontos (RN-21 a RN-26)", () => {
     expect(chooseDiscount(300, 400)).toEqual({ source: "coupon", discountCents: 400 });
     expect(chooseDiscount(400, 400)).toEqual({ source: "promotion", discountCents: 400 });
     expect(chooseDiscount(0, 0)).toEqual({ source: "none", discountCents: 0 });
+  });
+});
+
+describe("item do carrinho conferido de novo contra o produto atual (#94, revisão de segurança)", () => {
+  const svc = { kind: "service", realm: "A", faction: "horde", character: "T", addons: ["Armor Stack"] };
+  const product = {
+    isGold: false,
+    addons: [{ name: "Armor Stack", percent: 25 }],
+    maxQuantity: 3,
+    hasSlots: false,
+    slotId: null,
+    hasVariants: false,
+    variantChosen: false,
+    variantOk: false,
+  };
+  it("válido enquanto o produto não muda", () => {
+    expect(itemStillValid(svc, 2, product)).toBe(true);
+  });
+  it("adicional removido ou renomeado deixa o item indisponível (não cobra 0%)", () => {
+    expect(itemStillValid(svc, 1, { ...product, addons: [{ name: "Armor stack", percent: 25 }] })).toBe(
+      false,
+    );
+  });
+  it("quantidade acima do novo limite, horário novo ou tipo trocado também", () => {
+    expect(itemStillValid(svc, 3, { ...product, maxQuantity: 1 })).toBe(false);
+    expect(itemStillValid(svc, 1, { ...product, hasSlots: true })).toBe(false);
+    expect(itemStillValid(svc, 1, { ...product, hasSlots: true, slotId: "s" })).toBe(true);
+    expect(itemStillValid(svc, 1, { ...product, isGold: true })).toBe(false);
+    expect(itemStillValid({ kind: "gold", realm: "A", faction: "horde", character: "T" }, 100, product)).toBe(
+      false,
+    );
+  });
+  it("#100: produto com variantes exige variante válida; variante sumida/sob consulta/de outro produto não vale", () => {
+    const chosen = { ...product, hasVariants: true, variantChosen: true };
+    expect(itemStillValid(svc, 1, { ...chosen, variantOk: true })).toBe(true);
+    expect(itemStillValid(svc, 1, { ...chosen, variantOk: false })).toBe(false);
+    // variante apagada (variant_id = null) num produto que ainda tem eixos
+    expect(itemStillValid(svc, 1, { ...product, hasVariants: true, variantOk: false })).toBe(false);
+    // revisão de segurança: admin tirou os eixos depois que o item (8/8, caro) entrou — não cobra o "a partir de"
+    expect(itemStillValid(svc, 1, { ...product, variantChosen: true, variantOk: false })).toBe(false);
   });
 });

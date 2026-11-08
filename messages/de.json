@@ -1,21 +1,22 @@
 {
   "Metadata": {
     "title": "WoW-Services: Gold, Raids und Mythisch+",
-    "description": "Gold, Raids und Mythisch+-Dungeons für World of Warcraft US und EU. Bezahlung in USDT oder per Karte."
+    "description": "Gold, Raids, Mythisch+ und Erfolge für World of Warcraft US. Bezahlung in USDT."
   },
   "Nav": {
     "label": "Hauptmenü",
     "skip": "Zum Inhalt springen",
-    "region": "Region",
     "language": "Sprache",
     "timezone": "Zeitzone",
     "menu": "Menü öffnen",
     "closeMenu": "Menü schließen",
     "detecting": "Wird erkannt…",
-    "cart": "Warenkorb ({n} Artikel)"
+    "cart": "Warenkorb ({n} Artikel)",
+    "account": "Mein Konto",
+    "preferences": "Sprache und Zeitzone"
   },
   "Home": {
-    "badge": "WoW Retail · US & EU",
+    "badge": "WoW Retail · US",
     "title": "Dein WoW-Fortschritt, ohne Grind",
     "subtitle": "Gold, Raids und Mythisch+-Dungeons. Preise in USDT, Termine in deiner Zeitzone, in deiner Sprache.",
     "ctaGold": "Gold kaufen",
@@ -26,15 +27,21 @@
   },
   "Catalog": {
     "perK": "pro 1.000 Gold",
-    "estimateNote": "Schätzung in deiner Währung; Abrechnung in USDT.",
+    "from": "ab",
+    "estimateNote": "Schätzung in deiner Währung: API noch nicht implementiert. Abrechnung in USDT.",
     "selfPlay": "Self-Play: Du spielst deinen eigenen Charakter. Wir fragen nie nach deinem Battle.net-Passwort.",
-    "empty": "In dieser Region gibt es noch keine Produkte.",
-    "region": "Region: {region}",
+    "empty": "Noch keine Produkte.",
     "home": "Start",
-    "loading": "Wird geladen…"
+    "loading": "Wird geladen…",
+    "onRequest": "Preis auf Anfrage",
+    "hot": "Beliebt",
+    "buy": "Kaufen",
+    "subcategories": "Unterkategorien",
+    "close": "Schließen",
+    "breadcrumb": "Brotkrümelnavigation"
   },
   "Footer": {
-    "about": "Gold, Raids und Mythisch+ für World of Warcraft Retail US und EU.",
+    "about": "Gold, Raids, Mythisch+ und Erfolge für World of Warcraft Retail US.",
     "copyright": "© 2026 Shop · Nicht mit Blizzard Entertainment verbunden.",
     "report": "Problem melden"
   },
@@ -61,7 +68,6 @@
     "min": "Mindestens 2 Zeichen eingeben.",
     "filters": "Filter",
     "category": "Kategorie",
-    "region": "Region",
     "all": "Alle",
     "price": "Preis (USDT)",
     "minPrice": "Min.",
@@ -84,7 +90,12 @@
     "pagination": "Seiten",
     "prev": "Zurück",
     "next": "Weiter",
-    "promo": "Im Angebot"
+    "promo": "Im Angebot",
+    "suggestCategories": "Kategorien",
+    "suggestProducts": "Produkte",
+    "seeAll": "Alle Ergebnisse für „{q}“",
+    "suggestEmpty": "Keine Vorschläge — drücke Enter, um zu suchen.",
+    "onRequest": "Preis auf Anfrage"
   },
   "Buy": {
     "realm": "Realm",
@@ -95,21 +106,13 @@
     "characterHint": "Der Charakter, der das Gold erhält (nur Buchstaben).",
     "quantity": "Menge (tausend Gold)",
     "slot": "Datum und Uhrzeit",
-    "loot": "Loot-Option",
-    "lootNone": "Nur Clear",
-    "lootArmor": "Rüstungstyp-Priorität (+30 %)",
-    "lootFull": "Voller Loot (+80 %)",
-    "keyLevel": "Schlüsselstufe",
-    "runs": "Runs",
-    "timed": "In der Zeit (+20 %)",
     "total": "Gesamt",
     "add": "In den Warenkorb",
     "added": "Zum Warenkorb hinzugefügt",
     "viewCart": "Warenkorb ansehen",
     "unit": {
-      "raid": "pro Raid",
-      "dungeon": "pro Run, bis +10",
-      "gold": "pro 1.000 Gold"
+      "gold": "pro 1.000 Gold",
+      "service": "pro Service"
     },
     "errors": {
       "realm": "Gib den Realm an.",
@@ -118,11 +121,27 @@
       "slotId": "Dieser Termin ist nicht mehr verfügbar. Wähle einen anderen.",
       "product": "Dieses Produkt ist nicht mehr verfügbar.",
       "faction": "Wähle eine Fraktion.",
-      "keyLevel": "Wähle eine Stufe von +2 bis +15.",
-      "runs": "Wähle 1 bis 10 Runs.",
-      "loot": "Wähle eine Loot-Option."
+      "addon": "Wähle nur die angebotenen Extras.",
+      "variant": "Diese Option ist nicht mehr verfügbar. Wähle eine andere.",
+      "quantityService": "Wähle eine Anzahl von 1 bis {max}."
     },
-    "promoEnds": "Aktion endet in"
+    "promoEnds": "Aktion endet in",
+    "characterHintService": "Der Charakter, den wir zum Run einladen (nur Buchstaben).",
+    "quantityService": "Anzahl",
+    "addons": "Extras",
+    "addon": "{name} (+{percent} %)",
+    "scheduleNote": "Kein fester Termin: Nach der Zahlung planst du deinen Run mit dem Support im Chat.",
+    "onRequest": "Preis auf Anfrage",
+    "onRequestNote": "Frag den Support nach einem Angebot für diesen Service.",
+    "askPrice": "Preis anfragen",
+    "askPriceMessage": "Hallo! Ich hätte gern ein Angebot für: {name}",
+    "savedCharacter": "Gespeicherter Charakter",
+    "savedNone": "— neuen eingeben —",
+    "saveCharacter": "Diesen Charakter in meinem Konto speichern",
+    "buyNow": "Jetzt kaufen",
+    "goToPayment": "Zur Zahlung",
+    "keepShopping": "Weiter einkaufen",
+    "unavailableItem": "Nicht mehr verfügbar — nicht in der Summe."
   },
   "Cart": {
     "title": "Warenkorb",
@@ -165,8 +184,14 @@
       "payment": "Die Zahlung konnte nicht erstellt werden. Versuche es gleich noch einmal.",
       "coupon": "Dieser Gutschein hat sein Nutzungslimit erreicht. Entferne ihn, um fortzufahren.",
       "changed": "Der Preis hat sich geändert (eine Aktion ist abgelaufen oder der Gutschein wurde geändert). Prüfe die neue Summe und versuche es erneut.",
-      "limited": "Zu viele Bestellversuche. Warte ein paar Minuten und versuche es erneut."
-    }
+      "limited": "Zu viele Bestellversuche. Warte ein paar Minuten und versuche es erneut.",
+      "notImplemented": "USDT-Zahlung: API noch nicht implementiert.",
+      "cardNotImplemented": "Kreditkarte: API noch nicht implementiert. Bezahle vorerst mit Krypto (USDT)."
+    },
+    "method": "Zahlungsart",
+    "crypto": "Krypto (USDT)",
+    "card": "Kreditkarte",
+    "payCard": "Mit Karte bezahlen"
   },
   "Order": {
     "title": "Deine Bestellung",
@@ -189,7 +214,11 @@
     },
     "discount": "Gutscheinrabatt",
     "delivered": "Geliefert — danke!",
-    "proof": "Liefernachweis ansehen"
+    "proof": "Liefernachweis ansehen",
+    "scheduleTitle": "Run planen",
+    "scheduleText": "Sprich im Chat mit dem Support, um Datum und Uhrzeit deines Runs festzulegen.",
+    "scheduleButton": "Mit dem Support planen",
+    "scheduleMessage": "Hallo! Ich möchte den Run für Bestellung {order} planen."
   },
   "Admin": {
     "title": "Admin",
@@ -205,7 +234,9 @@
       "reports": "Problemmeldungen",
       "docs": "Interne Dokumentation",
       "team": "Team",
-      "support": "Support"
+      "support": "Support",
+      "subcategories": "Unterkategorien",
+      "twoFactor": "2FA"
     },
     "login": {
       "title": "Anmeldung (Team)",
@@ -221,7 +252,7 @@
     },
     "setup": {
       "title": "Zwei-Faktor aktivieren",
-      "intro": "Der Admin erfordert Zwei-Faktor-Authentifizierung. Bestätige dein Passwort, um den Einrichtungsschlüssel zu erhalten.",
+      "intro": "Zwei-Faktor-Authentifizierung ist optional und empfohlen: Sie schützt das Panel, falls dein Passwort geleakt wird. Bestätige dein Passwort, um den Einrichtungsschlüssel zu erhalten.",
       "password": "Passwort",
       "start": "Schlüssel erzeugen",
       "secret": "Einrichtungsschlüssel (in der Authenticator-App hinzufügen)",
@@ -255,12 +286,23 @@
       "code": "Code",
       "maxUses": "Nutzungen insgesamt (leer = unbegrenzt)",
       "maxUsesPerEmail": "Nutzungen pro E-Mail (leer = unbegrenzt)",
-      "minOrder": "Mindestbestellwert (USDT)"
+      "minOrder": "Mindestbestellwert (USDT)",
+      "subcategory": "Unterkategorie",
+      "noSubcategory": "— keine —",
+      "priceOnRequest": "Preis auf Anfrage (ohne Preis, öffnet den Chat)",
+      "addons": "Extras (eins pro Zeile: Name | %)",
+      "optionAxes": "Optionen (eine pro Zeile: Name | slider oder boxes | Wert, Wert…)",
+      "variants": "Kombinationen (eine pro Zeile: Achse=Wert; Achse=Wert | Preis oder - | Notiz)",
+      "maxQuantity": "Max. Anzahl pro Bestellung",
+      "hot": "Beliebt (hervorgehoben)"
     },
     "kinds": {
       "gold": "Gold",
       "raid": "Raid",
-      "dungeon": "Mythisch+"
+      "dungeon": "Mythisch+",
+      "pvp": "PvP",
+      "achievement": "Erfolge",
+      "delve": "Tiefen"
     },
     "form": {
       "newCategory": "Neue Kategorie",
@@ -271,7 +313,8 @@
       "cancel": "Bearbeiten abbrechen",
       "editLink": "Bearbeiten",
       "newPromotion": "Neue Aktion",
-      "newCoupon": "Neuer Gutschein"
+      "newCoupon": "Neuer Gutschein",
+      "newSubcategory": "Neue Unterkategorie"
     },
     "table": {
       "activeProducts": "Aktive Produkte",
@@ -290,7 +333,7 @@
       "sortOrder": "Reihenfolge von 0 bis 999.",
       "categoryId": "Wähle eine Kategorie.",
       "region": "Wähle eine Region.",
-      "price": "Preis in USDT mit höchstens 2 Nachkommastellen, größer als null.",
+      "price": "Preis in USDT mit bis zu 2 Nachkommastellen, größer als null (oder „Preis auf Anfrage“ markieren).",
       "activeProducts": "Deaktiviere oder verschiebe die aktiven Produkte, bevor du die Kategorie deaktivierst.",
       "type": "Wähle eine Rabattart.",
       "value": "Prozent von 1 bis 90 oder ein USDT-Betrag größer als null.",
@@ -300,7 +343,12 @@
       "code": "Code: 2–40 Buchstaben, Zahlen, Bindestrich oder Unterstrich, nicht schon vergeben.",
       "maxUses": "Ganze Zahl ab 1.",
       "maxUsesPerEmail": "Ganze Zahl ab 1.",
-      "minOrder": "Mindestwert in USDT mit höchstens 2 Nachkommastellen."
+      "minOrder": "Mindestwert in USDT mit höchstens 2 Nachkommastellen.",
+      "subcategoryId": "Wähle eine Unterkategorie derselben Kategorie.",
+      "addons": "Ein Extra pro Zeile als „Name | 25“ (1–100 %, keine Doppelten, max. 10).",
+      "optionAxes": "Bis zu 4 Optionen im Format „Bosses | slider | 2/8, 3/8“ (eindeutige Namen und Werte, max. 30 Werte).",
+      "variants": "Jede Kombination braucht einen gelisteten Wert pro Option, einen Preis (oder - für auf Anfrage) und darf sich nicht wiederholen. Ohne Optionen leer lassen.",
+      "maxQuantity": "Nutze 1 bis 100."
     },
     "discount": {
       "percent": "Prozent",
@@ -316,12 +364,19 @@
         "category": "Kategorie",
         "product": "Produkt",
         "promotion": "Aktion",
-        "coupon": "Gutschein"
+        "coupon": "Gutschein",
+        "subcategory": "Unterkategorie",
+        "order": "Bestellung",
+        "bug_report": "Fehlermeldung",
+        "staff": "Teammitglied",
+        "support_hours": "Support-Zeiten"
       },
       "actions": {
         "create": "Erstellt",
         "update": "Geändert"
-      }
+      },
+      "older": "Ältere",
+      "newest": "Neueste"
     },
     "orders": {
       "todo": "Offen",
@@ -368,10 +423,10 @@
       "intro": "Erstelle deinen Zugang für {email}. Die Zwei-Faktor-Authentifizierung wird bei der ersten Anmeldung aktiviert.",
       "name": "Dein Name",
       "confirm": "Passwort bestätigen",
-      "hint": "Mindestens 12 Zeichen. Passwörter aus bekannten Datenlecks werden abgelehnt.",
+      "hint": "Mindestens 8 Zeichen mit Groß- und Kleinbuchstaben und einer Zahl. Passwörter aus bekannten Datenlecks werden abgelehnt.",
       "submit": "Zugang erstellen",
       "errors": {
-        "invalid": "Prüfe den Namen und nutze ein Passwort mit mindestens 12 Zeichen.",
+        "invalid": "Prüfe den Namen und nutze ein Passwort mit mindestens 8 Zeichen, Groß- und Kleinbuchstaben und einer Zahl.",
         "mismatch": "Die Passwörter stimmen nicht überein.",
         "pwned": "Dieses Passwort ist in einem Datenleck aufgetaucht. Wähle ein anderes.",
         "expired": "Diese Einladung ist ungültig, schon benutzt oder abgelaufen. Bitte einen Admin um eine neue."
@@ -444,5 +499,50 @@
     "offlineTitle": "Wir sind gerade offline — hinterlass eine Nachricht, wir antworten per E-Mail oder hier.",
     "offlineStart": "Nachricht hinterlassen",
     "backAt": "Wir sind zurück am"
+  },
+  "Account": {
+    "title": "Mein Konto",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "signOut": "Abmelden",
+    "login": {
+      "title": "Anmelden",
+      "submit": "Anmelden",
+      "forgot": "Passwort vergessen? Das Zurücksetzen ist noch nicht verfügbar (API noch nicht implementiert). Wende dich im Chat an den Support.",
+      "noAccount": "Noch kein Konto?"
+    },
+    "signup": {
+      "title": "Konto erstellen",
+      "intro": "Optional: Du kannst ohne Konto kaufen. Mit Konto siehst du deine Bestellungen und speicherst deine Charaktere.",
+      "passwordHint": "Mindestens 8 Zeichen mit Groß- und Kleinbuchstaben und einer Zahl. Geleakte Passwörter werden abgelehnt.",
+      "submit": "Konto erstellen",
+      "hasAccount": "Schon ein Konto?"
+    },
+    "orders": {
+      "title": "Meine Bestellungen",
+      "empty": "Mit diesem Konto wurden noch keine Bestellungen aufgegeben."
+    },
+    "characters": {
+      "title": "Meine Charaktere",
+      "intro": "Gespeicherte Charaktere füllen das Kaufformular für dich aus (bis zu 10).",
+      "add": "Charakter speichern",
+      "remove": "Entfernen"
+    },
+    "delete": {
+      "title": "Konto löschen",
+      "intro": "Löscht dein Konto und die gespeicherten Charaktere. Bestellungen bleiben 5 Jahre gespeichert (Steuerrecht), ohne Verbindung zum Konto.",
+      "submit": "Mein Konto löschen"
+    },
+    "errors": {
+      "invalid": "E-Mail oder Passwort falsch.",
+      "signupInvalid": "Gib eine gültige E-Mail und ein Passwort mit mindestens 8 Zeichen, Groß- und Kleinbuchstaben und einer Zahl ein.",
+      "limited": "Zu viele Versuche. Versuche es in ein paar Minuten erneut.",
+      "pwned": "Dieses Passwort ist in einem Datenleck aufgetaucht. Wähle ein anderes.",
+      "character": "Gib den Realm und einen Namen mit 2–12 Buchstaben ein.",
+      "characterLimit": "Du kannst bis zu 10 Charaktere speichern.",
+      "characterDuplicate": "Dieser Charakter ist bereits gespeichert.",
+      "exists": "Für diese E-Mail gibt es schon ein Konto. Melde dich an.",
+      "staff": "Das ist ein Team-Konto: Melde dich im Panel an (/admin)."
+    }
   }
 }

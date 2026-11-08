@@ -1,21 +1,22 @@
 {
   "Metadata": {
     "title": "WoW 服务：金币、团队副本与史诗钥石",
-    "description": "World of Warcraft 美服与欧服的金币、团队副本与史诗钥石地下城。使用 USDT 或银行卡付款。"
+    "description": "World of Warcraft 美服的金币、团队副本、史诗钥石与成就。使用 USDT 付款。"
   },
   "Nav": {
     "label": "主菜单",
     "skip": "跳到内容",
-    "region": "地区",
     "language": "语言",
     "timezone": "时区",
     "menu": "打开菜单",
     "closeMenu": "关闭菜单",
     "detecting": "检测中…",
-    "cart": "购物车（{n} 件）"
+    "cart": "购物车（{n} 件）",
+    "account": "我的账号",
+    "preferences": "语言和时区"
   },
   "Home": {
-    "badge": "WoW 正式服 · 美服和欧服",
+    "badge": "WoW 正式服 · 美服",
     "title": "轻松推进你的 WoW 进度",
     "subtitle": "金币、团队副本代打与史诗钥石地下城。以 USDT 计价，按你的时区安排，使用你的语言。",
     "ctaGold": "购买金币",
@@ -26,15 +27,21 @@
   },
   "Catalog": {
     "perK": "每 1,000 金币",
-    "estimateNote": "按你的货币估算；按 USDT 收费。",
+    "from": "起",
+    "estimateNote": "本地货币估算：API 尚未实现。按 USDT 收费。",
     "selfPlay": "本人上线：你使用自己的角色游戏。我们绝不索要你的 Battle.net 密码。",
-    "empty": "该地区暂无商品。",
-    "region": "地区：{region}",
+    "empty": "暂无商品。",
     "home": "首页",
-    "loading": "加载中…"
+    "loading": "加载中…",
+    "onRequest": "价格面议",
+    "hot": "热门",
+    "buy": "购买",
+    "subcategories": "子分类",
+    "close": "关闭",
+    "breadcrumb": "导航路径"
   },
   "Footer": {
-    "about": "World of Warcraft 正式服美服和欧服的金币、团队副本与史诗钥石。",
+    "about": "World of Warcraft 正式服美服的金币、团队副本、史诗钥石与成就。",
     "copyright": "© 2026 Shop · 与 Blizzard Entertainment 无关。",
     "report": "反馈问题"
   },
@@ -61,7 +68,6 @@
     "min": "请至少输入 2 个字符。",
     "filters": "筛选",
     "category": "分类",
-    "region": "地区",
     "all": "全部",
     "price": "价格（USDT）",
     "minPrice": "最低",
@@ -84,7 +90,12 @@
     "pagination": "页码",
     "prev": "上一页",
     "next": "下一页",
-    "promo": "促销中"
+    "promo": "促销中",
+    "suggestCategories": "分类",
+    "suggestProducts": "商品",
+    "seeAll": "查看“{q}”的所有结果",
+    "suggestEmpty": "没有建议 — 按回车搜索。",
+    "onRequest": "价格面议"
   },
   "Buy": {
     "realm": "服务器",
@@ -95,21 +106,13 @@
     "characterHint": "接收金币的角色（仅限文字）。",
     "quantity": "数量（千金币）",
     "slot": "日期和时间",
-    "loot": "战利品选项",
-    "lootNone": "仅通关",
-    "lootArmor": "按护甲类型优先（+30%）",
-    "lootFull": "完整战利品（+80%）",
-    "keyLevel": "钥石等级",
-    "runs": "场数",
-    "timed": "限时完成（+20%）",
     "total": "总计",
     "add": "加入购物车",
     "added": "已加入购物车",
     "viewCart": "查看购物车",
     "unit": {
-      "raid": "每次团队副本",
-      "dungeon": "每场，最高 +10",
-      "gold": "每 1,000 金币"
+      "gold": "每 1,000 金币",
+      "service": "每次服务"
     },
     "errors": {
       "realm": "请输入服务器名称。",
@@ -118,11 +121,27 @@
       "slotId": "该时段已无法预约，请选择其他时段。",
       "product": "该商品已无法购买。",
       "faction": "请选择阵营。",
-      "keyLevel": "请选择 +2 至 +15 的等级。",
-      "runs": "请选择 1 至 10 场。",
-      "loot": "请选择战利品选项。"
+      "addon": "只能选择列出的附加项。",
+      "variant": "此选项已无法选择，请改选其他。",
+      "quantityService": "请选择 1 到 {max} 之间的数量。"
     },
-    "promoEnds": "促销剩余时间"
+    "promoEnds": "促销剩余时间",
+    "characterHintService": "我们邀请进团的角色（仅限字母）。",
+    "quantityService": "数量",
+    "addons": "附加项",
+    "addon": "{name}（+{percent}%）",
+    "scheduleNote": "无固定时间：付款后，请在聊天中与客服预约你的场次。",
+    "onRequest": "价格面议",
+    "onRequestNote": "请联系客服获取此服务的报价。",
+    "askPrice": "咨询价格",
+    "askPriceMessage": "你好！我想咨询以下服务的报价：{name}",
+    "savedCharacter": "已保存的角色",
+    "savedNone": "— 输入其他角色 —",
+    "saveCharacter": "将此角色保存到我的账号",
+    "buyNow": "立即购买",
+    "goToPayment": "前往付款",
+    "keepShopping": "继续购物",
+    "unavailableItem": "已无法购买 — 不计入总额。"
   },
   "Cart": {
     "title": "购物车",
@@ -165,8 +184,14 @@
       "payment": "无法创建付款，请稍后再试。",
       "coupon": "该优惠码已达到使用上限，请移除后继续。",
       "changed": "价格已变动（促销已结束或优惠码已变更），请确认新的总额后再试一次。",
-      "limited": "结算尝试次数过多，请稍等几分钟再试。"
-    }
+      "limited": "结算尝试次数过多，请稍等几分钟再试。",
+      "notImplemented": "USDT 付款：API 尚未实现。",
+      "cardNotImplemented": "信用卡：API 尚未实现。目前请使用加密货币（USDT）付款。"
+    },
+    "method": "付款方式",
+    "crypto": "加密货币（USDT）",
+    "card": "信用卡",
+    "payCard": "用信用卡付款"
   },
   "Order": {
     "title": "你的订单",
@@ -189,7 +214,11 @@
     },
     "discount": "优惠码折扣",
     "delivered": "已交付 — 谢谢！",
-    "proof": "查看交付证明"
+    "proof": "查看交付证明",
+    "scheduleTitle": "预约你的场次",
+    "scheduleText": "在聊天中联系客服，选择场次的日期和时间。",
+    "scheduleButton": "与客服预约",
+    "scheduleMessage": "你好！我想预约订单 {order} 的场次。"
   },
   "Admin": {
     "title": "管理后台",
@@ -205,7 +234,9 @@
       "reports": "问题反馈",
       "docs": "内部文档",
       "team": "团队",
-      "support": "客服"
+      "support": "客服",
+      "subcategories": "子分类",
+      "twoFactor": "2FA"
     },
     "login": {
       "title": "团队登录",
@@ -221,7 +252,7 @@
     },
     "setup": {
       "title": "启用双重验证",
-      "intro": "管理后台需要双重验证。请确认密码以获取设置密钥。",
+      "intro": "双重验证为可选，但建议开启：密码泄露时仍能保护管理后台。请确认密码以获取设置密钥。",
       "password": "密码",
       "start": "获取密钥",
       "secret": "设置密钥（添加到验证器 App）",
@@ -255,12 +286,23 @@
       "code": "代码",
       "maxUses": "总使用次数（留空 = 不限）",
       "maxUsesPerEmail": "每个邮箱使用次数（留空 = 不限）",
-      "minOrder": "最低订单金额（USDT）"
+      "minOrder": "最低订单金额（USDT）",
+      "subcategory": "子分类",
+      "noSubcategory": "— 无 —",
+      "priceOnRequest": "价格面议（不显示价格，打开聊天）",
+      "addons": "附加项（每行一个：名称 | %）",
+      "optionAxes": "选项（每行一个：名称 | slider 或 boxes | 值, 值…）",
+      "variants": "组合（每行一个：选项=值; 选项=值 | 价格或 - | 备注）",
+      "maxQuantity": "每单最大数量",
+      "hot": "热门（突出显示）"
     },
     "kinds": {
       "gold": "金币",
       "raid": "团队副本",
-      "dungeon": "史诗钥石+"
+      "dungeon": "史诗钥石+",
+      "pvp": "PvP",
+      "achievement": "成就",
+      "delve": "地下堡"
     },
     "form": {
       "newCategory": "新建分类",
@@ -271,7 +313,8 @@
       "cancel": "取消编辑",
       "editLink": "编辑",
       "newPromotion": "新建促销",
-      "newCoupon": "新建优惠码"
+      "newCoupon": "新建优惠码",
+      "newSubcategory": "新建子分类"
     },
     "table": {
       "activeProducts": "启用中的商品",
@@ -290,7 +333,7 @@
       "sortOrder": "排序需为 0 至 999。",
       "categoryId": "请选择分类。",
       "region": "请选择地区。",
-      "price": "USDT 价格最多 2 位小数，且大于零。",
+      "price": "以 USDT 计价，最多 2 位小数，必须大于零（或勾选“价格面议”）。",
       "activeProducts": "停用分类前，请先停用或移动其中启用的商品。",
       "type": "请选择折扣类型。",
       "value": "百分比 1 至 90，或大于零的 USDT 金额。",
@@ -300,7 +343,12 @@
       "code": "代码：2–40 个字母、数字、连字符或下划线，且不能重复。",
       "maxUses": "请输入 1 以上的整数。",
       "maxUsesPerEmail": "请输入 1 以上的整数。",
-      "minOrder": "USDT 最低金额最多 2 位小数。"
+      "minOrder": "USDT 最低金额最多 2 位小数。",
+      "subcategoryId": "请选择同一分类下的子分类。",
+      "addons": "每行一个附加项，格式为“名称 | 25”（1–100%，名称不重复，最多 10 个）。",
+      "optionAxes": "最多 4 个选项，格式为“Bosses | slider | 2/8, 3/8”（名称和值不可重复，最多 30 个值）。",
+      "variants": "每个组合需为每个选项填一个已列出的值、价格（或 - 表示询价），且不可重复。没有选项时请留空。",
+      "maxQuantity": "请填写 1 到 100。"
     },
     "discount": {
       "percent": "百分比",
@@ -316,12 +364,19 @@
         "category": "分类",
         "product": "商品",
         "promotion": "促销",
-        "coupon": "优惠码"
+        "coupon": "优惠码",
+        "subcategory": "子分类",
+        "order": "订单",
+        "bug_report": "错误报告",
+        "staff": "团队成员",
+        "support_hours": "客服时间"
       },
       "actions": {
         "create": "创建",
         "update": "修改"
-      }
+      },
+      "older": "更早",
+      "newest": "最新"
     },
     "orders": {
       "todo": "待处理",
@@ -368,10 +423,10 @@
       "intro": "为 {email} 创建访问权限。首次登录时会启用双重验证。",
       "name": "你的名字",
       "confirm": "确认密码",
-      "hint": "至少 12 个字符。出现在已知泄露数据中的密码会被拒绝。",
+      "hint": "至少 8 个字符，需包含大写字母、小写字母和数字。出现在已知泄露数据中的密码会被拒绝。",
       "submit": "创建访问权限",
       "errors": {
-        "invalid": "请检查名字，并使用至少 12 个字符的密码。",
+        "invalid": "请检查名字，并使用至少 8 个字符且包含大写、小写字母和数字的密码。",
         "mismatch": "两次输入的密码不一致。",
         "pwned": "该密码曾出现在数据泄露中，请换一个。",
         "expired": "此邀请无效、已使用或已过期，请向管理员索取新的邀请。"
@@ -444,5 +499,50 @@
     "offlineTitle": "目前不在服务时间 — 请留言，我们会通过电子邮件或在这里回复。",
     "offlineStart": "留言",
     "backAt": "恢复服务时间"
+  },
+  "Account": {
+    "title": "我的账号",
+    "email": "电子邮箱",
+    "password": "密码",
+    "signOut": "退出",
+    "login": {
+      "title": "登录",
+      "submit": "登录",
+      "forgot": "忘记密码？重置密码尚未提供（API 尚未实现）。请在聊天中联系客服。",
+      "noAccount": "还没有账号？"
+    },
+    "signup": {
+      "title": "创建账号",
+      "intro": "可选：不注册也能购买。有账号就能查看订单并保存角色。",
+      "passwordHint": "至少 8 个字符，需包含大写字母、小写字母和数字。泄露过的密码会被拒绝。",
+      "submit": "创建账号",
+      "hasAccount": "已有账号？"
+    },
+    "orders": {
+      "title": "我的订单",
+      "empty": "此账号还没有下过订单。"
+    },
+    "characters": {
+      "title": "我的角色",
+      "intro": "已保存的角色会自动填入购买表单（最多 10 个）。",
+      "add": "保存角色",
+      "remove": "移除"
+    },
+    "delete": {
+      "title": "删除账号",
+      "intro": "删除你的账号和已保存的角色。订单按税法保存 5 年，但不再关联账号。",
+      "submit": "删除我的账号"
+    },
+    "errors": {
+      "invalid": "邮箱或密码错误。",
+      "signupInvalid": "请输入有效邮箱，以及至少 8 个字符且包含大写、小写字母和数字的密码。",
+      "limited": "尝试次数过多，请几分钟后再试。",
+      "pwned": "此密码曾出现在数据泄露中，请换一个。",
+      "character": "请输入服务器和 2–12 个字母的名称。",
+      "characterLimit": "最多可保存 10 个角色。",
+      "characterDuplicate": "此角色已保存。",
+      "exists": "此邮箱已有账号，请直接登录。",
+      "staff": "这是团队账号：请从管理后台登录（/admin）。"
+    }
   }
 }

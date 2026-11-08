@@ -1,6 +1,6 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { getTranslations } from "next-intl/server";
-import { formatEstimate, formatUsdt, productHref } from "@/features/catalog";
+import { formatUsdt, productHref } from "@/features/catalog";
 import { canonicalLocale } from "@/i18n/routing";
 import { RaidSlotCard } from "./components/RaidSlotCard";
 import { listSlotsForProduct, listUpcomingSlots } from "./queries";
@@ -11,7 +11,6 @@ const unixNow = () => Math.floor(Date.now() / 1000);
 
 type Props = {
   locale: string;
-  region: "US" | "EU";
   timeZone: string | null;
   title?: string;
   limit?: number;
@@ -20,17 +19,9 @@ type Props = {
 };
 
 // Seção "Próximas raids" (docs/15 item 5): o servidor decide vagas/esgotado; os cards só exibem
-export async function UpcomingRaids({
-  locale,
-  region,
-  timeZone,
-  title,
-  limit,
-  categorySlug,
-  productSlug,
-}: Props) {
+export async function UpcomingRaids({ locale, timeZone, title, limit, categorySlug, productSlug }: Props) {
   const [slots, t] = await Promise.all([
-    productSlug ? listSlotsForProduct(productSlug) : listUpcomingSlots({ region, categorySlug, limit }),
+    productSlug ? listSlotsForProduct(productSlug) : listUpcomingSlots({ categorySlug, limit }),
     getTranslations({ locale, namespace: "Schedule" }),
   ]);
   if (!slots.length) return null;
@@ -53,18 +44,16 @@ export async function UpcomingRaids({
               key={s.id}
               locale={canonicalLocale(locale)}
               timeZone={timeZone}
-              serverTimeZone={SERVER_TIMEZONE[s.region]}
+              serverTimeZone={SERVER_TIMEZONE}
               serverNow={serverNow}
               labels={{ startsIn: t("startsIn"), serverTime: t("serverTime"), details: t("details") }}
               slot={{
                 href: productHref(locale, { categorySlug: s.categorySlug, slug: s.productSlug }),
                 name: s.productName,
-                region: s.region,
                 startsAt: s.startsAt.toISOString(),
                 soldOut: !bookable,
                 seatsLabel: bookable ? t("seatsLeft", { n: seatsLeft(s) }) : t("soldOut"),
                 price: formatUsdt(locale, s.priceUsdtCents),
-                estimate: formatEstimate(locale, s.priceUsdtCents),
               }}
             />
           );

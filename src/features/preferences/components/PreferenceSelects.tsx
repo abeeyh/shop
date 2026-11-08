@@ -11,23 +11,21 @@ type Props = {
   idPrefix: string;
   locale: string;
   locales: { code: string; label: string }[];
-  region: string;
-  regions: readonly string[];
   timezone: string;
   detecting: boolean; // RN-82: fuso ainda não detectado — seletor bloqueado até a detecção gravar
   timezones: string[];
-  labels: { language: string; region: string; timezone: string; detecting: string };
+  labels: { language: string; timezone: string; detecting: string };
   stacked?: boolean;
 };
 
-// RN-81 (idioma), RN-14 (região), RN-82 (fuso): o servidor valida e grava; aqui só se escolhe
+// RN-81 (idioma), RN-82 (fuso). Região: só US (RN-14): o servidor valida e grava; aqui só se escolhe
 export function PreferenceSelects(p: Props) {
   const router = useRouter();
   const nextRouter = useNextRouter();
   const pathname = usePathname();
   const [pending, startTransition] = useTransition();
 
-  const save = (input: { region?: string; timezone?: string }) =>
+  const save = (input: { timezone: string }) =>
     startTransition(async () => {
       const result = await savePreferences(input);
       if (result.ok) nextRouter.refresh();
@@ -42,24 +40,6 @@ export function PreferenceSelects(p: Props) {
 
   return (
     <div className={cn("flex gap-2", p.stacked ? "flex-col" : "items-center")} aria-busy={pending}>
-      {field(
-        "region",
-        p.labels.region,
-        <Select
-          id={`${p.idPrefix}-region`}
-          size="sm"
-          className={p.stacked ? undefined : "w-auto"}
-          value={p.region}
-          disabled={pending}
-          onChange={(e) => save({ region: e.target.value })}
-        >
-          {p.regions.map((r) => (
-            <option key={r} value={r}>
-              {r}
-            </option>
-          ))}
-        </Select>,
-      )}
       {field(
         "locale",
         p.labels.language,

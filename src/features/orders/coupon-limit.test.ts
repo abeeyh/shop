@@ -16,6 +16,7 @@ describe.skipIf(!process.env.DATABASE_URL)("limite de uso do cupom (RN-25, RN-27
 
   const order = (email: string) => ({
     email,
+    userId: null,
     locale: "en",
     network: "trc20" as const,
     subtotalUsdtCents: 1000,
@@ -28,6 +29,7 @@ describe.skipIf(!process.env.DATABASE_URL)("limite de uso do cupom (RN-25, RN-27
       {
         productId,
         raidSlotId: null,
+        variantId: null,
         productName: "t",
         options: {},
         unitPriceUsdtCents: 1000,
@@ -47,7 +49,7 @@ describe.skipIf(!process.env.DATABASE_URL)("limite de uso do cupom (RN-25, RN-27
     const [p] = await db
       .select({ id: s.products.id })
       .from(s.products)
-      .where(eq(s.products.slug, "mplus-us")); // produto do seed, nunca um criado pelo E2E
+      .where(eq(s.products.slug, "mythic-plus-key")); // produto do seed, nunca um criado pelo E2E
     productId = p!.id;
     const [c] = await db
       .insert(s.coupons)

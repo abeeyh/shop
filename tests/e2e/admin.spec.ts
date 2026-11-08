@@ -1,7 +1,7 @@
 import { createHmac } from "node:crypto";
 import { expect, test, type Page } from "@playwright/test";
 import { E2E_ADMIN } from "./global-setup";
-import { checkout, ipn } from "./helpers";
+import { ipn, seedOrder } from "./helpers";
 
 // #20: admin com 2FA e CRUD de categorias/produtos. RN-02, RN-04, RN-13, RN-19, RN-70, RN-72, RN-73.
 
@@ -42,7 +42,7 @@ test.describe("admin", () => {
     await expect(page.getByText("Invalid email, password or code.")).toBeVisible();
   });
 
-  test("RN-02/RN-19: ativa 2FA, cria categoria e produto que aparecem na vitrine", async ({
+  test("RN-02/RN-19: 2FA opcional (ativa pelo painel), cria categoria e produto que aparecem na vitrine", async ({
     page,
     browser,
     baseURL,
@@ -53,11 +53,13 @@ test.describe("admin", () => {
     const other = await browser.newContext({ baseURL });
     const otherPage = await other.newPage();
     await login(otherPage);
-    await expect(otherPage).toHaveURL(/\/en\/admin\/2fa$/);
+    await expect(otherPage).toHaveURL(/\/en\/admin$/);
 
     await login(page);
-    await expect(page).toHaveURL(/\/en\/admin\/2fa$/); // painel bloqueado até ativar o 2FA
+    await expect(page).toHaveURL(/\/en\/admin$/); // #116: painel abre sem 2FA
     await page.goto("/en/admin/categorias");
+    await expect(page).toHaveURL(/\/en\/admin\/categorias$/);
+    await page.getByRole("link", { name: "2FA" }).click(); // ativar continua possível
     await expect(page).toHaveURL(/\/en\/admin\/2fa$/);
     await page.getByLabel("Password").fill(E2E_ADMIN.password);
     await page.getByRole("button", { name: "Get setup key" }).click();
@@ -73,7 +75,7 @@ test.describe("admin", () => {
 
     const id = Date.now().toString(36);
     await page.goto("/en/admin/categorias");
-    await page.getByLabel("Name").fill(`E2E Keys ${id}`);
+    await page.getByLabel("Name", { exact: true }).fill(`E2E Keys ${id}`);
     await page.getByLabel("Slug (URL)").fill(`e2e-keys-${id}`);
     await page.getByLabel("Type").selectOption("dungeon"); // M+: vai ao carrinho sem horário
     await page.getByRole("button", { name: "Save" }).click();
@@ -81,15 +83,17 @@ test.describe("admin", () => {
     await expect(page.getByRole("cell", { name: new RegExp(`E2E Keys ${id}`) }).first()).toBeVisible();
 
     await page.goto("/en/admin/produtos");
-    await page.getByLabel("Category").selectOption({ label: `E2E Keys ${id}` });
-    await page.getByLabel("Name").fill(`E2E Key Product ${id}`);
+    await page
+      .getByRole("combobox", { name: "Category", exact: true })
+      .selectOption({ label: `E2E Keys ${id}` });
+    await page.getByLabel("Name", { exact: true }).fill(`E2E Key Product ${id}`);
     await page.getByLabel("Slug (URL)").fill(`e2e-product-${id}`);
     await page.getByLabel("Price (USDT)").fill("9.99");
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");
 
     // slug repetido é recusado no campo (o formulário de criação limpa depois de salvar)
-    await page.getByLabel("Name").fill(`E2E Key Product ${id} 2`);
+    await page.getByLabel("Name", { exact: true }).fill(`E2E Key Product ${id} 2`);
     await page.getByLabel("Slug (URL)").fill(`e2e-product-${id}`);
     await page.getByLabel("Price (USDT)").fill("1");
     await page.getByRole("button", { name: "Save" }).click();
@@ -109,7 +113,7 @@ test.describe("admin", () => {
 
     // RN-21/RN-22: promoção de 10% no produto → riscado + contagem na página do produto
     await page.goto("/en/admin/promocoes");
-    await page.getByLabel("Name").fill(`E2E Promo ${id}`);
+    await page.getByLabel("Name", { exact: true }).fill(`E2E Promo ${id}`);
     await page.getByLabel("Value (% or USDT)").fill("10");
     await page.getByLabel("Applies to").selectOption({ label: `E2E Key Product ${id}` });
     await page.getByRole("button", { name: "Save" }).click();
@@ -131,6 +135,8 @@ test.describe("admin", () => {
     await expect(page.getByRole("status")).toHaveText("Saved");
 
     await page.goto(`/en/wow/e2e-keys-${id}/e2e-product-${id}`);
+    await page.getByLabel("Realm").fill("Area 52"); // #94: serviço pede o personagem
+    await page.getByLabel("Character name").fill("Thrall");
     await page.getByRole("button", { name: "Add to cart" }).click();
     await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible();
     await page.goto("/en/carrinho");
@@ -162,11 +168,17 @@ test.describe("admin", () => {
     await expect(page.getByText(`Updated Category: E2E Keys ${id}`).first()).toBeVisible();
     await expect(page.getByText(`Created Product: E2E Key Product ${id}`)).toBeVisible();
     await expect(page.getByText(E2E_ADMIN.email).first()).toBeVisible();
+    // #88: cursor e página inválidos na URL voltam para a primeira página (sem erro)
+    await page.goto("/en/admin/auditoria?antes=2026-02-30T00:00:00.000000Z_x");
+    await expect(page.getByText(`Created Product: E2E Key Product ${id}`)).toBeVisible();
+    await page.goto("/en/admin/pedidos?todos=1&pagina=-3");
+    await expect(page.getByRole("heading", { level: 1, name: "Orders" })).toBeVisible();
 
     // RN-50/RN-52: pedido pago → equipe inicia → conclui com prova → cliente vê no pedido
     const buyer = await browser.newContext({ baseURL });
     const buyerPage = await buyer.newPage();
-    const orderId = await checkout(buyerPage);
+    const { id: orderId, path: orderPath } = await seedOrder();
+    await buyerPage.goto(orderPath);
     const paid = { payment_id: Date.now() + Math.random(), order_id: orderId, pay_currency: "usdterc20" };
     await ipn(request, {
       ...paid,
@@ -238,13 +250,7 @@ test.describe("admin", () => {
     await sp.getByLabel("Email").fill(supportEmail);
     await sp.locator('input[name="password"]:visible').fill(supportPassword);
     await sp.getByRole("button", { name: "Sign in" }).click();
-    await expect(sp).toHaveURL(/\/en\/admin\/2fa$/);
-    await sp.locator('input[name="password"]:visible').fill(supportPassword);
-    await sp.getByRole("button", { name: "Get setup key" }).click();
-    const supportSecret = (await sp.getByTestId("totp-secret").textContent())!.trim();
-    await sp.getByLabel("Code from the app").fill(totp(supportSecret));
-    await sp.getByRole("button", { name: "Turn on and continue" }).click();
-    await expect(sp).toHaveURL(/\/en\/admin$/);
+    await expect(sp).toHaveURL(/\/en\/admin$/); // #116: sem 2FA, entra direto
     await sp.goto("/en/admin/cupons");
     await expect(sp.getByRole("heading", { name: "No access" })).toBeVisible();
     await sp.goto("/en/admin/pedidos");

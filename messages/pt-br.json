@@ -1,21 +1,22 @@
 {
   "Metadata": {
     "title": "Serviços de WoW: gold, raids e Mítica+",
-    "description": "Gold, raids e masmorras Mítica+ para World of Warcraft US e EU. Pague em USDT ou cartão."
+    "description": "Gold, raids, Mítica+ e conquistas para World of Warcraft US. Pague em USDT."
   },
   "Nav": {
     "label": "Principal",
     "skip": "Pular para o conteúdo",
-    "region": "Região",
     "language": "Idioma",
     "timezone": "Fuso horário",
     "menu": "Abrir menu",
     "closeMenu": "Fechar menu",
     "detecting": "Detectando…",
-    "cart": "Carrinho ({n} itens)"
+    "cart": "Carrinho ({n} itens)",
+    "account": "Minha conta",
+    "preferences": "Idioma e fuso horário"
   },
   "Home": {
-    "badge": "WoW Retail · US e EU",
+    "badge": "WoW Retail · US",
     "title": "Seu progresso no WoW, sem o grind",
     "subtitle": "Gold, raids e masmorras Mítica+. Preço em USDT, horários no seu fuso, no seu idioma.",
     "ctaGold": "Comprar gold",
@@ -26,15 +27,21 @@
   },
   "Catalog": {
     "perK": "por 1.000 de gold",
-    "estimateNote": "Estimativa na sua moeda; a cobrança é em USDT.",
+    "from": "a partir de",
+    "estimateNote": "Estimativa na sua moeda: API ainda não implementada. A cobrança é em USDT.",
     "selfPlay": "Self-play: você joga com o seu personagem. Nunca pedimos sua senha da Battle.net.",
-    "empty": "Ainda não há produtos nesta região.",
-    "region": "Região: {region}",
+    "empty": "Ainda não há produtos.",
     "home": "Início",
-    "loading": "Carregando…"
+    "loading": "Carregando…",
+    "onRequest": "Sob consulta",
+    "hot": "Popular",
+    "buy": "Comprar",
+    "subcategories": "Subcategorias",
+    "close": "Fechar",
+    "breadcrumb": "Navegação estrutural"
   },
   "Footer": {
-    "about": "Gold, raids e Mítica+ para World of Warcraft Retail US e EU.",
+    "about": "Gold, raids, Mítica+ e conquistas para World of Warcraft Retail US.",
     "copyright": "© 2026 Shop · Sem afiliação com a Blizzard Entertainment.",
     "report": "Reportar problema"
   },
@@ -61,7 +68,6 @@
     "min": "Digite pelo menos 2 caracteres.",
     "filters": "Filtros",
     "category": "Categoria",
-    "region": "Região",
     "all": "Todas",
     "price": "Preço (USDT)",
     "minPrice": "Mín.",
@@ -84,7 +90,12 @@
     "pagination": "Páginas",
     "prev": "Anterior",
     "next": "Próxima",
-    "promo": "Em promoção"
+    "promo": "Em promoção",
+    "suggestCategories": "Categorias",
+    "suggestProducts": "Produtos",
+    "seeAll": "Ver todos os resultados para “{q}”",
+    "suggestEmpty": "Nenhuma sugestão — aperte Enter para buscar.",
+    "onRequest": "Sob consulta"
   },
   "Buy": {
     "realm": "Realm",
@@ -95,21 +106,13 @@
     "characterHint": "O personagem que recebe o gold (só letras).",
     "quantity": "Quantidade (milhares de gold)",
     "slot": "Data e hora",
-    "loot": "Opção de loot",
-    "lootNone": "Só o clear",
-    "lootArmor": "Prioridade por armadura (+30%)",
-    "lootFull": "Loot completo (+80%)",
-    "keyLevel": "Nível da chave",
-    "runs": "Runs",
-    "timed": "No tempo (+20%)",
     "total": "Total",
     "add": "Adicionar ao carrinho",
     "added": "Adicionado ao carrinho",
     "viewCart": "Ver carrinho",
     "unit": {
-      "raid": "por raid",
-      "dungeon": "por run, até +10",
-      "gold": "por 1.000 de gold"
+      "gold": "por 1.000 de gold",
+      "service": "por serviço"
     },
     "errors": {
       "realm": "Informe o nome do realm.",
@@ -118,11 +121,27 @@
       "slotId": "Esse horário não está mais disponível. Escolha outro.",
       "product": "Este produto não está mais disponível.",
       "faction": "Escolha uma facção.",
-      "keyLevel": "Escolha um nível de +2 a +15.",
-      "runs": "Escolha de 1 a 10 runs.",
-      "loot": "Escolha uma opção de loot."
+      "addon": "Escolha só os adicionais da lista.",
+      "variant": "Esta opção não está mais disponível. Escolha outra.",
+      "quantityService": "Escolha uma quantidade de 1 a {max}."
     },
-    "promoEnds": "A promoção termina em"
+    "promoEnds": "A promoção termina em",
+    "characterHintService": "O personagem que convidamos para a run (só letras).",
+    "quantityService": "Quantidade",
+    "addons": "Adicionais",
+    "addon": "{name} (+{percent}%)",
+    "scheduleNote": "Sem horário fixo: depois do pagamento, agende a run com o suporte pelo chat.",
+    "onRequest": "Sob consulta",
+    "onRequestNote": "Fale com o suporte para receber o orçamento deste serviço.",
+    "askPrice": "Consultar preço",
+    "askPriceMessage": "Olá! Quero um orçamento de: {name}",
+    "savedCharacter": "Personagem salvo",
+    "savedNone": "— digitar outro —",
+    "saveCharacter": "Salvar este personagem na minha conta",
+    "buyNow": "Comprar agora",
+    "goToPayment": "Ir para o pagamento",
+    "keepShopping": "Continuar comprando",
+    "unavailableItem": "Não está mais disponível — fora do total."
   },
   "Cart": {
     "title": "Carrinho",
@@ -165,8 +184,14 @@
       "payment": "Não conseguimos criar o pagamento. Tente de novo em instantes.",
       "coupon": "Este cupom atingiu o limite de usos. Remova-o para continuar.",
       "changed": "O preço mudou (uma promoção acabou ou o cupom mudou). Confira o novo total e tente de novo.",
-      "limited": "Muitas tentativas de checkout. Aguarde alguns minutos e tente de novo."
-    }
+      "limited": "Muitas tentativas de checkout. Aguarde alguns minutos e tente de novo.",
+      "notImplemented": "Pagamento em USDT: API ainda não implementada.",
+      "cardNotImplemented": "Cartão de crédito: API ainda não implementada. Por enquanto, pague com cripto (USDT)."
+    },
+    "method": "Forma de pagamento",
+    "crypto": "Cripto (USDT)",
+    "card": "Cartão de crédito",
+    "payCard": "Pagar com cartão"
   },
   "Order": {
     "title": "Seu pedido",
@@ -189,7 +214,11 @@
     },
     "discount": "Desconto do cupom",
     "delivered": "Entregue — obrigado!",
-    "proof": "Ver a prova de entrega"
+    "proof": "Ver a prova de entrega",
+    "scheduleTitle": "Agende sua run",
+    "scheduleText": "Fale com o suporte pelo chat para escolher a data e o horário da sua run.",
+    "scheduleButton": "Agendar com o suporte",
+    "scheduleMessage": "Olá! Quero agendar a run do pedido {order}."
   },
   "Admin": {
     "title": "Admin",
@@ -205,7 +234,9 @@
       "reports": "Reportes de problema",
       "docs": "Documentação interna",
       "team": "Equipe",
-      "support": "Suporte"
+      "support": "Suporte",
+      "subcategories": "Subcategorias",
+      "twoFactor": "2FA"
     },
     "login": {
       "title": "Entrar (equipe)",
@@ -221,7 +252,7 @@
     },
     "setup": {
       "title": "Ative o 2FA",
-      "intro": "O admin exige autenticação em dois fatores. Confirme sua senha para receber a chave de configuração.",
+      "intro": "A autenticação em dois fatores é opcional e recomendada: protege o painel se sua senha vazar. Confirme sua senha para receber a chave de configuração.",
       "password": "Senha",
       "start": "Gerar chave",
       "secret": "Chave de configuração (adicione no app autenticador)",
@@ -255,12 +286,23 @@
       "code": "Código",
       "maxUses": "Usos no total (vazio = sem limite)",
       "maxUsesPerEmail": "Usos por e-mail (vazio = sem limite)",
-      "minOrder": "Pedido mínimo (USDT)"
+      "minOrder": "Pedido mínimo (USDT)",
+      "subcategory": "Subcategoria",
+      "noSubcategory": "— nenhuma —",
+      "priceOnRequest": "Sob consulta (sem preço; abre o chat)",
+      "addons": "Adicionais (um por linha: Nome | %)",
+      "optionAxes": "Opções (uma por linha: Nome | slider ou boxes | valor, valor…)",
+      "variants": "Combinações (uma por linha: Eixo=valor; Eixo=valor | preço ou - | nota)",
+      "maxQuantity": "Quantidade máxima por pedido",
+      "hot": "Popular (destaque)"
     },
     "kinds": {
       "gold": "Gold",
       "raid": "Raid",
-      "dungeon": "Mythic+"
+      "dungeon": "Mythic+",
+      "pvp": "PvP",
+      "achievement": "Conquistas",
+      "delve": "Delves"
     },
     "form": {
       "newCategory": "Nova categoria",
@@ -271,7 +313,8 @@
       "cancel": "Cancelar edição",
       "editLink": "Editar",
       "newPromotion": "Nova promoção",
-      "newCoupon": "Novo cupom"
+      "newCoupon": "Novo cupom",
+      "newSubcategory": "Nova subcategoria"
     },
     "table": {
       "activeProducts": "Produtos ativos",
@@ -290,7 +333,7 @@
       "sortOrder": "A ordem vai de 0 a 999.",
       "categoryId": "Escolha uma categoria.",
       "region": "Escolha uma região.",
-      "price": "Preço em USDT com até 2 casas decimais, maior que zero.",
+      "price": "Preço em USDT com até 2 casas, maior que zero (ou marque “sob consulta”).",
       "activeProducts": "Desative ou mova os produtos ativos antes de desativar a categoria.",
       "type": "Escolha o tipo de desconto.",
       "value": "Percentual de 1 a 90, ou valor em USDT maior que zero.",
@@ -300,7 +343,12 @@
       "code": "Código: 2 a 40 letras, números, hífen ou sublinhado, sem repetir outro cupom.",
       "maxUses": "Use um número inteiro de 1 ou mais.",
       "maxUsesPerEmail": "Use um número inteiro de 1 ou mais.",
-      "minOrder": "Mínimo em USDT com até 2 casas decimais."
+      "minOrder": "Mínimo em USDT com até 2 casas decimais.",
+      "subcategoryId": "Escolha uma subcategoria da mesma categoria.",
+      "addons": "Um adicional por linha no formato “Nome | 25” (1–100%, sem nome repetido, até 10).",
+      "optionAxes": "Até 4 opções no formato “Bosses | slider | 2/8, 3/8” (nomes e valores únicos, até 30 valores).",
+      "variants": "Cada combinação precisa de um valor listado por opção, um preço (ou - para sob consulta) e não pode repetir. Sem opções, deixe vazio.",
+      "maxQuantity": "Use de 1 a 100."
     },
     "discount": {
       "percent": "Percentual",
@@ -316,12 +364,19 @@
         "category": "Categoria",
         "product": "Produto",
         "promotion": "Promoção",
-        "coupon": "Cupom"
+        "coupon": "Cupom",
+        "subcategory": "Subcategoria",
+        "order": "Pedido",
+        "bug_report": "Reporte de bug",
+        "staff": "Membro da equipe",
+        "support_hours": "Horário do suporte"
       },
       "actions": {
         "create": "Criou",
         "update": "Alterou"
-      }
+      },
+      "older": "Mais antigos",
+      "newest": "Mais recentes"
     },
     "orders": {
       "todo": "A fazer",
@@ -368,10 +423,10 @@
       "intro": "Crie seu acesso para {email}. A autenticação em dois fatores é ativada no primeiro login.",
       "name": "Seu nome",
       "confirm": "Confirme a senha",
-      "hint": "Pelo menos 12 caracteres. Senhas que aparecem em vazamentos conhecidos são recusadas.",
+      "hint": "No mínimo 8 caracteres, com letra maiúscula, letra minúscula e número. Senhas que aparecem em vazamentos conhecidos são recusadas.",
       "submit": "Criar acesso",
       "errors": {
-        "invalid": "Confira o nome e use uma senha com pelo menos 12 caracteres.",
+        "invalid": "Confira o nome e use uma senha com no mínimo 8 caracteres, com maiúscula, minúscula e número.",
         "mismatch": "As senhas não conferem.",
         "pwned": "Esta senha apareceu em um vazamento de dados. Escolha outra.",
         "expired": "Este convite é inválido, já foi usado ou expirou. Peça um novo a um admin."
@@ -444,5 +499,50 @@
     "offlineTitle": "Estamos fora do horário agora — deixe sua mensagem e respondemos por e-mail ou aqui.",
     "offlineStart": "Deixar mensagem",
     "backAt": "Voltamos em"
+  },
+  "Account": {
+    "title": "Minha conta",
+    "email": "E-mail",
+    "password": "Senha",
+    "signOut": "Sair",
+    "login": {
+      "title": "Entrar",
+      "submit": "Entrar",
+      "forgot": "Esqueceu a senha? A troca de senha ainda não está disponível (API ainda não implementada). Fale com o suporte no chat.",
+      "noAccount": "Ainda não tem conta?"
+    },
+    "signup": {
+      "title": "Criar conta",
+      "intro": "Opcional: dá para comprar sem conta. Com ela, você vê seus pedidos e salva seus personagens.",
+      "passwordHint": "No mínimo 8 caracteres, com letra maiúscula, letra minúscula e número. Senhas vazadas são recusadas.",
+      "submit": "Criar conta",
+      "hasAccount": "Já tem conta?"
+    },
+    "orders": {
+      "title": "Meus pedidos",
+      "empty": "Nenhum pedido feito com esta conta ainda."
+    },
+    "characters": {
+      "title": "Meus personagens",
+      "intro": "Personagens salvos preenchem o formulário de compra para você (até 10).",
+      "add": "Salvar personagem",
+      "remove": "Remover"
+    },
+    "delete": {
+      "title": "Excluir conta",
+      "intro": "Apaga sua conta e os personagens salvos. Os pedidos ficam guardados por 5 anos (lei fiscal), sem o vínculo com a conta.",
+      "submit": "Excluir minha conta"
+    },
+    "errors": {
+      "invalid": "E-mail ou senha incorretos.",
+      "signupInvalid": "Informe um e-mail válido e uma senha com no mínimo 8 caracteres, com maiúscula, minúscula e número.",
+      "limited": "Muitas tentativas. Tente de novo em alguns minutos.",
+      "pwned": "Esta senha apareceu em um vazamento de dados. Escolha outra.",
+      "character": "Informe o realm e um nome com 2 a 12 letras.",
+      "characterLimit": "Você pode salvar até 10 personagens.",
+      "characterDuplicate": "Este personagem já está salvo.",
+      "exists": "Este e-mail já tem conta. Entre com ele.",
+      "staff": "Esta é uma conta da equipe: entre pelo painel (/admin)."
+    }
   }
 }

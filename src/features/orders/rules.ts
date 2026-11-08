@@ -46,3 +46,11 @@ export const STAFF_STEPS: Record<StaffStep, { from: OrderStatus; to: OrderStatus
 
 export const nextStaffStep = (status: OrderStatus): StaffStep | null =>
   (Object.keys(STAFF_STEPS) as StaffStep[]).find((s) => STAFF_STEPS[s].from === status) ?? null;
+
+// RN-16 (#94): serviço comprado sem horário é agendado com o suporte depois que o pagamento entra
+export const needsScheduling = (o: {
+  status: OrderStatus;
+  items: { options: unknown; raidSlotId: string | null }[];
+}) =>
+  (o.status === "pago" || o.status === "em_andamento") &&
+  o.items.some((i) => (i.options as { kind?: string } | null)?.kind === "service" && !i.raidSlotId);

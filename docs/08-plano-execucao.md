@@ -46,7 +46,7 @@ gantt
 ## F1 — Vitrine (idiomas, região, fuso)
 
 - [x] next-intl com 6 idiomas, detecção e seletor (RN-80, RN-81); checagem de chaves no CI.
-- [x] Seletores de região US/EU (RN-14) e de fuso com detecção automática (RN-82, RN-83).
+- [x] Seletor de fuso (região: loja só US desde #92 — RN-14), com detecção automática com detecção automática (RN-82, RN-83).
 - [x] Catálogo do banco com preço em USDT e estimativa em moeda local (RN-12, RN-13, RN-18). *Cotações reais: #63.*
 - [x] Agenda de raids com slots em UTC exibidos no fuso escolhido (RN-16, RN-83).
 
@@ -55,14 +55,19 @@ gantt
 ## F2 — Checkout em USDT
 
 - [x] Carrinho com total recalculado no servidor (RN-20).
-- [x] Adapter `crypto` + fatura + IPN assinado e idempotente (RN-30, RN-32, RN-33, RN-35, RN-37). *Coberto com o adapter fake (mesma assinatura do NOWPayments); sandbox real depende da conta.*
+- [x] Adapter `crypto` + fatura + IPN assinado e idempotente (RN-30, RN-32, RN-33, RN-35, RN-37). *Sem adapter fake (#86): sem a conta NOWPayments o checkout é bloqueado com "API ainda não implementada"; o E2E cobre o IPN com pedido criado no banco e segredo de teste. Sandbox real depende da conta.*
 - [x] Reserva de gold/vaga e expiração em 30 min (RN-34). *Agendar `/api/cron/expire-orders` a cada minuto na hospedagem (#2).*
 
 **Pronto quando:** pagamento de teste em USDT (sandbox) leva o pedido a `pago`; pagamento a menor leva a `pagamento_parcial`; IPN repetido não duplica.
 
 ## F3 — Admin e entrega
 
-- [ ] Dashboard admin com 2FA (RN-02, RN-70): **categorias e produtos** (RN-13, RN-19, RN-72, RN-73), preços, slots, pedidos. *Feito: login com 2FA, categorias, produtos e preços (#20). Faltam slots e pedidos (#23).*
+- [x] Catálogo real do dono (#94): categorias e subcategorias do JSON, preço fixo + adicionais (RN-17), sob consulta (RN-106), horário ou agendar com o suporte (RN-16); `pnpm catalog:import`.
+- [x] Variantes de produto (#100): a mesma raid/serviço vira um produto com opções (slider/caixas) e preço por combinação (RN-17); importação agrupa pelo `groups.json`; admin edita eixos e combinações.
+- [x] Visual minimalista novo (#102) e compra em poucos cliques: lista densa, página do produto com opções e carrinho na barra lateral (#109), "Comprar agora" direto ao pagamento.
+- [x] Correções da análise de bugs e contrato de 2026-11-07 (#112).
+
+- [ ] Dashboard admin (2FA opcional desde o #116 — RN-02, RN-70): **categorias e produtos** (RN-13, RN-19, RN-72, RN-73), preços, slots, pedidos. *Feito: login com 2FA, categorias, produtos e preços (#20). Faltam slots e pedidos (#23).*
 - [x] **Promoções por tempo** (RN-21 a RN-24) e **cupons** (RN-25 a RN-29) com regra "vale o maior" (RN-26). *Datas digitadas em UTC no admin. Ordenação por preço final e filtro "em promoção": #74.*
 - [x] Auditoria de alterações de preço, promoção e cupom (RN-71). *Pedidos entram com o fluxo de entrega (#23 — RN-07).*
 - [x] Fluxo `pago → em_andamento → concluido` com prova de entrega (RN-50, RN-52). *Prova como link https até existir o storage de arquivos.*
@@ -79,7 +84,9 @@ gantt
 
 ## F5 — Suporte e chat
 
-- [x] Papéis `cliente`/`suporte`/`admin`, convite de equipe, 2FA obrigatório, permissões por papel (RN-04 a RN-07). *Convite por link mostrado ao admin até existir o provedor de e-mail.*
+- [x] Papéis `cliente`/`suporte`/`admin`, convite de equipe, 2FA (opcional desde o #116), permissões por papel (RN-04 a RN-07). *Convite por link mostrado ao admin até existir o provedor de e-mail.*
+- [x] Conta opcional do cliente (#101): cadastro e login, personagens salvos, excluir conta (RN-107 a RN-109); regra de senha 8+ com maiúscula, minúscula e número (#107).
+- [ ] Pendentes da conta (#113): conversa do chat ligada à conta logada (RN-92), exportar meus dados (LGPD), idioma e fuso guardados no perfil (RN-82). "Esqueci a senha" e confirmação de e-mail dependem do e-mail transacional (#29).
 - [x] Chat próprio: SSE + PostgreSQL + pub/sub do Valkey; widget em todas as páginas; fila no dashboard (RN-92, RN-93, RN-98). *Mascaramento (RN-95) já entrou; fila atualiza por polling de 15 s.*
 - [ ] E-mail de mensagem nova com link assinado (RN-94); aviso de credenciais e mascaramento (RN-95); anexos de imagem (RN-96); limites e CAPTCHA (RN-97).
 - [x] Horário de atendimento e modo offline (RN-99).

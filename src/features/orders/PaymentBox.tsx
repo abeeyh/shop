@@ -17,7 +17,7 @@ const unixNow = () => Math.floor(Date.now() / 1000);
 // RN-37: rede em destaque enquanto o pagamento está em aberto; RN-34: prazo de 30 min
 export function PaymentBox({ status, network, expiresAt, payUrl, t }: Props) {
   if (!network || (status !== "pendente" && status !== "pagamento_parcial")) return null;
-  // fatura externa (provedor real); no fake a fatura é a própria página do pedido
+  // só fatura https do provedor vira botão
   const externalPay = payUrl?.startsWith("https://") ? payUrl : null;
   return (
     <div className="grid gap-3 rounded-md border border-primary bg-primary/10 p-4 text-sm">

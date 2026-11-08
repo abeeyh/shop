@@ -1,15 +1,81 @@
 import { describe, expect, it } from "vitest";
-import { categoryInput, couponInput, productInput, promotionInput } from "./schemas";
+import { categoryInput, couponInput, fieldsOf, productInput, promotionInput } from "./schemas";
+
+describe("#100: eixos e combinações do produto", () => {
+  const cat = "8f14e45f-ceea-4167-a5a3-5f3c0e6b9a51";
+  const base = {
+    categoryId: cat,
+    subcategoryId: "",
+    name: "Venomous Abyss",
+    slug: "va",
+    description: "",
+    imageUrl: "",
+    price: "",
+    addons: "",
+    maxQuantity: "1",
+    sortOrder: "0",
+  };
+  const axes = "Bosses | slider | 2/8, 3/8\nTG | boxes | No, Yes";
+
+  it("lê eixos e combinações; o preço do produto vira o menor e a ordem segue os eixos", () => {
+    const r = productInput.parse({
+      ...base,
+      optionAxes: axes,
+      variants: "Bosses=3/8; TG=No | 74.25 | 3 bosses\nBosses=2/8; TG=Yes | 59.85\nBosses=2/8; TG=No | -",
+    });
+    expect(r.optionAxes[0]).toEqual({ name: "Bosses", style: "slider", values: ["2/8", "3/8"] });
+    expect(r.price).toBe(5985);
+    expect(r.priceOnRequest).toBe(false);
+    expect(r.variants.map((v) => [v.options.Bosses, v.options.TG, v.priceUsdtCents, v.sortOrder])).toEqual([
+      ["3/8", "No", 7425, 100],
+      ["2/8", "Yes", 5985, 1],
+      ["2/8", "No", 1, 0],
+    ]);
+    expect(r.variants[2]!.priceOnRequest).toBe(true);
+  });
+
+  it("todas sob consulta → produto sob consulta (RN-106)", () => {
+    const r = productInput.parse({
+      ...base,
+      optionAxes: "Rating | slider | 1600",
+      variants: "Rating=1600 | -",
+    });
+    expect(r.priceOnRequest).toBe(true);
+  });
+
+  it("recusa valor fora do eixo, eixo faltando, combinação repetida e variante sem eixos", () => {
+    const bad = (variants: string, optionAxes = axes) =>
+      fieldsOf(productInput.safeParse({ ...base, optionAxes, variants }).error!);
+    expect(bad("Bosses=9/8; TG=No | 10")).toEqual(["variants"]);
+    expect(bad("Bosses=2/8 | 10")).toEqual(["variants"]);
+    expect(bad("Bosses=2/8; TG=No | 10\nBosses=2/8; TG=No | 12")).toEqual(["variants"]);
+    expect(bad("Bosses=2/8; TG=No | 10", "")).toContain("variants");
+    expect(bad("", axes)).toEqual(["variants"]);
+    expect(
+      fieldsOf(productInput.safeParse({ ...base, optionAxes: "Bosses | wheel | 1", variants: "" }).error!),
+    ).toContain("optionAxes");
+    // revisão de segurança: separadores no nome/valor e linha gigante (regex lenta) são recusados
+    expect(
+      fieldsOf(productInput.safeParse({ ...base, optionAxes: "A=B | boxes | x", variants: "" }).error!),
+    ).toContain("optionAxes");
+    const t0 = Date.now();
+    expect(bad(`a${" ".repeat(19_000)}b | 10`)).toEqual(["variants"]);
+    expect(Date.now() - t0).toBeLessThan(1_000); // quadrática levaria segundos; folga para a suíte em paralelo
+  });
+});
 
 describe("formulários do admin (RN-12, RN-13, RN-19)", () => {
   const product = {
     categoryId: "8f14e45f-ceea-4167-a5a3-5f3c0e6b9a51",
     name: "Gold — US",
     slug: "gold-us",
-    region: "US",
+    subcategoryId: "",
     description: "",
     imageUrl: "",
     price: "0.45",
+    addons: "",
+    maxQuantity: "1",
+    sortOrder: "0",
   };
 
   it("RN-12: preço em USDT vira centavos inteiros", () => {
@@ -27,6 +93,25 @@ describe("formulários do admin (RN-12, RN-13, RN-19)", () => {
     expect(productInput.safeParse({ ...product, imageUrl: "javascript:alert(1)" }).success).toBe(false);
     expect(productInput.safeParse({ ...product, imageUrl: "http://x.com/a.png" }).success).toBe(false);
     expect(productInput.parse(product).imageUrl).toBeNull();
+  });
+
+  it('RN-17 (#94): adicionais um por linha, "Nome | %"; repetido, 0% ou formato livre é recusado', () => {
+    expect(productInput.parse({ ...product, addons: "Armor Stack | 25\r\n VIP|10 " }).addons).toEqual([
+      { name: "Armor Stack", percent: 25 },
+      { name: "VIP", percent: 10 },
+    ]);
+    expect(productInput.parse(product).addons).toEqual([]);
+    for (const bad of ["Armor Stack", "A | 0", "x | 5", "Armor | 25\narmor | 10", "X | 101"])
+      expect(productInput.safeParse({ ...product, addons: bad }).success).toBe(false);
+  });
+
+  it("RN-106: sob consulta dispensa o preço (guarda 1 centavo de marcador); sem ele o preço é obrigatório", () => {
+    expect(productInput.parse({ ...product, price: "", priceOnRequest: "on" })).toMatchObject({
+      price: 1,
+      priceOnRequest: true,
+    });
+    expect(productInput.safeParse({ ...product, price: "" }).success).toBe(false);
+    expect(productInput.parse({ ...product, subcategoryId: "" }).subcategoryId).toBeNull();
   });
 
   it("RN-13: categoria exige tipo válido; checkbox desmarcado = inativa", () => {

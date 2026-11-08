@@ -1,5 +1,5 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
-import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { env } from "@/lib/env";
 
 // Adapter PaymentProvider de USDT (docs/14 §6). Não muda estado de pedido — só fala com o gateway.
@@ -13,13 +13,9 @@ export type CreateInvoice = {
 };
 
 export const PAY_CURRENCY = { trc20: "usdttrc20", erc20: "usdterc20" } as const;
-const DEV_IPN_SECRET = "dev-ipn-secret-only-for-local-and-tests"; // público: só vale em APP_ENV=local
-
-function ipnSecret(): string {
-  if (env.NOWPAYMENTS_IPN_SECRET) return env.NOWPAYMENTS_IPN_SECRET;
-  if (env.APP_ENV === "local") return DEV_IPN_SECRET;
-  throw new Error("NOWPAYMENTS_IPN_SECRET ausente fora de local"); // env.ts já impede; defesa extra
-}
+// Sem implementação fake: sem as chaves do provedor a ação é bloqueada ("API ainda não implementada")
+export const invoiceReady = () => !!env.NOWPAYMENTS_API_KEY;
+export const ipnReady = () => !!env.NOWPAYMENTS_IPN_SECRET;
 
 // Assinatura do IPN no formato NOWPayments: HMAC-SHA512 do JSON com as chaves ordenadas
 function sortKeys(v: unknown): unknown {
@@ -33,20 +29,20 @@ function sortKeys(v: unknown): unknown {
   return v;
 }
 
-export const signIpn = (payload: unknown, secret = ipnSecret()) =>
+export const signIpn = (payload: unknown, secret: string) =>
   createHmac("sha512", secret)
     .update(JSON.stringify(sortKeys(payload)))
     .digest("hex");
 
 // RN-32: só aceita corpo com assinatura válida; comparação em tempo constante
 export function verifyIpn(payload: unknown, signature: string | null): boolean {
-  if (!signature) return false;
-  const expected = Buffer.from(signIpn(payload), "hex");
+  if (!signature || !env.NOWPAYMENTS_IPN_SECRET) return false;
+  const expected = Buffer.from(signIpn(payload, env.NOWPAYMENTS_IPN_SECRET), "hex");
   const got = Buffer.from(signature, "hex");
   return got.length === expected.length && timingSafeEqual(got, expected);
 }
 
-async function nowpaymentsInvoice(i: CreateInvoice): Promise<Invoice> {
+export async function createInvoice(i: CreateInvoice): Promise<Invoice> {
   const base = env.NOWPAYMENTS_SANDBOX ? "https://api-sandbox.nowpayments.io" : "https://api.nowpayments.io";
   const res = await fetch(`${base}/v1/invoice`, {
     method: "POST",
@@ -69,13 +65,3 @@ async function nowpaymentsInvoice(i: CreateInvoice): Promise<Invoice> {
   const body = (await res.json()) as { id: string | number; invoice_url: string };
   return { providerPaymentId: String(body.id), payUrl: body.invoice_url };
 }
-
-// Fake para dev/testes: a "fatura" é a própria página do pedido; o pagamento chega por IPN assinado
-// com o segredo de desenvolvimento (o E2E assina e envia). env.ts proíbe o fake em production.
-const fakeInvoice = async (i: CreateInvoice): Promise<Invoice> => ({
-  providerPaymentId: `fake-${randomUUID()}`,
-  payUrl: new URL(i.returnUrl).pathname + new URL(i.returnUrl).search, // mesma origem
-});
-
-export const createInvoice = (i: CreateInvoice) =>
-  env.PAYMENTS_PROVIDER === "nowpayments" ? nowpaymentsInvoice(i) : fakeInvoice(i);

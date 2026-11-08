@@ -8,7 +8,7 @@ import { routing } from "@/i18n/routing";
 import { clientIp, rateLimitKey } from "@/lib/client-ip";
 import { env } from "@/lib/env";
 import { logger } from "@/lib/logger";
-import { getRegion, getTimezone } from "@/lib/preferences";
+import { getTimezone } from "@/lib/preferences";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
 import { getRequestId } from "@/lib/request-id";
 import { insertReport, resolveReport } from "./queries";
@@ -44,7 +44,7 @@ export async function submitReport(_prev: ReportState, form: FormData): Promise<
   if (!parsed.success) return { status: "error", fields: parsed.error.issues.map((i) => String(i.path[0])) };
   const { email, errorId, locale, description, page } = parsed.data; // `website` (isca) fica de fora
   const requestId = getRequestId(h);
-  const [region, timezone] = await Promise.all([getRegion(), getTimezone()]);
+  const timezone = await getTimezone();
   await insertReport({
     locale,
     description,
@@ -52,7 +52,6 @@ export async function submitReport(_prev: ReportState, form: FormData): Promise<
     email: email || null,
     errorId: errorId || null,
     requestId,
-    region,
     timezone,
     userAgent: h.get("user-agent")?.slice(0, 300) ?? null,
     release: env.APP_RELEASE,

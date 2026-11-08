@@ -1,4 +1,18 @@
-# Protótipo de layout (issue #53)
+# Protótipos de layout
+
+## Loja minimalista (issue #98) — `prototipo-loja.html`
+
+[`prototipo-loja.html`](prototipo-loja.html) é a proposta de redesign da loja (sem o dashboard), com os 132 produtos reais de `scripts/catalog/products.json`. Mesmo aviso: **não é código do produto**, o JavaScript só simula navegação e preço.
+
+- Cabeçalho em uma linha (logo, busca, idioma/fuso num ícone de globo, carrinho) + abas das categorias.
+- Produtos em lista: nome limpo + etiquetas (Heroic, FP 15…) + preço + **Comprar**; no celular a linha inteira abre a compra.
+- Subcategorias como abas fixas; "Popular" só nos mais vendidos.
+- **Comprar** abre a gaveta de opções (`ServiceOptionsDrawer`) com **Comprar agora** (direto ao pagamento) e **Adicionar ao carrinho**.
+- O contador no canto mostra os cliques desde a home (meta: 3 até o pagamento). `?clean=1` esconde o contador.
+
+Para abrir: dois cliques no arquivo, ou `python -m http.server` na pasta `design/`.
+
+## Primeira versão (issue #53) — `prototipo.html`
 
 [`prototipo.html`](prototipo.html) é um protótipo navegável, num único arquivo, das páginas da loja, do dashboard (admin e suporte) e do chat. Ele usa os tokens do [doc 11](../docs/11-design.md) e a estrutura do [doc 15](../docs/15-referencia-layout.md).
 

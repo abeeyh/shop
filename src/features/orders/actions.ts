@@ -4,6 +4,7 @@ import { refresh } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { getCustomer } from "@/features/account";
 import { cartSummary, clearCart, getCartId, setCartCoupon } from "@/features/cart";
 import { canonicalEmail } from "@/features/discounts/queries";
 import { routing } from "@/i18n/routing";
@@ -11,17 +12,28 @@ import { clientIp, rateLimitKey } from "@/lib/client-ip";
 import { env } from "@/lib/env";
 import { errorSummary, logger } from "@/lib/logger";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
-import { createInvoice } from "@/lib/payments/crypto";
+import { createInvoice, invoiceReady } from "@/lib/payments/crypto";
 import { orderPath } from "./link";
 import { CouponLimitError, insertOrder, markExpired, setInvoice, SoldOutError } from "./queries";
 import { NETWORKS, PAYMENT_WINDOW_MINUTES } from "./rules";
 
 export type CheckoutState = {
-  error: "" | "email" | "empty" | "unavailable" | "payment" | "coupon" | "changed" | "limited";
+  error:
+    | ""
+    | "email"
+    | "empty"
+    | "unavailable"
+    | "payment"
+    | "coupon"
+    | "changed"
+    | "limited"
+    | "notImplemented"
+    | "cardNotImplemented";
 };
 
 const input = z.object({
   email: z.email().max(254),
+  method: z.enum(["usdt", "card"]).default("usdt"), // RN-35 (#120): cripto (USDT) ou cartão
   network: z.enum(NETWORKS),
   locale: z.enum(routing.locales),
   expectedTotal: z.coerce.number().int().nonnegative(), // só para comparar — nunca para calcular (RN-20)
@@ -52,12 +64,24 @@ async function createOrder(order: Parameters<typeof insertOrder>[0], cartId: str
   }
 }
 
+// RN-35/RN-36: meio de pagamento sem provedor ligado — nada é criado nem reservado
+// (cartão: provedor ainda não escolhido, #25; USDT: sem chave do gateway)
+function providerMissing(method: "usdt" | "card") {
+  if (method === "card") return "cardNotImplemented" as const;
+  return invoiceReady() ? null : ("notImplemented" as const);
+}
+
+// RN-107: conta logada (opcional) — visitante compra só com e-mail (RN-01)
+const customerId = async () => (await getCustomer())?.id ?? null;
+
 // RN-01, RN-20, RN-30, RN-35: total recalculado aqui; o pedido congela os preços; o pagamento é
 // na fatura do provedor e só o IPN confirma (RN-32)
 export async function placeOrder(_prev: CheckoutState, form: FormData): Promise<CheckoutState> {
   const parsed = input.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: "email" };
-  const { email, network, locale, expectedTotal } = parsed.data;
+  const { email, method, network, locale, expectedTotal } = parsed.data;
+  const blocked = providerMissing(method);
+  if (blocked) return { error: blocked };
   if (await checkoutLimited()) return { error: "limited" };
   const cartId = await getCartId();
   const cart = await cartSummary(locale, cartId);
@@ -71,6 +95,7 @@ export async function placeOrder(_prev: CheckoutState, form: FormData): Promise<
 
   const order = {
     email: canonicalEmail(email),
+    userId: await customerId(), // RN-107: o pedido aparece em "Meus pedidos"
     locale,
     network,
     subtotalUsdtCents: cart.subtotalCents,
@@ -82,6 +107,7 @@ export async function placeOrder(_prev: CheckoutState, form: FormData): Promise<
     items: cart.lines.map((l) => ({
       productId: l.productId,
       raidSlotId: l.slotId,
+      variantId: l.variantId, // #100
       productName: l.name,
       options: l.options,
       unitPriceUsdtCents: l.unitCents,
@@ -104,7 +130,7 @@ export async function placeOrder(_prev: CheckoutState, form: FormData): Promise<
       ipnUrl: `${env.APP_URL}/api/webhooks/crypto`,
       returnUrl: `${env.APP_URL}${orderPath(locale, orderId)}`,
     });
-    await setInvoice(orderId, env.PAYMENTS_PROVIDER, invoice.providerPaymentId, invoice.payUrl);
+    await setInvoice(orderId, "nowpayments", invoice.providerPaymentId, invoice.payUrl);
     payUrl = invoice.payUrl;
   } catch (err) {
     logger.error(

@@ -9,6 +9,7 @@ import { env } from "@/lib/env";
 import { toMinutes } from "@/features/support/hours";
 import { replaceHours } from "@/features/support/hours-queries";
 import { isPwnedPassword } from "./hibp";
+import { isStrongPassword } from "@/lib/password";
 import { acceptInvite, createInvite, emailTaken, LastAdminError, openInvite, updateStaff } from "./queries";
 
 export type InviteState = { status: "idle" | "ok" | "error"; fields: string[]; link?: string };
@@ -70,7 +71,7 @@ export async function acceptStaffInvite(_prev: AcceptState, form: FormData): Pro
       locale,
       token: z.string().min(20).max(100),
       name: z.string().trim().min(2).max(60),
-      password: z.string().min(12).max(200),
+      password: z.string().refine(isStrongPassword), // #107: 8+ com maiúscula, minúscula e número
       confirm: z.string(),
     })
     .safeParse(Object.fromEntries(form));

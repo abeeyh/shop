@@ -8,7 +8,7 @@ type SiteFooterProps = { about: string; columns: Column[]; copyright: string; ex
 export function SiteFooter({ about, columns, copyright, extra }: SiteFooterProps) {
   return (
     <footer className="mt-16 border-t border-border bg-background py-12">
-      <div className="mx-auto w-full max-w-[1350px] px-4 sm:px-5">
+      <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-5">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <p className="text-sm text-muted-foreground">{about}</p>
           {columns.map((col) => (

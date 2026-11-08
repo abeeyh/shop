@@ -2,18 +2,20 @@ import "server-only"; // regra de negócio, banco e segredos só no servidor (do
 import { z } from "zod";
 import { PRICING, type ItemOptions } from "@/features/pricing/rules";
 
-const checkbox = z.preprocess((v) => v === "on" || v === "true" || v === true, z.boolean());
-
-// RN-15: realm, facção e personagem; quantidade em milhares, em passos fixos
-const gold = z.object({
+const character = z
+  .string()
+  .trim()
+  .min(2)
+  .max(12)
+  .regex(/^\p{L}+$/u);
+// RN-15: realm, facção e personagem — gold entrega no personagem; serviço convida o personagem
+const who = {
   realm: z.string().trim().min(2).max(40),
   faction: z.enum(["alliance", "horde"]),
-  character: z
-    .string()
-    .trim()
-    .min(2)
-    .max(12)
-    .regex(/^\p{L}+$/u),
+  character,
+};
+const gold = z.object({
+  ...who,
   quantity: z.coerce
     .number()
     .int()
@@ -21,39 +23,58 @@ const gold = z.object({
     .max(PRICING.gold.maxK)
     .refine((n) => n % PRICING.gold.stepK === 0),
 });
-// RN-16: horário e opção de loot
-const raid = z.object({ slotId: z.uuid(), loot: z.enum(["none", "armor", "full"]) });
-// RN-17: nível da chave, runs e timed
-const dungeon = z.object({
-  keyLevel: z.coerce.number().int().min(2).max(15),
-  runs: z.coerce.number().int().min(1).max(PRICING.dungeon.maxRuns),
-  timed: checkbox,
-});
 
-export type ParsedItem = { options: ItemOptions; quantity: number; slotId?: string };
+export type ParsedItem = { options: ItemOptions; quantity: number; slotId?: string; variantId?: string };
 export type ParseResult = { ok: true; item: ParsedItem } | { ok: false; fields: string[] };
+// o que o servidor sabe do produto (banco) — nunca vem do cliente (docs/09: entrada não confiável)
+export type ProductRules = {
+  addons: { name: string }[];
+  maxQuantity: number;
+  hasSlots: boolean;
+  hasVariants?: boolean; // #100: a combinação escolhida chega como id da variante (conferida no banco)
+};
 
-// O tipo vem do produto no banco, nunca do cliente (docs/09: entrada não confiável)
-export function parseItem(kind: "gold" | "raid" | "dungeon", raw: Record<string, unknown>): ParseResult {
-  const fail = (e: z.ZodError): ParseResult => ({
-    ok: false,
-    fields: e.issues.map((i) => String(i.path[0])),
+const fail = (e: z.ZodError): ParseResult => ({ ok: false, fields: e.issues.map((i) => String(i.path[0])) });
+
+// RN-16 / RN-17 (#94): quantidade até o limite do produto; adicionais só os do produto; horário obrigatório
+// quando o produto tem horários (sem horário, a run é agendada com o suporte depois do pagamento)
+function service(rules: ProductRules) {
+  const names = rules.addons.map((a) => a.name);
+  return z.object({
+    ...who,
+    quantity: z.coerce.number().int().min(1).max(rules.maxQuantity).default(1),
+    addon: z
+      .array(z.string().refine((n) => names.includes(n)))
+      .max(names.length)
+      .default([]),
+    slotId: rules.hasSlots ? z.uuid() : z.literal("").optional(),
+    variant: rules.hasVariants ? z.uuid() : z.literal("").optional(),
   });
+}
+
+export function parseItem(
+  kind: string,
+  raw: Record<string, unknown>,
+  rules: ProductRules = { addons: [], maxQuantity: 1, hasSlots: false },
+): ParseResult {
   if (kind === "gold") {
     const r = gold.safeParse(raw);
     if (!r.success) return fail(r.error);
     const { quantity, ...o } = r.data;
     return { ok: true, item: { options: { kind, ...o }, quantity } };
   }
-  if (kind === "raid") {
-    const r = raid.safeParse(raw);
-    if (!r.success) return fail(r.error);
-    return { ok: true, item: { options: { kind, loot: r.data.loot }, quantity: 1, slotId: r.data.slotId } };
-  }
-  const r = dungeon.safeParse(raw);
+  const r = service(rules).safeParse(raw);
   if (!r.success) return fail(r.error);
+  const { quantity, addon, slotId, variant, realm, faction, character: name } = r.data;
+  const options: ItemOptions = {
+    kind: "service",
+    realm,
+    faction,
+    character: name,
+    addons: [...new Set(addon)],
+  };
   return {
     ok: true,
-    item: { options: { kind, keyLevel: r.data.keyLevel, timed: r.data.timed }, quantity: r.data.runs },
+    item: { options, quantity, ...(slotId ? { slotId } : {}), ...(variant ? { variantId: variant } : {}) },
   };
 }

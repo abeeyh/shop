@@ -5,10 +5,11 @@ import { connection } from "next/server";
 import { buttonVariants } from "@/components/atoms/Button";
 import { GradientCard } from "@/components/molecules/GradientCard";
 import { LocalTime } from "@/components/molecules/LocalTime";
+import { getCustomer } from "@/features/account";
 import { cartSummary, getCartId, removeFromCart } from "@/features/cart";
 import { CouponForm } from "@/features/cart/components/CouponForm";
 import { describeItem } from "@/features/cart/describe";
-import { KindThumb } from "@/features/catalog";
+import { KindTile } from "@/features/catalog";
 import { CheckoutForm } from "@/features/orders";
 import { canonicalLocale } from "@/i18n/routing";
 import { getTimezone } from "@/lib/preferences";
@@ -64,11 +65,12 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
   await connection();
   const { locale } = await params;
   setRequestLocale(locale);
-  const [t, k, timeZone, cartId] = await Promise.all([
+  const [t, k, timeZone, cartId, customer] = await Promise.all([
     getTranslations({ locale, namespace: "Cart" }),
     getTranslations({ locale, namespace: "Checkout" }),
     getTimezone(),
     getCartId(),
+    getCustomer(),
   ]);
   const cart = await cartSummary(locale, cartId);
 
@@ -85,7 +87,7 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
   }
 
   return (
-    <div className="mx-auto w-full max-w-[1350px] px-4 py-10 sm:px-5">
+    <div className="mx-auto w-full max-w-[1200px] px-4 py-10 sm:px-5">
       <h1 className="mb-6 font-heading text-[clamp(1.75rem,4vw,2.5rem)] font-bold text-heading">
         {t("title")}
       </h1>
@@ -94,9 +96,7 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
           {cart.lines.map((line) => (
             <li key={line.id}>
               <GradientCard tone="solid" className="flex flex-wrap items-center gap-4">
-                <div className="w-18 shrink-0 [&>div]:mb-0">
-                  <KindThumb kind={line.kind} />
-                </div>
+                <KindTile kind={line.kind} />
                 <div className="min-w-0 flex-1">
                   <Link href={line.href} className="font-heading font-semibold text-heading hover:underline">
                     {line.name}
@@ -112,7 +112,7 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
                         ·{" "}
                       </>
                     ) : null}
-                    {describeItem(line.options, line.quantity, t)} · {line.region}
+                    {describeItem(line.options, line.quantity, t)}
                   </p>
                   {line.available ? null : <p className="text-sm text-error-text">{t("unavailable")}</p>}
                 </div>
@@ -144,8 +144,11 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
             }}
           />
           {cart.hasUnavailable ? <p className="text-sm text-error-text">{t("removeUnavailable")}</p> : null}
+          {/* #102: "Comprar agora" chega aqui (#pagar) */}
+          <div id="pagar" className="scroll-mt-32" />
           <CheckoutForm
             locale={locale}
+            defaultEmail={customer?.email}
             disabled={cart.hasUnavailable}
             expectedTotal={cart.totalCents}
             labels={{
@@ -154,6 +157,11 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
               network: k("network"),
               networkWarning: k("networkWarning"),
               pay: k("pay"),
+              method: k("method"),
+              crypto: k("crypto"),
+              card: k("card"),
+              payCard: k("payCard"),
+              cardNotImplemented: k("errors.cardNotImplemented"),
               errors: {
                 email: k("errors.email"),
                 empty: k("errors.empty"),
@@ -162,6 +170,8 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
                 coupon: k("errors.coupon"),
                 changed: k("errors.changed"),
                 limited: k("errors.limited"),
+                notImplemented: k("errors.notImplemented"),
+                cardNotImplemented: k("errors.cardNotImplemented"),
               },
             }}
           />
