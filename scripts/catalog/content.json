@@ -1,0 +1,101 @@
+{
+  "_comment": "#136: página detalhada dos serviços (descrição, galeria, FAQ). Texto próprio da loja, em inglês (RN-84: catálogo igual em todos os idiomas). Imagens só de public/catalog/. Rode pnpm catalog:import depois de editar. Produtos fora daqui não são tocados (o dashboard edita — #137).",
+  "content": [
+    {
+      "slugs": ["venomous-abyss-heroic", "venomous-abyss-normal"],
+      "details": "The Venomous Abyss is the main raid of the current season: eight bosses deep beneath the serpent temples, ending with Ula'tek. Our team clears it every week on Normal and Heroic, and you join the group on your own character.\n\nPick the run that fits you. A full clear (8/8) gives you a shot at loot from every boss. Shorter runs, such as the last boss or the last two bosses, are a quick way to get the achievement and the end-of-raid rewards.\n\nSaved or unsaved: in an unsaved run the raid team has not looted the bosses yet this week, so more items drop per boss and you get more chances. A saved run costs less and still gives you the kills, the achievements and your own loot chances.\n\nLoot is shared with group loot and free roll: nobody reserves items in advance, and every buyer rolls on what drops. After paying, you pick a time from the schedule (or we book one with you through support), and you get an invite on the day.",
+      "images": [
+        {
+          "src": "/catalog/raids/venomous-abyss.svg",
+          "alt": "Illustration of the Venomous Abyss raid: green venom glow and serpent fangs"
+        }
+      ],
+      "faq": [
+        {
+          "q": "How many bosses are in the Venomous Abyss?",
+          "a": "Eight: Nek'zali the Soulcoiler, The Lost Explorers, Entombed Sentinels, Vashnik the Malignant, Sszorak, The Twin Fangs, The Coiled Altar and Ula'tek, the final boss."
+        },
+        {
+          "q": "What is the difference between a saved and an unsaved run?",
+          "a": "In an unsaved run the raid team has not looted the bosses yet this week, so more items drop per boss and you have more chances at gear. A saved run is cheaper: you still get the kills, the achievements and your own loot chances, with fewer extra drops."
+        },
+        {
+          "q": "What do \"group loot\" and \"no item reserve\" mean?",
+          "a": "Items that drop are shared among the buyers in the run by rolling (free roll). Nobody can reserve a specific item in advance, so every buyer has the same chance. If you want every item you can equip, look at our Full Priority runs."
+        },
+        {
+          "q": "Do I need to give you my Battle.net login?",
+          "a": "No. Every run is self-play: you play your own character in the group. We never ask for your Battle.net password, and nobody from our team will."
+        },
+        {
+          "q": "When does my run happen?",
+          "a": "If the service shows a schedule, you pick a time before paying and the seat is held for you. If it does not, our support team books a time with you right after payment. Times are shown in your own time zone."
+        },
+        {
+          "q": "What do I need before the run?",
+          "a": "A character of the right level for the raid, the run unlocked on your account for the chosen difficulty, and some free time at the booked hour. Have your character name and realm ready: they go on the order."
+        },
+        {
+          "q": "What happens if the run is canceled or does not happen?",
+          "a": "Talk to support in the chat on the site. We move you to another time or, if that does not work for you, handle the refund through your order."
+        }
+      ]
+    },
+    {
+      "slugs": ["venomous-abyss-tidebound-grotto-9-9-heroic", "venomous-abyss-tidebound-grotto-9-9-normal"],
+      "details": "Both raids of the season in one booking: the eight bosses of the Venomous Abyss plus Nymrissa Wavecaller in the Tidebound Grotto, 9/9 in total. It costs less than buying the two runs separately, and you play the whole thing on your own character.\n\nSaved or unsaved: in an unsaved run the raid team has not looted the bosses yet this week, so more items drop per boss. A saved run costs less and still gives you every kill, the achievements and your own loot chances.\n\nLoot is shared with group loot and free roll: nobody reserves items, and every buyer rolls on what drops. After paying, pick a time from the schedule or book one with support.",
+      "images": [
+        {
+          "src": "/catalog/raids/venomous-abyss.svg",
+          "alt": "Illustration of the Venomous Abyss raid: green venom glow and serpent fangs"
+        },
+        {
+          "src": "/catalog/raids/tidebound-grotto.svg",
+          "alt": "Illustration of the Tidebound Grotto raid: an underwater cave lit in blue"
+        }
+      ],
+      "faq": [
+        {
+          "q": "What is included in the 9/9 bundle?",
+          "a": "A full clear of the Venomous Abyss (8 bosses) and the Tidebound Grotto (1 boss, Nymrissa Wavecaller) on the difficulty you choose."
+        },
+        {
+          "q": "Are both raids done on the same day?",
+          "a": "Usually yes, one after the other. If the schedule splits them, support lets you know before the run."
+        },
+        {
+          "q": "What is the difference between a saved and an unsaved run?",
+          "a": "In an unsaved run the raid team has not looted the bosses yet this week, so more items drop per boss. A saved run is cheaper, with fewer extra drops."
+        },
+        {
+          "q": "Do I need to give you my Battle.net login?",
+          "a": "No. Every run is self-play: you play your own character. We never ask for your Battle.net password."
+        }
+      ]
+    },
+    {
+      "slugs": ["tidebound-grotto-heroic", "tidebound-grotto-normal"],
+      "details": "The Tidebound Grotto is the one-boss raid of the season: a single fight against Nymrissa Wavecaller in a flooded cave. It is quick, so it fits before or after a Venomous Abyss run.\n\nSaved or unsaved: in an unsaved run the raid team has not looted the boss yet this week, so more items drop. A saved run costs less.\n\nLoot is shared with free roll and no item reserve. You play your own character.",
+      "images": [
+        {
+          "src": "/catalog/raids/tidebound-grotto.svg",
+          "alt": "Illustration of the Tidebound Grotto raid: an underwater cave lit in blue"
+        }
+      ],
+      "faq": [
+        {
+          "q": "How many bosses are in the Tidebound Grotto?",
+          "a": "One: Nymrissa Wavecaller."
+        },
+        {
+          "q": "Can I combine it with the Venomous Abyss?",
+          "a": "Yes. The \"Venomous Abyss + Tidebound Grotto 9/9\" bundle does both raids for less than buying them separately."
+        },
+        {
+          "q": "Do I need to give you my Battle.net login?",
+          "a": "No. Every run is self-play: you play your own character. We never ask for your Battle.net password."
+        }
+      ]
+    }
+  ]
+}

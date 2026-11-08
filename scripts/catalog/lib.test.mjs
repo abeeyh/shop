@@ -1,8 +1,9 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   addonsFrom,
   cleanName,
+  contentBySlug,
   isOnRequest,
   maxQuantityFrom,
   slugify,
@@ -146,5 +147,50 @@ describe("agrupamento em variantes (#100)", () => {
         expect(nums, `${g.slug} ${a.name}`).toEqual([...nums].sort((x, y) => x - y));
       }
     }
+  });
+});
+
+describe("página detalhada do serviço (#136)", () => {
+  const ok = { details: "Text", images: [{ src: "/catalog/a.svg", alt: "An image" }], faq: [] };
+  const slugs = new Set(["a", "b"]);
+  const exists = () => true;
+  it("um bloco serve a vários produtos", () => {
+    const out = contentBySlug([{ slugs: ["a", "b"], ...ok }], slugs, exists);
+    expect(out.a.images[0].src).toBe("/catalog/a.svg");
+    expect(out.b).toEqual(out.a);
+  });
+  it("recusa imagem externa ou fora de /catalog, sem arquivo, slug inexistente e repetido", () => {
+    for (const src of [
+      "https://evil.com/a.png",
+      "//evil.com/a.png",
+      "/catalog/../x.png",
+      "/uploads/a.png",
+      "/catalog/a.html",
+    ])
+      expect(
+        () => contentBySlug([{ slugs: ["a"], ...ok, images: [{ src, alt: "An image" }] }], slugs, exists),
+        src,
+      ).toThrow();
+    expect(() => contentBySlug([{ slugs: ["a"], ...ok }], slugs, () => false)).toThrow(
+      /não existe em public/,
+    );
+    expect(() => contentBySlug([{ slugs: ["x"], ...ok }], slugs, exists)).toThrow(/não existe no catálogo/);
+    expect(() =>
+      contentBySlug(
+        [
+          { slugs: ["a"], ...ok },
+          { slugs: ["a"], ...ok },
+        ],
+        slugs,
+        exists,
+      ),
+    ).toThrow(/mais de um/);
+  });
+  it("o content.json do projeto é válido", () => {
+    const read = (f) => JSON.parse(readFileSync(new URL(f, import.meta.url), "utf8"));
+    const c = toCatalog(read("./products.json").info, read("./groups.json").groups);
+    const all = new Set([...c.singles, ...c.groups].map((p) => p.slug));
+    const pub = (src) => existsSync(new URL(`../../public${src}`, import.meta.url));
+    expect(Object.keys(contentBySlug(read("./content.json").content, all, pub)).length).toBeGreaterThan(0);
   });
 });

@@ -102,3 +102,12 @@ export async function listVariants(productId: string) {
     .where(and(eq(productVariants.productId, productId), eq(productVariants.active, true)))
     .orderBy(asc(productVariants.sortOrder));
 }
+
+// #136: conteúdo da página do serviço (fora do productColumns para não pesar as listas)
+export async function getProductContent(productId: string) {
+  const [row] = await db
+    .select({ details: products.details, images: products.images, faq: products.faq })
+    .from(products)
+    .where(eq(products.id, productId));
+  return row ?? { details: "", images: [], faq: [] };
+}

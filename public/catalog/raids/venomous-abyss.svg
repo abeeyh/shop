@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="t"><title id="t">Venomous Abyss</title>
+<defs>
+<radialGradient id="g1" cx="30%" cy="25%" r="70%"><stop offset="0" stop-color="#3ee07f" stop-opacity=".55"/><stop offset="1" stop-color="#3ee07f" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="80%" cy="85%" r="60%"><stop offset="0" stop-color="#8b5cf6" stop-opacity=".6"/><stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/></radialGradient>
+<linearGradient id="fang" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9ffe9"/><stop offset="1" stop-color="#3ee07f" stop-opacity=".2"/></linearGradient>
+</defs>
+<rect width="1200" height="675" fill="#06090b"/><rect width="1200" height="675" fill="url(#g1)"/><rect width="1200" height="675" fill="url(#g2)"/>
+<g fill="none" stroke="#3ee07f" stroke-opacity=".35" stroke-width="3">
+<path d="M-50 520 C 200 420, 380 640, 620 520 S 1000 380, 1260 470"/>
+<path d="M-50 580 C 220 480, 400 700, 640 580 S 1020 440, 1260 530" stroke-opacity=".2"/>
+<path d="M-50 460 C 180 360, 360 580, 600 460 S 980 320, 1260 410" stroke-opacity=".15"/>
+</g>
+<g transform="translate(600 300)">
+<path d="M-150 -40 Q -120 150 -60 210 Q -90 60 -100 -40 Z" fill="url(#fang)"/>
+<path d="M150 -40 Q 120 150 60 210 Q 90 60 100 -40 Z" fill="url(#fang)"/>
+<ellipse cx="0" cy="-70" rx="190" ry="70" fill="none" stroke="#e9ffe9" stroke-opacity=".5" stroke-width="2"/>
+<circle cx="0" cy="-70" r="18" fill="#3ee07f"/><circle cx="0" cy="-70" r="40" fill="#3ee07f" fill-opacity=".15"/>
+</g>
+<g fill="#3ee07f"><circle cx="210" cy="140" r="3"/><circle cx="980" cy="200" r="2"/><circle cx="1080" cy="110" r="3"/><circle cx="140" cy="300" r="2"/><circle cx="860" cy="90" r="2"/></g>
+</svg>

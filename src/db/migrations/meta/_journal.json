@@ -148,6 +148,13 @@
       "when": 1794116698234,
       "tag": "0020_user_theme",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1794119231241,
+      "tag": "0021_product_content",
+      "breakpoints": true
     }
   ]
 }

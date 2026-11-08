@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="t"><title id="t">Tidebound Grotto</title>
+<defs>
+<radialGradient id="g1" cx="50%" cy="20%" r="75%"><stop offset="0" stop-color="#4cc3ff" stop-opacity=".55"/><stop offset="1" stop-color="#4cc3ff" stop-opacity="0"/></radialGradient>
+<linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1a2e"/><stop offset="1" stop-color="#03070d"/></linearGradient>
+</defs>
+<rect width="1200" height="675" fill="url(#sea)"/><rect width="1200" height="675" fill="url(#g1)"/>
+<path d="M0 0 L 0 675 L 180 675 Q 230 360 120 0 Z" fill="#02050a" fill-opacity=".8"/>
+<path d="M1200 0 L 1200 675 L 1020 675 Q 960 340 1090 0 Z" fill="#02050a" fill-opacity=".8"/>
+<g fill="none" stroke="#a9e6ff" stroke-width="3">
+<path d="M150 520 Q 300 470 450 520 T 750 520 T 1050 520" stroke-opacity=".45"/>
+<path d="M150 570 Q 300 520 450 570 T 750 570 T 1050 570" stroke-opacity=".25"/>
+<path d="M150 470 Q 300 420 450 470 T 750 470 T 1050 470" stroke-opacity=".15"/>
+</g>
+<g transform="translate(600 300)" fill="none" stroke="#a98bff" stroke-opacity=".8" stroke-width="3">
+<path d="M0 -150 C 70 -90 70 -10 0 40 C -70 -10 -70 -90 0 -150 Z" fill="#4cc3ff" fill-opacity=".12"/>
+<circle cx="0" cy="-55" r="14" fill="#a9e6ff" stroke="none"/>
+</g>
+<g fill="#a9e6ff" fill-opacity=".7"><circle cx="420" cy="380" r="5"/><circle cx="440" cy="330" r="3"/><circle cx="790" cy="400" r="4"/><circle cx="770" cy="350" r="2"/><circle cx="610" cy="430" r="3"/></g>
+</svg>

@@ -65,6 +65,9 @@ classDiagram
     +hot: boolean
     +sortOrder: int
     +optionAxes: name+values+style[]
+    +details: string
+    +images: src+alt[]
+    +faq: q+a[]
     +active: boolean
   }
   class ProductVariant {

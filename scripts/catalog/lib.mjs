@@ -1,4 +1,5 @@
 // Regras puras da importação do catálogo (#94) — testadas em lib.test.mjs; import.mjs só grava no banco.
+import { productContent } from "../../src/features/catalog/content.ts";
 
 // Decisão do dono (2026-11-07): 1.000.000 de gold do sistema de origem = 45 USD (= 45 USDT, RN-12)
 export const USDT_CENTS_PER_MILLION = 4500;
@@ -115,4 +116,21 @@ export function toCatalog(items, groups) {
     };
   });
   return { singles: singles.filter((p) => !used.has(p.externalId)), groups: grouped, groupedIds: [...used] };
+}
+
+// #136: content.json → { slug: { details, images, faq } }. Um bloco pode servir a vários produtos
+// (mesma raid em dificuldades diferentes). Slug inexistente ou repetido, ou imagem sem arquivo = erro.
+export function contentBySlug(entries, slugs, fileExists) {
+  const out = {};
+  for (const { slugs: targets, ...raw } of entries) {
+    const content = productContent.parse(raw);
+    for (const img of content.images)
+      if (!fileExists(img.src)) throw new Error(`content.json: imagem ${img.src} não existe em public/`);
+    for (const slug of targets) {
+      if (!slugs.has(slug)) throw new Error(`content.json: produto ${slug} não existe no catálogo`);
+      if (out[slug]) throw new Error(`content.json: ${slug} aparece em mais de um bloco`);
+      out[slug] = content;
+    }
+  }
+  return out;
 }
