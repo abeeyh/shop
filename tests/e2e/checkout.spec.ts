@@ -84,6 +84,18 @@ test.describe("checkout USDT", () => {
     await expect(page).toHaveURL(/\/en\/carrinho$/);
   });
 
+  test("#120: escolher cartão mostra 'API ainda não implementada' e não deixa pagar", async ({ page }) => {
+    await addService(page);
+    await page.goto("/en/carrinho");
+    await expect(page.getByRole("radio", { name: "Crypto (USDT)" })).toBeChecked();
+    await page.getByRole("radio", { name: "Credit card" }).check();
+    await expect(page.getByText("Credit card: API not yet implemented.", { exact: false })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Pay by card" })).toBeDisabled();
+    await expect(page.getByRole("radio", { name: "TRC-20" })).toBeHidden(); // rede só vale para cripto
+    await page.getByRole("radio", { name: "Crypto (USDT)" }).check();
+    await expect(page.getByRole("button", { name: "Pay with USDT" })).toBeEnabled();
+  });
+
   test("link do pedido sem a assinatura certa não mostra nada (docs/09: IDOR)", async ({ page }) => {
     const { id: orderId } = await seedOrder();
     await page.goto(`/en/pedido/${orderId}?t=forjado`);

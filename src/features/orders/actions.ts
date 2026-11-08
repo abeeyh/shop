@@ -19,11 +19,21 @@ import { NETWORKS, PAYMENT_WINDOW_MINUTES } from "./rules";
 
 export type CheckoutState = {
   error:
-    "" | "email" | "empty" | "unavailable" | "payment" | "coupon" | "changed" | "limited" | "notImplemented";
+    | ""
+    | "email"
+    | "empty"
+    | "unavailable"
+    | "payment"
+    | "coupon"
+    | "changed"
+    | "limited"
+    | "notImplemented"
+    | "cardNotImplemented";
 };
 
 const input = z.object({
   email: z.email().max(254),
+  method: z.enum(["usdt", "card"]).default("usdt"), // RN-35 (#120): cripto (USDT) ou cartão
   network: z.enum(NETWORKS),
   locale: z.enum(routing.locales),
   expectedTotal: z.coerce.number().int().nonnegative(), // só para comparar — nunca para calcular (RN-20)
@@ -54,6 +64,13 @@ async function createOrder(order: Parameters<typeof insertOrder>[0], cartId: str
   }
 }
 
+// RN-35/RN-36: meio de pagamento sem provedor ligado — nada é criado nem reservado
+// (cartão: provedor ainda não escolhido, #25; USDT: sem chave do gateway)
+function providerMissing(method: "usdt" | "card") {
+  if (method === "card") return "cardNotImplemented" as const;
+  return invoiceReady() ? null : ("notImplemented" as const);
+}
+
 // RN-107: conta logada (opcional) — visitante compra só com e-mail (RN-01)
 const customerId = async () => (await getCustomer())?.id ?? null;
 
@@ -62,8 +79,9 @@ const customerId = async () => (await getCustomer())?.id ?? null;
 export async function placeOrder(_prev: CheckoutState, form: FormData): Promise<CheckoutState> {
   const parsed = input.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: "email" };
-  const { email, network, locale, expectedTotal } = parsed.data;
-  if (!invoiceReady()) return { error: "notImplemented" }; // sem provedor: nada é criado nem reservado
+  const { email, method, network, locale, expectedTotal } = parsed.data;
+  const blocked = providerMissing(method);
+  if (blocked) return { error: blocked };
   if (await checkoutLimited()) return { error: "limited" };
   const cartId = await getCartId();
   const cart = await cartSummary(locale, cartId);

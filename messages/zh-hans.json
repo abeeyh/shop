@@ -185,8 +185,13 @@
       "coupon": "该优惠码已达到使用上限，请移除后继续。",
       "changed": "价格已变动（促销已结束或优惠码已变更），请确认新的总额后再试一次。",
       "limited": "结算尝试次数过多，请稍等几分钟再试。",
-      "notImplemented": "USDT 付款：API 尚未实现。"
-    }
+      "notImplemented": "USDT 付款：API 尚未实现。",
+      "cardNotImplemented": "信用卡：API 尚未实现。目前请使用加密货币（USDT）付款。"
+    },
+    "method": "付款方式",
+    "crypto": "加密货币（USDT）",
+    "card": "信用卡",
+    "payCard": "用信用卡付款"
   },
   "Order": {
     "title": "你的订单",

@@ -185,8 +185,13 @@
       "coupon": "此優惠碼已達使用上限，請移除後繼續。",
       "changed": "價格已變動（促銷已結束或優惠碼已變更），請確認新的總額後再試一次。",
       "limited": "結帳嘗試次數過多，請稍候幾分鐘再試。",
-      "notImplemented": "USDT 付款：API 尚未實作。"
-    }
+      "notImplemented": "USDT 付款：API 尚未實作。",
+      "cardNotImplemented": "信用卡：API 尚未實作。目前請以加密貨幣（USDT）付款。"
+    },
+    "method": "付款方式",
+    "crypto": "加密貨幣（USDT）",
+    "card": "信用卡",
+    "payCard": "以信用卡付款"
   },
   "Order": {
     "title": "你的訂單",
