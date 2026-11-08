@@ -20,7 +20,7 @@ export async function ProductPanel({ locale, product, timeZone }: Props) {
     getProductContent(product.id), // #136
   ]);
   const info = (
-    <div className="flex flex-col gap-3">
+    <div className="flex min-w-0 flex-col gap-3">
       <div className="flex items-center gap-3">
         <KindTile kind={product.categoryKind} />
         <div>
@@ -42,10 +42,14 @@ export async function ProductPanel({ locale, product, timeZone }: Props) {
     </div>
   );
   return (
-    <div className="grid gap-7 lg:grid-cols-[1fr_26rem] lg:items-start">
+    // #139: a caixa de compra fica sozinha na coluna da direita (ocupa as duas linhas, então o sticky
+    // anda junto sem cobrir nada); galeria e FAQ ficam na esquerda. Celular: info → compra → FAQ
+    <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_26rem]">
       {info}
-      <BuyBox locale={locale} product={product} timeZone={timeZone} />
-      <div className="lg:col-span-2">
+      <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
+        <BuyBox locale={locale} product={product} timeZone={timeZone} />
+      </div>
+      <div className="min-w-0 lg:col-start-1">
         <ProductFaq faq={content.faq} title={c("faq")} />
       </div>
     </div>
