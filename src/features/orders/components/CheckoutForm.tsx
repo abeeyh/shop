@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { buttonVariants } from "@/components/atoms/Button";
 import { placeOrder, type CheckoutState } from "../actions";
 
@@ -15,6 +15,11 @@ type Props = {
     network: string;
     networkWarning: string;
     pay: string;
+    method: string;
+    crypto: string;
+    card: string;
+    payCard: string;
+    cardNotImplemented: string;
     errors: Record<string, string>;
   };
 };
@@ -27,6 +32,8 @@ const choice =
 // RN-01: visitante paga só com e-mail; RN-37: rede escolhida em destaque (rede errada = perda)
 export function CheckoutForm({ locale, defaultEmail, disabled, expectedTotal, labels }: Props) {
   const [state, action, pending] = useActionState<CheckoutState, FormData>(placeOrder, { error: "" });
+  // RN-35 (#120): cripto (USDT) ou cartão; o cartão ainda não tem provedor (#25)
+  const [method, setMethod] = useState<"usdt" | "card">("usdt");
   return (
     <form action={action} className="grid gap-4 border-t border-border pt-4">
       <input type="hidden" name="locale" value={locale} />
@@ -49,6 +56,29 @@ export function CheckoutForm({ locale, defaultEmail, disabled, expectedTotal, la
         </span>
       </label>
       <fieldset className="grid gap-1.5 text-sm">
+        <legend className="mb-1.5 font-semibold text-foreground">{labels.method}</legend>
+        <div className="grid grid-cols-2 gap-2">
+          {(["usdt", "card"] as const).map((m) => (
+            <label key={m} className={choice}>
+              <input
+                type="radio"
+                name="method"
+                value={m}
+                checked={method === m}
+                onChange={() => setMethod(m)}
+                className="size-4.5 accent-primary"
+              />
+              {m === "usdt" ? labels.crypto : labels.card}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      {method === "card" ? (
+        <p role="status" className="rounded-md border border-border bg-secondary p-3 text-sm">
+          {labels.cardNotImplemented}
+        </p>
+      ) : null}
+      <fieldset className="grid gap-1.5 text-sm" hidden={method === "card"}>
         <legend className="mb-1.5 font-semibold text-foreground">{labels.network}</legend>
         <div className="grid grid-cols-2 gap-2">
           <label className={choice}>
@@ -70,10 +100,10 @@ export function CheckoutForm({ locale, defaultEmail, disabled, expectedTotal, la
       </fieldset>
       <button
         type="submit"
-        disabled={disabled || pending}
+        disabled={disabled || pending || method === "card"}
         className={buttonVariants({ variant: "primary", size: "lg" })}
       >
-        {labels.pay}
+        {method === "card" ? labels.payCard : labels.pay}
       </button>
       <p role="alert" className="min-h-5 text-center text-sm text-error-text">
         {state.error ? labels.errors[state.error] : null}

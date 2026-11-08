@@ -157,6 +157,11 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
               network: k("network"),
               networkWarning: k("networkWarning"),
               pay: k("pay"),
+              method: k("method"),
+              crypto: k("crypto"),
+              card: k("card"),
+              payCard: k("payCard"),
+              cardNotImplemented: k("errors.cardNotImplemented"),
               errors: {
                 email: k("errors.email"),
                 empty: k("errors.empty"),
@@ -166,6 +171,7 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
                 changed: k("errors.changed"),
                 limited: k("errors.limited"),
                 notImplemented: k("errors.notImplemented"),
+                cardNotImplemented: k("errors.cardNotImplemented"),
               },
             }}
           />

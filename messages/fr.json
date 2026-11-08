@@ -185,8 +185,13 @@
       "coupon": "Ce coupon a atteint sa limite d'utilisation. Retirez-le pour continuer.",
       "changed": "Le prix a changé (une promotion s'est terminée ou le coupon a changé). Vérifiez le nouveau total et réessayez.",
       "limited": "Trop de tentatives de paiement. Patientez quelques minutes puis réessayez.",
-      "notImplemented": "Paiement en USDT : API pas encore implémentée."
-    }
+      "notImplemented": "Paiement en USDT : API pas encore implémentée.",
+      "cardNotImplemented": "Carte bancaire : API pas encore implémentée. Payez en crypto (USDT) pour l’instant."
+    },
+    "method": "Moyen de paiement",
+    "crypto": "Crypto (USDT)",
+    "card": "Carte bancaire",
+    "payCard": "Payer par carte"
   },
   "Order": {
     "title": "Votre commande",

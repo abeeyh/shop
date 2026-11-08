@@ -185,8 +185,13 @@
       "coupon": "Dieser Gutschein hat sein Nutzungslimit erreicht. Entferne ihn, um fortzufahren.",
       "changed": "Der Preis hat sich geändert (eine Aktion ist abgelaufen oder der Gutschein wurde geändert). Prüfe die neue Summe und versuche es erneut.",
       "limited": "Zu viele Bestellversuche. Warte ein paar Minuten und versuche es erneut.",
-      "notImplemented": "USDT-Zahlung: API noch nicht implementiert."
-    }
+      "notImplemented": "USDT-Zahlung: API noch nicht implementiert.",
+      "cardNotImplemented": "Kreditkarte: API noch nicht implementiert. Bezahle vorerst mit Krypto (USDT)."
+    },
+    "method": "Zahlungsart",
+    "crypto": "Krypto (USDT)",
+    "card": "Kreditkarte",
+    "payCard": "Mit Karte bezahlen"
   },
   "Order": {
     "title": "Deine Bestellung",
