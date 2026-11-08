@@ -12,6 +12,9 @@ export const routing = defineRouting({
 export type Locale = (typeof routing.locales)[number];
 
 // Código BCP 47 canônico para <html lang> e Intl: "pt-br" → "pt-BR", "zh-hant" → "zh-Hant".
+// idioma fora da lista (ex.: o "[locale]" da 1ª montagem da página, URL de robô) cai no padrão em vez
+// de derrubar a página com RangeError do Intl (visto no deploy de homologação — #123)
 export function canonicalLocale(locale: string): string {
-  return Intl.getCanonicalLocales(locale)[0] ?? locale;
+  const known = routing.locales.find((l) => l === locale) ?? routing.defaultLocale;
+  return Intl.getCanonicalLocales(known)[0] ?? known;
 }

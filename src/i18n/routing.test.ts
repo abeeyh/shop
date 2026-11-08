@@ -8,4 +8,9 @@ describe("canonicalLocale", () => {
     expect(canonicalLocale("zh-hans")).toBe("zh-Hans");
     expect(canonicalLocale("en")).toBe("en");
   });
+  it("#123: idioma desconhecido ou inválido cai no padrão em vez de quebrar a página", () => {
+    expect(canonicalLocale("[locale]")).toBe("en");
+    expect(canonicalLocale("..")).toBe("en");
+    expect(canonicalLocale("xx")).toBe("en");
+  });
 });
