@@ -64,6 +64,14 @@ jobs:
           retention-days: 7
       - run: pnpm audit --prod --audit-level high
 
+  # #123: a imagem do deploy é construída SEM banco (como no servidor); o build do quality tem banco e
+  # não pega rota/página que consulta o banco na hora do build
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker build -t shop:ci .
+
   pr-rules:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest

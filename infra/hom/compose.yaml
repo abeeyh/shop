@@ -1,0 +1,64 @@
+# Homologação (#123): VM única (Magalu Cloud, 1 vCPU / 1 GB + 2 GB de swap). Sobe com:
+#   docker compose --env-file .env up -d
+# O .env fica só no servidor (/opt/shop/.env, chmod 600): segredos nunca no repositório (docs/09).
+# A imagem "shop:hom" é construída fora da VM (o build do Next não cabe em 1 GB) e carregada com docker load.
+services:
+  db:
+    image: postgres:17.6-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: shop
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina no .env}
+      POSTGRES_DB: shop
+    # memória curta: VM de 1 GB
+    command: ["postgres", "-c", "shared_buffers=64MB", "-c", "max_connections=30"]
+    ports:
+      - "127.0.0.1:5432:5432" # só pela VM (migração via túnel SSH); nunca exposto
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shop"]
+      interval: 5s
+      retries: 10
+
+  cache:
+    image: valkey/valkey:8.1-alpine
+    restart: unless-stopped
+    command: ["valkey-server", "--maxmemory", "64mb", "--maxmemory-policy", "allkeys-lru"]
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      retries: 10
+
+  app:
+    image: shop:hom
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      APP_ENV: homologacao
+      DATABASE_URL: postgres://shop:${POSTGRES_PASSWORD}@db:5432/shop
+      VALKEY_URL: redis://cache:6379
+      CLIENT_IP_HEADER: x-real-ip # o Caddy sobrescreve com o IP de quem conectou (docs/16 §9)
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:?defina no .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on:
+      - app
+
+volumes:
+  db-data:
+  caddy-data:

@@ -27,7 +27,7 @@ Princípio: o menor número de peças que resolve o problema. A tabela abaixo é
 
 | Necessidade | Escolha | Uso |
 |-------------|---------|-----|
-| Hospedagem da aplicação | [provedor / produto] | |
+| Hospedagem da aplicação | **Homologação:** VM na **Magalu Cloud** (Ubuntu 24.04, 1 vCPU / 1 GB + 2 GB de swap), Docker Compose com app + Postgres + Valkey + **Caddy** (HTTPS automático) — `infra/hom/` (#123). **Produção:** [a decidir — #2] | Imagem construída fora da VM (o build do Next não cabe em 1 GB) e carregada com `docker load`; sem domínio ainda: `https://177-93-128-56.sslip.io` |
 | Banco gerenciado | [provedor / produto] | |
 | Armazenamento de arquivos | [S3 compatível] | |
 | Registro de imagens | [registry] | |

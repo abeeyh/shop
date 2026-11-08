@@ -34,7 +34,7 @@ gantt
 - [x] Tokens do design system em `globals.css` ([11](11-design.md)), fontes Inter + Mulish, átomo `Button`.
 - [ ] Infra como código (Terraform) do ambiente de homologação.
 - [x] CI (lint, format, typecheck, i18n, testes com cobertura, build, audit, título semântico, coautoria de IA, destino do PR) e back-merge `main` → `hom`.
-- [ ] Build/push da imagem + deploy em homologação a partir de `hom` (depende da hospedagem).
+- [x] Deploy de homologação (#123): VM Magalu Cloud com `infra/hom/compose.yaml` (app + Postgres + Valkey + Caddy/HTTPS). *Manual por enquanto: `docker build` fora da VM → `docker save | ssh … docker load` → `docker compose up -d`; migração e seed por túnel SSH. Automatizar no CI a partir de `hom` quando houver registry. CI constrói a imagem em todo PR (job `image`).*
 - [x] E2E com Playwright no CI (celular e desktop): idiomas, 404, rolagem horizontal, `x-request-id`, health.
 - [x] release-please (config + manifest; primeira release `0.1.0`), Dependabot (alvo `hom`).
 - [ ] Backup do banco (depende da hospedagem).
