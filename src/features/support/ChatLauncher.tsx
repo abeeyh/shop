@@ -1,5 +1,6 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { getTranslations } from "next-intl/server";
+import { connection } from "next/server";
 import { canonicalLocale } from "@/i18n/routing";
 import { getTimezone } from "@/lib/preferences";
 import { getConversation, guestConversationId } from "./chat";
@@ -10,6 +11,8 @@ import { ChatWidget } from "./components/ChatWidget";
 
 // RN-92: chat em todas as páginas da loja; a conversa do visitante vem do cookie (só o servidor lê)
 export async function ChatLauncher({ locale }: { locale: string }) {
+  // online/offline depende da hora da requisição (RN-99) e o banco não existe no build da imagem
+  await connection();
   const [t, current, hours, timeZone] = await Promise.all([
     getTranslations({ locale, namespace: "Chat" }),
     guestConversationId(),
