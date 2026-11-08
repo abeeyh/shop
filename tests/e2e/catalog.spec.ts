@@ -77,3 +77,24 @@ test("página não encontrada no idioma do usuário", async ({ page }) => {
   await page.getByRole("link", { name: "Voltar ao início" }).click();
   await expect(page).toHaveURL(/\/pt-br$/);
 });
+
+// #139: no desktop a caixa de compra (sticky) não pode ficar por cima da galeria nem da FAQ
+test("#139: galeria e FAQ não ficam atrás da caixa de compra", async ({ page, isMobile }) => {
+  test.skip(isMobile, "no celular a caixa vem abaixo, sem sticky");
+  await page.goto("/en/wow/raids/venomous-abyss-tidebound-grotto-9-9-heroic");
+  const buy = page
+    .getByRole("button", { name: "Add to cart" })
+    .filter({ visible: true })
+    .locator("xpath=ancestor::*[contains(@class,'sticky')][1]");
+  const gallery = page.getByRole("list", { name: "Gallery" }).filter({ visible: true });
+  const faq = page.getByRole("region", { name: "Frequently asked questions" }).filter({ visible: true });
+  const overlap = async (other: typeof gallery) => {
+    const [a, b] = [await buy.boundingBox(), await other.boundingBox()];
+    if (!a || !b) throw new Error("sem caixa");
+    return a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height;
+  };
+  expect(await overlap(gallery)).toBe(false);
+  await faq.scrollIntoViewIfNeeded();
+  expect(await overlap(faq)).toBe(false);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true); // sem rolagem lateral
+});
