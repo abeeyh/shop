@@ -1,6 +1,7 @@
 "use server";
 
 import { APIError } from "better-auth/api";
+import { verifyPassword } from "better-auth/crypto";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { refresh } from "next/cache";
@@ -13,11 +14,13 @@ import { env } from "@/lib/env";
 import { logger } from "@/lib/logger";
 import { getRequestId } from "@/lib/request-id";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
-import { addCharacter, deleteCharacter, deleteCustomer, isStaff } from "./queries";
+import { addCharacter, deleteCharacter, deleteCustomer, isStaff, staffPasswordHash } from "./queries";
 import { characterInput, signInInput, signUpInput } from "./schemas";
 import { getCustomer } from "./session";
 
-export type AccountState = { error: "" | "invalid" | "limited" | "pwned" | "limit" | "duplicate" };
+export type AccountState = {
+  error: "" | "invalid" | "limited" | "pwned" | "limit" | "duplicate" | "exists" | "staff";
+};
 
 const locale = z.enum(routing.locales);
 
@@ -34,8 +37,8 @@ async function limited(scope: "signup" | "login", key?: string): Promise<boolean
   return false;
 }
 
-// RN-107: cadastro opcional. docs/09 "Nunca": não revelar se o e-mail já existe — conta nova ou e-mail
-// já usado dão a MESMA resposta (ninguém entra sozinho; o próximo passo é sempre o login)
+// RN-107 (#118): cadastro opcional que já entra logado. E-mail já usado recebe "já tem conta — entre"
+// (decisão do dono; risco aceito no doc 09: dá para saber se um e-mail tem conta). 5/h por IP.
 export async function signUp(_prev: AccountState, form: FormData): Promise<AccountState> {
   const input = signUpInput.safeParse(Object.fromEntries(form));
   if (!input.success) return { error: "invalid" };
@@ -43,12 +46,24 @@ export async function signUp(_prev: AccountState, form: FormData): Promise<Accou
   if (await limited("signup")) return { error: "limited" };
   if (await isPwnedPassword(password)) return { error: "pwned" };
   try {
-    // sem log de "conta criada": o Better Auth responde igual para e-mail já usado (contaria errado)
     await auth.api.signUpEmail({ body: { email, password, name: "" }, headers: await headers() });
   } catch (err) {
-    if (!(err instanceof APIError)) throw err; // e-mail já usado: segue igual
+    if (!(err instanceof APIError)) throw err;
+    return { error: "exists" };
   }
-  redirect(`/${l}/entrar?novo=1`);
+  logger.info(
+    { event: "account.created", requestId: getRequestId(await headers()) },
+    "conta de cliente criada",
+  );
+  redirect(`/${l}/conta`);
+}
+
+// RN-110: conta da equipe não entra pela loja — com a senha certa, avisa para usar o /admin; com a
+// senha errada, a mesma resposta de sempre (quem não sabe a senha não descobre quem é da equipe)
+async function staffLogin(email: string, password: string): Promise<AccountState | null> {
+  const hash = await staffPasswordHash(email);
+  if (!hash) return null;
+  return { error: (await verifyPassword({ hash, password })) ? "staff" : "invalid" };
 }
 
 export async function signInCustomer(_prev: AccountState, form: FormData): Promise<AccountState> {
@@ -56,18 +71,17 @@ export async function signInCustomer(_prev: AccountState, form: FormData): Promi
   if (!input.success) return { error: "invalid" };
   const { email, password, locale: l } = input.data;
   if (await limited("login", `email:${email.toLowerCase()}`)) return { error: "limited" };
-  let twoFactor = false;
+  const staff = await staffLogin(email, password);
+  if (staff) return staff;
   try {
-    const r = await auth.api.signInEmail({ body: { email, password }, headers: await headers() });
-    twoFactor = "twoFactorRedirect" in r && r.twoFactorRedirect === true;
+    await auth.api.signInEmail({ body: { email, password }, headers: await headers() });
   } catch (err) {
     if (!(err instanceof APIError)) throw err;
     const requestId = getRequestId(await headers()); // docs/16: requestId em todo log; sem e-mail
     logger.warn({ event: "auth.customer_login_failed", requestId }, "login de cliente recusado");
     return { error: "invalid" };
   }
-  // conta de equipe com 2FA (RN-02): o código é pedido na tela da equipe
-  redirect(twoFactor ? `/${l}/admin/entrar/codigo` : `/${l}/conta`);
+  redirect(`/${l}/conta`);
 }
 
 export async function signOut(form: FormData): Promise<void> {

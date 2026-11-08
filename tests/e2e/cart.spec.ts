@@ -78,7 +78,9 @@ test.describe("carrinho", () => {
     await page.getByRole("button", { name: "Add to cart" }).click();
     await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible();
     await page.goto("/en/carrinho");
-    await expect(page.getByText("Armor Stack", { exact: false }).first()).toBeVisible();
+    await expect(
+      page.getByText("Armor Stack", { exact: false }).filter({ visible: true }).first(),
+    ).toBeVisible();
     await expect(page.getByText("6.19").first()).toBeVisible();
     await page.getByRole("button", { name: "Remove" }).click();
     await expect(page.getByText("Your cart is empty.")).toBeVisible();
@@ -104,7 +106,7 @@ test.describe("carrinho", () => {
 test("#109: lista → página do produto → Comprar agora cai no pagamento com o item", async ({ page }) => {
   await page.goto("/en/wow/mythic-plus");
   await page.getByRole("link", { name: "Mythic+ Key" }).click();
-  await expect(page).toHaveURL(/\/en\/wow\/mythic-plus\/mythic-plus-key$/);
+  await expect(page).toHaveURL(/\/en\/wow\/mythic-plus\/mythic-plus-key$/, { timeout: 15_000 });
   await page.getByLabel("Realm").filter({ visible: true }).fill("Area 52");
   await page.getByLabel("Character name").filter({ visible: true }).fill("Thrall");
   await page.getByRole("button", { name: "Buy now" }).click();

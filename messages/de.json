@@ -511,7 +511,6 @@
       "intro": "Optional: Du kannst ohne Konto kaufen. Mit Konto siehst du deine Bestellungen und speicherst deine Charaktere.",
       "passwordHint": "Mindestens 8 Zeichen mit Groß- und Kleinbuchstaben und einer Zahl. Geleakte Passwörter werden abgelehnt.",
       "submit": "Konto erstellen",
-      "done": "Falls das Konto erstellt werden konnte, melde dich mit E-Mail und Passwort an.",
       "hasAccount": "Schon ein Konto?"
     },
     "orders": {
@@ -536,7 +535,9 @@
       "pwned": "Dieses Passwort ist in einem Datenleck aufgetaucht. Wähle ein anderes.",
       "character": "Gib den Realm und einen Namen mit 2–12 Buchstaben ein.",
       "characterLimit": "Du kannst bis zu 10 Charaktere speichern.",
-      "characterDuplicate": "Dieser Charakter ist bereits gespeichert."
+      "characterDuplicate": "Dieser Charakter ist bereits gespeichert.",
+      "exists": "Für diese E-Mail gibt es schon ein Konto. Melde dich an.",
+      "staff": "Das ist ein Team-Konto: Melde dich im Panel an (/admin)."
     }
   }
 }

@@ -511,7 +511,6 @@
       "intro": "Opcional: dá para comprar sem conta. Com ela, você vê seus pedidos e salva seus personagens.",
       "passwordHint": "No mínimo 8 caracteres, com letra maiúscula, letra minúscula e número. Senhas vazadas são recusadas.",
       "submit": "Criar conta",
-      "done": "Se a conta pôde ser criada, entre com seu e-mail e senha.",
       "hasAccount": "Já tem conta?"
     },
     "orders": {
@@ -536,7 +535,9 @@
       "pwned": "Esta senha apareceu em um vazamento de dados. Escolha outra.",
       "character": "Informe o realm e um nome com 2 a 12 letras.",
       "characterLimit": "Você pode salvar até 10 personagens.",
-      "characterDuplicate": "Este personagem já está salvo."
+      "characterDuplicate": "Este personagem já está salvo.",
+      "exists": "Este e-mail já tem conta. Entre com ele.",
+      "staff": "Esta é uma conta da equipe: entre pelo painel (/admin)."
     }
   }
 }

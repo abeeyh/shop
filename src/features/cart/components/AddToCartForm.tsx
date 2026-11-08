@@ -264,12 +264,16 @@ export function AddToCartForm(p: Props) {
   const form = useRef<HTMLFormElement>(null);
   const [variant, setVariant] = useState<PickerVariant | null>(() => initialVariant(p.variants));
 
+  // só a resposta da prévia mais recente vale: com rede lenta, uma resposta antiga (de antes da troca
+  // de combinação) pode chegar por último e mostrar o total errado
+  const lastQuote = useRef(0);
   const requote = () => {
     if (!form.current) return;
     const data = new FormData(form.current);
+    const n = ++lastQuote.current;
     startQuote(async () => {
       const q = await quoteItem(data);
-      if (q) setQuote(q);
+      if (q && n === lastQuote.current) setQuote(q);
     });
   };
   // a variante muda pelo estado do React: o campo escondido só tem o id novo depois de renderizar
@@ -284,7 +288,15 @@ export function AddToCartForm(p: Props) {
     ) : null;
 
   return (
-    <form ref={form} action={formAction} className="grid gap-4" onChange={requote}>
+    <form
+      ref={form}
+      action={formAction}
+      className="grid gap-4"
+      onChange={(e) => {
+        // seletor de variante: a prévia sai do efeito, já com a combinação nova no campo escondido
+        if (!(e.target as HTMLElement).closest("[data-variant-picker]")) requote();
+      }}
+    >
       <input type="hidden" name="product" value={p.product} />
       <input type="hidden" name="locale" value={p.locale} />
 

@@ -1,7 +1,7 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { and, asc, count, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { characters, orders, staffProfiles, users } from "@/db/schema";
+import { accounts, characters, orders, staffProfiles, users } from "@/db/schema";
 import { MAX_CHARACTERS, type CharacterInput } from "./schemas";
 
 export async function listCharacters(userId: string) {
@@ -52,6 +52,18 @@ export async function listCustomerOrders(userId: string) {
     .where(eq(orders.userId, userId))
     .orderBy(desc(orders.createdAt))
     .limit(50);
+}
+
+// RN-110: hash da senha de uma conta de EQUIPE com este e-mail (null = não é equipe) — o login da loja
+// confere a senha antes de dizer "use o /admin", para não revelar quem é da equipe a quem não sabe a senha
+export async function staffPasswordHash(email: string): Promise<string | null> {
+  const [row] = await db
+    .select({ hash: accounts.password })
+    .from(users)
+    .innerJoin(staffProfiles, eq(staffProfiles.userId, users.id))
+    .innerJoin(accounts, and(eq(accounts.userId, users.id), eq(accounts.providerId, "credential")))
+    .where(eq(users.email, email.toLowerCase()));
+  return row?.hash ?? null;
 }
 
 export const isStaff = async (userId: string) =>

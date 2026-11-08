@@ -62,7 +62,7 @@ export function VariantPicker({ axes, variants, initialId, onRequestLabel, onSel
   };
 
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-4" data-variant-picker>
       <input type="hidden" name="variant" value={current.id} />
       {axes.map((a) =>
         a.style === "slider" ? (
