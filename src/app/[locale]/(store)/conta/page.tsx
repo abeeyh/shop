@@ -38,7 +38,12 @@ export default async function AccountPage({ params }: PageProps<"/[locale]/conta
   setRequestLocale(locale);
   const customer = await getCustomer();
   // RN-110: equipe logada vai para o painel; visitante, para o login
-  if (!customer) redirect((await hasStaffSession()) ? `/${locale}/admin` : `/${locale}/entrar`);
+  if (!customer)
+    redirect(
+      (await hasStaffSession())
+        ? `/${locale}/admin`
+        : `/${locale}/entrar?voltar=${encodeURIComponent(`/${locale}/conta`)}`,
+    );
   const [t, o, b, format, timeZone, chars, orders] = await Promise.all([
     getTranslations({ locale, namespace: "Account" }),
     getTranslations({ locale, namespace: "Order" }),

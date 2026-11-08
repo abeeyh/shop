@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Teste de paletas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<!--
+  Protótipo para testar paletas novas no tema escuro (docs/11). Os nomes das variáveis são os mesmos de
+  src/app/globals.css: "Copiar CSS" gera o bloco :root pronto para colar lá. Dados da loja são fictícios.
+  Teclas 1–7 trocam a paleta.
+-->
+<style>
+:root {
+  --radius: 0.875rem;
+  --heading: #f7f7fb; --link: #a99bff; --error-text: #fb7185;
+  --gradient-from: #6d4aff; --gradient-to: #22d3ee; --gold: #f5c451;
+  --background: #08080c; --foreground: #c8c8d4; --card: #101017; --popover: #15151e;
+  --primary: #6d4aff; --primary-hover: #5a37ec; --primary-foreground: #ffffff;
+  --secondary: #ffffff0f; --muted: #ffffff0f; --muted-foreground: #8e8ea3; --accent: #ffffff17;
+  --destructive: #e11d48; --destructive-foreground: #ffffff;
+  --border: #ffffff14; --input: #14141d; --ring: #a99bff;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--background); color: var(--foreground);
+  font: 15px/1.55 "Mulish", system-ui, sans-serif; min-height: 100vh;
+  transition: background .4s, color .4s;
+}
+h1, h2, h3, .h { font-family: "Inter", system-ui, sans-serif; color: var(--heading); margin: 0; letter-spacing: -.02em; }
+a { color: var(--link); }
+button, input, select { font: inherit; }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+/* aurora (igual ao globals.css) */
+body::before {
+  content: ""; position: fixed; inset: -20vh -10vw auto; height: 70vh; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(40% 60% at 20% 30%, color-mix(in srgb, var(--gradient-from) 28%, transparent), transparent 70%),
+    radial-gradient(35% 55% at 80% 20%, color-mix(in srgb, var(--gradient-to) 18%, transparent), transparent 70%);
+  filter: blur(40px); animation: aurora 18s ease-in-out infinite alternate;
+}
+@keyframes aurora { to { transform: translate3d(4vw, 3vh, 0) scale(1.08); } }
+
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+
+/* barra de teste (fora do design da loja) */
+.lab {
+  position: sticky; top: 0; z-index: 40; border-bottom: 1px solid #ffffff1a;
+  background: #000000d0; backdrop-filter: blur(10px); color: #e5e5ea; font-size: 13px;
+}
+.lab .wrap { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding-block: 10px; }
+.lab b { font-family: Inter, sans-serif; margin-right: 4px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px 6px 6px; border-radius: 999px;
+  border: 1px solid #ffffff22; background: #ffffff0a; color: inherit; cursor: pointer;
+}
+.chip[aria-pressed="true"] { border-color: #fff; background: #ffffff1f; }
+.chip .sw { width: 22px; height: 22px; border-radius: 999px; }
+.chip kbd { font-size: 11px; opacity: .55; }
+.lab .spacer { flex: 1; }
+.lab .tool { border: 1px solid #ffffff33; background: transparent; color: inherit; border-radius: 8px; padding: 6px 10px; cursor: pointer; }
+.note { padding: 14px 0 0; color: var(--muted-foreground); font-size: 14px; }
+.note strong { color: var(--heading); }
+
+/* cabeçalho */
+header.site { border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--background) 70%, transparent); backdrop-filter: blur(8px); }
+header.site .wrap { display: flex; align-items: center; gap: 16px; height: 64px; }
+.logo { font: 800 20px Inter, sans-serif; color: var(--heading); text-decoration: none; display: flex; gap: 8px; align-items: center; }
+.logo i { width: 26px; height: 26px; border-radius: 8px; background: linear-gradient(135deg, var(--gradient-from), var(--gradient-to)); }
+.search { flex: 1; max-width: 420px; position: relative; }
+.search input { width: 100%; height: 40px; border-radius: 999px; border: 1px solid var(--border); background: var(--input); color: var(--foreground); padding: 0 16px 0 38px; }
+.search svg { position: absolute; left: 13px; top: 11px; color: var(--muted-foreground); }
+.icons { margin-left: auto; display: flex; gap: 4px; }
+.icon {
+  position: relative; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 10px;
+  color: var(--foreground); background: transparent; border: 0; cursor: pointer;
+}
+.icon:hover { background: var(--accent); color: var(--heading); }
+.icon .count { position: absolute; top: 3px; right: 2px; min-width: 17px; height: 17px; border-radius: 999px; background: var(--primary); color: var(--primary-foreground); font: 700 10px/17px Inter, sans-serif; text-align: center; }
+.tip { position: relative; display: inline-flex; }
+.tip > span {
+  position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 8px; z-index: 30;
+  padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--popover);
+  color: var(--heading); font: 600 12px Inter, sans-serif; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .15s;
+}
+.tip:hover > span, .tip:focus-within > span { opacity: 1; }
+nav.tabs { display: flex; gap: 6px; padding: 10px 0; overflow-x: auto; scrollbar-width: none; }
+nav.tabs a { padding: 6px 14px; border-radius: 999px; color: var(--muted-foreground); text-decoration: none; font-weight: 600; white-space: nowrap; }
+nav.tabs a[aria-current] { background: var(--secondary); color: var(--heading); }
+
+/* hero */
+.hero { padding: 56px 0 40px; }
+.hero h1 { font-size: clamp(32px, 6vw, 56px); line-height: 1.05; max-width: 14ch; }
+.grad-text { background: linear-gradient(90deg, var(--gradient-from), var(--gradient-to)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero p { max-width: 52ch; color: var(--muted-foreground); font-size: 17px; margin: 16px 0 24px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: calc(var(--radius) - 5px); border: 1px solid transparent; font: 700 15px Inter, sans-serif; cursor: pointer; text-decoration: none; transition: background .2s, transform .1s; }
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--primary); color: var(--primary-foreground); box-shadow: 0 8px 28px -10px var(--primary); }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-secondary { background: var(--secondary); color: var(--heading); border-color: var(--border); }
+.btn-secondary:hover { background: var(--accent); }
+.btn-ghost { background: transparent; color: var(--link); }
+.btn-danger { background: var(--destructive); color: var(--destructive-foreground); }
+.btn[disabled] { opacity: .5; cursor: not-allowed; box-shadow: none; }
+.shine { position: relative; overflow: hidden; isolation: isolate; }
+.shine::after { content: ""; position: absolute; inset: 0; z-index: -1; transform: translateX(-120%) skewX(-20deg); background: linear-gradient(90deg, transparent, rgb(255 255 255 / .28), transparent); transition: transform .6s ease; }
+.shine:hover::after { transform: translateX(120%) skewX(-20deg); }
+
+/* categorias e cards */
+section { padding: 28px 0; }
+.sec-title { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
+.sec-title h2 { font-size: 22px; }
+.grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.tile { display: flex; gap: 12px; align-items: center; padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--card); color: var(--heading); text-decoration: none; font: 700 16px Inter, sans-serif; }
+.tile i { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; background: color-mix(in srgb, var(--primary) 18%, transparent); color: var(--link); font-style: normal; }
+.tile small { display: block; font: 500 13px Mulish, sans-serif; color: var(--muted-foreground); }
+.card { border-radius: var(--radius); border: 1px solid var(--border); background: var(--card); padding: 18px; display: flex; flex-direction: column; gap: 10px; transition: border-color .2s, transform .2s; }
+.card:hover { border-color: color-mix(in srgb, var(--gradient-from) 45%, var(--border)); transform: translateY(-2px); }
+[data-spotlight] { position: relative; isolation: isolate; }
+[data-spotlight]::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; opacity: 0; transition: opacity .25s; background: radial-gradient(320px circle at var(--x, 50%) var(--y, 50%), color-mix(in srgb, var(--gradient-from) 16%, transparent), transparent 70%); }
+[data-spotlight]:hover::before { opacity: 1; }
+.card .kind { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted-foreground); }
+.card h3 { font-size: 17px; }
+.card .desc { color: var(--muted-foreground); font-size: 14px; margin: 0; }
+.price { font: 800 22px Inter, sans-serif; color: var(--heading); }
+.price small { font: 600 13px Mulish, sans-serif; color: var(--muted-foreground); }
+.price .old { font-size: 14px; color: var(--muted-foreground); text-decoration: line-through; margin-left: 6px; font-weight: 600; }
+.card .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
+.badge { display: inline-flex; align-items: center; gap: 5px; align-self: flex-start; padding: 2px 10px; border-radius: 999px; font: 700 12px Inter, sans-serif; color: var(--heading); }
+.badge-glow { border: 1px solid transparent; background: linear-gradient(var(--card), var(--card)) padding-box, conic-gradient(from var(--angle, 0deg), var(--gradient-from), var(--gradient-to), var(--gold), var(--gradient-from)) border-box; animation: spin-angle 4s linear infinite; }
+@property --angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes spin-angle { to { --angle: 360deg; } }
+.badge-gold { background: color-mix(in srgb, var(--gold) 16%, transparent); color: var(--gold); }
+.badge-live { background: color-mix(in srgb, var(--gradient-to) 16%, transparent); color: var(--gradient-to); }
+
+/* produto */
+.product { display: grid; gap: 20px; grid-template-columns: 1.2fr 1fr; }
+@media (max-width: 800px) { .product { grid-template-columns: 1fr; } }
+.panel { border-radius: var(--radius); border: 1px solid var(--border); background: var(--card); padding: 22px; }
+.art { min-height: 260px; border-radius: var(--radius); border: 1px solid var(--border); background:
+  radial-gradient(60% 80% at 30% 20%, color-mix(in srgb, var(--gradient-from) 40%, transparent), transparent 70%),
+  radial-gradient(50% 70% at 80% 90%, color-mix(in srgb, var(--gradient-to) 32%, transparent), transparent 70%), var(--card);
+  display: flex; align-items: flex-end; padding: 22px; }
+.art h2 { font-size: 30px; }
+.art p { margin: 4px 0 0; color: var(--foreground); }
+label { display: block; font-weight: 700; color: var(--heading); font-size: 14px; margin-bottom: 6px; }
+.field { margin-bottom: 16px; }
+.inp { width: 100%; height: 44px; border-radius: calc(var(--radius) - 5px); border: 1px solid var(--border); background: var(--input); color: var(--foreground); padding: 0 12px; }
+.inp[aria-invalid="true"] { border-color: var(--error-text); }
+.err { color: var(--error-text); font-size: 13px; margin-top: 6px; }
+.hint { color: var(--muted-foreground); font-size: 13px; margin-top: 6px; }
+.slider-head { display: flex; justify-content: space-between; }
+.slider-head output { font: 800 15px Inter, sans-serif; color: var(--heading); }
+.variant-range { width: 100%; appearance: none; height: 2.75rem; background: transparent; cursor: pointer; }
+.variant-range::-webkit-slider-runnable-track { height: 6px; border-radius: 999px; background: linear-gradient(90deg, var(--gradient-from), var(--gradient-to)); }
+.variant-range::-moz-range-track { height: 6px; border-radius: 999px; background: linear-gradient(90deg, var(--gradient-from), var(--gradient-to)); }
+.variant-range::-webkit-slider-thumb { appearance: none; margin-top: -9px; width: 24px; height: 24px; border-radius: 999px; background: var(--heading); border: 3px solid var(--primary); }
+.variant-range::-moz-range-thumb { width: 18px; height: 18px; border-radius: 999px; background: var(--heading); border: 3px solid var(--primary); }
+.seg { display: flex; gap: 6px; flex-wrap: wrap; }
+.seg button { height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--secondary); color: var(--foreground); font-weight: 700; cursor: pointer; }
+.seg button[aria-pressed="true"] { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 20%, transparent); color: var(--heading); }
+.total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--border); padding-top: 14px; margin: 6px 0 14px; }
+.alert { border-radius: calc(var(--radius) - 5px); padding: 10px 12px; font-size: 14px; border: 1px solid; }
+.alert-err { border-color: color-mix(in srgb, var(--error-text) 40%, transparent); background: color-mix(in srgb, var(--error-text) 10%, transparent); color: var(--error-text); }
+.alert-info { border-color: var(--border); background: var(--muted); color: var(--foreground); }
+.stack > * + * { margin-top: 10px; }
+
+/* gaveta do carrinho */
+.scrim { position: fixed; inset: 0; background: #0009; z-index: 50; display: none; }
+.scrim.open { display: block; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(400px, 100%); z-index: 51; background: var(--popover); border-left: 1px solid var(--border); padding: 20px; display: none; flex-direction: column; gap: 14px; }
+.drawer.open { display: flex; animation: drawer-in .22s ease-out; }
+@keyframes drawer-in { from { transform: translateX(24px); opacity: 0; } }
+.line { display: flex; justify-content: space-between; gap: 10px; padding: 12px; border-radius: 10px; background: var(--muted); }
+.line small { display: block; color: var(--muted-foreground); }
+
+/* contraste */
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+th { color: var(--muted-foreground); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+.ok { color: var(--heading); font-weight: 700; }
+.bad { color: var(--error-text); font-weight: 700; }
+.swatches { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+.swatch { border-radius: 10px; border: 1px solid var(--border); overflow: hidden; font-size: 12px; }
+.swatch div { height: 44px; }
+.swatch p { margin: 0; padding: 6px 8px; background: var(--card); }
+.swatch code { color: var(--muted-foreground); }
+footer { padding: 40px 0; color: var(--muted-foreground); font-size: 13px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  body::before, .badge-glow { animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="lab" role="region" aria-label="Escolher paleta">
+  <div class="wrap">
+    <b>Paleta:</b>
+    <span id="chips" class="row" style="gap:6px"></span>
+    <span class="spacer"></span>
+    <button class="tool" id="copy" type="button">Copiar CSS</button>
+  </div>
+</div>
+
+<div class="wrap note" id="note"></div>
+
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="#"><i></i>Shop</a>
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" placeholder="Buscar raids, M+, gold…" aria-label="Buscar" value="ven" />
+    </div>
+    <div class="icons">
+      <span class="tip"><button class="icon" aria-label="Idioma e fuso"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></button><span aria-hidden="true">Idioma e fuso</span></span>
+      <span class="tip"><button class="icon" aria-label="Carrinho (2)" id="openCart"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg><span class="count">2</span></button><span aria-hidden="true">Carrinho</span></span>
+      <span class="tip"><button class="icon" aria-label="Minha conta"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></button><span aria-hidden="true">Minha conta</span></span>
+      <span class="tip"><button class="icon" aria-label="Sair"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button><span aria-hidden="true">Sair</span></span>
+    </div>
+  </div>
+  <div class="wrap"><nav class="tabs" aria-label="Categorias"><a href="#" aria-current="page">Início</a><a href="#">Raids</a><a href="#">Mythic+</a><a href="#">Gold</a><a href="#">PvP</a><a href="#">Leveling</a></nav></div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <span class="badge badge-live">● 3 raids saindo hoje</span>
+    <h1 style="margin-top:14px">Carry de WoW em <span class="grad-text">poucos cliques</span></h1>
+    <p>Escolha o serviço, ajuste no slider e pague em USDT. Seu personagem salvo já preenche a compra.</p>
+    <div class="row">
+      <a class="btn btn-primary shine" href="#produto">Ver raids</a>
+      <a class="btn btn-secondary" href="#">Como funciona</a>
+      <a class="btn btn-ghost" href="#">Falar com o suporte →</a>
+    </div>
+  </div>
+
+  <section>
+    <div class="sec-title"><h2>Categorias</h2></div>
+    <div class="grid">
+      <a class="tile" href="#" data-spotlight><i>⚔</i><span>Raids<small>12 serviços</small></span></a>
+      <a class="tile" href="#" data-spotlight><i>⏱</i><span>Mythic+<small>18 serviços</small></span></a>
+      <a class="tile" href="#" data-spotlight><i>◎</i><span>Gold<small>EU e US</small></span></a>
+      <a class="tile" href="#" data-spotlight><i>⚑</i><span>PvP<small>Rating e títulos</small></span></a>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-title"><h2>Em alta</h2><a href="#">Ver tudo</a></div>
+    <div class="grid">
+      <article class="card" data-spotlight>
+        <span class="badge badge-glow">★ Popular</span>
+        <span class="kind">Raid</span><h3>Venomous Abyss</h3>
+        <p class="desc">Heroic ou Mythic, de 1 a 8 bosses.</p>
+        <div class="foot"><span class="price"><small>a partir de</small> 18,00 <small>USDT</small></span></div>
+      </article>
+      <article class="card" data-spotlight>
+        <span class="kind">Mythic+</span><h3>Chave +10 garantida</h3>
+        <p class="desc">Timer, loot traders e armor stack.</p>
+        <div class="foot"><span class="price">24,00 <small>USDT</small><span class="old">30,00</span></span></div>
+      </article>
+      <article class="card" data-spotlight>
+        <span class="badge badge-gold">◎ Gold</span>
+        <span class="kind">Gold</span><h3>Gold EU – Horda</h3>
+        <p class="desc">Entrega por correio em até 1 h.</p>
+        <div class="foot"><span class="price">3,20 <small>USDT / 100k</small></span></div>
+      </article>
+      <article class="card" data-spotlight>
+        <span class="kind">PvP</span><h3>Arena 2v2 – 2100</h3>
+        <p class="desc">Self-play ou piloto, a escolha é sua.</p>
+        <div class="foot"><span class="price">55,00 <small>USDT</small></span></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="produto">
+    <div class="sec-title"><h2>Página do produto</h2></div>
+    <div class="product">
+      <div class="art"><div><span class="kind" style="color:var(--muted-foreground);font-weight:700;font-size:12px;letter-spacing:.08em">RAID · HEROIC</span><h2>Venomous Abyss</h2><p>Próximo horário: hoje 21:00 (seu fuso)</p></div></div>
+      <form class="panel" onsubmit="event.preventDefault()">
+        <div class="field">
+          <div class="slider-head"><label for="bosses">Bosses</label><output id="bossOut">8/8</output></div>
+          <input class="variant-range" id="bosses" type="range" min="1" max="8" value="8" />
+        </div>
+        <div class="field">
+          <label>Dificuldade</label>
+          <div class="seg" id="diff"><button type="button" aria-pressed="true" data-m="1">Normal</button><button type="button" aria-pressed="false" data-m="1.6">Heroic</button><button type="button" aria-pressed="false" data-m="4">Mythic</button></div>
+        </div>
+        <div class="field">
+          <label for="char">Nome do personagem</label>
+          <input class="inp" id="char" aria-invalid="true" value="T" />
+          <div class="err">Use de 2 a 12 letras.</div>
+        </div>
+        <div class="total"><span>Total</span><span class="price" id="price">0,00 <small>USDT</small></span></div>
+        <div class="stack">
+          <button class="btn btn-primary shine" style="width:100%" id="add">Adicionar ao carrinho</button>
+          <button class="btn btn-secondary" style="width:100%" type="button">Comprar agora</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-title"><h2>Estados</h2></div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">
+      <div class="panel stack">
+        <h3 class="h" style="font-size:16px">Botões</h3>
+        <div class="row"><button class="btn btn-primary shine">Pagar com USDT</button><button class="btn btn-secondary" disabled>Cartão (em breve)</button></div>
+        <div class="row"><button class="btn btn-danger">Excluir conta</button><button class="btn btn-ghost">Cancelar</button></div>
+      </div>
+      <div class="panel stack">
+        <h3 class="h" style="font-size:16px">Avisos</h3>
+        <div class="alert alert-err" role="alert">E-mail ou senha incorretos.</div>
+        <div class="alert alert-info">Pagamento com cartão: API ainda não implementada.</div>
+        <p class="hint" style="margin:0">Texto secundário com <a href="#">link</a> dentro.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-title"><h2>Contraste (WCAG)</h2><span class="hint" style="margin:0">AA texto normal ≥ 4,5 · ícone/texto grande ≥ 3</span></div>
+    <div class="panel" style="overflow-x:auto"><table><thead><tr><th>Par</th><th>Cores</th><th>Razão</th><th>AA</th></tr></thead><tbody id="contrast"></tbody></table></div>
+  </section>
+
+  <section>
+    <div class="sec-title"><h2>Tokens</h2></div>
+    <div class="swatches" id="swatches"></div>
+  </section>
+</main>
+
+<footer class="wrap">Protótipo de paletas · dados fictícios · nada aqui muda o site até a paleta ser aprovada e aplicada no globals.css (docs/11).</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Carrinho">
+  <div class="row" style="justify-content:space-between"><h2 style="font-size:20px">Carrinho</h2><button class="icon" id="closeCart" aria-label="Fechar">✕</button></div>
+  <div class="line"><div><strong style="color:var(--heading)">Venomous Abyss</strong><small>Heroic · 8/8 · Thrall</small></div><span>28,80</span></div>
+  <div class="line"><div><strong style="color:var(--heading)">Chave +10</strong><small>Area 52</small></div><span>24,00</span></div>
+  <div class="total" style="margin-top:auto"><span>Total</span><span class="price">52,80 <small>USDT</small></span></div>
+  <button class="btn btn-primary shine">Ir para o pagamento</button>
+</aside>
+
+<script>
+const BASE = {
+  "--secondary": "#ffffff0f", "--muted": "#ffffff0f", "--accent": "#ffffff17", "--border": "#ffffff14",
+  "--destructive": "#e11d48", "--destructive-foreground": "#ffffff", "--error-text": "#fb7185", "--gold": "#f5c451",
+};
+// Cada paleta: tons sólidos (fundo/card/popover/input/texto) + a cor de ação e o gradiente dos efeitos.
+const PALETTES = [
+  { id: "atual", name: "Violeta neon (atual)", why: "A paleta de hoje, para comparar.",
+    t: { "--background": "#08080c", "--card": "#101017", "--popover": "#15151e", "--input": "#14141d", "--foreground": "#c8c8d4", "--heading": "#f7f7fb", "--muted-foreground": "#8e8ea3",
+         "--primary": "#6d4aff", "--primary-hover": "#5a37ec", "--primary-foreground": "#ffffff", "--link": "#a99bff", "--ring": "#a99bff", "--gradient-from": "#6d4aff", "--gradient-to": "#22d3ee" } },
+  { id: "brasa", name: "Brasa", why: "Laranja de forja sobre preto quente. Energia e urgência: bom para \"saindo hoje\" e promoções.",
+    t: { "--background": "#0c0806", "--card": "#15100c", "--popover": "#1c1510", "--input": "#18120d", "--foreground": "#d6cdc4", "--heading": "#fbf6f1", "--muted-foreground": "#a0938a",
+         "--primary": "#ff6a2b", "--primary-hover": "#f2581a", "--primary-foreground": "#1a0b03", "--link": "#ffa066", "--ring": "#ffa066", "--gradient-from": "#ff3d1f", "--gradient-to": "#ffb020", "--gold": "#ffc94d" } },
+  { id: "vil", name: "Vil", why: "Verde vil com ciano. Muito chamativo e \"gamer\"; o botão usa texto escuro.",
+    t: { "--background": "#050a07", "--card": "#0b130e", "--popover": "#101a14", "--input": "#0d1610", "--foreground": "#c6d4cb", "--heading": "#f1fbf4", "--muted-foreground": "#8ba595",
+         "--primary": "#3ee07f", "--primary-hover": "#2fc86d", "--primary-foreground": "#03140a", "--link": "#7cf0ad", "--ring": "#7cf0ad", "--gradient-from": "#3ee07f", "--gradient-to": "#14c8ff", "--gold": "#e8d25a" } },
+  { id: "gelo", name: "Gelo arcano", why: "Azul gelo com lilás. Calmo, limpo e confiável: o mais \"premium\" dos frios.",
+    t: { "--background": "#050912", "--card": "#0b1220", "--popover": "#101a2c", "--input": "#0d1626", "--foreground": "#c5d0e0", "--heading": "#f2f7ff", "--muted-foreground": "#8796ae",
+         "--primary": "#4cc3ff", "--primary-hover": "#2fb2f5", "--primary-foreground": "#021320", "--link": "#8fd8ff", "--ring": "#8fd8ff", "--gradient-from": "#4cc3ff", "--gradient-to": "#a98bff" } },
+  { id: "horda", name: "Carmesim", why: "Vermelho sangue com laranja. Dramático; o erro vira rosa-claro para não confundir com o botão.",
+    t: { "--background": "#0b0607", "--card": "#150c0e", "--popover": "#1d1114", "--input": "#180e11", "--foreground": "#d8c9cc", "--heading": "#fff5f6", "--muted-foreground": "#a68f94",
+         "--primary": "#d91e47", "--primary-hover": "#bf173c", "--primary-foreground": "#ffffff", "--link": "#ff8aa1", "--ring": "#ff8aa1", "--gradient-from": "#e5294f", "--gradient-to": "#ff8a3d",
+         "--error-text": "#fca5a5", "--destructive": "#b91c1c" } },
+  { id: "ouro", name: "Ouro noir", why: "Preto neutro e dourado. Minimalista e luxuoso; o gradiente esquenta para coral.",
+    t: { "--background": "#09090b", "--card": "#121214", "--popover": "#18181b", "--input": "#141416", "--foreground": "#d4d4d8", "--heading": "#fafafa", "--muted-foreground": "#93939c",
+         "--primary": "#f5c451", "--primary-hover": "#e8b53a", "--primary-foreground": "#1a1305", "--link": "#f8d57e", "--ring": "#f8d57e", "--gradient-from": "#f5c451", "--gradient-to": "#ff7a45" } },
+  { id: "vazio", name: "Vazio magenta", why: "Grafite quase monocromático com um único magenta. O mais minimalista: a cor só aparece na ação.",
+    t: { "--background": "#08070a", "--card": "#111014", "--popover": "#17151b", "--input": "#131216", "--foreground": "#cfccd6", "--heading": "#fbfaff", "--muted-foreground": "#918d9c",
+         "--primary": "#ff2e88", "--primary-hover": "#e81f77", "--primary-foreground": "#1a0410", "--link": "#ff7ab5", "--ring": "#ff7ab5", "--gradient-from": "#ff2e88", "--gradient-to": "#8b5cf6", "--gold": "#ffd166" } },
+];
+const ORDER = ["--heading", "--link", "--error-text", "--gradient-from", "--gradient-to", "--gold", "--background", "--foreground", "--card", "--card-foreground", "--popover", "--popover-foreground",
+  "--primary", "--primary-hover", "--primary-foreground", "--secondary", "--secondary-foreground", "--muted", "--muted-foreground", "--accent", "--accent-foreground",
+  "--destructive", "--destructive-foreground", "--border", "--input", "--ring"];
+
+const full = (p) => {
+  const t = { ...BASE, ...p.t };
+  t["--card-foreground"] = t["--popover-foreground"] = t["--foreground"];
+  t["--secondary-foreground"] = t["--accent-foreground"] = t["--heading"];
+  return t;
+};
+
+const lum = (hex) => {
+  const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+};
+const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+const PAIRS = [
+  ["Texto / fundo", "--foreground", "--background", 4.5], ["Título / card", "--heading", "--card", 4.5], ["Secundário / card", "--muted-foreground", "--card", 4.5],
+  ["Botão principal", "--primary-foreground", "--primary", 4.5], ["Botão (hover)", "--primary-foreground", "--primary-hover", 4.5], ["Link / fundo", "--link", "--background", 4.5],
+  ["Erro / card", "--error-text", "--card", 4.5], ["Botão perigo", "--destructive-foreground", "--destructive", 4.5], ["Contador / fundo", "--primary", "--background", 3], ["Foco / fundo", "--ring", "--background", 3],
+];
+
+let current;
+function apply(i) {
+  current = PALETTES[i];
+  const t = full(current);
+  for (const [k, v] of Object.entries(t)) document.documentElement.style.setProperty(k, v);
+  document.querySelectorAll(".chip").forEach((c, j) => c.setAttribute("aria-pressed", String(j === i)));
+  document.getElementById("note").innerHTML = `<strong>${current.name}</strong> — ${current.why}`;
+  document.getElementById("contrast").innerHTML = PAIRS.map(([n, fg, bg, min]) => {
+    const r = ratio(t[fg], t[bg]);
+    return `<tr><td>${n}</td><td><code>${t[fg]}</code> / <code>${t[bg]}</code></td><td>${r.toFixed(2)}</td><td class="${r >= min ? "ok" : "bad"}">${r >= min ? "passa" : "falha"}</td></tr>`;
+  }).join("");
+  document.getElementById("swatches").innerHTML = ORDER.map((k) => `<div class="swatch"><div style="background:${t[k]}"></div><p>${k.slice(2)}<br><code>${t[k]}</code></p></div>`).join("");
+  try { localStorage.setItem("palette", current.id); } catch {}
+}
+
+const chips = document.getElementById("chips");
+PALETTES.forEach((p, i) => {
+  const b = document.createElement("button");
+  b.className = "chip"; b.type = "button";
+  b.innerHTML = `<span class="sw" style="background:linear-gradient(135deg,${p.t["--gradient-from"]},${p.t["--gradient-to"]});box-shadow:inset 0 0 0 3px ${p.t["--background"]}"></span>${p.name.replace(" (atual)", "")}<kbd>${i + 1}</kbd>`;
+  b.onclick = () => apply(i);
+  chips.append(b);
+});
+addEventListener("keydown", (e) => {
+  if (e.target.matches("input")) return;
+  const n = Number(e.key);
+  if (n >= 1 && n <= PALETTES.length) apply(n - 1);
+});
+
+document.getElementById("copy").onclick = async (e) => {
+  const t = full(current);
+  const css = `/* paleta: ${current.name} */\n:root {\n  --radius: 0.875rem;\n${ORDER.map((k) => `  ${k}: ${t[k]};`).join("\n")}\n}`;
+  try { await navigator.clipboard.writeText(css); e.target.textContent = "Copiado!"; }
+  catch { prompt("Copie o CSS:", css); }
+  setTimeout(() => (e.target.textContent = "Copiar CSS"), 1500);
+};
+
+// slider de bosses + dificuldade (preço fictício, só para ver o efeito)
+const bosses = document.getElementById("bosses");
+let mult = 1;
+const fmt = (n) => n.toFixed(2).replace(".", ",");
+function quote() {
+  document.getElementById("bossOut").textContent = `${bosses.value}/8`;
+  document.getElementById("price").innerHTML = `${fmt(bosses.value * 2.25 * mult)} <small>USDT</small>`;
+}
+bosses.oninput = quote;
+document.querySelectorAll("#diff button").forEach((b) => (b.onclick = () => {
+  document.querySelectorAll("#diff button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  mult = Number(b.dataset.m); quote();
+}));
+quote();
+
+// gaveta do carrinho
+const drawer = document.getElementById("drawer"), scrim = document.getElementById("scrim");
+const cart = (open) => { drawer.classList.toggle("open", open); scrim.classList.toggle("open", open); if (open) drawer.querySelector("button").focus(); };
+document.getElementById("openCart").onclick = () => cart(true);
+document.getElementById("add").onclick = () => cart(true);
+document.getElementById("closeCart").onclick = scrim.onclick = () => cart(false);
+addEventListener("keydown", (e) => e.key === "Escape" && cart(false));
+
+// luz que segue o cursor
+addEventListener("pointermove", (e) => {
+  const el = e.target.closest?.("[data-spotlight]");
+  if (!el) return;
+  const r = el.getBoundingClientRect();
+  el.style.setProperty("--x", `${e.clientX - r.left}px`);
+  el.style.setProperty("--y", `${e.clientY - r.top}px`);
+});
+
+let start = 0;
+try { start = Math.max(0, PALETTES.findIndex((p) => p.id === localStorage.getItem("palette"))); } catch {}
+apply(start);
+</script>
+</body>
+</html>

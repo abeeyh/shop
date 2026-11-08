@@ -110,6 +110,10 @@ export const products = pgTable(
     sortOrder: integer("sort_order").notNull().default(0),
     externalId: integer("external_id").unique(), // id no sistema de origem (importação idempotente)
     optionAxes: jsonb("option_axes").$type<OptionAxis[]>().notNull().default([]), // #100: vazio = sem variantes
+    // #136: página do serviço — descrição detalhada, galeria e FAQ (validados em features/catalog/content.ts)
+    details: text("details").notNull().default(""),
+    images: jsonb("images").$type<{ src: string; alt: string }[]>().notNull().default([]),
+    faq: jsonb("faq").$type<{ q: string; a: string }[]>().notNull().default([]),
     active: boolean("active").notNull().default(true),
     salesCount: integer("sales_count").notNull().default(0),
     ...timestamps,
@@ -292,6 +296,7 @@ export const users = pgTable("users", {
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
   twoFactorEnabled: boolean("two_factor_enabled").notNull().default(false), // RN-02, RN-05
+  theme: text("theme"), // RN-111 (#132): tema escolhido; null = padrão. Validado no app (lib/theme)
   ...timestamps,
 });
 

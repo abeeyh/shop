@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 import { GradientCard } from "@/components/molecules/GradientCard";
-import { SignUpForm } from "@/features/account";
+import { safeNext, SignUpForm } from "@/features/account";
 
 export const instant = false;
 
@@ -15,8 +15,10 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/cadastro
 }
 
 // RN-107: cadastro opcional — comprar continua sem conta (RN-01)
-export default async function SignUpPage({ params }: PageProps<"/[locale]/cadastro">) {
-  const { locale } = await params;
+export default async function SignUpPage({ params, searchParams }: PageProps<"/[locale]/cadastro">) {
+  const [{ locale }, q] = await Promise.all([params, searchParams]);
+  const next = safeNext(q.voltar, locale) ?? undefined; // #130
+  const keep = next ? `?voltar=${encodeURIComponent(next)}` : "";
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "Account" });
   return (
@@ -28,6 +30,7 @@ export default async function SignUpPage({ params }: PageProps<"/[locale]/cadast
       <GradientCard tone="solid">
         <SignUpForm
           locale={locale}
+          next={next}
           labels={{
             email: t("email"),
             password: t("password"),
@@ -44,7 +47,7 @@ export default async function SignUpPage({ params }: PageProps<"/[locale]/cadast
       </GradientCard>
       <p className="text-sm">
         {t("signup.hasAccount")}{" "}
-        <Link href={`/${locale}/entrar`} className="font-semibold text-link hover:underline">
+        <Link href={`/${locale}/entrar${keep}`} className="font-semibold text-link hover:underline">
           {t("login.title")}
         </Link>
       </p>

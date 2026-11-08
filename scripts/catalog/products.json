@@ -832,7 +832,7 @@
     {
       "id": 481,
       "name": "🔸 Venomous Abyss 8/8 HALF UNSAVED HEROIC 2-3 ITENS",
-      "description": "for +TG on this bundle add 100k -  Group loot - No Item Reserve",
+      "description": "Group loot - No Item Reserve",
       "price": 500000,
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 2,
@@ -844,7 +844,7 @@
     {
       "id": 397,
       "name": "🔸 Venomous Abyss 8/8 SAVED HEROIC",
-      "description": "for +TG on this bundle add 100k -  Group loot - No Item Reserve",
+      "description": "Group loot - No Item Reserve",
       "price": 240000,
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 2,
@@ -856,7 +856,7 @@
     {
       "id": 398,
       "name": "🔸 Venomous Abyss 8/8 UNSAVED HEROIC",
-      "description": "for +TG on this bundle add 100k -  4-5 Itens per Boss / Group loot - No Item Reserve",
+      "description": "4-5 Itens per Boss / Group loot - No Item Reserve",
       "price": 550000,
       "serviceCategoryId": 40,
       "serviceSubcategoryId": 2,
@@ -1512,6 +1512,42 @@
       "sortOrder": 43,
       "createdAt": "2026-10-20T23:17:27.680004Z",
       "updatedAt": "2026-10-26T17:17:32.822666Z"
+    },
+    {
+      "id": 900397,
+      "name": "🔸 Venomous Abyss + Tidebound Grotto 9/9 SAVED HEROIC",
+      "description": "TG+VA 9/9 Saved Heroic - Group loot - No Item Reserve",
+      "price": 340000,
+      "serviceCategoryId": 40,
+      "hotItem": false,
+      "sortOrder": 0,
+      "createdAt": "2026-11-08T06:19:16.507Z",
+      "updatedAt": "2026-11-08T06:19:16.507Z",
+      "serviceSubcategoryId": 2
+    },
+    {
+      "id": 900398,
+      "name": "🔸 Venomous Abyss + Tidebound Grotto 9/9 UNSAVED HEROIC",
+      "description": "TG+VA 9/9 Unsaved Heroic - 4-5 Itens per Boss / Group loot - No Item Reserve",
+      "price": 650000,
+      "serviceCategoryId": 40,
+      "hotItem": false,
+      "sortOrder": 0,
+      "createdAt": "2026-11-08T06:19:16.507Z",
+      "updatedAt": "2026-11-08T06:19:16.507Z",
+      "serviceSubcategoryId": 2
+    },
+    {
+      "id": 900481,
+      "name": "🔸 Venomous Abyss + Tidebound Grotto 9/9 HALF UNSAVED 2-3 ITENS HEROIC",
+      "description": "TG+VA 9/9 Half Unsaved Heroic - Group loot - No Item Reserve",
+      "price": 600000,
+      "serviceCategoryId": 40,
+      "hotItem": false,
+      "sortOrder": 0,
+      "createdAt": "2026-11-08T06:19:16.507Z",
+      "updatedAt": "2026-11-08T06:19:16.507Z",
+      "serviceSubcategoryId": 2
     }
   ],
   "errors": []

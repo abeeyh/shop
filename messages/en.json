@@ -13,7 +13,19 @@
     "detecting": "Detecting…",
     "cart": "Cart ({n} items)",
     "account": "My account",
-    "preferences": "Language and time zone"
+    "preferences": "Language, theme and time zone",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "theme": "Theme",
+    "themes": {
+      "violeta": "Neon violet",
+      "brasa": "Ember",
+      "vil": "Fel",
+      "gelo": "Arcane frost",
+      "carmesim": "Crimson",
+      "ouro": "Noir gold",
+      "vazio": "Void magenta"
+    }
   },
   "Home": {
     "badge": "WoW Retail · US",
@@ -38,7 +50,9 @@
     "buy": "Buy",
     "subcategories": "Subcategories",
     "close": "Close",
-    "breadcrumb": "Breadcrumb"
+    "breadcrumb": "Breadcrumb",
+    "gallery": "Gallery",
+    "faq": "Frequently asked questions"
   },
   "Footer": {
     "about": "Gold, raids, Mythic+ and achievements for World of Warcraft Retail US.",

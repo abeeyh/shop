@@ -16,6 +16,8 @@ import { getRequestId } from "@/lib/request-id";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
 import { addCharacter, deleteCharacter, deleteCustomer, isStaff, staffPasswordHash } from "./queries";
 import { characterInput, signInInput, signUpInput } from "./schemas";
+import { safeNext } from "./next";
+import { syncThemeOnLogin } from "@/features/preferences/theme";
 import { getCustomer } from "./session";
 
 export type AccountState = {
@@ -46,7 +48,11 @@ export async function signUp(_prev: AccountState, form: FormData): Promise<Accou
   if (await limited("signup")) return { error: "limited" };
   if (await isPwnedPassword(password)) return { error: "pwned" };
   try {
-    await auth.api.signUpEmail({ body: { email, password, name: "" }, headers: await headers() });
+    const { user } = await auth.api.signUpEmail({
+      body: { email, password, name: "" },
+      headers: await headers(),
+    });
+    await syncThemeOnLogin(user.id); // #132: o tema em uso vai para a conta nova
   } catch (err) {
     if (!(err instanceof APIError)) throw err;
     return { error: "exists" };
@@ -55,7 +61,7 @@ export async function signUp(_prev: AccountState, form: FormData): Promise<Accou
     { event: "account.created", requestId: getRequestId(await headers()) },
     "conta de cliente criada",
   );
-  redirect(`/${l}/conta`);
+  redirect(safeNext(form.get("next"), l) ?? `/${l}/conta`); // #130: volta para onde estava
 }
 
 // RN-110: conta da equipe não entra pela loja — com a senha certa, avisa para usar o /admin; com a
@@ -74,20 +80,23 @@ export async function signInCustomer(_prev: AccountState, form: FormData): Promi
   const staff = await staffLogin(email, password);
   if (staff) return staff;
   try {
-    await auth.api.signInEmail({ body: { email, password }, headers: await headers() });
+    const { user } = await auth.api.signInEmail({ body: { email, password }, headers: await headers() });
+    await syncThemeOnLogin(user.id); // #132: entra com o tema salvo na conta
   } catch (err) {
     if (!(err instanceof APIError)) throw err;
     const requestId = getRequestId(await headers()); // docs/16: requestId em todo log; sem e-mail
     logger.warn({ event: "auth.customer_login_failed", requestId }, "login de cliente recusado");
     return { error: "invalid" };
   }
-  redirect(`/${l}/conta`);
+  redirect(safeNext(form.get("next"), l) ?? `/${l}/conta`); // #130: volta para onde estava
 }
 
 export async function signOut(form: FormData): Promise<void> {
   const l = locale.catch("en").parse(form.get("locale"));
   await auth.api.signOut({ headers: await headers() });
-  redirect(`/${l}`);
+  // #130: sair pelo cabeçalho fica na mesma página (área da conta volta para a home)
+  const next = safeNext(form.get("next"), l);
+  redirect(next && !next.startsWith(`/${l}/conta`) ? next : `/${l}`);
 }
 
 // RN-108: personagem salvo (até 10; repetido não duplica)

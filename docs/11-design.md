@@ -26,6 +26,22 @@ Referência visual: começou no template **Enfhess (dark)** da ThemeMarch (anál
 
 *(#102, 2026-11-07: paleta trocada pelo designer com aprovação do dono — antes: azul-marinho do template Enfhess com primária `#2f63e6` e gradiente rosa→azul.)*
 
+### 1.1 Temas
+
+A tabela acima é o tema padrão (**Violeta neon**). O cliente pode trocar por outro tema no menu de idioma (RN-111). Cada tema troca só os valores dos mesmos tokens (`:root[data-theme="…"]` no `globals.css`); papéis e regras desta seção valem para todos. Contraste AA de todos conferido em [design/prototipo-paletas.html](../design/prototipo-paletas.html).
+
+| Tema (`data-theme`) | Fundo | Primária (texto sobre ela) | Gradiente | Clima |
+|---|---|---|---|---|
+| `violeta` (padrão) | `#08080c` | `#6d4aff` (branco) | `#6d4aff` → `#22d3ee` | o original |
+| `brasa` | `#0c0806` | `#ff6a2b` (`#1a0b03`) | `#ff3d1f` → `#ffb020` | forja, urgência |
+| `vil` | `#050a07` | `#3ee07f` (`#03140a`) | `#3ee07f` → `#14c8ff` | neon "gamer" |
+| `gelo` | `#050912` | `#4cc3ff` (`#021320`) | `#4cc3ff` → `#a98bff` | calmo, premium |
+| `carmesim` | `#0b0607` | `#d91e47` (branco) | `#e5294f` → `#ff8a3d` | dramático; erro vira `#fca5a5` |
+| `ouro` | `#09090b` | `#f5c451` (`#1a1305`) | `#f5c451` → `#ff7a45` | luxo minimalista |
+| `vazio` | `#08070a` | `#ff2e88` (`#1a0410`) | `#ff2e88` → `#8b5cf6` | quase monocromático |
+
+O tema é aplicado por um script curto no `<head>` antes da pintura (sem piscar) e a página continua estática.
+
 Regras:
 - Toda combinação de texto/fundo com contraste ≥ 4,5:1 (conferir antes de aprovar a paleta).
 - Primária só em destaques: **uma ação principal por tela**.
@@ -98,11 +114,13 @@ Se o componente **conhece o domínio**, fica na feature; se é genérico, em `sr
 | Nível | Componente | Local |
 |-------|-----------|-------|
 | Átomo | `Button` (variantes `primary`, `gradient-outline`, `ghost`, `destructive`), `IconButton`, `Input`, `Label`, `Avatar`, `Badge`, `Switch`, `Tooltip`, `Separator`, `Skeleton`, `Spinner` | `components/atoms` |
+| Átomo | `Tooltip` (#130: dica de botão de ícone no hover **e** no foco por Tab; o nome acessível fica no `aria-label` do botão) | `components/atoms` |
 | Molécula | `FormField`, `PasswordField`, `CopyField`, `Toast`, `LocaleSwitcher`, `TimezoneSwitcher`, `PriceTag` (USDT + estimativa; preço original riscado em promoção) | `components/molecules` |
 | Molécula | `Collapsible` (expandir/recolher com `<details>`; aberto a partir de `lg`), `Pagination` (página na URL), `LoadingRegion` + `CardGridSkeleton` / `TableSkeleton` / `TitleSkeleton` (esqueletos com a forma do conteúdo, `role="status"` com texto para leitor de tela; `Skeleton` sem animação com `prefers-reduced-motion`) | `components/molecules` |
 | Molécula | `NavTabs` (abas de categoria; aba atual por `usePathname` em `Suspense`), `Popover` (`<details>` com estado no React; Esc e clique fora fecham), `Drawer` (barra lateral em `<dialog>` modal: foco preso, Esc e clique no fundo fecham; base do `CartSheet` — #109), `SpotlightTracker` (um ouvinte para a luz do cursor) — #102 |
 | Molécula | `SearchBox` (domínio, `features/catalog`: busca no cabeçalho com sugestões — combobox ARIA com setas, Enter e Esc; sem JS continua formulário GET — #110), `FilterChip` (filtro ativo removível), `SectionHeading` (título + link "ver todos"), `FilterTabs`, `Countdown`, `GradientCard` (moldura com gradiente) | `components/molecules` |
-| Organismo | `Header` (uma linha: logo, busca, globo com idioma/fuso, conta, carrinho; abas de categoria embaixo — #102; sem região — loja só US), `Footer` (texto, links e "reportar problema"; colunas e newsletter quando houver conteúdo), `Carousel` (CSS scroll-snap, sem biblioteca) | `components/organisms` |
+| Molécula | `ProductGallery`, `ProductDetailsText`, `ProductFaq` (domínio, `features/catalog` — #136: galeria que rola de lado com scroll-snap, sem JS; descrição em parágrafos; FAQ com `<details>` nativo, fechada até clicar). Ilustrações em `public/catalog/` são arquivos próprios (SVG com cores fixas é permitido: não são componentes) e toda imagem tem `alt` | `features/catalog/components` |
+| Organismo | `Header` (uma linha: logo, busca e, à direita, **idioma · carrinho · usuário · sair** — #130, cada ícone com `Tooltip` e foco visível no Tab; abas de categoria embaixo — #102; sem região — loja só US), `Footer` (texto, links e "reportar problema"; colunas e newsletter quando houver conteúdo), `Carousel` (CSS scroll-snap, sem biblioteca) | `components/organisms` |
 | Template | `MarketingTemplate`, `AuthTemplate`, `AppTemplate` | `components/templates` |
 | Domínio | `VariantPicker` (#100: um eixo por linha — slider para valores em sequência, caixas para escolhas soltas; mostra o preço e a nota da combinação), `ProductFilters` (painel lateral no desktop, gaveta no celular), `SortSelect`, `CategoryCard`, `ServiceCard`, `RaidSlotCard` (com `Countdown`), `BestSellerCard`, `AdvantageItem`, `ServiceOptionsDrawer` | `features/catalog`, `features/schedule` |
 | Domínio (compra e conta) | `BuyBox` (preço, opções, personagem, total, "Comprar agora"/"Adicionar"), `ProductPanel` (página do produto), `CartSheet` (carrinho na barra lateral — #109), `AccountForms` (cadastro, login, personagens, excluir conta — RN-107 a RN-109) | `features/cart`, `features/account` |

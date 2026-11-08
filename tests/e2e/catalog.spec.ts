@@ -32,14 +32,28 @@ test("#109: produto abre na página dele, com as opções", async ({ page }) => 
   await expect(page.getByRole("heading", { level: 2, name: "Heroic", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { level: 2, name: "Normal", exact: true })).toBeVisible();
   // #100: a raid aparece uma vez por dificuldade; as runs viram opções dentro do produto
-  await page.getByRole("link", { name: "Venomous Abyss" }).first().click();
+  // pelo endereço: "Venomous Abyss + Tidebound Grotto" também casa com o nome (#134)
+  await page.locator('a[href$="/wow/raids/venomous-abyss-heroic"]').filter({ visible: true }).first().click();
   await expect(page).toHaveURL(/\/en\/wow\/raids\/venomous-abyss-heroic$/);
   await expect(page.getByRole("dialog")).toHaveCount(0);
   // com cacheComponents a página anterior fica escondida no DOM (React Activity): filtrar o visível
   const h1 = page.getByRole("heading", { level: 1 }).filter({ visible: true });
   await expect(h1).toHaveText("Venomous Abyss");
   await expect(page.getByText("5.18 USDT", { exact: true }).filter({ visible: true }).first()).toBeVisible();
-  await expect(page.getByText(/never ask for your Battle\.net password/)).toBeVisible();
+  await expect(
+    page.getByText("Self-play: you play your own character. We never ask for your Battle.net password."),
+  ).toBeVisible();
+
+  // #136: galeria, descrição detalhada e FAQ (fechada até clicar)
+  await expect(
+    page.getByRole("img", { name: /Illustration of the Venomous Abyss/ }).filter({ visible: true }),
+  ).toBeVisible();
+  await expect(page.getByText(/main raid of the current season/).filter({ visible: true })).toBeVisible();
+  const faq = page.getByRole("region", { name: "Frequently asked questions" }).filter({ visible: true });
+  const answer = faq.getByText(/Eight: Nek'zali the Soulcoiler/);
+  await expect(answer).toBeHidden();
+  await faq.getByText("How many bosses are in the Venomous Abyss?").click();
+  await expect(answer).toBeVisible();
 });
 
 // Com streaming, o esqueleto já saiu com 200 quando a página descobre que não existe: o Next mostra a
@@ -62,4 +76,25 @@ test("página não encontrada no idioma do usuário", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1, name: "Página não encontrada" })).toBeVisible();
   await page.getByRole("link", { name: "Voltar ao início" }).click();
   await expect(page).toHaveURL(/\/pt-br$/);
+});
+
+// #139: no desktop a caixa de compra (sticky) não pode ficar por cima da galeria nem da FAQ
+test("#139: galeria e FAQ não ficam atrás da caixa de compra", async ({ page, isMobile }) => {
+  test.skip(isMobile, "no celular a caixa vem abaixo, sem sticky");
+  await page.goto("/en/wow/raids/venomous-abyss-tidebound-grotto-9-9-heroic");
+  const buy = page
+    .getByRole("button", { name: "Add to cart" })
+    .filter({ visible: true })
+    .locator("xpath=ancestor::*[contains(@class,'sticky')][1]");
+  const gallery = page.getByRole("list", { name: "Gallery" }).filter({ visible: true });
+  const faq = page.getByRole("region", { name: "Frequently asked questions" }).filter({ visible: true });
+  const overlap = async (other: typeof gallery) => {
+    const [a, b] = [await buy.boundingBox(), await other.boundingBox()];
+    if (!a || !b) throw new Error("sem caixa");
+    return a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height;
+  };
+  expect(await overlap(gallery)).toBe(false);
+  await faq.scrollIntoViewIfNeeded();
+  expect(await overlap(faq)).toBe(false);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true); // sem rolagem lateral
 });

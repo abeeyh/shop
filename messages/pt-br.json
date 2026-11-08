@@ -13,7 +13,19 @@
     "detecting": "Detectando…",
     "cart": "Carrinho ({n} itens)",
     "account": "Minha conta",
-    "preferences": "Idioma e fuso horário"
+    "preferences": "Idioma, tema e fuso horário",
+    "signIn": "Entrar",
+    "signOut": "Sair",
+    "theme": "Tema",
+    "themes": {
+      "violeta": "Violeta neon",
+      "brasa": "Brasa",
+      "vil": "Vil",
+      "gelo": "Gelo arcano",
+      "carmesim": "Carmesim",
+      "ouro": "Ouro noir",
+      "vazio": "Vazio magenta"
+    }
   },
   "Home": {
     "badge": "WoW Retail · US",
@@ -38,7 +50,9 @@
     "buy": "Comprar",
     "subcategories": "Subcategorias",
     "close": "Fechar",
-    "breadcrumb": "Navegação estrutural"
+    "breadcrumb": "Navegação estrutural",
+    "gallery": "Galeria",
+    "faq": "Perguntas frequentes"
   },
   "Footer": {
     "about": "Gold, raids, Mítica+ e conquistas para World of Warcraft Retail US.",

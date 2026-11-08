@@ -1,31 +1,37 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Globe, ShoppingCart, UserRound } from "lucide-react";
+import { Globe, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { SiteFooter } from "@/components/organisms/SiteFooter";
+import { Tooltip } from "@/components/atoms/Tooltip";
 import { NavTabs } from "@/components/molecules/NavTabs";
 import { Popover } from "@/components/molecules/Popover";
 import { SpotlightTracker } from "@/components/molecules/SpotlightTracker";
 import { SiteHeader } from "@/components/organisms/SiteHeader";
+import { AccountTools, getCustomer } from "@/features/account";
 import { countItems, getCartId } from "@/features/cart";
 import { ChatLauncher } from "@/features/support/ChatLauncher";
 import { ReportLink } from "@/features/support/components/ReportLink";
 import { categoryHref, listCategories, SearchBox } from "@/features/catalog";
-import { PreferenceSelects, TimezoneDetector, timezoneOptions } from "@/features/preferences";
+import { PreferenceSelects, ThemeSync, TimezoneDetector, timezoneOptions } from "@/features/preferences";
 import { LOCALE_LABELS } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { getTimezone } from "@/lib/preferences";
+import { getTheme } from "@/features/preferences/theme";
+import { THEMES } from "@/lib/theme";
 
 async function StoreHeader({ locale }: { locale: string }) {
   await connection(); // categorias e preferências vêm do banco/cookie: hora da requisição
   const cartId = await getCartId();
-  const [categories, timezone, t, s, cartCount] = await Promise.all([
+  const [categories, timezone, theme, t, s, cartCount, customer] = await Promise.all([
     listCategories(),
     getTimezone(),
+    getTheme(),
     getTranslations({ locale, namespace: "Nav" }),
     getTranslations({ locale, namespace: "Search" }),
     cartId ? countItems(cartId) : 0,
+    getCustomer(),
   ]);
   // #110: busca com sugestões de produtos e categorias enquanto digita
   const searchProps = {
@@ -48,14 +54,17 @@ async function StoreHeader({ locale }: { locale: string }) {
     timezone: timezone ?? "",
     detecting: timezone === null,
     timezones: timezoneOptions(timezone),
+    theme,
+    themes: THEMES.map((code) => ({ code, label: t(`themes.${code}`) })),
     labels: {
+      theme: t("theme"),
       language: t("language"),
       timezone: t("timezone"),
       detecting: t("detecting"),
     },
   };
   const iconLink =
-    "relative grid size-11 place-items-center rounded-full border border-border text-heading hover:bg-accent";
+    "relative grid size-11 place-items-center rounded-full border border-border text-heading hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none";
   return (
     <SiteHeader
       homeHref={`/${locale}`}
@@ -65,22 +74,30 @@ async function StoreHeader({ locale }: { locale: string }) {
       tools={
         <>
           <TimezoneDetector hasTimezone={timezone !== null} />
-          {/* idioma e fuso já vêm detectados: ficam guardados atrás do globo (#102) */}
-          <Popover label={t("preferences")} icon={<Globe aria-hidden="true" className="size-5" />}>
-            <PreferenceSelects idPrefix="pref" stacked {...prefs} />
-          </Popover>
-          {/* RN-107: a página decide entre "Minha conta" e o login */}
-          <Link href={`/${locale}/conta`} aria-label={t("account")} className={iconLink}>
-            <UserRound aria-hidden="true" className="size-5" />
-          </Link>
-          <Link href={`/${locale}/carrinho`} aria-label={t("cart", { n: cartCount })} className={iconLink}>
-            <ShoppingCart aria-hidden="true" className="size-5" />
-            {cartCount ? (
-              <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-primary px-1.5 text-center font-heading text-[11px] leading-5 font-bold text-primary-foreground">
-                {cartCount}
-              </span>
-            ) : null}
-          </Link>
+          <ThemeSync theme={theme} />
+          {/* #130: Idioma · Carrinho · Usuário · Sair — cada ícone com dica (hover e Tab) */}
+          <Tooltip label={t("preferences")}>
+            <Popover label={t("preferences")} icon={<Globe aria-hidden="true" className="size-5" />}>
+              <PreferenceSelects idPrefix="pref" stacked {...prefs} />
+            </Popover>
+          </Tooltip>
+          <Tooltip label={t("cart", { n: cartCount })}>
+            <Link href={`/${locale}/carrinho`} aria-label={t("cart", { n: cartCount })} className={iconLink}>
+              <ShoppingCart aria-hidden="true" className="size-5" />
+              {cartCount ? (
+                <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-primary px-1.5 text-center font-heading text-[11px] leading-5 font-bold text-primary-foreground">
+                  {cartCount}
+                </span>
+              ) : null}
+            </Link>
+          </Tooltip>
+          {/* RN-107/RN-110: equipe logada não é cliente — aparece como visitante na loja */}
+          <AccountTools
+            locale={locale}
+            signedIn={customer !== null}
+            iconClass={iconLink}
+            labels={{ account: t("account"), signIn: t("signIn"), signOut: t("signOut") }}
+          />
         </>
       }
     />

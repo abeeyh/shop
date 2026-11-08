@@ -5,7 +5,7 @@ import { useTransition } from "react";
 import { Select } from "@/components/atoms/Select";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import { savePreferences } from "../actions";
+import { savePreferences, saveTheme } from "../actions";
 
 type Props = {
   idPrefix: string;
@@ -14,11 +14,13 @@ type Props = {
   timezone: string;
   detecting: boolean; // RN-82: fuso ainda não detectado — seletor bloqueado até a detecção gravar
   timezones: string[];
-  labels: { language: string; timezone: string; detecting: string };
+  theme: string;
+  themes: { code: string; label: string }[];
+  labels: { language: string; timezone: string; detecting: string; theme: string };
   stacked?: boolean;
 };
 
-// RN-81 (idioma), RN-82 (fuso). Região: só US (RN-14): o servidor valida e grava; aqui só se escolhe
+// RN-81 (idioma), RN-111 (tema), RN-82 (fuso). Região: só US (RN-14): o servidor valida e grava; aqui só se escolhe
 export function PreferenceSelects(p: Props) {
   const router = useRouter();
   const nextRouter = useNextRouter();
@@ -53,6 +55,28 @@ export function PreferenceSelects(p: Props) {
           {p.locales.map((l) => (
             <option key={l.code} value={l.code}>
               {l.label}
+            </option>
+          ))}
+        </Select>,
+      )}
+      {field(
+        "theme",
+        p.labels.theme,
+        <Select
+          id={`${p.idPrefix}-theme`}
+          size="sm"
+          className={p.stacked ? undefined : "w-auto"}
+          key={p.theme} // tema da conta chegou ao entrar: o seletor acompanha
+          defaultValue={p.theme}
+          onChange={(e) => {
+            const theme = e.target.value;
+            document.documentElement.dataset.theme = theme; // troca na hora; o servidor valida e grava
+            void saveTheme(theme);
+          }}
+        >
+          {p.themes.map((t) => (
+            <option key={t.code} value={t.code}>
+              {t.label}
             </option>
           ))}
         </Select>,

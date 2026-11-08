@@ -13,7 +13,19 @@
     "detecting": "检测中…",
     "cart": "购物车（{n} 件）",
     "account": "我的账号",
-    "preferences": "语言和时区"
+    "preferences": "语言、主题和时区",
+    "signIn": "登录",
+    "signOut": "退出",
+    "theme": "主题",
+    "themes": {
+      "violeta": "霓虹紫",
+      "brasa": "余烬",
+      "vil": "邪能",
+      "gelo": "奥术冰霜",
+      "carmesim": "深红",
+      "ouro": "黑金",
+      "vazio": "虚空洋红"
+    }
   },
   "Home": {
     "badge": "WoW 正式服 · 美服",
@@ -38,7 +50,9 @@
     "buy": "购买",
     "subcategories": "子分类",
     "close": "关闭",
-    "breadcrumb": "导航路径"
+    "breadcrumb": "导航路径",
+    "gallery": "图库",
+    "faq": "常见问题"
   },
   "Footer": {
     "about": "World of Warcraft 正式服美服的金币、团队副本、史诗钥石与成就。",
