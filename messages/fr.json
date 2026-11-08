@@ -13,9 +13,19 @@
     "detecting": "Détection…",
     "cart": "Panier ({n} articles)",
     "account": "Mon compte",
-    "preferences": "Langue et fuseau horaire",
+    "preferences": "Langue, thème et fuseau horaire",
     "signIn": "Se connecter",
-    "signOut": "Se déconnecter"
+    "signOut": "Se déconnecter",
+    "theme": "Thème",
+    "themes": {
+      "violeta": "Violet néon",
+      "brasa": "Braise",
+      "vil": "Gangrené",
+      "gelo": "Givre arcanique",
+      "carmesim": "Cramoisi",
+      "ouro": "Or noir",
+      "vazio": "Magenta du Vide"
+    }
   },
   "Home": {
     "badge": "WoW Retail · US",

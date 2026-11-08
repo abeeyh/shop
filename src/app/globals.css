@@ -34,6 +34,117 @@
     "Noto Sans CJK SC", sans-serif;
 }
 
+/* #132: temas escolhidos pelo cliente (menu de idioma; salvo no cookie e na conta). Mesmo papel de cada
+   token; só a cor muda. Contraste AA conferido em design/prototipo-paletas.html. */
+:root[data-theme="brasa"] {
+  --heading: #fbf6f1;
+  --link: #ffa066;
+  --ring: #ffa066;
+  --gradient-from: #ff3d1f;
+  --gradient-to: #ffb020;
+  --gold: #ffc94d;
+  --background: #0c0806;
+  --foreground: #d6cdc4;
+  --card: #15100c;
+  --popover: #1c1510;
+  --input: #18120d;
+  --primary: #ff6a2b;
+  --primary-hover: #f2581a;
+  --primary-foreground: #1a0b03;
+  --muted-foreground: #a0938a;
+}
+:root[data-theme="vil"] {
+  --heading: #f1fbf4;
+  --link: #7cf0ad;
+  --ring: #7cf0ad;
+  --gradient-from: #3ee07f;
+  --gradient-to: #14c8ff;
+  --gold: #e8d25a;
+  --background: #050a07;
+  --foreground: #c6d4cb;
+  --card: #0b130e;
+  --popover: #101a14;
+  --input: #0d1610;
+  --primary: #3ee07f;
+  --primary-hover: #2fc86d;
+  --primary-foreground: #03140a;
+  --muted-foreground: #8ba595;
+}
+:root[data-theme="gelo"] {
+  --heading: #f2f7ff;
+  --link: #8fd8ff;
+  --ring: #8fd8ff;
+  --gradient-from: #4cc3ff;
+  --gradient-to: #a98bff;
+  --background: #050912;
+  --foreground: #c5d0e0;
+  --card: #0b1220;
+  --popover: #101a2c;
+  --input: #0d1626;
+  --primary: #4cc3ff;
+  --primary-hover: #2fb2f5;
+  --primary-foreground: #021320;
+  --muted-foreground: #8796ae;
+}
+:root[data-theme="carmesim"] {
+  --heading: #fff5f6;
+  --link: #ff8aa1;
+  --ring: #ff8aa1;
+  --gradient-from: #e5294f;
+  --gradient-to: #ff8a3d;
+  --background: #0b0607;
+  --foreground: #d8c9cc;
+  --card: #150c0e;
+  --popover: #1d1114;
+  --input: #180e11;
+  --primary: #d91e47;
+  --primary-hover: #bf173c;
+  --primary-foreground: #ffffff;
+  --muted-foreground: #a68f94;
+  --error-text: #fca5a5;
+  --destructive: #b91c1c; /* erro não se confunde com o botão vermelho */
+}
+:root[data-theme="ouro"] {
+  --heading: #fafafa;
+  --link: #f8d57e;
+  --ring: #f8d57e;
+  --gradient-from: #f5c451;
+  --gradient-to: #ff7a45;
+  --background: #09090b;
+  --foreground: #d4d4d8;
+  --card: #121214;
+  --popover: #18181b;
+  --input: #141416;
+  --primary: #f5c451;
+  --primary-hover: #e8b53a;
+  --primary-foreground: #1a1305;
+  --muted-foreground: #93939c;
+}
+:root[data-theme="vazio"] {
+  --heading: #fbfaff;
+  --link: #ff7ab5;
+  --ring: #ff7ab5;
+  --gradient-from: #ff2e88;
+  --gradient-to: #8b5cf6;
+  --gold: #ffd166;
+  --background: #08070a;
+  --foreground: #cfccd6;
+  --card: #111014;
+  --popover: #17151b;
+  --input: #131216;
+  --primary: #ff2e88;
+  --primary-hover: #e81f77;
+  --primary-foreground: #1a0410;
+  --muted-foreground: #918d9c;
+}
+/* textos sobre card/popover/secundário seguem o tema */
+:root[data-theme] {
+  --card-foreground: var(--foreground);
+  --popover-foreground: var(--foreground);
+  --secondary-foreground: var(--heading);
+  --accent-foreground: var(--heading);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

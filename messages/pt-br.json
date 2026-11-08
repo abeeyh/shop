@@ -13,9 +13,19 @@
     "detecting": "Detectando…",
     "cart": "Carrinho ({n} itens)",
     "account": "Minha conta",
-    "preferences": "Idioma e fuso horário",
+    "preferences": "Idioma, tema e fuso horário",
     "signIn": "Entrar",
-    "signOut": "Sair"
+    "signOut": "Sair",
+    "theme": "Tema",
+    "themes": {
+      "violeta": "Violeta neon",
+      "brasa": "Brasa",
+      "vil": "Vil",
+      "gelo": "Gelo arcano",
+      "carmesim": "Carmesim",
+      "ouro": "Ouro noir",
+      "vazio": "Vazio magenta"
+    }
   },
   "Home": {
     "badge": "WoW Retail · US",

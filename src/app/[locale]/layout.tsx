@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { canonicalLocale, routing } from "@/i18n/routing";
+import { THEME_SCRIPT } from "@/lib/theme";
 import "../globals.css";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin", "latin-ext"] });
@@ -28,7 +29,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
     <html
       lang={canonicalLocale(locale)}
       className={`${inter.variable} ${mulish.variable} h-full antialiased`}
+      suppressHydrationWarning // #132: o script abaixo põe data-theme antes do React hidratar
     >
+      <head>
+        {/* #132: tema salvo (cookie) aplicado antes da pintura — a página continua estática */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="flex min-h-full flex-col font-sans">
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>

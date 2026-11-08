@@ -17,6 +17,7 @@ import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
 import { addCharacter, deleteCharacter, deleteCustomer, isStaff, staffPasswordHash } from "./queries";
 import { characterInput, signInInput, signUpInput } from "./schemas";
 import { safeNext } from "./next";
+import { syncThemeOnLogin } from "@/features/preferences/theme";
 import { getCustomer } from "./session";
 
 export type AccountState = {
@@ -47,7 +48,11 @@ export async function signUp(_prev: AccountState, form: FormData): Promise<Accou
   if (await limited("signup")) return { error: "limited" };
   if (await isPwnedPassword(password)) return { error: "pwned" };
   try {
-    await auth.api.signUpEmail({ body: { email, password, name: "" }, headers: await headers() });
+    const { user } = await auth.api.signUpEmail({
+      body: { email, password, name: "" },
+      headers: await headers(),
+    });
+    await syncThemeOnLogin(user.id); // #132: o tema em uso vai para a conta nova
   } catch (err) {
     if (!(err instanceof APIError)) throw err;
     return { error: "exists" };
@@ -75,7 +80,8 @@ export async function signInCustomer(_prev: AccountState, form: FormData): Promi
   const staff = await staffLogin(email, password);
   if (staff) return staff;
   try {
-    await auth.api.signInEmail({ body: { email, password }, headers: await headers() });
+    const { user } = await auth.api.signInEmail({ body: { email, password }, headers: await headers() });
+    await syncThemeOnLogin(user.id); // #132: entra com o tema salvo na conta
   } catch (err) {
     if (!(err instanceof APIError)) throw err;
     const requestId = getRequestId(await headers()); // docs/16: requestId em todo log; sem e-mail

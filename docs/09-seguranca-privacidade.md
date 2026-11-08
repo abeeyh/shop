@@ -91,7 +91,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
   Valkey lento ou travado: timeout de 150 ms e **disjuntor** de 5 s — após uma falha, as requisições seguintes nem consultam o Valkey (verificado com o container congelado: latência normal).
   Rotas com ponto no caminho (ex.: `/api/x.json`) passam pelo proxy; só arquivos estáticos conhecidos ficam fora.
   Bloqueado → 429 com `Retry-After` e `{ error: { code: "rate_limited", requestId } }`. `/api/health` fica fora. `VALKEY_URL` é obrigatório em production.
-- Cookie `httpOnly`, `Secure`, `SameSite=Lax`; trocar senha encerra outras sessões.
+- Cookie `httpOnly`, `Secure`, `SameSite=Lax`; trocar senha encerra outras sessões. Exceção consciente: o cookie `theme` (RN-111) não é `httpOnly` porque o script do `<head>` o lê antes da pintura — não é dado sensível e valor fora da lista é ignorado.
 - CSRF: origens confiáveis configuradas.
 
 ### Autorização
@@ -163,7 +163,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 | Reporte de bug (descrição, e-mail opcional, navegador) | Suporte e correção | Legítimo interesse | 1 ano |
 | Conversas e anexos do chat de suporte | Atendimento ao cliente | Execução de contrato / legítimo interesse | 1 ano após resolvida; anexos apagados junto |
 | Contas de equipe (nome, e-mail, idiomas, ações auditadas) | Operação e auditoria | Execução de contrato | Enquanto ativa + 5 anos da auditoria |
-| Idioma, fuso, região (cookies) | Funcionamento do site | Legítimo interesse (cookie funcional, sem consentimento) | 1 ano |
+| Idioma, fuso, região e tema (cookies; tema também na conta — RN-111) | Funcionamento do site | Legítimo interesse (cookie funcional, sem consentimento) | 1 ano |
 
 - Operadores com acordo de tratamento de dados: Better Stack (logs, Europa/DE), Sentry (erros), gateway cripto, provedor de cartão, e-mail transacional, hospedagem. [confirmar DPA de cada um]
 - Excluir conta apaga os dados pessoais; mantém só o exigido por lei.

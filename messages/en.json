@@ -13,9 +13,19 @@
     "detecting": "Detecting…",
     "cart": "Cart ({n} items)",
     "account": "My account",
-    "preferences": "Language and time zone",
+    "preferences": "Language, theme and time zone",
     "signIn": "Sign in",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "theme": "Theme",
+    "themes": {
+      "violeta": "Neon violet",
+      "brasa": "Ember",
+      "vil": "Fel",
+      "gelo": "Arcane frost",
+      "carmesim": "Crimson",
+      "ouro": "Noir gold",
+      "vazio": "Void magenta"
+    }
   },
   "Home": {
     "badge": "WoW Retail · US",

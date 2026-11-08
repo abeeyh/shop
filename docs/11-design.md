@@ -26,6 +26,22 @@ Referência visual: começou no template **Enfhess (dark)** da ThemeMarch (anál
 
 *(#102, 2026-11-07: paleta trocada pelo designer com aprovação do dono — antes: azul-marinho do template Enfhess com primária `#2f63e6` e gradiente rosa→azul.)*
 
+### 1.1 Temas
+
+A tabela acima é o tema padrão (**Violeta neon**). O cliente pode trocar por outro tema no menu de idioma (RN-111). Cada tema troca só os valores dos mesmos tokens (`:root[data-theme="…"]` no `globals.css`); papéis e regras desta seção valem para todos. Contraste AA de todos conferido em [design/prototipo-paletas.html](../design/prototipo-paletas.html).
+
+| Tema (`data-theme`) | Fundo | Primária (texto sobre ela) | Gradiente | Clima |
+|---|---|---|---|---|
+| `violeta` (padrão) | `#08080c` | `#6d4aff` (branco) | `#6d4aff` → `#22d3ee` | o original |
+| `brasa` | `#0c0806` | `#ff6a2b` (`#1a0b03`) | `#ff3d1f` → `#ffb020` | forja, urgência |
+| `vil` | `#050a07` | `#3ee07f` (`#03140a`) | `#3ee07f` → `#14c8ff` | neon "gamer" |
+| `gelo` | `#050912` | `#4cc3ff` (`#021320`) | `#4cc3ff` → `#a98bff` | calmo, premium |
+| `carmesim` | `#0b0607` | `#d91e47` (branco) | `#e5294f` → `#ff8a3d` | dramático; erro vira `#fca5a5` |
+| `ouro` | `#09090b` | `#f5c451` (`#1a1305`) | `#f5c451` → `#ff7a45` | luxo minimalista |
+| `vazio` | `#08070a` | `#ff2e88` (`#1a0410`) | `#ff2e88` → `#8b5cf6` | quase monocromático |
+
+O tema é aplicado por um script curto no `<head>` antes da pintura (sem piscar) e a página continua estática.
+
 Regras:
 - Toda combinação de texto/fundo com contraste ≥ 4,5:1 (conferir antes de aprovar a paleta).
 - Primária só em destaques: **uma ação principal por tela**.

@@ -14,17 +14,20 @@ import { countItems, getCartId } from "@/features/cart";
 import { ChatLauncher } from "@/features/support/ChatLauncher";
 import { ReportLink } from "@/features/support/components/ReportLink";
 import { categoryHref, listCategories, SearchBox } from "@/features/catalog";
-import { PreferenceSelects, TimezoneDetector, timezoneOptions } from "@/features/preferences";
+import { PreferenceSelects, ThemeSync, TimezoneDetector, timezoneOptions } from "@/features/preferences";
 import { LOCALE_LABELS } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { getTimezone } from "@/lib/preferences";
+import { getTheme } from "@/features/preferences/theme";
+import { THEMES } from "@/lib/theme";
 
 async function StoreHeader({ locale }: { locale: string }) {
   await connection(); // categorias e preferências vêm do banco/cookie: hora da requisição
   const cartId = await getCartId();
-  const [categories, timezone, t, s, cartCount, customer] = await Promise.all([
+  const [categories, timezone, theme, t, s, cartCount, customer] = await Promise.all([
     listCategories(),
     getTimezone(),
+    getTheme(),
     getTranslations({ locale, namespace: "Nav" }),
     getTranslations({ locale, namespace: "Search" }),
     cartId ? countItems(cartId) : 0,
@@ -51,7 +54,10 @@ async function StoreHeader({ locale }: { locale: string }) {
     timezone: timezone ?? "",
     detecting: timezone === null,
     timezones: timezoneOptions(timezone),
+    theme,
+    themes: THEMES.map((code) => ({ code, label: t(`themes.${code}`) })),
     labels: {
+      theme: t("theme"),
       language: t("language"),
       timezone: t("timezone"),
       detecting: t("detecting"),
@@ -68,6 +74,7 @@ async function StoreHeader({ locale }: { locale: string }) {
       tools={
         <>
           <TimezoneDetector hasTimezone={timezone !== null} />
+          <ThemeSync theme={theme} />
           {/* #130: Idioma · Carrinho · Usuário · Sair — cada ícone com dica (hover e Tab) */}
           <Tooltip label={t("preferences")}>
             <Popover label={t("preferences")} icon={<Globe aria-hidden="true" className="size-5" />}>
