@@ -77,7 +77,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 
   Risco aceito: o limite de cupom "por cliente" (RN-25) conta o e-mail normalizado (sem `+tag`, sem pontos no Gmail), mas sem conta nem verificação de e-mail é só uma barreira leve.
   Pendente antes de produção: CAPTCHA no chat e no reporte (Turnstile, #29) — sem ele, e-mail não verificado permite abrir muitas conversas (o limite por IP segura parte). Expurgo de conversas 1 ano depois de resolvidas (cron).
-  Risco aceito (#101): conta de cliente sem e-mail verificado e sem CAPTCHA no cadastro até o #29 — mitigado por 5 cadastros/h por IP (`failClosed`), senha vazada recusada, conta que só vê pedidos feitos logada e resposta igual para e-mail novo e já usado (sem enumeração). "Esqueci a senha" bloqueado até ter e-mail transacional. Conta de cliente não verificada não ocupa e-mail de equipe: o convite pode ser feito e o aceite apaga essa conta (nunca a promove — RN-04). Excluir conta limita tentativas de senha por IP **e** por conta. Logger do Better Auth fixo em `warn` (em `info` ele grava e-mail de cadastro repetido).
+  Risco aceito (#101): conta de cliente sem e-mail verificado e sem CAPTCHA no cadastro até o #29 — mitigado por 5 cadastros/h por IP (`failClosed`), senha vazada recusada, conta que só vê pedidos feitos logada e cadastro que já entra logado. **Desde o #118 o cadastro avisa quando o e-mail já tem conta** (decisão do dono): dá para descobrir se um e-mail é cliente ou da equipe, limitado a 5 tentativas/h por IP. "Esqueci a senha" bloqueado até ter e-mail transacional. Conta de cliente não verificada não ocupa e-mail de equipe: o convite pode ser feito e o aceite apaga essa conta (nunca a promove — RN-04). Excluir conta limita tentativas de senha por IP **e** por conta. Logger do Better Auth fixo em `warn` (em `info` ele grava e-mail de cadastro repetido).
   Risco aceito (#116, decisão do dono em 2026-11-07): **2FA da equipe opcional**. Sem ele, uma senha vazada ou adivinhada dá acesso ao painel (preços, cupons, pedidos, equipe). Mitigado por: senha 8+ com maiúscula, minúscula e número e recusa de senha vazada (HIBP), limite de tentativas por IP e por e-mail, sessão da equipe com teto de 12 h, auditoria de toda alteração (RN-71) e 2FA disponível para quem quiser (recomendado, principalmente para admin).
   Risco aceito: pedido em `pagamento_parcial` não expira e segura vaga e uso de cupom até o admin resolver (fluxo do admin em #23).
   Risco aceito: quem sabe o e-mail de um admin consegue travar o login dele por 10 min de cada vez (limite por e-mail). Monitorar `auth.login_failed`; se virar problema, contar só falhas no balde por e-mail.
@@ -137,7 +137,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 
 - Confiar no cliente para plano, limite, papel ou identidade.
 - Guardar senha sem hash, ou segredo no código/repositório.
-- Revelar se um e-mail está cadastrado.
+- Revelar se um e-mail está cadastrado — **exceto** o aviso do cadastro de cliente ("este e-mail já tem conta", #118, risco aceito abaixo). Login, reset e chat continuam sem revelar.
 - Exibir stack trace ao usuário.
 - Buscar no servidor uma URL enviada por usuário.
 - Receber ou guardar dados de cartão no servidor da loja.

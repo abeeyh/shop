@@ -9,6 +9,7 @@ import {
   CharacterForm,
   DeleteAccountForm,
   getCustomer,
+  hasStaffSession,
   listCharacters,
   listCustomerOrders,
   removeCharacter,
@@ -36,7 +37,8 @@ export default async function AccountPage({ params }: PageProps<"/[locale]/conta
   const { locale } = await params;
   setRequestLocale(locale);
   const customer = await getCustomer();
-  if (!customer) redirect(`/${locale}/entrar`);
+  // RN-110: equipe logada vai para o painel; visitante, para o login
+  if (!customer) redirect((await hasStaffSession()) ? `/${locale}/admin` : `/${locale}/entrar`);
   const [t, o, b, format, timeZone, chars, orders] = await Promise.all([
     getTranslations({ locale, namespace: "Account" }),
     getTranslations({ locale, namespace: "Order" }),

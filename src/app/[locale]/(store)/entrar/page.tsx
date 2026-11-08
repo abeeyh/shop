@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/entrar">
 }
 
 // RN-107: login do cliente. "Esqueci a senha" depende de e-mail transacional (#29): ainda não implementado.
-export default async function CustomerLoginPage({ params, searchParams }: PageProps<"/[locale]/entrar">) {
-  const [{ locale }, q] = await Promise.all([params, searchParams]);
+export default async function CustomerLoginPage({ params }: PageProps<"/[locale]/entrar">) {
+  const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "Account" });
   return (
@@ -24,16 +24,11 @@ export default async function CustomerLoginPage({ params, searchParams }: PagePr
       <h1 className="font-heading text-[clamp(1.75rem,4vw,2.5rem)] font-bold text-heading">
         {t("login.title")}
       </h1>
-      {q.novo === "1" ? (
-        <p role="status" className="rounded-md border border-link/30 bg-link/10 p-3 text-sm">
-          {t("signup.done")}
-        </p>
-      ) : null}
       <GradientCard tone="solid" className="grid gap-4">
         <CustomerLoginForm
           locale={locale}
           labels={{ email: t("email"), password: t("password"), submit: t("login.submit") }}
-          errors={{ invalid: t("errors.invalid"), limited: t("errors.limited") }}
+          errors={{ invalid: t("errors.invalid"), limited: t("errors.limited"), staff: t("errors.staff") }}
         />
         <p className="text-sm text-muted-foreground">{t("login.forgot")}</p>
       </GradientCard>

@@ -511,7 +511,6 @@
       "intro": "Facultatif : vous pouvez acheter sans compte. Avec un compte, vous voyez vos commandes et enregistrez vos personnages.",
       "passwordHint": "Au moins 8 caractères, avec une majuscule, une minuscule et un chiffre. Les mots de passe divulgués sont refusés.",
       "submit": "Créer un compte",
-      "done": "Si le compte a pu être créé, connectez-vous avec votre e-mail et votre mot de passe.",
       "hasAccount": "Vous avez déjà un compte ?"
     },
     "orders": {
@@ -536,7 +535,9 @@
       "pwned": "Ce mot de passe figure dans une fuite de données. Choisissez-en un autre.",
       "character": "Saisissez le royaume et un nom de 2 à 12 lettres.",
       "characterLimit": "Vous pouvez enregistrer jusqu'à 10 personnages.",
-      "characterDuplicate": "Ce personnage est déjà enregistré."
+      "characterDuplicate": "Ce personnage est déjà enregistré.",
+      "exists": "Cet e-mail a déjà un compte. Connectez-vous.",
+      "staff": "C’est un compte de l’équipe : connectez-vous au panneau (/admin)."
     }
   }
 }

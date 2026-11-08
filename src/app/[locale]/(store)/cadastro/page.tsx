@@ -38,6 +38,7 @@ export default async function SignUpPage({ params }: PageProps<"/[locale]/cadast
             invalid: t("errors.signupInvalid"),
             limited: t("errors.limited"),
             pwned: t("errors.pwned"),
+            exists: t("errors.exists"),
           }}
         />
       </GradientCard>
