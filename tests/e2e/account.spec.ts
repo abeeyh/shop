@@ -46,7 +46,7 @@ test.describe("conta do cliente", () => {
     await page.getByRole("button", { name: "Delete my account" }).click();
     await expect(page).toHaveURL(/\/en$/);
     await page.goto("/en/conta");
-    await expect(page).toHaveURL(/\/en\/entrar$/);
+    await expect(page).toHaveURL(/\/en\/entrar\?voltar=%2Fen%2Fconta$/); // #130: depois de entrar, volta para a conta
   });
 
   test("#118: e-mail já usado avisa para entrar; conta da equipe não entra pela loja", async ({
@@ -74,5 +74,45 @@ test.describe("conta do cliente", () => {
     await page.getByRole("button", { name: "Sign in" }).click();
     await expect(page.getByRole("alert").filter({ hasText: "team account" })).toBeVisible();
     await expect(page).toHaveURL(/\/en\/entrar$/);
+  });
+
+  test("#130: entrar pelo cabeçalho volta à página; sair fica nela; dica no Tab", async ({ page }, info) => {
+    // limite de 5 cadastros/h por IP (RN-107): roda num projeto só
+    test.skip(info.project.name !== "desktop", "um projeto basta");
+    test.setTimeout(60_000);
+    const product = "/en/wow/mythic-plus/mythic-plus-key";
+    await page.goto(product);
+    const header = page.getByRole("banner");
+    await expect(header.getByRole("link", { name: "Sign in" })).toBeVisible(); // cabeçalho carregado (streaming)
+    // ordem do cabeçalho: idioma · carrinho · usuário (sair só aparece logado)
+    const tools = await header
+      .locator("summary[aria-label], a[aria-label], button[aria-label]")
+      .evaluateAll((els) => els.map((e) => e.getAttribute("aria-label")));
+    expect(tools.slice(-3).map((x) => x?.replace(/\s*\(.*\)$/, ""))).toEqual([
+      "Language and time zone",
+      expect.stringMatching(/^Cart/),
+      "Sign in",
+    ]);
+    // dica aparece no foco por teclado
+    await header.getByRole("link", { name: "Sign in" }).focus();
+    await expect(header.getByText("Sign in", { exact: true })).toBeVisible();
+
+    await header.getByRole("link", { name: "Sign in" }).click();
+    await expect(page).toHaveURL(new RegExp(`/en/entrar\\?voltar=${encodeURIComponent(product)}$`));
+    await page.getByRole("link", { name: "Create account" }).click(); // o "voltar" vai junto
+    await expect(page).toHaveURL(/\/en\/cadastro\?voltar=/);
+    await field(page, "Email").fill(`e2e-back-${Date.now()}@example.com`);
+    await field(page, "Password").fill(`Shop-e2e-${Date.now()}-b4!K`);
+    await page.getByRole("button", { name: "Create account" }).click();
+    await expect(page).toHaveURL(new RegExp(`${product}$`), { timeout: 20_000 }); // voltou ao produto
+
+    await header.getByRole("button", { name: "Sign out" }).click();
+    await expect(page).toHaveURL(new RegExp(`${product}$`));
+    await expect(header.getByRole("link", { name: "Sign in" })).toBeVisible();
+  });
+
+  test("#130: ?voltar para fora da loja é ignorado (sem open redirect)", async ({ page }) => {
+    await page.goto("/en/entrar?voltar=//evil.example.com");
+    await expect(page.locator('input[name="next"]')).toHaveCount(0);
   });
 });

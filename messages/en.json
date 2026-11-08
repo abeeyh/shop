@@ -13,7 +13,9 @@
     "detecting": "Detecting…",
     "cart": "Cart ({n} items)",
     "account": "My account",
-    "preferences": "Language and time zone"
+    "preferences": "Language and time zone",
+    "signIn": "Sign in",
+    "signOut": "Sign out"
   },
   "Home": {
     "badge": "WoW Retail · US",

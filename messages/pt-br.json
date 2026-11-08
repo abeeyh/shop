@@ -13,7 +13,9 @@
     "detecting": "Detectando…",
     "cart": "Carrinho ({n} itens)",
     "account": "Minha conta",
-    "preferences": "Idioma e fuso horário"
+    "preferences": "Idioma e fuso horário",
+    "signIn": "Entrar",
+    "signOut": "Sair"
   },
   "Home": {
     "badge": "WoW Retail · US",
