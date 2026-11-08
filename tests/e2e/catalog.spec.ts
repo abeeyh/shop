@@ -32,7 +32,8 @@ test("#109: produto abre na página dele, com as opções", async ({ page }) => 
   await expect(page.getByRole("heading", { level: 2, name: "Heroic", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { level: 2, name: "Normal", exact: true })).toBeVisible();
   // #100: a raid aparece uma vez por dificuldade; as runs viram opções dentro do produto
-  await page.getByRole("link", { name: "Venomous Abyss" }).first().click();
+  // pelo endereço: "Venomous Abyss + Tidebound Grotto" também casa com o nome (#134)
+  await page.locator('a[href$="/wow/raids/venomous-abyss-heroic"]').filter({ visible: true }).first().click();
   await expect(page).toHaveURL(/\/en\/wow\/raids\/venomous-abyss-heroic$/);
   await expect(page.getByRole("dialog")).toHaveCount(0);
   // com cacheComponents a página anterior fica escondida no DOM (React Activity): filtrar o visível
