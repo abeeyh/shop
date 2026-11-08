@@ -13,7 +13,9 @@
     "detecting": "偵測中…",
     "cart": "購物車（{n} 項）",
     "account": "我的帳號",
-    "preferences": "語言與時區"
+    "preferences": "語言與時區",
+    "signIn": "登入",
+    "signOut": "登出"
   },
   "Home": {
     "badge": "WoW 正式版 · 美服",

@@ -36,7 +36,7 @@ export function Popover({ label, icon, children, className }: Props) {
     >
       <summary
         aria-label={label}
-        className="grid size-11 cursor-pointer list-none place-items-center rounded-full border border-border text-heading hover:bg-accent [&::-webkit-details-marker]:hidden"
+        className="grid size-11 cursor-pointer list-none place-items-center rounded-full border border-border text-heading hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none [&::-webkit-details-marker]:hidden"
       >
         {icon}
       </summary>

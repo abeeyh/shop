@@ -16,6 +16,7 @@ import { getRequestId } from "@/lib/request-id";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
 import { addCharacter, deleteCharacter, deleteCustomer, isStaff, staffPasswordHash } from "./queries";
 import { characterInput, signInInput, signUpInput } from "./schemas";
+import { safeNext } from "./next";
 import { getCustomer } from "./session";
 
 export type AccountState = {
@@ -55,7 +56,7 @@ export async function signUp(_prev: AccountState, form: FormData): Promise<Accou
     { event: "account.created", requestId: getRequestId(await headers()) },
     "conta de cliente criada",
   );
-  redirect(`/${l}/conta`);
+  redirect(safeNext(form.get("next"), l) ?? `/${l}/conta`); // #130: volta para onde estava
 }
 
 // RN-110: conta da equipe não entra pela loja — com a senha certa, avisa para usar o /admin; com a
@@ -81,13 +82,15 @@ export async function signInCustomer(_prev: AccountState, form: FormData): Promi
     logger.warn({ event: "auth.customer_login_failed", requestId }, "login de cliente recusado");
     return { error: "invalid" };
   }
-  redirect(`/${l}/conta`);
+  redirect(safeNext(form.get("next"), l) ?? `/${l}/conta`); // #130: volta para onde estava
 }
 
 export async function signOut(form: FormData): Promise<void> {
   const l = locale.catch("en").parse(form.get("locale"));
   await auth.api.signOut({ headers: await headers() });
-  redirect(`/${l}`);
+  // #130: sair pelo cabeçalho fica na mesma página (área da conta volta para a home)
+  const next = safeNext(form.get("next"), l);
+  redirect(next && !next.startsWith(`/${l}/conta`) ? next : `/${l}`);
 }
 
 // RN-108: personagem salvo (até 10; repetido não duplica)

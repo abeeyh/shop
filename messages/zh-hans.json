@@ -13,7 +13,9 @@
     "detecting": "检测中…",
     "cart": "购物车（{n} 件）",
     "account": "我的账号",
-    "preferences": "语言和时区"
+    "preferences": "语言和时区",
+    "signIn": "登录",
+    "signOut": "退出"
   },
   "Home": {
     "badge": "WoW 正式服 · 美服",

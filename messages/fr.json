@@ -13,7 +13,9 @@
     "detecting": "Détection…",
     "cart": "Panier ({n} articles)",
     "account": "Mon compte",
-    "preferences": "Langue et fuseau horaire"
+    "preferences": "Langue et fuseau horaire",
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter"
   },
   "Home": {
     "badge": "WoW Retail · US",

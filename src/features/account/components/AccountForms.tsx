@@ -52,12 +52,13 @@ function EmailPassword(p: { email: string; password: string; hint?: string; newP
 
 type AuthLabels = { email: string; password: string; submit: string; hint?: string };
 
-// RN-107: cadastro opcional (compra continua sem conta — RN-01)
-export function SignUpForm(p: { locale: string; labels: AuthLabels; errors: Errors }) {
+// RN-107: cadastro opcional (compra continua sem conta — RN-01). #130: `next` = página para voltar
+export function SignUpForm(p: { locale: string; next?: string; labels: AuthLabels; errors: Errors }) {
   const [state, action, pending] = useActionState(signUp, initial);
   return (
     <form action={action} className="grid gap-4">
       <input type="hidden" name="locale" value={p.locale} />
+      {p.next ? <input type="hidden" name="next" value={p.next} /> : null}
       <EmailPassword {...p.labels} newPassword />
       <button type="submit" disabled={pending} className={buttonVariants({ variant: "primary", size: "lg" })}>
         {p.labels.submit}
@@ -67,11 +68,12 @@ export function SignUpForm(p: { locale: string; labels: AuthLabels; errors: Erro
   );
 }
 
-export function CustomerLoginForm(p: { locale: string; labels: AuthLabels; errors: Errors }) {
+export function CustomerLoginForm(p: { locale: string; next?: string; labels: AuthLabels; errors: Errors }) {
   const [state, action, pending] = useActionState(signInCustomer, initial);
   return (
     <form action={action} className="grid gap-4">
       <input type="hidden" name="locale" value={p.locale} />
+      {p.next ? <input type="hidden" name="next" value={p.next} /> : null}
       <EmailPassword {...p.labels} />
       <button type="submit" disabled={pending} className={buttonVariants({ variant: "primary", size: "lg" })}>
         {p.labels.submit}
