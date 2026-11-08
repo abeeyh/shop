@@ -50,7 +50,9 @@
     "buy": "購買",
     "subcategories": "子分類",
     "close": "關閉",
-    "breadcrumb": "導覽路徑"
+    "breadcrumb": "導覽路徑",
+    "gallery": "圖庫",
+    "faq": "常見問題"
   },
   "Footer": {
     "about": "World of Warcraft 正式版美服的金幣、團隊副本、傳奇+與成就。",

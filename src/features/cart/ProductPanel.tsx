@@ -1,14 +1,24 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { ShieldCheck } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { KindTile, type CatalogProduct } from "@/features/catalog";
+import {
+  getProductContent,
+  KindTile,
+  ProductDetailsText,
+  ProductFaq,
+  ProductGallery,
+  type CatalogProduct,
+} from "@/features/catalog";
 import { BuyBox } from "./BuyBox";
 
 type Props = { locale: string; product: CatalogProduct; timeZone: string | null };
 
 // Página do produto: informações à esquerda, compra (opções, personagem, total) à direita — #102/#109
 export async function ProductPanel({ locale, product, timeZone }: Props) {
-  const c = await getTranslations({ locale, namespace: "Catalog" });
+  const [c, content] = await Promise.all([
+    getTranslations({ locale, namespace: "Catalog" }),
+    getProductContent(product.id), // #136
+  ]);
   const info = (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-3">
@@ -27,12 +37,17 @@ export async function ProductPanel({ locale, product, timeZone }: Props) {
         <ShieldCheck aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-link" />
         {c("selfPlay")}
       </p>
+      <ProductGallery images={content.images} label={c("gallery")} />
+      <ProductDetailsText details={content.details} />
     </div>
   );
   return (
     <div className="grid gap-7 lg:grid-cols-[1fr_26rem] lg:items-start">
       {info}
       <BuyBox locale={locale} product={product} timeZone={timeZone} />
+      <div className="lg:col-span-2">
+        <ProductFaq faq={content.faq} title={c("faq")} />
+      </div>
     </div>
   );
 }

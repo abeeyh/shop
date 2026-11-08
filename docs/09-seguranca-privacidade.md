@@ -102,6 +102,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 - React escapa por padrão; proibido `dangerouslySetInnerHTML` com dado de usuário.
 - Servidor nunca busca URL enviada por usuário (SSRF).
 - Upload (se houver): URL assinada, chave gerada pelo servidor, antivírus, download como anexo em outro domínio.
+- Imagens do serviço (#136): só caminhos de `public/catalog/` (sem URL externa, `//host` ou `..`) — validado em `features/catalog/content.ts`; o upload pelo dashboard (#137) segue a regra acima.
 
 ### Headers
 - CSP com nonce + `strict-dynamic`, `frame-ancestors 'none'`, HSTS, `nosniff`, `Referrer-Policy`, `Permissions-Policy` mínima.

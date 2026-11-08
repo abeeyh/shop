@@ -40,7 +40,20 @@ test("#109: produto abre na página dele, com as opções", async ({ page }) => 
   const h1 = page.getByRole("heading", { level: 1 }).filter({ visible: true });
   await expect(h1).toHaveText("Venomous Abyss");
   await expect(page.getByText("5.18 USDT", { exact: true }).filter({ visible: true }).first()).toBeVisible();
-  await expect(page.getByText(/never ask for your Battle\.net password/)).toBeVisible();
+  await expect(
+    page.getByText("Self-play: you play your own character. We never ask for your Battle.net password."),
+  ).toBeVisible();
+
+  // #136: galeria, descrição detalhada e FAQ (fechada até clicar)
+  await expect(
+    page.getByRole("img", { name: /Illustration of the Venomous Abyss/ }).filter({ visible: true }),
+  ).toBeVisible();
+  await expect(page.getByText(/main raid of the current season/).filter({ visible: true })).toBeVisible();
+  const faq = page.getByRole("region", { name: "Frequently asked questions" }).filter({ visible: true });
+  const answer = faq.getByText(/Eight: Nek'zali the Soulcoiler/);
+  await expect(answer).toBeHidden();
+  await faq.getByText("How many bosses are in the Venomous Abyss?").click();
+  await expect(answer).toBeVisible();
 });
 
 // Com streaming, o esqueleto já saiu com 200 quando a página descobre que não existe: o Next mostra a

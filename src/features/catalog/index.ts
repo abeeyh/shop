@@ -1,6 +1,7 @@
 export { CategoryCard } from "./components/CategoryCard";
 export { KindTile } from "./components/KindIcon";
 export { ProductCard } from "./components/ProductCard";
+export { ProductDetailsText, ProductFaq, ProductGallery } from "./components/ProductDetails";
 export { ProductFilters } from "./components/ProductFilters";
 export { SearchBox } from "./components/SearchBox";
 export { filtersToQuery, PAGE_SIZE, parseFilters, SORTS, type Filters } from "./schemas";
@@ -9,6 +10,7 @@ export { cardLabels, categoryHref, formatUsdt, productHref, promoPrice, toProduc
 export {
   getCategory,
   getProduct,
+  getProductContent,
   listVariants,
   listCategories,
   listProducts,

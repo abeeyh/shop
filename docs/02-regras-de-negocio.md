@@ -118,7 +118,7 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 | RN-81 | Primeiro acesso: idioma detectado pelo navegador (`Accept-Language`); se não for um dos 6, usa `en`. A escolha manual fica salva e tem prioridade. *(aprovada em 2026-11-06)* |
 | RN-82 | Fuso horário detectado automaticamente pelo navegador (IANA, ex.: `America/Sao_Paulo`) e **alterável** pelo usuário; a escolha fica salva (cookie e, se logado, perfil — **perfil pendente: #113**). *(aprovada em 2026-11-06)* |
 | RN-111 | Tema de cores escolhido no mesmo menu do idioma (paletas da [doc 11 §1.1](11-design.md#11-temas)); padrão: Violeta neon. Visitante: salvo no navegador (cookie). Cliente logado: salvo também na conta — ao entrar, o tema da conta é carregado; conta sem tema herda o que está em uso (inclusive no cadastro). Tema desconhecido é ignorado. *(aprovada em 2026-11-08, #132)* |
-| RN-84 | Conteúdo do catálogo cadastrado pelo admin (nome e descrição de categorias e produtos) é **o mesmo em todos os idiomas**; só os textos fixos da interface são traduzidos (RN-80). *(aprovada em 2026-11-06)* |
+| RN-84 | Conteúdo do catálogo cadastrado pelo admin (nome e descrição de categorias e produtos; também a descrição detalhada, a galeria e a FAQ do serviço — #136) é **o mesmo em todos os idiomas**; só os textos fixos da interface são traduzidos (RN-80). *(aprovada em 2026-11-06)* |
 | RN-83 | Todo horário é guardado em **UTC**; exibido no fuso escolhido (RN-82), com o horário do servidor US (`America/New_York`) disponível como referência. *(proposta — confirmar)* |
 
 ## Suporte e erros

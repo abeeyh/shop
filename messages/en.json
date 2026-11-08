@@ -50,7 +50,9 @@
     "buy": "Buy",
     "subcategories": "Subcategories",
     "close": "Close",
-    "breadcrumb": "Breadcrumb"
+    "breadcrumb": "Breadcrumb",
+    "gallery": "Gallery",
+    "faq": "Frequently asked questions"
   },
   "Footer": {
     "about": "Gold, raids, Mythic+ and achievements for World of Warcraft Retail US.",

@@ -8,7 +8,7 @@ import { resolve } from "node:path";
 import { and, eq, inArray, notInArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { categories, products, productVariants, subcategories } from "../../src/db/schema.ts";
-import { toCatalog } from "./lib.mjs";
+import { contentBySlug, toCatalog } from "./lib.mjs";
 
 const here = (f) => resolve(import.meta.dirname, f);
 // categoryRef/subcategoryRef são ids da origem — viram category_id/subcategory_id em place()
@@ -113,12 +113,25 @@ async function importInto(db, file) {
       .set({ active: false, updatedAt: sql`now()` })
       .where(inArray(products.externalId, catalog.groupedIds));
   const all = [...catalog.singles, ...catalog.groups];
+  // #136: galeria, descrição detalhada e FAQ. Só os produtos listados em content.json são tocados
+  // (o que o dashboard editar nos outros fica — #137)
+  const content = contentBySlug(
+    JSON.parse(readFileSync(here("content.json"), "utf8")).content,
+    new Set(all.map((p) => p.slug)),
+    (src) => existsSync(resolve(import.meta.dirname, "../../public", `.${src}`)),
+  );
+  for (const [slug, c] of Object.entries(content))
+    await db
+      .update(products)
+      .set({ ...c, updatedAt: sql`now()` })
+      .where(eq(products.slug, slug));
   return {
     categories: Object.keys(catIds).length,
     subcategories: Object.keys(subIds).length,
     products: all.length,
     variants: catalog.groupedIds.length,
     onRequest: all.filter((r) => r.priceOnRequest).length,
+    withContent: Object.keys(content).length,
   };
 }
 
@@ -145,7 +158,7 @@ if (import.meta.main) {
   const db = drizzle(process.env.DATABASE_URL);
   const r = await importCatalog(db, process.argv[2] ? resolve(process.argv[2]) : undefined);
   console.log(
-    `catálogo: ${r.categories} categorias, ${r.subcategories} subcategorias, ${r.products} produtos, ${r.variants} variantes (${r.onRequest} sob consulta)`,
+    `catálogo: ${r.categories} categorias, ${r.subcategories} subcategorias, ${r.products} produtos, ${r.variants} variantes (${r.onRequest} sob consulta), ${r.withContent} com página detalhada`,
   );
   await db.$client.end();
 }
