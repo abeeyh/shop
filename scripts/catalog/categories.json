@@ -1,5 +1,6 @@
 {
   "_comment": "Mapa do serviceCategoryId/serviceSubcategoryId do sistema de origem para as categorias da loja (#94). O JSON de produtos não traz nomes de categoria; ajuste aqui e rode pnpm catalog:import de novo.",
+  "_local_ids": "#134: ids >= 900000 em products.json são pacotes criados aqui (não vêm da origem): 900397, 900398 e 900481 = Venomous Abyss + Tidebound Grotto Heroic (preço do item original + 100k, como a nota do fornecedor dizia). Ao trocar products.json por uma exportação nova, mantenha esses itens.",
   "categories": {
     "8": {
       "slug": "mythic-plus",

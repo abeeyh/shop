@@ -439,21 +439,21 @@
           "options": {
             "Run": "8/8 Unsaved half (2-3 items)"
           },
-          "note": "for +TG on this bundle add 100k - Group loot - No Item Reserve"
+          "note": "Group loot - No Item Reserve"
         },
         {
           "id": 397,
           "options": {
             "Run": "8/8 Saved"
           },
-          "note": "for +TG on this bundle add 100k - Group loot - No Item Reserve"
+          "note": "Group loot - No Item Reserve"
         },
         {
           "id": 398,
           "options": {
             "Run": "8/8 Unsaved"
           },
-          "note": "for +TG on this bundle add 100k - 4-5 Itens per Boss / Group loot - No Item Reserve"
+          "note": "4-5 Itens per Boss / Group loot - No Item Reserve"
         },
         {
           "id": 416,
@@ -475,6 +475,43 @@
             "Run": "Single boss (first 7)"
           },
           "note": "1/8 - Free Roll - No Item Reserve"
+        }
+      ]
+    },
+    {
+      "category": "40",
+      "subcategory": "2",
+      "slug": "venomous-abyss-tidebound-grotto-9-9-heroic",
+      "name": "Venomous Abyss + Tidebound Grotto 9/9",
+      "description": "Pick the run below; loot rules are shown for each option.",
+      "axes": [
+        {
+          "name": "Run",
+          "style": "boxes",
+          "values": ["Saved", "Unsaved", "Unsaved half (2-3 items)"]
+        }
+      ],
+      "variants": [
+        {
+          "id": 900397,
+          "options": {
+            "Run": "Saved"
+          },
+          "note": "TG+VA 9/9 Saved Heroic - Group loot - No Item Reserve"
+        },
+        {
+          "id": 900398,
+          "options": {
+            "Run": "Unsaved"
+          },
+          "note": "TG+VA 9/9 Unsaved Heroic - 4-5 Itens per Boss / Group loot - No Item Reserve"
+        },
+        {
+          "id": 900481,
+          "options": {
+            "Run": "Unsaved half (2-3 items)"
+          },
+          "note": "TG+VA 9/9 Half Unsaved Heroic - Group loot - No Item Reserve"
         }
       ]
     },
