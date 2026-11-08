@@ -141,6 +141,13 @@
       "when": 1794081599988,
       "tag": "0019_customer_accounts",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1794116698234,
+      "tag": "0020_user_theme",
+      "breakpoints": true
     }
   ]
 }

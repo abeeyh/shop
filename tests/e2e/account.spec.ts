@@ -89,7 +89,7 @@ test.describe("conta do cliente", () => {
       .locator("summary[aria-label], a[aria-label], button[aria-label]")
       .evaluateAll((els) => els.map((e) => e.getAttribute("aria-label")));
     expect(tools.slice(-3).map((x) => x?.replace(/\s*\(.*\)$/, ""))).toEqual([
-      "Language and time zone",
+      "Language, theme and time zone",
       expect.stringMatching(/^Cart/),
       "Sign in",
     ]);
@@ -114,5 +114,54 @@ test.describe("conta do cliente", () => {
   test("#130: ?voltar para fora da loja é ignorado (sem open redirect)", async ({ page }) => {
     await page.goto("/en/entrar?voltar=//evil.example.com");
     await expect(page.locator('input[name="next"]')).toHaveCount(0);
+  });
+});
+
+// RN-111 (#132): tema ao lado do idioma; visitante guarda no navegador, cliente na conta
+test.describe("tema", () => {
+  test.use({ extraHTTPHeaders: { "x-forwarded-for": "198.51.100.8" } }); // outro balde de cadastro/h
+  test("escolher tema → cadastro leva para a conta → entrar em outro navegador traz o tema", async ({
+    page,
+    browser,
+  }, info) => {
+    test.skip(info.project.name !== "desktop", "um projeto basta (limite de cadastros/h)");
+    test.setTimeout(60_000);
+    const html = page.locator("html");
+    await page.goto("/en");
+    await page.getByRole("banner").locator('summary[aria-label="Language, theme and time zone"]').click();
+    await page.getByRole("combobox", { name: "Theme" }).selectOption("ouro");
+    await expect(html).toHaveAttribute("data-theme", "ouro");
+    // a troca na tela é imediata; espera o servidor gravar o cookie antes de recarregar
+    await expect
+      .poll(async () => (await page.context().cookies()).find((c) => c.name === "theme")?.value)
+      .toBe("ouro");
+    await page.reload();
+    await expect(html).toHaveAttribute("data-theme", "ouro"); // visitante: cookie, sem piscar
+
+    const email = `e2e-theme-${Date.now()}@example.com`;
+    const password = `Shop-e2e-${Date.now()}-t3!M`;
+    await page.goto("/en/cadastro");
+    await field(page, "Email").fill(email);
+    await field(page, "Password").fill(password);
+    await page.getByRole("button", { name: "Create account" }).click();
+    await expect(page).toHaveURL(/\/en\/conta$/, { timeout: 20_000 });
+
+    // outro navegador (sem cookie): entrar carrega o tema da conta
+    const other = await browser.newContext({ extraHTTPHeaders: { "x-forwarded-for": "198.51.100.8" } });
+    const p2 = await other.newPage();
+    await p2.goto("/en/entrar");
+    await expect(p2.locator("html")).not.toHaveAttribute("data-theme", /./);
+    await field(p2, "Email").fill(email);
+    await field(p2, "Password").fill(password);
+    await p2.getByRole("button", { name: "Sign in" }).click();
+    await expect(p2).toHaveURL(/\/en\/conta$/, { timeout: 15_000 });
+    await expect(p2.locator("html")).toHaveAttribute("data-theme", "ouro");
+    await other.close();
+  });
+
+  test("tema fora da lista no cookie é ignorado", async ({ page, context }) => {
+    await context.addCookies([{ name: "theme", value: "hack", url: test.info().project.use.baseURL! }]);
+    await page.goto("/en");
+    await expect(page.locator("html")).not.toHaveAttribute("data-theme", /./);
   });
 });

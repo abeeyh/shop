@@ -13,9 +13,19 @@
     "detecting": "偵測中…",
     "cart": "購物車（{n} 項）",
     "account": "我的帳號",
-    "preferences": "語言與時區",
+    "preferences": "語言、主題和時區",
     "signIn": "登入",
-    "signOut": "登出"
+    "signOut": "登出",
+    "theme": "主題",
+    "themes": {
+      "violeta": "霓虹紫",
+      "brasa": "餘燼",
+      "vil": "邪能",
+      "gelo": "秘法冰霜",
+      "carmesim": "深紅",
+      "ouro": "黑金",
+      "vazio": "虛空洋紅"
+    }
   },
   "Home": {
     "badge": "WoW 正式版 · 美服",

@@ -292,6 +292,7 @@ export const users = pgTable("users", {
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
   twoFactorEnabled: boolean("two_factor_enabled").notNull().default(false), // RN-02, RN-05
+  theme: text("theme"), // RN-111 (#132): tema escolhido; null = padrão. Validado no app (lib/theme)
   ...timestamps,
 });
 
