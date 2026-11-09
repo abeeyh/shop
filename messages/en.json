@@ -421,7 +421,19 @@
       "proofUrl": "Delivery proof link (https — screenshot or log)",
       "note": "Note for the customer",
       "proofError": "Add an https link to the delivery proof.",
-      "stale": "This order was already moved by someone else. Reload the page."
+      "stale": "This order was already moved by someone else. Reload the page.",
+      "count": "{n, plural, one {# order} other {# orders}}",
+      "search": "Search by ID or email",
+      "assignee": "Assignee",
+      "created": "Created",
+      "emptySearch": "No orders found.",
+      "emptyAll": "No orders yet.",
+      "emptyTodo": "Nothing to do right now.",
+      "searchHint": "Use the start of the ID (e.g. 3e66e13d) or the full email.",
+      "back": "Back to orders",
+      "timeline": "History",
+      "confirmStart": "You take over the delivery of this order. The customer will see it is in progress.",
+      "confirmComplete": "The order will be completed with this proof and the customer will be notified. This cannot be undone."
     },
     "reports": {
       "new": "New",
@@ -431,7 +443,12 @@
       "ids": "Error ID · request ID",
       "context": "Language · region · time zone · version",
       "browser": "Browser",
-      "resolve": "Mark as resolved"
+      "resolve": "Mark as resolved",
+      "confirmResolve": "The report leaves the list of new reports.",
+      "countAll": "{n, plural, one {# report} other {# reports}}",
+      "countNew": "{n, plural, one {# new report} other {# new reports}}",
+      "emptyAll": "No reports yet.",
+      "emptyNew": "No new reports."
     },
     "team": {
       "role": "Role",
@@ -474,7 +491,20 @@
       },
       "assume": "Take this chat",
       "resolve": "Mark as resolved",
-      "you": "You"
+      "you": "You",
+      "count": "{n, plural, one {# open chat} other {# open chats}}",
+      "assignee": "Agent",
+      "lastMessage": "Last message",
+      "yourLanguage": "your language",
+      "empty": "No open chats.",
+      "emptyHint": "This page refreshes every 15 seconds.",
+      "back": "Back to the queue",
+      "customerOrders": "Orders for this email",
+      "noOrders": "No orders with this email.",
+      "confirm": {
+        "assume": "You will handle this chat.",
+        "resolve": "The chat will be closed. If the customer writes again, it reopens."
+      }
     },
     "hours": {
       "title": "Support hours (UTC)",
@@ -488,6 +518,10 @@
       "operation": "Operations",
       "catalog": "Catalog",
       "manage": "Management"
+    },
+    "confirm": {
+      "ok": "Confirm",
+      "cancel": "Go back"
     }
   },
   "Errors": {

@@ -421,7 +421,19 @@
       "proofUrl": "交付证明链接（https — 截图或日志）",
       "note": "给客户的备注",
       "proofError": "请提供交付证明的 https 链接。",
-      "stale": "其他人已更新此订单，请刷新页面。"
+      "stale": "其他人已更新此订单，请刷新页面。",
+      "count": "{n} 个订单",
+      "search": "按 ID 或邮箱搜索",
+      "assignee": "负责人",
+      "created": "创建时间",
+      "emptySearch": "没有找到订单。",
+      "emptyAll": "还没有订单。",
+      "emptyTodo": "目前没有待办。",
+      "searchHint": "使用 ID 开头（例如 3e66e13d）或完整邮箱。",
+      "back": "返回订单",
+      "timeline": "历史",
+      "confirmStart": "你将负责此订单的交付。客户会看到订单处理中。",
+      "confirmComplete": "订单将附上此凭证完成，并通知客户。此操作无法撤销。"
     },
     "reports": {
       "new": "新反馈",
@@ -431,7 +443,12 @@
       "ids": "错误 ID · 请求 ID",
       "context": "语言 · 地区 · 时区 · 版本",
       "browser": "浏览器",
-      "resolve": "标记为已解决"
+      "resolve": "标记为已解决",
+      "confirmResolve": "该报告将从新报告列表中移除。",
+      "countAll": "{n} 个报告",
+      "countNew": "{n} 个新报告",
+      "emptyAll": "还没有报告。",
+      "emptyNew": "没有新报告。"
     },
     "team": {
       "role": "角色",
@@ -474,7 +491,20 @@
       },
       "assume": "接手此对话",
       "resolve": "标记为已解决",
-      "you": "你"
+      "you": "你",
+      "count": "{n} 个进行中的对话",
+      "assignee": "客服",
+      "lastMessage": "最后消息",
+      "yourLanguage": "你的语言",
+      "empty": "没有进行中的对话。",
+      "emptyHint": "页面每 15 秒自动刷新。",
+      "back": "返回队列",
+      "customerOrders": "此邮箱的订单",
+      "noOrders": "此邮箱没有订单。",
+      "confirm": {
+        "assume": "你将接手此对话。",
+        "resolve": "对话将被关闭。如果客户再次发消息，会重新打开。"
+      }
     },
     "hours": {
       "title": "客服时间（UTC）",
@@ -488,6 +518,10 @@
       "operation": "运营",
       "catalog": "商品目录",
       "manage": "管理"
+    },
+    "confirm": {
+      "ok": "确认",
+      "cancel": "返回"
     }
   },
   "Errors": {

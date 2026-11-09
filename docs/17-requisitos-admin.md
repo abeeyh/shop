@@ -56,11 +56,11 @@ Produto — editores visuais no lugar do texto livre (RF-09 a RF-11):
 | ID | Tela | Requisito | Estado |
 |---|---|---|---|
 | RF-20 | Visão geral | Suporte: conversas abertas (e a mais antiga), pedidos a fazer, reportes novos. Admin: o mesmo + pedidos e **faturamento de hoje** (só admin — RN-06), promoções/cupons perto de vencer, equipe sem 2FA, atividade recente | feito (#148) |
-| RF-21 | Pedidos | Abas a fazer/todos (`NavTabs`), busca por ID ou e-mail, selo de status, responsável, estado vazio | fazer |
-| RF-22 | Pedido | Linha do tempo (criado, pago, iniciado, concluído), confirmação antes de avançar, status atualiza na hora, voltar à fila | fazer |
-| RF-23 | Suporte (fila) | Contagem, estado vazio, tempo de espera, responsável, idioma por extenso | fazer |
-| RF-24 | Conversa | Voltar à fila, assumir/resolver com confirmação, pedidos do cliente ao lado (mesmo e-mail) | fazer |
-| RF-25 | Reportes | Contagem de novos, cartões legíveis, resolver com confirmação | fazer |
+| RF-21 | Pedidos | Abas a fazer/todos (`NavTabs`), busca por ID ou e-mail, selo de status, responsável, estado vazio | feito (#150) |
+| RF-22 | Pedido | Linha do tempo (criado, pago, iniciado, concluído), confirmação antes de avançar, status atualiza na hora, voltar à fila | feito (#150) |
+| RF-23 | Suporte (fila) | Contagem, estado vazio, tempo de espera, responsável, idioma por extenso | feito (#150) |
+| RF-24 | Conversa | Voltar à fila, assumir/resolver com confirmação, pedidos do cliente ao lado (mesmo e-mail) | feito (#150) |
+| RF-25 | Reportes | Contagem de novos, cartões legíveis, resolver com confirmação | feito (#150) |
 
 ## 5. Gestão (admin)
 

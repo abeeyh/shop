@@ -421,7 +421,19 @@
       "proofUrl": "Lien de la preuve de livraison (https — capture ou log)",
       "note": "Note pour le client",
       "proofError": "Ajoutez un lien https vers la preuve de livraison.",
-      "stale": "Quelqu'un a déjà fait avancer cette commande. Rechargez la page."
+      "stale": "Quelqu'un a déjà fait avancer cette commande. Rechargez la page.",
+      "count": "{n, plural, one {# commande} other {# commandes}}",
+      "search": "Rechercher par ID ou e-mail",
+      "assignee": "Responsable",
+      "created": "Créée",
+      "emptySearch": "Aucune commande trouvée.",
+      "emptyAll": "Aucune commande pour l’instant.",
+      "emptyTodo": "Rien à faire pour le moment.",
+      "searchHint": "Utilisez le début de l’ID (ex. 3e66e13d) ou l’e-mail complet.",
+      "back": "Retour aux commandes",
+      "timeline": "Historique",
+      "confirmStart": "Vous prenez en charge la livraison de cette commande. Le client verra qu’elle est en cours.",
+      "confirmComplete": "La commande sera terminée avec cette preuve et le client sera prévenu. Impossible d’annuler."
     },
     "reports": {
       "new": "Nouveau",
@@ -431,7 +443,12 @@
       "ids": "ID d'erreur · ID de requête",
       "context": "Langue · région · fuseau · version",
       "browser": "Navigateur",
-      "resolve": "Marquer comme résolu"
+      "resolve": "Marquer comme résolu",
+      "confirmResolve": "Le signalement quitte la liste des nouveaux.",
+      "countAll": "{n, plural, one {# signalement} other {# signalements}}",
+      "countNew": "{n, plural, one {# nouveau signalement} other {# nouveaux signalements}}",
+      "emptyAll": "Aucun signalement pour l’instant.",
+      "emptyNew": "Aucun nouveau signalement."
     },
     "team": {
       "role": "Rôle",
@@ -474,7 +491,20 @@
       },
       "assume": "Prendre la conversation",
       "resolve": "Marquer comme résolue",
-      "you": "Vous"
+      "you": "Vous",
+      "count": "{n, plural, one {# discussion ouverte} other {# discussions ouvertes}}",
+      "assignee": "Agent",
+      "lastMessage": "Dernier message",
+      "yourLanguage": "votre langue",
+      "empty": "Aucune discussion ouverte.",
+      "emptyHint": "La page se met à jour toutes les 15 secondes.",
+      "back": "Retour à la file",
+      "customerOrders": "Commandes de cet e-mail",
+      "noOrders": "Aucune commande avec cet e-mail.",
+      "confirm": {
+        "assume": "Vous prenez cette discussion en charge.",
+        "resolve": "La discussion sera fermée. Si le client écrit à nouveau, elle se rouvre."
+      }
     },
     "hours": {
       "title": "Horaires du support (UTC)",
@@ -488,6 +518,10 @@
       "operation": "Opérations",
       "catalog": "Catalogue",
       "manage": "Gestion"
+    },
+    "confirm": {
+      "ok": "Confirmer",
+      "cancel": "Retour"
     }
   },
   "Errors": {

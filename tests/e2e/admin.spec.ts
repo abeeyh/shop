@@ -199,12 +199,19 @@ test.describe("admin", () => {
     await page.getByRole("link", { name: orderId.slice(0, 8) }).click();
     const staffStatus = page.getByTestId("staff-order-status");
     await expect(staffStatus).toHaveText("Paid");
+    // RF-05/RF-22 (doc 17): avançar pede confirmação; cancelar não muda nada
     await page.getByRole("button", { name: "Start delivery" }).click();
+    await page.getByRole("dialog").getByRole("button", { name: "Go back" }).click();
+    await expect(staffStatus).toHaveText("Paid");
+    await page.getByRole("button", { name: "Start delivery" }).click();
+    await page.getByRole("dialog").getByRole("button", { name: "Confirm" }).click();
     await expect(staffStatus).toHaveText("In progress");
     await page.getByLabel(/Delivery proof link/).fill("https://example.com/proof.png");
     await page.getByLabel("Note for the customer").fill("Gold sent by mail.");
     await page.getByRole("button", { name: "Mark as completed" }).click();
+    await page.getByRole("dialog").getByRole("button", { name: "Confirm" }).click();
     await expect(staffStatus).toHaveText("Completed");
+    await expect(page.getByRole("region", { name: "History" }).getByText("Completed")).toBeVisible(); // linha do tempo
     await buyerPage.reload();
     await expect(buyerPage.getByTestId("order-status")).toHaveText("Completed");
     await expect(buyerPage.getByRole("link", { name: "See the delivery proof" })).toHaveAttribute(
@@ -223,6 +230,7 @@ test.describe("admin", () => {
     const card = page.getByRole("listitem").filter({ hasText: `E2E report ${id}` });
     await expect(card.getByText("/en/produtos")).toBeVisible();
     await card.getByRole("button", { name: "Mark as resolved" }).click();
+    await card.getByRole("dialog").getByRole("button", { name: "Confirm" }).click(); // RF-05
     await expect(page.getByText(`E2E report ${id}`)).toHaveCount(0); // sai da lista de novos
 
     // RN-74: equipe lê os docs do repositório
@@ -311,6 +319,7 @@ test.describe("admin", () => {
     await page.reload();
     await expect(page.getByTestId("conversation-status")).toHaveText("In progress"); // respondeu = assumiu
     await page.getByRole("button", { name: "Mark as resolved" }).click();
+    await page.getByRole("dialog").getByRole("button", { name: "Confirm" }).click(); // RF-05
     await expect(page.getByTestId("conversation-status")).toHaveText("Resolved");
     await visitor.close();
 

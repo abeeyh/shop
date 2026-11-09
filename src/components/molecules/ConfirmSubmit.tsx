@@ -27,7 +27,11 @@ export function ConfirmSubmit(p: Props) {
       <button
         type="button"
         disabled={p.disabled}
-        onClick={() => ref.current?.showModal()}
+        onClick={(e) => {
+          // campo obrigatório inválido: mostra o erro no próprio campo em vez de abrir o diálogo por cima
+          if (e.currentTarget.form?.reportValidity() === false) return;
+          ref.current?.showModal();
+        }}
         className={buttonVariants({ variant: p.danger ? "ghost" : "primary", size: p.size ?? "sm" })}
       >
         {p.label}
