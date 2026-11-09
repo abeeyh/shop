@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Globe, ShoppingCart } from "lucide-react";
+import { Globe, LayoutDashboard, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -9,7 +9,7 @@ import { NavTabs } from "@/components/molecules/NavTabs";
 import { Popover } from "@/components/molecules/Popover";
 import { SpotlightTracker } from "@/components/molecules/SpotlightTracker";
 import { SiteHeader } from "@/components/organisms/SiteHeader";
-import { AccountTools, getCustomer } from "@/features/account";
+import { AccountTools, getCustomer, hasStaffSession } from "@/features/account";
 import { countItems, getCartId } from "@/features/cart";
 import { ChatLauncher } from "@/features/support/ChatLauncher";
 import { ReportLink } from "@/features/support/components/ReportLink";
@@ -24,7 +24,7 @@ import { THEMES } from "@/lib/theme";
 async function StoreHeader({ locale }: { locale: string }) {
   await connection(); // categorias e preferências vêm do banco/cookie: hora da requisição
   const cartId = await getCartId();
-  const [categories, timezone, theme, t, s, cartCount, customer] = await Promise.all([
+  const [categories, timezone, theme, t, s, cartCount, customer, staff] = await Promise.all([
     listCategories(),
     getTimezone(),
     getTheme(),
@@ -32,6 +32,7 @@ async function StoreHeader({ locale }: { locale: string }) {
     getTranslations({ locale, namespace: "Search" }),
     cartId ? countItems(cartId) : 0,
     getCustomer(),
+    hasStaffSession(), // #158: equipe logada ganha o atalho para o painel
   ]);
   // #110: busca com sugestões de produtos e categorias enquanto digita
   const searchProps = {
@@ -91,6 +92,13 @@ async function StoreHeader({ locale }: { locale: string }) {
               ) : null}
             </Link>
           </Tooltip>
+          {staff ? (
+            <Tooltip label={t("dashboard")}>
+              <Link href={`/${locale}/admin`} aria-label={t("dashboard")} className={iconLink}>
+                <LayoutDashboard aria-hidden="true" className="size-5" />
+              </Link>
+            </Tooltip>
+          ) : null}
           {/* RN-107/RN-110: equipe logada não é cliente — aparece como visitante na loja */}
           <AccountTools
             locale={locale}

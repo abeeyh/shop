@@ -25,7 +25,8 @@
       "carmesim": "Karmesin",
       "ouro": "Schwarzgold",
       "vazio": "Leere-Magenta"
-    }
+    },
+    "dashboard": "Dashboard"
   },
   "Home": {
     "badge": "WoW Retail · US",
@@ -543,9 +544,9 @@
       "noMatch": "Nichts passt zu diesen Filtern.",
       "delete": "Löschen",
       "deleteTitle": "{name} löschen?",
-      "deleteMessage": "Wird endgültig entfernt und im Audit protokolliert. Schon in einer Bestellung, einem Warenkorb oder Termin verwendet: nicht löschbar, bitte deaktivieren.",
+      "deleteMessage": "Verschwindet aus Panel und Shop, bleibt aber in der Datenbank: alte Bestellungen und das Audit verweisen weiter darauf.",
       "deleteConfirm": "Löschen",
-      "inUse": "Bereits verwendet (eine Bestellung, ein Warenkorb, ein Termin oder ein anderer Eintrag hängt davon ab). Deaktivieren statt löschen.",
+      "inUse": "Diese Kategorie hat noch Produkte. Lösche oder verschiebe sie zuerst.",
       "close": "Schließen",
       "search": "Suchen",
       "allCategories": "Alle Kategorien",

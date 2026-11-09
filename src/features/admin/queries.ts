@@ -1,11 +1,10 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
-import { and, asc, count, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import { db } from "@/db";
 import {
   auditLog,
   categories,
   couponRedemptions,
-  orderItems,
   coupons,
   products,
   productVariants,
@@ -14,7 +13,7 @@ import {
   users,
 } from "@/db/schema";
 import { ADMIN_PAGE_SIZE, type Cursor } from "@/lib/pagination";
-import { deleteAudited, saveAudited } from "./audit";
+import { saveAudited } from "./audit";
 import type { CategoryInput, CouponInput, ProductInput, PromotionInput, SubcategoryInput } from "./schemas";
 
 // Admin vê tudo, inclusive inativos (a vitrine filtra — RN-19)
@@ -35,6 +34,7 @@ export async function listAllCategories() {
       ),
     })
     .from(categories)
+    .where(isNull(categories.deletedAt)) // #158: excluído some do painel (fica no banco)
     .orderBy(asc(categories.sortOrder), asc(categories.name));
 }
 
@@ -65,6 +65,7 @@ export async function listAllProducts() {
     })
     .from(products)
     .innerJoin(categories, eq(products.categoryId, categories.id))
+    .where(isNull(products.deletedAt))
     .orderBy(asc(categories.sortOrder), asc(products.sortOrder), asc(products.name));
 }
 
@@ -90,6 +91,7 @@ export const listAllSubcategories = () =>
     })
     .from(subcategories)
     .innerJoin(categories, eq(subcategories.categoryId, categories.id))
+    .where(isNull(subcategories.deletedAt))
     .orderBy(asc(categories.sortOrder), asc(subcategories.sortOrder), asc(subcategories.name));
 
 export async function subcategoryCategoryOf(id: string) {
@@ -118,7 +120,8 @@ export function isForeignKeyViolation(err: unknown): boolean {
   return e?.code === "23503" || e?.cause?.code === "23503";
 }
 
-export const listPromotions = () => db.select().from(promotions).orderBy(desc(promotions.endsAt));
+export const listPromotions = () =>
+  db.select().from(promotions).where(isNull(promotions.deletedAt)).orderBy(desc(promotions.endsAt));
 
 // RN-27: usos = reservados + usados
 export const listCoupons = () =>
@@ -134,6 +137,7 @@ export const listCoupons = () =>
       ),
     })
     .from(coupons)
+    .where(isNull(coupons.deletedAt))
     .orderBy(desc(coupons.endsAt));
 
 // RN-71: toda gravação do dashboard passa por saveAudited (antes/depois na mesma transação)
@@ -311,9 +315,8 @@ export async function listAudit(
   return { rows: rows.slice(0, limit), more: rows.length > limit };
 }
 
-// Doc 17 §3 (CRUD) + RN-72: só exclui o que nunca foi usado. Categoria, subcategoria, produto e cupom: as
-// chaves estrangeiras (pedido, carrinho, horário de raid, uso de cupom, produtos da categoria) recusam e
-// a transação desfaz. Promoção não tem chave no item do pedido: confere aqui.
+// #158 + RN-72: excluir só MARCA (deleted_at) e desativa — o registro fica no banco porque pedidos,
+// carrinhos e a auditoria apontam para ele. Some do painel e da loja. Categoria com produtos não sai.
 export type Deletable = "category" | "subcategory" | "product" | "promotion" | "coupon";
 const TABLES = {
   category: categories,
@@ -329,28 +332,33 @@ export async function deleteCatalogRow(
   id: string,
 ): Promise<"ok" | "inUse" | "missing"> {
   const table = TABLES[entity];
-  if (entity === "promotion") {
+  if (entity === "category") {
     const [used] = await db
-      .select({ id: orderItems.id })
-      .from(orderItems)
-      .where(eq(orderItems.promotionId, id))
+      .select({ id: products.id })
+      .from(products)
+      .where(and(eq(products.categoryId, id), isNull(products.deletedAt)))
       .limit(1);
     if (used) return "inUse";
   }
-  try {
-    const done = await deleteAudited(
-      entity,
-      staffId,
-      id,
-      async (tx, key) =>
-        entity === "product"
-          ? productSnapshot(tx, key)
-          : (await tx.select().from(table).where(eq(table.id, key)))[0],
-      async (tx) => (await tx.delete(table).where(eq(table.id, id)).returning({ id: table.id })).length > 0,
-    );
-    return done ? "ok" : "missing";
-  } catch (err) {
-    if (isForeignKeyViolation(err)) return "inUse";
-    throw err;
-  }
+  let done = false;
+  await saveAudited(
+    entity,
+    staffId,
+    id,
+    async (tx, key) =>
+      entity === "product"
+        ? productSnapshot(tx, key)
+        : (await tx.select().from(table).where(eq(table.id, key)))[0],
+    async (tx) => {
+      const [r] = await tx
+        .update(table)
+        .set({ deletedAt: new Date(), active: false, updatedAt: new Date() })
+        .where(and(eq(table.id, id), isNull(table.deletedAt)))
+        .returning({ id: table.id });
+      done = !!r;
+      return r?.id;
+    },
+    "delete",
+  );
+  return done ? "ok" : "missing";
 }

@@ -25,7 +25,8 @@
       "carmesim": "Cramoisi",
       "ouro": "Or noir",
       "vazio": "Magenta du Vide"
-    }
+    },
+    "dashboard": "Tableau de bord"
   },
   "Home": {
     "badge": "WoW Retail · US",
@@ -543,9 +544,9 @@
       "noMatch": "Rien ne correspond à ces filtres.",
       "delete": "Supprimer",
       "deleteTitle": "Supprimer {name} ?",
-      "deleteMessage": "La suppression est définitive et enregistrée dans l’audit. Déjà utilisé dans une commande, un panier ou un créneau : impossible de supprimer, désactivez-le.",
+      "deleteMessage": "Il quitte le panneau et la boutique mais reste en base : les anciennes commandes et l’audit y font toujours référence.",
       "deleteConfirm": "Supprimer",
-      "inUse": "Déjà utilisé (une commande, un panier, un créneau ou un autre élément en dépend). Désactivez-le au lieu de le supprimer.",
+      "inUse": "Cette catégorie contient encore des produits. Supprimez-les ou déplacez-les d’abord.",
       "close": "Fermer",
       "search": "Rechercher",
       "allCategories": "Toutes les catégories",

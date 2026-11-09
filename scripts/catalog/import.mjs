@@ -5,27 +5,19 @@
 // O mapa id → categoria/subcategoria fica em scripts/catalog/categories.json (o JSON de produtos não tem nomes).
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { and, eq, inArray, notInArray, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, notInArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { categories, products, productVariants, subcategories } from "../../src/db/schema.ts";
 import { contentBySlug, toCatalog } from "./lib.mjs";
 
 const here = (f) => resolve(import.meta.dirname, f);
+const idBySlug = async (db, table, slug) =>
+  (await db.select({ id: table.id }).from(table).where(eq(table.slug, slug)))[0].id;
 // categoryRef/subcategoryRef são ids da origem — viram category_id/subcategory_id em place()
 const withoutRefs = (p) => Object.fromEntries(Object.entries(p).filter(([k]) => !k.endsWith("Ref")));
 
-// tudo ou nada: um erro no meio (ex.: índice único) não deixa o catálogo meio importado
-export const importCatalog = (db, file = here("products.json")) =>
-  db.transaction((tx) => importInto(tx, file));
-
-async function importInto(db, file) {
-  const map = JSON.parse(readFileSync(here("categories.json"), "utf8"));
-  const { info } = JSON.parse(readFileSync(file, "utf8"));
-  const unknown = [...new Set(info.map((i) => String(i.serviceCategoryId)))].filter(
-    (id) => !map.categories[id],
-  );
-  if (unknown.length) throw new Error(`categorias sem mapa em categories.json: ${unknown.join(", ")}`);
-
+// categorias pelo slug (#158: excluída no painel continua excluída — o upsert não devolve linha)
+async function upsertCategories(db, map) {
   const catIds = {};
   for (const [ref, c] of Object.entries(map.categories)) {
     const values = {
@@ -40,11 +32,17 @@ async function importInto(db, file) {
       .values({ ...values, active: true })
       .onConflictDoUpdate({
         target: categories.slug,
+        setWhere: isNull(categories.deletedAt), // #158: excluído no painel continua excluído
         set: { ...values, active: true, updatedAt: sql`now()` },
       })
       .returning({ id: categories.id });
-    catIds[ref] = row.id;
+    // excluída no painel: o upsert não devolve linha — usa o id existente (os produtos ainda apontam)
+    catIds[ref] = row?.id ?? (await idBySlug(db, categories, c.slug));
   }
+  return catIds;
+}
+
+async function upsertSubcategories(db, map, catIds) {
   const subIds = {};
   for (const [ref, s] of Object.entries(map.subcategories)) {
     const values = { categoryId: catIds[s.category], slug: s.slug, name: s.name, sortOrder: s.sortOrder };
@@ -53,11 +51,36 @@ async function importInto(db, file) {
       .values(values)
       .onConflictDoUpdate({
         target: [subcategories.categoryId, subcategories.slug],
+        setWhere: isNull(subcategories.deletedAt), // #158: excluído no painel continua excluído
         set: { name: s.name, sortOrder: s.sortOrder, updatedAt: sql`now()` },
       })
       .returning({ id: subcategories.id });
-    subIds[ref] = row.id;
+    subIds[ref] =
+      row?.id ??
+      (
+        await db
+          .select({ id: subcategories.id })
+          .from(subcategories)
+          .where(and(eq(subcategories.categoryId, values.categoryId), eq(subcategories.slug, s.slug)))
+      )[0].id;
   }
+  return subIds;
+}
+
+// tudo ou nada: um erro no meio (ex.: índice único) não deixa o catálogo meio importado
+export const importCatalog = (db, file = here("products.json")) =>
+  db.transaction((tx) => importInto(tx, file));
+
+async function importInto(db, file) {
+  const map = JSON.parse(readFileSync(here("categories.json"), "utf8"));
+  const { info } = JSON.parse(readFileSync(file, "utf8"));
+  const unknown = [...new Set(info.map((i) => String(i.serviceCategoryId)))].filter(
+    (id) => !map.categories[id],
+  );
+  if (unknown.length) throw new Error(`categorias sem mapa em categories.json: ${unknown.join(", ")}`);
+
+  const catIds = await upsertCategories(db, map);
+  const subIds = await upsertSubcategories(db, map, catIds);
 
   const { groups } = JSON.parse(readFileSync(here("groups.json"), "utf8"));
   const catalog = toCatalog(info, groups);
@@ -75,7 +98,11 @@ async function importInto(db, file) {
     await db
       .insert(products)
       .values(values)
-      .onConflictDoUpdate({ target: products.externalId, set: { ...values, updatedAt: sql`now()` } });
+      .onConflictDoUpdate({
+        target: products.externalId,
+        setWhere: isNull(products.deletedAt),
+        set: { ...values, updatedAt: sql`now()` },
+      });
   }
   for (const g of catalog.groups) {
     const { variants, ...group } = g;
@@ -83,8 +110,13 @@ async function importInto(db, file) {
     const [row] = await db
       .insert(products)
       .values(values)
-      .onConflictDoUpdate({ target: products.slug, set: { ...values, updatedAt: sql`now()` } })
+      .onConflictDoUpdate({
+        target: products.slug,
+        setWhere: isNull(products.deletedAt),
+        set: { ...values, updatedAt: sql`now()` },
+      })
       .returning({ id: products.id });
+    if (!row) continue; // #158: produto excluído no painel não volta pela importação
     for (const v of variants) {
       const vv = { ...v, productId: row.id, active: true };
       await db

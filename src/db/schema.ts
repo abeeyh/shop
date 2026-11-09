@@ -61,6 +61,7 @@ export const categories = pgTable("categories", {
   imageUrl: text("image_url"),
   sortOrder: integer("sort_order").notNull().default(0),
   active: boolean("active").notNull().default(true),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }), // #158: excluir só marca (RN-72); null = ativo no cadastro
   ...timestamps,
 });
 
@@ -76,6 +77,7 @@ export const subcategories = pgTable(
     slug: text("slug").notNull(),
     sortOrder: integer("sort_order").notNull().default(0),
     active: boolean("active").notNull().default(true),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }), // #158: excluir só marca (RN-72); null = ativo no cadastro
     ...timestamps,
   },
   (t) => [uniqueIndex("subcategories_category_slug_idx").on(t.categoryId, t.slug)],
@@ -115,6 +117,7 @@ export const products = pgTable(
     images: jsonb("images").$type<{ src: string; alt: string }[]>().notNull().default([]),
     faq: jsonb("faq").$type<{ q: string; a: string }[]>().notNull().default([]),
     active: boolean("active").notNull().default(true),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }), // #158: excluir só marca (RN-72); null = ativo no cadastro
     salesCount: integer("sales_count").notNull().default(0),
     ...timestamps,
   },
@@ -391,6 +394,7 @@ const discountColumns = {
   startsAt: timestamp("starts_at", { withTimezone: true }).notNull(), // UTC (RN-83)
   endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
   active: boolean("active").notNull().default(true),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }), // #158: excluir só marca (RN-72); null = ativo no cadastro
 };
 
 export const promotions = pgTable(
