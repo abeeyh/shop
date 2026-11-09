@@ -22,7 +22,7 @@ Estados: **feito**, **fazer** (entra nesta rodada), **depois** (fora desta rodad
 | RF-03 | Toda lista tem estado vazio com o próximo passo, e busca quando passar de uma tela | feito (#152) |
 | RF-04 | Criar e editar em gaveta (`Drawer`) — a lista continua visível; fechar não perde a lista | feito (#152) |
 | RF-05 | Ação destrutiva ou que muda estado (excluir, desativar, resolver, avançar pedido, assumir) pede confirmação e mostra o resultado | feito (#150, #152) |
-| RF-06 | Datas no fuso de quem vê, com o fuso escrito; um formatador só (hoje há 5 cópias) | fazer |
+| RF-06 | Datas no fuso de quem vê, com o fuso escrito; um formatador só (hoje há 5 cópias) | feito (#149–#155) |
 | RF-07 | Status com selo de cor (ativo/inativo, status do pedido, vigente/agendada/expirada) — `StatusBadge` | feito (#149, #152) |
 | RF-08 | Tabelas viram cartões no celular; nada de rolagem lateral na página | fazer |
 
@@ -37,7 +37,7 @@ C = criar, R = listar/ver, U = editar, D = excluir. Excluir só o que **nunca** 
 | Produto | ✔ | ✔ busca + filtro categoria/ativo | ✔ | ✔ nunca vendido nem em carrinho | RN-17, RN-19, RN-72, RN-106 | feito (#152, #154) |
 | Promoção | ✔ | ✔ selo vigente/agendada/expirada | ✔ | ✔ (não tem uso registrado em pedido) | RN-21 a RN-24 | feito (#152) |
 | Cupom | ✔ | ✔ usos/limite | ✔ | ✔ nunca usado | RN-25 a RN-28, RN-72 | feito (#152) |
-| Membro da equipe | convite | ✔ papel, 2FA, convites pendentes | ✔ papel/idiomas/ativo | — (desativa; auditoria precisa do autor) | RN-04 a RN-06 | fazer (convites pendentes, copiar link, confirmação) |
+| Membro da equipe | convite | ✔ papel, 2FA, convites pendentes | ✔ papel/idiomas/ativo | — (desativa; auditoria precisa do autor) | RN-04 a RN-06 | feito (#155) |
 | Horário de atendimento | — | ✔ | ✔ | — | RN-99 | feito |
 | Horário de raid (slot) | ✔ | ✔ | ✔ | ✔ sem reserva | RN-11, RN-16 | depois (#16) |
 | Conteúdo da página do serviço | — | — | ✔ | — | #136 | depois (#137: precisa de armazenamento de arquivos) |
@@ -66,9 +66,9 @@ Produto — editores visuais no lugar do texto livre (RF-09 a RF-11):
 
 | ID | Tela | Requisito | Estado |
 |---|---|---|---|
-| RF-30 | Auditoria | Filtro por entidade e por pessoa; mudanças como "campo: antes → depois" | fazer |
+| RF-30 | Auditoria | Filtro por entidade e por pessoa; mudanças como "campo: antes → depois" | feito (#155) |
 | RF-31 | Documentação | Markdown formatado, com índice | depois |
-| RF-32 | Telas de entrada (login, código, 2FA, convite) | Casca única com a marca e "voltar à loja"; convite vencido explica o próximo passo | fazer |
+| RF-32 | Telas de entrada (login, código, 2FA, convite) | Casca única com a marca e "voltar à loja"; convite vencido explica o próximo passo | feito (#155) |
 
 ## 6. Cliente
 

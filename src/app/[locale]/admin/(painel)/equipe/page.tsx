@@ -1,14 +1,18 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { connection } from "next/server";
+import { StatusBadge } from "@/components/atoms/StatusBadge";
 import { GradientCard } from "@/components/molecules/GradientCard";
+import { LocalTime } from "@/components/molecules/LocalTime";
+import { PageHeader } from "@/components/molecules/PageHeader";
 import { requireStaff } from "@/features/auth/staff";
 import { toHHMM } from "@/features/support/hours";
 import { listHours } from "@/features/support/hours-queries";
 import { HoursForm } from "@/features/staff/components/HoursForm";
 import { InviteForm, MemberForm } from "@/features/staff/components/StaffForms";
-import { listStaff } from "@/features/staff/queries";
+import { listPendingInvites, listStaff } from "@/features/staff/queries";
 import { LOCALE_LABELS } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
+import { canonicalLocale, routing } from "@/i18n/routing";
+import { getTimezone } from "@/lib/preferences";
 
 export const instant = false;
 
@@ -18,10 +22,12 @@ export default async function TeamAdmin({ params }: PageProps<"/[locale]/admin/e
   const { locale } = await params;
   setRequestLocale(locale);
   await requireStaff(locale);
-  const [t, members, hours] = await Promise.all([
+  const [t, members, hours, invites, timeZone] = await Promise.all([
     getTranslations({ locale, namespace: "Admin" }),
     listStaff(),
     listHours(),
+    listPendingInvites(),
+    getTimezone(),
   ]);
   // domingo = 0 (como Date.getUTCDay); nomes dos dias pelo Intl, no idioma da equipe
   const dayName = (d: number) =>
@@ -55,7 +61,35 @@ export default async function TeamAdmin({ params }: PageProps<"/[locale]/admin/e
 
   return (
     <>
-      <h1 className="font-heading text-3xl font-bold text-heading">{t("nav.team")}</h1>
+      <PageHeader title={t("nav.team")} description={t("team.count", { n: members.length })} />
+      {invites.length ? (
+        <section
+          aria-labelledby="convites"
+          className="grid gap-3 rounded-lg border border-border bg-card p-4"
+        >
+          <h2 id="convites" className="font-heading text-lg font-semibold text-heading">
+            {t("team.pending")}
+          </h2>
+          <ul className="grid gap-2 text-sm">
+            {invites.map((i) => (
+              <li key={i.id} className="flex flex-wrap items-center gap-2">
+                <span className="mr-auto text-heading">{i.email}</span>
+                <StatusBadge tone="neutral">
+                  {i.role === "admin" ? t("team.admin") : t("team.support")}
+                </StatusBadge>
+                <span className="text-xs text-muted-foreground">
+                  {t("team.expires")}{" "}
+                  <LocalTime
+                    iso={i.expiresAt.toISOString()}
+                    locale={canonicalLocale(locale)}
+                    timeZone={timeZone}
+                  />
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
       <GradientCard tone="solid" className="grid gap-4">
         <h2 className="font-heading text-xl font-semibold text-heading">{t("team.invite")}</h2>
         <InviteForm
@@ -66,6 +100,8 @@ export default async function TeamAdmin({ params }: PageProps<"/[locale]/admin/e
             email: t("login.email"),
             submit: t("team.sendInvite"),
             link: t("team.link"),
+            copy: t("team.copy"),
+            copied: t("team.copied"),
             errors,
           }}
         />
@@ -86,16 +122,21 @@ export default async function TeamAdmin({ params }: PageProps<"/[locale]/admin/e
           }}
         />
       </GradientCard>
+      <h2 className="font-heading text-xl font-semibold text-heading">{t("team.members")}</h2>
       <ul className="grid gap-4">
         {members.map((m) => (
           <li key={m.userId}>
             <GradientCard tone="solid" className="grid gap-3">
-              <p className="flex flex-wrap justify-between gap-2 text-sm">
-                <span className="font-semibold text-heading">{m.email}</span>
-                <span className="text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-2 text-sm">
+                <span className="mr-auto font-semibold text-heading">{m.email}</span>
+                <StatusBadge tone={m.role === "admin" ? "info" : "neutral"}>
+                  {m.role === "admin" ? t("team.admin") : t("team.support")}
+                </StatusBadge>
+                <StatusBadge tone={m.twoFactor ? "success" : "warning"}>
                   {m.twoFactor ? t("team.twoFactorOn") : t("team.twoFactorOff")}
-                </span>
-              </p>
+                </StatusBadge>
+                {m.active ? null : <StatusBadge tone="neutral">{t("table.inactive")}</StatusBadge>}
+              </div>
               <MemberForm
                 locale={locale}
                 member={m}
@@ -106,6 +147,12 @@ export default async function TeamAdmin({ params }: PageProps<"/[locale]/admin/e
                   save: t("form.save"),
                   saved: t("form.saved"),
                   errors,
+                  deactivate: {
+                    title: t("team.deactivateTitle", { email: m.email }),
+                    message: t("team.deactivateMessage"),
+                    confirm: t("confirm.ok"),
+                    cancel: t("confirm.cancel"),
+                  },
                 }}
               />
             </GradientCard>

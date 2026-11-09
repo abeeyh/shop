@@ -409,7 +409,11 @@
         "delete": "A supprimé"
       },
       "older": "Plus anciens",
-      "newest": "Plus récents"
+      "newest": "Plus récents",
+      "subtitle": "Qui a modifié quoi dans le panneau, du plus récent au plus ancien.",
+      "allEntities": "Tout",
+      "everyone": "Tout le monde",
+      "empty": "Aucune modification avec ces filtres."
     },
     "orders": {
       "todo": "À traiter",
@@ -466,7 +470,15 @@
         "emailTaken": "Cet e-mail a déjà un compte.",
         "self": "Vous ne pouvez pas désactiver ni rétrograder votre propre compte.",
         "lastAdmin": "Il doit rester au moins un admin actif."
-      }
+      },
+      "count": "{n, plural, one {# personne dans l’équipe} other {# personnes dans l’équipe}}",
+      "copy": "Copier le lien",
+      "copied": "Copié",
+      "deactivateTitle": "Désactiver {email} ?",
+      "deactivateMessage": "La personne est déconnectée de toutes les sessions immédiatement et ne peut plus entrer dans le panneau tant qu’elle n’est pas réactivée.",
+      "members": "Membres",
+      "pending": "Invitations en attente",
+      "expires": "expire le"
     },
     "accept": {
       "title": "Rejoindre l'équipe",
@@ -480,7 +492,8 @@
         "mismatch": "Les mots de passe ne correspondent pas.",
         "pwned": "Ce mot de passe figure dans une fuite de données. Choisissez-en un autre.",
         "expired": "Cette invitation est invalide, déjà utilisée ou expirée. Demandez-en une nouvelle à un admin."
-      }
+      },
+      "nextStep": "Demandez une nouvelle invitation à l’administrateur de la boutique. Chaque lien est valable 7 jours et ne sert qu’une fois."
     },
     "support": {
       "customer": "Client",

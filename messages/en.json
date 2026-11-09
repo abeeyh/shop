@@ -409,7 +409,11 @@
         "delete": "Deleted"
       },
       "older": "Older",
-      "newest": "Most recent"
+      "newest": "Most recent",
+      "subtitle": "Who changed what in the panel, newest first.",
+      "allEntities": "Everything",
+      "everyone": "Everyone",
+      "empty": "No changes with these filters."
     },
     "orders": {
       "todo": "To do",
@@ -466,7 +470,15 @@
         "emailTaken": "This email already has an account.",
         "self": "You can't deactivate or demote your own account.",
         "lastAdmin": "There must be at least one active admin."
-      }
+      },
+      "count": "{n, plural, one {# person on the team} other {# people on the team}}",
+      "copy": "Copy link",
+      "copied": "Copied",
+      "deactivateTitle": "Deactivate {email}?",
+      "deactivateMessage": "They are signed out of every session right away and cannot enter the panel until reactivated.",
+      "members": "Members",
+      "pending": "Pending invites",
+      "expires": "expires"
     },
     "accept": {
       "title": "Join the team",
@@ -480,7 +492,8 @@
         "mismatch": "The passwords don't match.",
         "pwned": "This password appeared in a data leak. Choose another one.",
         "expired": "This invite is invalid, already used or expired. Ask an admin for a new one."
-      }
+      },
+      "nextStep": "Ask the store admin for a new invite. Each link lasts 7 days and works only once."
     },
     "support": {
       "customer": "Customer",

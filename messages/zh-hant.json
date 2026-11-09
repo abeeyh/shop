@@ -409,7 +409,11 @@
         "delete": "刪除了"
       },
       "older": "更早",
-      "newest": "最新"
+      "newest": "最新",
+      "subtitle": "誰在後台改了什麼，最新的在前。",
+      "allEntities": "全部",
+      "everyone": "所有人",
+      "empty": "沒有符合篩選條件的變更。"
     },
     "orders": {
       "todo": "待處理",
@@ -466,7 +470,15 @@
         "emailTaken": "此電子郵件已有帳號。",
         "self": "你不能停用或降級自己的帳號。",
         "lastAdmin": "至少要保留一位啟用中的管理員。"
-      }
+      },
+      "count": "團隊共 {n} 人",
+      "copy": "複製連結",
+      "copied": "已複製",
+      "deactivateTitle": "停用 {email}？",
+      "deactivateMessage": "此人會立即登出所有工作階段，重新啟用前無法進入後台。",
+      "members": "成員",
+      "pending": "待接受的邀請",
+      "expires": "到期"
     },
     "accept": {
       "title": "加入團隊",
@@ -480,7 +492,8 @@
         "mismatch": "兩次輸入的密碼不一致。",
         "pwned": "此密碼曾出現在資料外洩中，請換一個。",
         "expired": "此邀請無效、已使用或已過期，請向管理員索取新的邀請。"
-      }
+      },
+      "nextStep": "請向商店管理員索取新的邀請。每個連結有效 7 天且只能使用一次。"
     },
     "support": {
       "customer": "客戶",

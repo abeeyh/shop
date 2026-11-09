@@ -277,7 +277,12 @@ export const saveCouponRow = (staffId: string, id: string | null, v: CouponInput
 
 // RN-71 / #88: auditoria por cursor (mais recentes primeiro). Keyset em vez de OFFSET: a tabela só
 // cresce. Busca uma linha a mais para saber se existe página seguinte.
-export async function listAudit(before: Cursor | null, limit = ADMIN_PAGE_SIZE) {
+// RF-30 (doc 17): filtro opcional por entidade e por pessoa (valores já conferidos pela página)
+export async function listAudit(
+  before: Cursor | null,
+  limit = ADMIN_PAGE_SIZE,
+  filter: { entity?: string; staffId?: string } = {},
+) {
   const rows = await db
     .select({
       id: auditLog.id,
@@ -293,9 +298,13 @@ export async function listAudit(before: Cursor | null, limit = ADMIN_PAGE_SIZE) 
     .from(auditLog)
     .innerJoin(users, eq(auditLog.staffId, users.id))
     .where(
-      before
-        ? sql`(${auditLog.createdAt}, ${auditLog.id}) < (${before.at}::timestamptz, ${before.id}::uuid)`
-        : undefined,
+      and(
+        before
+          ? sql`(${auditLog.createdAt}, ${auditLog.id}) < (${before.at}::timestamptz, ${before.id}::uuid)`
+          : undefined,
+        filter.entity ? eq(auditLog.entity, filter.entity) : undefined,
+        filter.staffId ? eq(auditLog.staffId, filter.staffId) : undefined,
+      ),
     )
     .orderBy(desc(auditLog.createdAt), desc(auditLog.id))
     .limit(limit + 1);

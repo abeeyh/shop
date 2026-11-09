@@ -409,7 +409,11 @@
         "delete": "删除了"
       },
       "older": "更早",
-      "newest": "最新"
+      "newest": "最新",
+      "subtitle": "谁在后台改了什么，最新的在前。",
+      "allEntities": "全部",
+      "everyone": "所有人",
+      "empty": "没有符合筛选条件的更改。"
     },
     "orders": {
       "todo": "待处理",
@@ -466,7 +470,15 @@
         "emailTaken": "该电子邮箱已有账号。",
         "self": "你不能停用或降级自己的账号。",
         "lastAdmin": "至少要保留一位启用中的管理员。"
-      }
+      },
+      "count": "团队共 {n} 人",
+      "copy": "复制链接",
+      "copied": "已复制",
+      "deactivateTitle": "停用 {email}？",
+      "deactivateMessage": "此人会立即退出所有会话，重新启用前无法进入后台。",
+      "members": "成员",
+      "pending": "待接受的邀请",
+      "expires": "到期"
     },
     "accept": {
       "title": "加入团队",
@@ -480,7 +492,8 @@
         "mismatch": "两次输入的密码不一致。",
         "pwned": "该密码曾出现在数据泄露中，请换一个。",
         "expired": "此邀请无效、已使用或已过期，请向管理员索取新的邀请。"
-      }
+      },
+      "nextStep": "请向商店管理员索取新的邀请。每个链接有效 7 天且只能使用一次。"
     },
     "support": {
       "customer": "客户",
