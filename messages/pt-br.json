@@ -282,7 +282,22 @@
       "limited": "Muitas tentativas. Aguarde alguns minutos e tente de novo."
     },
     "dashboard": {
-      "title": "Olá, {name}"
+      "title": "Olá, {name}",
+      "subtitle": "O que precisa de alguém agora.",
+      "now": "Agora",
+      "ordersToDo": "Pedidos a fazer",
+      "openChats": "Conversas abertas",
+      "oldestChat": "Mais antiga:",
+      "newReports": "Reportes novos",
+      "paidToday": "Pagos hoje",
+      "revenue": "{value} recebidos",
+      "endingSoon": "Descontos vencendo em 3 dias",
+      "no2fa": "Equipe sem 2FA",
+      "recentOrders": "Últimos pedidos",
+      "recentActivity": "Atividade recente",
+      "seeAll": "Ver todos",
+      "emptyOrders": "Nenhum pedido ainda.",
+      "emptyActivity": "Nenhuma alteração registrada."
     },
     "fields": {
       "name": "Nome",

@@ -282,7 +282,22 @@
       "limited": "Trop de tentatives. Patientez quelques minutes puis réessayez."
     },
     "dashboard": {
-      "title": "Bonjour, {name}"
+      "title": "Bonjour, {name}",
+      "subtitle": "Ce qui demande quelqu'un maintenant.",
+      "now": "Maintenant",
+      "ordersToDo": "Commandes à traiter",
+      "openChats": "Discussions ouvertes",
+      "oldestChat": "La plus ancienne :",
+      "newReports": "Nouveaux signalements",
+      "paidToday": "Payées aujourd'hui",
+      "revenue": "{value} reçus",
+      "endingSoon": "Remises qui expirent sous 3 jours",
+      "no2fa": "Équipe sans 2FA",
+      "recentOrders": "Dernières commandes",
+      "recentActivity": "Activité récente",
+      "seeAll": "Tout voir",
+      "emptyOrders": "Aucune commande pour l'instant.",
+      "emptyActivity": "Aucune modification enregistrée."
     },
     "fields": {
       "name": "Nom",

@@ -57,6 +57,7 @@ test.describe("admin", () => {
 
     await login(page);
     await expect(page).toHaveURL(/\/en\/admin$/); // #116: painel abre sem 2FA
+    await expect(page.getByText("Paid today")).toBeVisible(); // RF-20: o admin vê o faturamento do dia
     await page.goto("/en/admin/categorias");
     await expect(page).toHaveURL(/\/en\/admin\/categorias$/);
     // #144: barra lateral marca a página atual (e só ela)
@@ -258,6 +259,10 @@ test.describe("admin", () => {
     await sp.locator('input[name="password"]:visible').fill(supportPassword);
     await sp.getByRole("button", { name: "Sign in" }).click();
     await expect(sp).toHaveURL(/\/en\/admin$/); // #116: sem 2FA, entra direto
+    // RF-20 (doc 17): o suporte tem a visão geral dele, sem faturamento nem equipe (RN-06)
+    await expect(sp.getByText("Orders to do")).toBeVisible();
+    await expect(sp.getByText("Paid today")).toHaveCount(0);
+    await expect(sp.getByText("Team without 2FA")).toHaveCount(0);
     await sp.goto("/en/admin/cupons");
     await expect(sp.getByRole("heading", { name: "No access" })).toBeVisible();
     await sp.goto("/en/admin/pedidos");
@@ -268,7 +273,7 @@ test.describe("admin", () => {
       "aria-current",
       "page",
     );
-    for (const name of ["Overview", "Coupons", "Products", "Team", "Audit"])
+    for (const name of ["Coupons", "Products", "Team", "Audit"])
       await expect(spNav.getByRole("link", { name })).toHaveCount(0);
     await page.goto("/en/admin/equipe");
     const member = page.getByRole("form", { name: supportEmail });

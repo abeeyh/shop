@@ -18,12 +18,12 @@ Estados: **feito**, **fazer** (entra nesta rodada), **depois** (fora desta rodad
 | ID | Requisito | Estado |
 |---|---|---|
 | RF-01 | Barra lateral agrupada, página atual marcada, só o que o papel abre (#144) | feito |
-| RF-02 | Toda tela tem cabeçalho igual (título, descrição curta, ação principal) — componente `PageHeader` | fazer |
-| RF-03 | Toda lista tem estado vazio com o próximo passo, e busca quando passar de uma tela | fazer |
+| RF-02 | Toda tela tem cabeçalho igual (título, descrição curta, ação principal) — componente `PageHeader` | componente pronto (#148); telas na próxima rodada |
+| RF-03 | Toda lista tem estado vazio com o próximo passo, e busca quando passar de uma tela | componente pronto (#148); telas na próxima rodada |
 | RF-04 | Criar e editar em gaveta (`Drawer`) — a lista continua visível; fechar não perde a lista | fazer |
-| RF-05 | Ação destrutiva ou que muda estado (excluir, desativar, resolver, avançar pedido, assumir) pede confirmação e mostra o resultado | fazer |
+| RF-05 | Ação destrutiva ou que muda estado (excluir, desativar, resolver, avançar pedido, assumir) pede confirmação e mostra o resultado | componente pronto (#148); telas na próxima rodada |
 | RF-06 | Datas no fuso de quem vê, com o fuso escrito; um formatador só (hoje há 5 cópias) | fazer |
-| RF-07 | Status com selo de cor (ativo/inativo, status do pedido, vigente/agendada/expirada) — `StatusBadge` | fazer |
+| RF-07 | Status com selo de cor (ativo/inativo, status do pedido, vigente/agendada/expirada) — `StatusBadge` | componente pronto (#148); telas na próxima rodada |
 | RF-08 | Tabelas viram cartões no celular; nada de rolagem lateral na página | fazer |
 
 ## 3. CRUD por entidade (admin)
@@ -55,7 +55,7 @@ Produto — editores visuais no lugar do texto livre (RF-09 a RF-11):
 
 | ID | Tela | Requisito | Estado |
 |---|---|---|---|
-| RF-20 | Visão geral | Suporte: conversas abertas (e a mais antiga), pedidos a fazer, reportes novos. Admin: o mesmo + pedidos e **faturamento de hoje** (só admin — RN-06), promoções/cupons perto de vencer, equipe sem 2FA, atividade recente | fazer |
+| RF-20 | Visão geral | Suporte: conversas abertas (e a mais antiga), pedidos a fazer, reportes novos. Admin: o mesmo + pedidos e **faturamento de hoje** (só admin — RN-06), promoções/cupons perto de vencer, equipe sem 2FA, atividade recente | feito (#148) |
 | RF-21 | Pedidos | Abas a fazer/todos (`NavTabs`), busca por ID ou e-mail, selo de status, responsável, estado vazio | fazer |
 | RF-22 | Pedido | Linha do tempo (criado, pago, iniciado, concluído), confirmação antes de avançar, status atualiza na hora, voltar à fila | fazer |
 | RF-23 | Suporte (fila) | Contagem, estado vazio, tempo de espera, responsável, idioma por extenso | fazer |

@@ -23,7 +23,7 @@ async function Sidebar({ locale }: { locale: string }) {
     {
       label: t("groups.operation"),
       items: [
-        ...(admin ? [item("overview", "")] : []),
+        item("overview", ""), // RF-20: suporte também tem a visão geral dele
         item("support", "/suporte"),
         item("orders", "/pedidos"),
         item("reports", "/reportes"),
@@ -54,7 +54,7 @@ async function Sidebar({ locale }: { locale: string }) {
   return (
     <AdminNav
       locale={locale}
-      homeHref={admin ? base : `${base}/suporte`}
+      homeHref={base}
       title={t("title")}
       groups={groups}
       account={[item("twoFactor", "/2fa"), { key: "store", href: `/${locale}`, label: t("nav.store") }]}

@@ -282,7 +282,22 @@
       "limited": "Too many attempts. Wait a few minutes and try again."
     },
     "dashboard": {
-      "title": "Hello, {name}"
+      "title": "Hello, {name}",
+      "subtitle": "What needs someone right now.",
+      "now": "Now",
+      "ordersToDo": "Orders to do",
+      "openChats": "Open chats",
+      "oldestChat": "Oldest:",
+      "newReports": "New reports",
+      "paidToday": "Paid today",
+      "revenue": "{value} received",
+      "endingSoon": "Discounts ending in 3 days",
+      "no2fa": "Team without 2FA",
+      "recentOrders": "Latest orders",
+      "recentActivity": "Recent activity",
+      "seeAll": "See all",
+      "emptyOrders": "No orders yet.",
+      "emptyActivity": "No changes recorded."
     },
     "fields": {
       "name": "Name",
