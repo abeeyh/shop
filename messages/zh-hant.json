@@ -282,7 +282,22 @@
       "limited": "嘗試次數過多，請稍候幾分鐘再試。"
     },
     "dashboard": {
-      "title": "你好，{name}"
+      "title": "你好，{name}",
+      "subtitle": "現在需要處理的事項。",
+      "now": "現在",
+      "ordersToDo": "待處理訂單",
+      "openChats": "進行中的對話",
+      "oldestChat": "最早：",
+      "newReports": "新回報",
+      "paidToday": "今日已付款",
+      "revenue": "已收 {value}",
+      "endingSoon": "3 天內到期的折扣",
+      "no2fa": "未開啟 2FA 的成員",
+      "recentOrders": "最新訂單",
+      "recentActivity": "最近活動",
+      "seeAll": "查看全部",
+      "emptyOrders": "還沒有訂單。",
+      "emptyActivity": "沒有記錄的變更。"
     },
     "fields": {
       "name": "名稱",

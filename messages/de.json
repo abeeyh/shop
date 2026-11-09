@@ -282,7 +282,22 @@
       "limited": "Zu viele Versuche. Warte ein paar Minuten und versuche es erneut."
     },
     "dashboard": {
-      "title": "Hallo, {name}"
+      "title": "Hallo, {name}",
+      "subtitle": "Was jetzt jemanden braucht.",
+      "now": "Jetzt",
+      "ordersToDo": "Offene Bestellungen",
+      "openChats": "Offene Chats",
+      "oldestChat": "Älteste:",
+      "newReports": "Neue Meldungen",
+      "paidToday": "Heute bezahlt",
+      "revenue": "{value} erhalten",
+      "endingSoon": "Rabatte enden in 3 Tagen",
+      "no2fa": "Team ohne 2FA",
+      "recentOrders": "Neueste Bestellungen",
+      "recentActivity": "Letzte Aktivität",
+      "seeAll": "Alle ansehen",
+      "emptyOrders": "Noch keine Bestellungen.",
+      "emptyActivity": "Keine Änderungen erfasst."
     },
     "fields": {
       "name": "Name",
