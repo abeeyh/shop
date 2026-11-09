@@ -33,3 +33,27 @@ const FIELDS = [
 // mensagens de erro por campo para o ActionForm (o cliente não traduz — docs/04)
 export const formErrors = (t: AdminT): Record<string, string> =>
   Object.fromEntries(FIELDS.map((f) => [f, t(`formErrors.${f}`)]));
+
+// Doc 17 §3: textos do excluir com confirmação (RN-72)
+export const deleteLabels = (t: AdminT, name: string) => ({
+  delete: t("crud.delete"),
+  title: t("crud.deleteTitle", { name }),
+  message: t("crud.deleteMessage"),
+  confirm: t("crud.deleteConfirm"),
+  cancel: t("confirm.cancel"),
+  inUse: t("crud.inUse"),
+  generic: t("formErrors.generic"),
+});
+
+// RF-04/RF-02: textos comuns da gaveta e do cabeçalho
+export const crudLabels = (t: AdminT) => ({ close: t("crud.close"), search: t("crud.search") });
+
+export const filterLabels = (t: AdminT) => ({
+  search: t("crud.search"),
+  category: t("fields.category"),
+  allCategories: t("crud.allCategories"),
+  status: t("table.status"),
+  all: t("crud.allStatuses"),
+  active: t("table.active"),
+  inactive: t("table.inactive"),
+});

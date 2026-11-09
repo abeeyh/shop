@@ -405,7 +405,8 @@
       },
       "actions": {
         "create": "Created",
-        "update": "Updated"
+        "update": "Updated",
+        "delete": "Deleted"
       },
       "older": "Older",
       "newest": "Most recent"
@@ -522,6 +523,26 @@
     "confirm": {
       "ok": "Confirm",
       "cancel": "Go back"
+    },
+    "crud": {
+      "count": "{n, plural, one {# item} other {# items}}",
+      "empty": "Nothing here yet.",
+      "noMatch": "Nothing matches these filters.",
+      "delete": "Delete",
+      "deleteTitle": "Delete {name}?",
+      "deleteMessage": "It is removed for good and logged in the audit. If it was already used in an order, cart or slot, it cannot be deleted: deactivate it.",
+      "deleteConfirm": "Delete",
+      "inUse": "Already used (an order, cart, slot or other record depends on it). Deactivate it instead of deleting.",
+      "close": "Close",
+      "search": "Search",
+      "allCategories": "All categories",
+      "allStatuses": "All",
+      "window": {
+        "inactive": "Inactive",
+        "scheduled": "Scheduled",
+        "live": "Live",
+        "expired": "Expired"
+      }
     }
   },
   "Errors": {

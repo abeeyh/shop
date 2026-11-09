@@ -107,7 +107,7 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 | RN-70 | O dashboard (equipe ativa; 2FA opcional — RN-02, RN-05; permissões por papel — RN-06) gerencia: **categorias, produtos, preços, promoções por tempo, cupons**, slots de raid, pedidos, **equipe (contas de suporte/admin)**, **chat de suporte**, horário de atendimento e **documentação interna** (RN-74). *(aprovada em 2026-11-06)* |
 | RN-74 | **Documentação interna** em `/[locale]/admin/docs`: mostra os arquivos de `docs/` do repositório (fonte única, sem cópia), só para **admin e suporte** (RN-04 a RN-06); cliente e visitante recebem 404. *(aprovada em 2026-11-06)* |
 | RN-71 | Toda criação/alteração de categoria, produto, preço, promoção ou cupom gera registro de auditoria: quem, quando, valor antes e depois. *(proposta — confirmar)* |
-| RN-72 | Categoria, produto ou cupom já usado em pedido não é apagado, só desativado. *(proposta — confirmar)* |
+| RN-72 | Categoria, produto ou cupom já usado em pedido não é apagado, só desativado. O que **nunca foi usado** (sem pedido, carrinho, horário, uso de cupom nem cadastro dependente) pode ser excluído, com confirmação e registro na auditoria (#152, doc 17 §3). *(proposta — confirmar)* |
 | RN-73 | Categoria com produtos ativos não pode ser desativada sem antes desativar ou mover os produtos. *(proposta — confirmar)* |
 
 ## Idioma e fuso horário

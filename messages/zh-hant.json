@@ -405,7 +405,8 @@
       },
       "actions": {
         "create": "建立",
-        "update": "修改"
+        "update": "修改",
+        "delete": "刪除了"
       },
       "older": "更早",
       "newest": "最新"
@@ -522,6 +523,26 @@
     "confirm": {
       "ok": "確認",
       "cancel": "返回"
+    },
+    "crud": {
+      "count": "{n} 項",
+      "empty": "還沒有內容。",
+      "noMatch": "沒有符合篩選條件的內容。",
+      "delete": "刪除",
+      "deleteTitle": "刪除 {name}？",
+      "deleteMessage": "刪除後無法復原，並記錄在稽核中。如果已用於訂單、購物車或時段，則無法刪除，請改為停用。",
+      "deleteConfirm": "刪除",
+      "inUse": "已被使用（訂單、購物車、時段或其他紀錄依賴它）。請停用而不是刪除。",
+      "close": "關閉",
+      "search": "搜尋",
+      "allCategories": "所有分類",
+      "allStatuses": "全部",
+      "window": {
+        "inactive": "未啟用",
+        "scheduled": "已排程",
+        "live": "生效中",
+        "expired": "已過期"
+      }
     }
   },
   "Errors": {

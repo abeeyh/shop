@@ -405,7 +405,8 @@
       },
       "actions": {
         "create": "创建",
-        "update": "修改"
+        "update": "修改",
+        "delete": "删除了"
       },
       "older": "更早",
       "newest": "最新"
@@ -522,6 +523,26 @@
     "confirm": {
       "ok": "确认",
       "cancel": "返回"
+    },
+    "crud": {
+      "count": "{n} 项",
+      "empty": "还没有内容。",
+      "noMatch": "没有符合筛选条件的内容。",
+      "delete": "删除",
+      "deleteTitle": "删除 {name}？",
+      "deleteMessage": "删除后无法恢复，并记录在审计中。如果已用于订单、购物车或时段，则无法删除，请改为停用。",
+      "deleteConfirm": "删除",
+      "inUse": "已被使用（订单、购物车、时段或其他记录依赖它）。请停用而不是删除。",
+      "close": "关闭",
+      "search": "搜索",
+      "allCategories": "所有分类",
+      "allStatuses": "全部",
+      "window": {
+        "inactive": "未启用",
+        "scheduled": "已排期",
+        "live": "生效中",
+        "expired": "已过期"
+      }
     }
   },
   "Errors": {

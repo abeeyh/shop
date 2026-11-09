@@ -82,16 +82,21 @@ test.describe("admin", () => {
     await other.close();
 
     const id = Date.now().toString(36);
+    // RF-04 (doc 17): criar e editar em gaveta aberta pelo cabeçalho
     await page.goto("/en/admin/categorias");
+    await page.getByRole("link", { name: "New category" }).click();
     await page.getByLabel("Name", { exact: true }).fill(`E2E Keys ${id}`);
     await page.getByLabel("Slug (URL)").fill(`e2e-keys-${id}`);
     await page.getByLabel("Type").selectOption("dungeon"); // M+: vai ao carrinho sem horário
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");
+    await page.getByRole("button", { name: "Close" }).click(); // fecha a gaveta e a lista já tem a categoria
     await expect(page.getByRole("cell", { name: new RegExp(`E2E Keys ${id}`) }).first()).toBeVisible();
 
     await page.goto("/en/admin/produtos");
+    await page.getByRole("link", { name: "New product" }).click();
     await page
+      .getByRole("dialog")
       .getByRole("combobox", { name: "Category", exact: true })
       .selectOption({ label: `E2E Keys ${id}` });
     await page.getByLabel("Name", { exact: true }).fill(`E2E Key Product ${id}`);
@@ -121,6 +126,7 @@ test.describe("admin", () => {
 
     // RN-21/RN-22: promoção de 10% no produto → riscado + contagem na página do produto
     await page.goto("/en/admin/promocoes");
+    await page.getByRole("link", { name: "New promotion" }).click();
     await page.getByLabel("Name", { exact: true }).fill(`E2E Promo ${id}`);
     await page.getByLabel("Value (% or USDT)").fill("10");
     await page.getByLabel("Applies to").selectOption({ label: `E2E Key Product ${id}` });
@@ -136,6 +142,7 @@ test.describe("admin", () => {
 
     // RN-25/RN-26: cupom de 50% vence a promoção; código inválido tem mensagem genérica
     await page.goto("/en/admin/cupons");
+    await page.getByRole("link", { name: "New coupon" }).click();
     await page.getByLabel("Code").fill(`e2e${id}`);
     await page.getByLabel("Value (% or USDT)").fill("50");
     await page.getByLabel("Applies to").selectOption({ label: `E2E Key Product ${id}` });
@@ -158,9 +165,17 @@ test.describe("admin", () => {
     await expect(page.getByTestId("cart-total")).toHaveText("4.99 USDT"); // 9,99 − 5,00 (vale o maior)
 
     // tira o produto e a categoria do teste da vitrine (RN-72: desativa, não apaga)
-    await page.goto("/en/admin/produtos");
+    await page.goto(`/en/admin/produtos?q=${encodeURIComponent(`E2E Key Product ${id}`)}`); // RF-03: busca
+    await expect(page.getByRole("cell", { name: `E2E Key Product ${id}` })).toBeVisible();
     await page.getByRole("link", { name: `Edit E2E Key Product ${id}` }).click();
     await expect(page.getByRole("heading", { name: `Edit E2E Key Product ${id}` })).toBeVisible(); // navegação terminou
+    // doc 17 §3: produto já usado (está num carrinho) não é excluído — a mensagem manda desativar
+    await page.getByRole("dialog").getByRole("button", { name: "Delete" }).click();
+    await page
+      .getByRole("dialog", { name: `Delete E2E Key Product ${id}?` })
+      .getByRole("button", { name: "Delete" })
+      .click();
+    await expect(page.getByText(/Already used/)).toBeVisible();
     await page.getByLabel("Active").uncheck();
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");
@@ -171,10 +186,31 @@ test.describe("admin", () => {
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");
 
+    // doc 17 §3: o que nunca foi usado pode ser excluído (e vai para a auditoria)
+    await page.goto("/en/admin/subcategorias?novo=1");
+    await page
+      .getByRole("dialog")
+      .getByRole("combobox", { name: "Category", exact: true })
+      .selectOption({ label: `E2E Keys ${id}` });
+    await page.getByLabel("Name", { exact: true }).fill(`E2E Temp ${id}`);
+    await page.getByLabel("Slug (URL)").fill(`e2e-temp-${id}`);
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByRole("status")).toHaveText("Saved");
+    await page.goto("/en/admin/subcategorias");
+    await page.getByRole("link", { name: `Edit E2E Temp ${id}` }).click();
+    await page.getByRole("dialog").getByRole("button", { name: "Delete" }).click();
+    await page
+      .getByRole("dialog", { name: `Delete E2E Temp ${id}?` })
+      .getByRole("button", { name: "Delete" })
+      .click();
+    await expect(page).toHaveURL(/\/en\/admin\/subcategorias$/);
+    await expect(page.getByRole("cell", { name: new RegExp(`E2E Temp ${id}`) })).toHaveCount(0);
+
     // RN-71: as alterações aparecem na auditoria com quem e o antes → depois
     await page.goto("/en/admin/auditoria");
     await expect(page.getByText(`Updated Category: E2E Keys ${id}`).first()).toBeVisible();
     await expect(page.getByText(`Created Product: E2E Key Product ${id}`)).toBeVisible();
+    await expect(page.getByText(`Deleted Subcategory: E2E Temp ${id}`)).toBeVisible();
     await expect(page.getByText(E2E_ADMIN.email).first()).toBeVisible();
     // #88: cursor e página inválidos na URL voltam para a primeira página (sem erro)
     await page.goto("/en/admin/auditoria?antes=2026-02-30T00:00:00.000000Z_x");
