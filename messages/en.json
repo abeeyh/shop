@@ -543,6 +543,26 @@
         "live": "Live",
         "expired": "Expired"
       }
+    },
+    "options": {
+      "addonName": "Add-on name",
+      "percent": "Surcharge (%)",
+      "addAddon": "Add an add-on",
+      "axisName": "Axis name (e.g. Bosses)",
+      "style": "Style",
+      "slider": "Slider (values in sequence)",
+      "boxes": "Boxes (separate choices)",
+      "values": "Values, separated by commas",
+      "valuesHint": "In the order the customer sees them.",
+      "addAxis": "Add an axis",
+      "variantsHint": "Tick the combinations you sell and set the USDT price for each.",
+      "include": "Sells",
+      "note": "Note",
+      "remove": "Remove",
+      "tooMany": "Too many combinations (max 200). Reduce the axis values.",
+      "addonsTitle": "Add-ons",
+      "axesTitle": "Service options",
+      "variantsTitle": "Combinations and prices"
     }
   },
   "Errors": {

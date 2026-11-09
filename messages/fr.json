@@ -543,6 +543,26 @@
         "live": "En cours",
         "expired": "Expirée"
       }
+    },
+    "options": {
+      "addonName": "Nom de l’option",
+      "percent": "Supplément (%)",
+      "addAddon": "Ajouter une option",
+      "axisName": "Nom de l’axe (ex. Bosses)",
+      "style": "Style",
+      "slider": "Curseur (valeurs en séquence)",
+      "boxes": "Cases (choix séparés)",
+      "values": "Valeurs, séparées par des virgules",
+      "valuesHint": "Dans l’ordre vu par le client.",
+      "addAxis": "Ajouter un axe",
+      "variantsHint": "Cochez les combinaisons vendues et indiquez le prix en USDT de chacune.",
+      "include": "Vendu",
+      "note": "Note",
+      "remove": "Retirer",
+      "tooMany": "Trop de combinaisons (200 max). Réduisez les valeurs des axes.",
+      "addonsTitle": "Options payantes",
+      "axesTitle": "Options du service",
+      "variantsTitle": "Combinaisons et prix"
     }
   },
   "Errors": {

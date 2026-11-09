@@ -2,17 +2,18 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Input, Textarea } from "@/components/atoms/Input";
-import { Select } from "@/components/atoms/Select";
 import { buttonVariants } from "@/components/atoms/Button";
 import { StatusBadge } from "@/components/atoms/StatusBadge";
 import { EmptyState } from "@/components/molecules/EmptyState";
 import { PageHeader } from "@/components/molecules/PageHeader";
 import { saveProduct } from "@/features/admin/actions";
 import { ActionForm } from "@/features/admin/components/ActionForm";
+import { CategorySelects } from "@/features/admin/components/CategorySelects";
+import { ProductOptionsEditor } from "@/features/admin/components/ProductOptionsEditor";
 import { DeleteEntity } from "@/features/admin/components/DeleteEntity";
 import { RouteDrawer } from "@/features/admin/components/RouteDrawer";
 import { Check, Field, tableCls } from "@/features/admin/fields";
-import { crudLabels, deleteLabels, filterLabels, formErrors } from "@/features/admin/labels";
+import { crudLabels, deleteLabels, filterLabels, formErrors, optionLabels } from "@/features/admin/labels";
 import { ListFilters } from "@/features/admin/components/ListFilters";
 import { applyListFilter, parseListFilter } from "@/features/admin/filters";
 import { listAllCategories, listAllProducts, listAllSubcategories } from "@/features/admin/queries";
@@ -22,23 +23,6 @@ import { formatUsdt } from "@/features/catalog";
 export const instant = false;
 
 const usdt = (cents: number) => (cents / 100).toFixed(2);
-// RN-17: adicionais no textarea, um por linha ("Armor Stack | 25")
-const addonLines = (a: { name: string; percent: number }[]) =>
-  a.map((x) => `${x.name} | ${x.percent}`).join("\n");
-// #100: eixos e combinações no mesmo formato de texto que o admin digita
-const axisLines = (a: { name: string; style: string; values: string[] }[]) =>
-  a.map((x) => `${x.name} | ${x.style} | ${x.values.join(", ")}`).join("\n");
-const variantLines = (
-  axes: { name: string }[],
-  list: { options: Record<string, string>; priceUsdtCents: number; priceOnRequest: boolean; note: string }[],
-) =>
-  list
-    .map((v) => {
-      const opts = axes.map((a) => `${a.name}=${v.options[a.name] ?? ""}`).join("; ");
-      const price = v.priceOnRequest ? "-" : usdt(v.priceUsdtCents);
-      return [opts, price, v.note].filter((x, i) => i < 2 || x).join(" | ");
-    })
-    .join("\n");
 
 type ProductRow = Awaited<ReturnType<typeof listAllProducts>>[number];
 
@@ -58,18 +42,23 @@ function formValues(edit: ProductRow | undefined, firstCategory: string) {
     sortOrder: 0,
     ...edit,
     imageUrl: edit?.imageUrl ?? "",
-    ...(edit ? textFields(edit) : { addons: "", optionAxes: "", variants: "", price: "" }),
+    // com variantes o preço do produto é calculado (menor combinação)
+    price: edit && !edit.priceOnRequest && !edit.optionAxes.length ? usdt(edit.priceUsdtCents) : "",
   };
 }
 
-// campos de texto do produto em edição (adicionais, eixos, combinações e preço)
-function textFields(edit: ProductRow) {
+// RF-09 a RF-11: valores iniciais do editor visual (produto novo = tudo vazio)
+function optionsOf(edit: ProductRow | undefined) {
   return {
-    addons: addonLines(edit.addons),
-    optionAxes: axisLines(edit.optionAxes),
-    variants: variantLines(edit.optionAxes, edit.variants),
-    // com variantes o preço do produto é calculado (menor combinação)
-    price: !edit.priceOnRequest && !edit.optionAxes.length ? usdt(edit.priceUsdtCents) : "",
+    addons: (edit?.addons ?? []).map((a) => ({ name: a.name, percent: String(a.percent) })),
+    axes: edit?.optionAxes ?? [],
+    variants: (edit?.variants ?? []).map((x) => ({
+      options: x.options,
+      price: x.priceOnRequest ? "" : usdt(x.priceUsdtCents),
+      onRequest: x.priceOnRequest,
+      note: x.note,
+      included: true,
+    })),
   };
 }
 
@@ -104,30 +93,22 @@ function Editor(p: {
         errors={formErrors(t)}
       >
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={t("fields.category")}>
-            <Select name="categoryId" required defaultValue={v.categoryId}>
-              {cats.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </Select>
-          </Field>
+          <CategorySelects
+            categories={cats}
+            subcategories={subs}
+            categoryId={v.categoryId}
+            subcategoryId={v.subcategoryId ?? ""}
+            labels={{
+              category: t("fields.category"),
+              subcategory: t("fields.subcategory"),
+              none: t("fields.noSubcategory"),
+            }}
+          />
           <Field label={t("fields.name")}>
             <Input name="name" required maxLength={80} defaultValue={v.name} />
           </Field>
           <Field label={t("fields.slug")}>
             <Input name="slug" required maxLength={60} defaultValue={v.slug} />
-          </Field>
-          <Field label={t("fields.subcategory")}>
-            <Select name="subcategoryId" defaultValue={v.subcategoryId ?? ""}>
-              <option value="">{t("fields.noSubcategory")}</option>
-              {subs.map((x) => (
-                <option key={x.id} value={x.id}>
-                  {x.categoryName} › {x.name}
-                </option>
-              ))}
-            </Select>
           </Field>
           <Field label={t("fields.price")}>
             <Input name="price" inputMode="decimal" defaultValue={v.price} />
@@ -148,26 +129,11 @@ function Editor(p: {
         <Field label={t("fields.description")}>
           <Textarea name="description" maxLength={1000} defaultValue={v.description} />
         </Field>
-        <Field label={t("fields.addons")}>
-          <Textarea name="addons" maxLength={1000} defaultValue={v.addons} placeholder="Armor Stack | 25" />
-        </Field>
-        <Field label={t("fields.optionAxes")}>
-          <Textarea
-            name="optionAxes"
-            maxLength={2000}
-            defaultValue={v.optionAxes}
-            placeholder="Bosses | slider | 2/8, 3/8, 4/8"
-          />
-        </Field>
-        <Field label={t("fields.variants")}>
-          <Textarea
-            name="variants"
-            maxLength={20000}
-            rows={8}
-            defaultValue={v.variants}
-            placeholder="Bosses=2/8 | 39.47 | 2 bosses"
-          />
-        </Field>
+        <ProductOptionsEditor
+          {...optionsOf(edit)}
+          gold={cats.find((c) => c.id === v.categoryId)?.kind === "gold"}
+          labels={optionLabels(t)}
+        />
       </ActionForm>
       {edit ? (
         <DeleteEntity entity="product" id={edit.id} locale={locale} labels={deleteLabels(t, edit.name)} />

@@ -57,3 +57,27 @@ export const filterLabels = (t: AdminT) => ({
   active: t("table.active"),
   inactive: t("table.inactive"),
 });
+
+// RF-09 a RF-11: textos do editor visual do produto
+export const optionLabels = (t: AdminT) => ({
+  addons: t("options.addonsTitle"),
+  addonName: t("options.addonName"),
+  percent: t("options.percent"),
+  addAddon: t("options.addAddon"),
+  axes: t("options.axesTitle"),
+  axisName: t("options.axisName"),
+  style: t("options.style"),
+  slider: t("options.slider"),
+  boxes: t("options.boxes"),
+  values: t("options.values"),
+  valuesHint: t("options.valuesHint"),
+  addAxis: t("options.addAxis"),
+  variants: t("options.variantsTitle"),
+  variantsHint: t("options.variantsHint"),
+  include: t("options.include"),
+  price: t("fields.price"),
+  onRequest: t("fields.priceOnRequest"),
+  note: t("options.note"),
+  remove: t("options.remove"),
+  tooMany: t("options.tooMany"),
+});

@@ -176,6 +176,18 @@ test.describe("admin", () => {
       .getByRole("button", { name: "Delete" })
       .click();
     await expect(page.getByText(/Already used/)).toBeVisible();
+    // RF-10/RF-11 (doc 17): eixo e grade de preços no editor visual (sem digitar o formato de texto)
+    const dialog = page.getByRole("dialog");
+    await dialog.getByRole("button", { name: "Add an axis" }).click();
+    await dialog.getByLabel("Axis name (e.g. Bosses)").fill("Tier");
+    await dialog.getByLabel("Values, separated by commas").fill("Bronze, Gold");
+    await dialog.getByLabel("Price (USDT) Bronze").fill("5");
+    await dialog.getByLabel("Price (USDT) Gold").fill("7.50");
+    await dialog.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByRole("status")).toHaveText("Saved");
+    await page.reload();
+    await expect(page.getByRole("dialog").getByLabel("Price (USDT) Gold")).toHaveValue("7.50");
+    await expect(page.getByRole("dialog").getByLabel("Sells Bronze")).toBeChecked();
     await page.getByLabel("Active").uncheck();
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");

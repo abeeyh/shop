@@ -543,6 +543,26 @@
         "live": "生效中",
         "expired": "已过期"
       }
+    },
+    "options": {
+      "addonName": "附加项名称",
+      "percent": "加价（%）",
+      "addAddon": "添加附加项",
+      "axisName": "选项轴名称（例如 Bosses）",
+      "style": "样式",
+      "slider": "滑块（按顺序的值）",
+      "boxes": "方块（独立选项）",
+      "values": "取值，用逗号分隔",
+      "valuesHint": "按客户看到的顺序。",
+      "addAxis": "添加选项轴",
+      "variantsHint": "勾选要出售的组合，并为每个组合填写 USDT 价格。",
+      "include": "出售",
+      "note": "备注",
+      "remove": "移除",
+      "tooMany": "组合过多（最多 200）。请减少选项轴的取值。",
+      "addonsTitle": "附加项",
+      "axesTitle": "服务选项",
+      "variantsTitle": "组合与价格"
     }
   },
   "Errors": {
