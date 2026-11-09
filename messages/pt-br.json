@@ -405,7 +405,8 @@
       },
       "actions": {
         "create": "Criou",
-        "update": "Alterou"
+        "update": "Alterou",
+        "delete": "Excluiu"
       },
       "older": "Mais antigos",
       "newest": "Mais recentes"
@@ -522,6 +523,26 @@
     "confirm": {
       "ok": "Confirmar",
       "cancel": "Voltar"
+    },
+    "crud": {
+      "count": "{n, plural, one {# item} other {# itens}}",
+      "empty": "Nada cadastrado ainda.",
+      "noMatch": "Nada encontrado com esses filtros.",
+      "delete": "Excluir",
+      "deleteTitle": "Excluir {name}?",
+      "deleteMessage": "Some de vez e entra na auditoria. Se já foi usado em pedido, carrinho ou horário, não dá para excluir: desative.",
+      "deleteConfirm": "Excluir",
+      "inUse": "Já foi usado (pedido, carrinho, horário ou outro cadastro depende dele). Desative em vez de excluir.",
+      "close": "Fechar",
+      "search": "Buscar",
+      "allCategories": "Todas as categorias",
+      "allStatuses": "Todos",
+      "window": {
+        "inactive": "Inativa",
+        "scheduled": "Agendada",
+        "live": "Vigente",
+        "expired": "Expirada"
+      }
     }
   },
   "Errors": {

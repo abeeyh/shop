@@ -1,12 +1,14 @@
 "use server";
 
 import { refresh } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireStaff } from "@/features/auth/staff";
 import { routing } from "@/i18n/routing";
 import {
   activeProductCount,
   categoryKindOf,
+  deleteCatalogRow,
   isForeignKeyViolation,
   isUniqueViolation,
   saveCategoryRow,
@@ -93,4 +95,25 @@ export async function saveCoupon(_prev: SaveState, form: FormData): Promise<Save
   const parsed = couponInput.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { status: "error", fields: fieldsOf(parsed.error) };
   return persist(() => saveCouponRow(staffId, id, parsed.data), "code");
+}
+
+// Doc 17 §3: excluir com confirmação (RN-72: só o que nunca foi usado; senão, desativar). Volta à lista.
+const PATHS = {
+  category: "categorias",
+  subcategory: "subcategorias",
+  product: "produtos",
+  promotion: "promocoes",
+  coupon: "cupons",
+} as const;
+const deleteInput = z.object({
+  entity: z.enum(["category", "subcategory", "product", "promotion", "coupon"]),
+});
+
+export async function deleteEntity(_prev: SaveState, form: FormData): Promise<SaveState> {
+  const { id, staffId } = await guard(form);
+  const parsed = deleteInput.safeParse({ entity: form.get("entity") });
+  if (!id || !parsed.success) return { status: "error", fields: ["generic"] };
+  const result = await deleteCatalogRow(parsed.data.entity, staffId, id);
+  if (result === "inUse") return { status: "error", fields: ["inUse"] };
+  redirect(`/${form.get("locale")}/admin/${PATHS[parsed.data.entity]}`); // locale já validado no guard
 }

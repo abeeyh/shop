@@ -405,7 +405,8 @@
       },
       "actions": {
         "create": "Erstellt",
-        "update": "Geändert"
+        "update": "Geändert",
+        "delete": "Gelöscht"
       },
       "older": "Ältere",
       "newest": "Neueste"
@@ -522,6 +523,26 @@
     "confirm": {
       "ok": "Bestätigen",
       "cancel": "Zurück"
+    },
+    "crud": {
+      "count": "{n, plural, one {# Eintrag} other {# Einträge}}",
+      "empty": "Noch nichts angelegt.",
+      "noMatch": "Nichts passt zu diesen Filtern.",
+      "delete": "Löschen",
+      "deleteTitle": "{name} löschen?",
+      "deleteMessage": "Wird endgültig entfernt und im Audit protokolliert. Schon in einer Bestellung, einem Warenkorb oder Termin verwendet: nicht löschbar, bitte deaktivieren.",
+      "deleteConfirm": "Löschen",
+      "inUse": "Bereits verwendet (eine Bestellung, ein Warenkorb, ein Termin oder ein anderer Eintrag hängt davon ab). Deaktivieren statt löschen.",
+      "close": "Schließen",
+      "search": "Suchen",
+      "allCategories": "Alle Kategorien",
+      "allStatuses": "Alle",
+      "window": {
+        "inactive": "Inaktiv",
+        "scheduled": "Geplant",
+        "live": "Aktiv",
+        "expired": "Abgelaufen"
+      }
     }
   },
   "Errors": {

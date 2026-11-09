@@ -449,7 +449,7 @@ export const auditLog = pgTable(
       .references(() => users.id),
     entity: text("entity").notNull(), // category | product | promotion | coupon (e pedido com #23)
     entityId: text("entity_id").notNull(),
-    action: text("action").notNull(), // create | update
+    action: text("action").notNull(), // create | update | delete (#152)
     before: jsonb("before"),
     after: jsonb("after").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

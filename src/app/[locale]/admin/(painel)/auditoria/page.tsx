@@ -44,7 +44,10 @@ export default async function AuditAdmin({ params, searchParams }: PageProps<"/[
           <tbody>
             {rows.map((r) => {
               const after = r.after as Record<string, unknown>;
-              const changes = changedFields(r.before as Record<string, unknown> | null, after);
+              const before = r.before as Record<string, unknown> | null;
+              // exclusão: o "depois" fica vazio — o nome vem do "antes" e não há campos a comparar (doc 17 §3)
+              const changes = r.action === "delete" ? [] : changedFields(before, after);
+              const label = after.name ?? after.code ?? before?.name ?? before?.code;
               return (
                 <tr key={r.id} className="align-top">
                   <td className="whitespace-nowrap">
@@ -52,8 +55,8 @@ export default async function AuditAdmin({ params, searchParams }: PageProps<"/[
                   </td>
                   <td>{r.staffEmail}</td>
                   <td className="text-heading">
-                    {t(`audit.actions.${r.action as "create" | "update"}`)}{" "}
-                    {t(`audit.entities.${r.entity as Entity}`)}: {show(after.name ?? after.code)}
+                    {t(`audit.actions.${r.action as "create" | "update" | "delete"}`)}{" "}
+                    {t(`audit.entities.${r.entity as Entity}`)}: {show(label)}
                   </td>
                   <td>
                     <ul className="grid gap-0.5 text-xs">

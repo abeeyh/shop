@@ -405,7 +405,8 @@
       },
       "actions": {
         "create": "Création",
-        "update": "Modification"
+        "update": "Modification",
+        "delete": "A supprimé"
       },
       "older": "Plus anciens",
       "newest": "Plus récents"
@@ -522,6 +523,26 @@
     "confirm": {
       "ok": "Confirmer",
       "cancel": "Retour"
+    },
+    "crud": {
+      "count": "{n, plural, one {# élément} other {# éléments}}",
+      "empty": "Rien pour l’instant.",
+      "noMatch": "Rien ne correspond à ces filtres.",
+      "delete": "Supprimer",
+      "deleteTitle": "Supprimer {name} ?",
+      "deleteMessage": "La suppression est définitive et enregistrée dans l’audit. Déjà utilisé dans une commande, un panier ou un créneau : impossible de supprimer, désactivez-le.",
+      "deleteConfirm": "Supprimer",
+      "inUse": "Déjà utilisé (une commande, un panier, un créneau ou un autre élément en dépend). Désactivez-le au lieu de le supprimer.",
+      "close": "Fermer",
+      "search": "Rechercher",
+      "allCategories": "Toutes les catégories",
+      "allStatuses": "Tous",
+      "window": {
+        "inactive": "Inactive",
+        "scheduled": "Programmée",
+        "live": "En cours",
+        "expired": "Expirée"
+      }
     }
   },
   "Errors": {

@@ -18,12 +18,12 @@ Estados: **feito**, **fazer** (entra nesta rodada), **depois** (fora desta rodad
 | ID | Requisito | Estado |
 |---|---|---|
 | RF-01 | Barra lateral agrupada, página atual marcada, só o que o papel abre (#144) | feito |
-| RF-02 | Toda tela tem cabeçalho igual (título, descrição curta, ação principal) — componente `PageHeader` | componente pronto (#148); telas na próxima rodada |
-| RF-03 | Toda lista tem estado vazio com o próximo passo, e busca quando passar de uma tela | componente pronto (#148); telas na próxima rodada |
-| RF-04 | Criar e editar em gaveta (`Drawer`) — a lista continua visível; fechar não perde a lista | fazer |
-| RF-05 | Ação destrutiva ou que muda estado (excluir, desativar, resolver, avançar pedido, assumir) pede confirmação e mostra o resultado | componente pronto (#148); telas na próxima rodada |
+| RF-02 | Toda tela tem cabeçalho igual (título, descrição curta, ação principal) — componente `PageHeader` | feito (#149–#152) |
+| RF-03 | Toda lista tem estado vazio com o próximo passo, e busca quando passar de uma tela | feito (#152) |
+| RF-04 | Criar e editar em gaveta (`Drawer`) — a lista continua visível; fechar não perde a lista | feito (#152) |
+| RF-05 | Ação destrutiva ou que muda estado (excluir, desativar, resolver, avançar pedido, assumir) pede confirmação e mostra o resultado | feito (#150, #152) |
 | RF-06 | Datas no fuso de quem vê, com o fuso escrito; um formatador só (hoje há 5 cópias) | fazer |
-| RF-07 | Status com selo de cor (ativo/inativo, status do pedido, vigente/agendada/expirada) — `StatusBadge` | componente pronto (#148); telas na próxima rodada |
+| RF-07 | Status com selo de cor (ativo/inativo, status do pedido, vigente/agendada/expirada) — `StatusBadge` | feito (#149, #152) |
 | RF-08 | Tabelas viram cartões no celular; nada de rolagem lateral na página | fazer |
 
 ## 3. CRUD por entidade (admin)
@@ -32,11 +32,11 @@ C = criar, R = listar/ver, U = editar, D = excluir. Excluir só o que **nunca** 
 
 | Entidade | C | R | U | D | Regras | Estado |
 |---|---|---|---|---|---|---|
-| Categoria | ✔ | ✔ busca | ✔ | ✔ sem produtos e sem pedidos | RN-13, RN-72, RN-73 | fazer (falta D, busca, gaveta) |
-| Subcategoria | ✔ | ✔ filtro por categoria | ✔ | ✔ sem produtos | RN-72 | fazer |
-| Produto | ✔ | ✔ busca + filtro categoria/ativo | ✔ | ✔ nunca vendido nem em carrinho | RN-17, RN-19, RN-72, RN-106 | fazer |
-| Promoção | ✔ | ✔ selo vigente/agendada/expirada | ✔ | ✔ (não tem uso registrado em pedido) | RN-21 a RN-24 | fazer |
-| Cupom | ✔ | ✔ usos/limite | ✔ | ✔ nunca usado | RN-25 a RN-28, RN-72 | fazer |
+| Categoria | ✔ | ✔ busca | ✔ | ✔ sem produtos e sem pedidos | RN-13, RN-72, RN-73 | feito (#152) |
+| Subcategoria | ✔ | ✔ filtro por categoria | ✔ | ✔ sem produtos | RN-72 | feito (#152) |
+| Produto | ✔ | ✔ busca + filtro categoria/ativo | ✔ | ✔ nunca vendido nem em carrinho | RN-17, RN-19, RN-72, RN-106 | feito (#152) — editores visuais: RF-09 a RF-12 |
+| Promoção | ✔ | ✔ selo vigente/agendada/expirada | ✔ | ✔ (não tem uso registrado em pedido) | RN-21 a RN-24 | feito (#152) |
+| Cupom | ✔ | ✔ usos/limite | ✔ | ✔ nunca usado | RN-25 a RN-28, RN-72 | feito (#152) |
 | Membro da equipe | convite | ✔ papel, 2FA, convites pendentes | ✔ papel/idiomas/ativo | — (desativa; auditoria precisa do autor) | RN-04 a RN-06 | fazer (convites pendentes, copiar link, confirmação) |
 | Horário de atendimento | — | ✔ | ✔ | — | RN-99 | feito |
 | Horário de raid (slot) | ✔ | ✔ | ✔ | ✔ sem reserva | RN-11, RN-16 | depois (#16) |

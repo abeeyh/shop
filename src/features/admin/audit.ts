@@ -37,3 +37,20 @@ export async function saveAudited(
     });
   });
 }
+
+// RN-72 + RN-71: exclui e registra o "antes" na mesma transação. Item em uso: o banco recusa pela chave
+// estrangeira (erro 23503) e nada é gravado — quem chama transforma em "desative em vez de excluir".
+export async function deleteAudited(
+  entity: Entity,
+  staffId: string,
+  id: string,
+  read: (tx: Tx, id: string) => Promise<object | undefined>,
+  remove: (tx: Tx) => Promise<boolean>,
+): Promise<boolean> {
+  return db.transaction(async (tx) => {
+    const before = await read(tx, id);
+    if (!before || !(await remove(tx))) return false;
+    await tx.insert(auditLog).values({ staffId, entity, entityId: id, action: "delete", before, after: {} });
+    return true;
+  });
+}

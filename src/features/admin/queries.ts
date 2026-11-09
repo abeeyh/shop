@@ -5,6 +5,7 @@ import {
   auditLog,
   categories,
   couponRedemptions,
+  orderItems,
   coupons,
   products,
   productVariants,
@@ -13,7 +14,7 @@ import {
   users,
 } from "@/db/schema";
 import { ADMIN_PAGE_SIZE, type Cursor } from "@/lib/pagination";
-import { saveAudited } from "./audit";
+import { deleteAudited, saveAudited } from "./audit";
 import type { CategoryInput, CouponInput, ProductInput, PromotionInput, SubcategoryInput } from "./schemas";
 
 // Admin vê tudo, inclusive inativos (a vitrine filtra — RN-19)
@@ -299,4 +300,48 @@ export async function listAudit(before: Cursor | null, limit = ADMIN_PAGE_SIZE) 
     .orderBy(desc(auditLog.createdAt), desc(auditLog.id))
     .limit(limit + 1);
   return { rows: rows.slice(0, limit), more: rows.length > limit };
+}
+
+// Doc 17 §3 (CRUD) + RN-72: só exclui o que nunca foi usado. Categoria, subcategoria, produto e cupom: as
+// chaves estrangeiras (pedido, carrinho, horário de raid, uso de cupom, produtos da categoria) recusam e
+// a transação desfaz. Promoção não tem chave no item do pedido: confere aqui.
+export type Deletable = "category" | "subcategory" | "product" | "promotion" | "coupon";
+const TABLES = {
+  category: categories,
+  subcategory: subcategories,
+  product: products,
+  promotion: promotions,
+  coupon: coupons,
+};
+
+export async function deleteCatalogRow(
+  entity: Deletable,
+  staffId: string,
+  id: string,
+): Promise<"ok" | "inUse" | "missing"> {
+  const table = TABLES[entity];
+  if (entity === "promotion") {
+    const [used] = await db
+      .select({ id: orderItems.id })
+      .from(orderItems)
+      .where(eq(orderItems.promotionId, id))
+      .limit(1);
+    if (used) return "inUse";
+  }
+  try {
+    const done = await deleteAudited(
+      entity,
+      staffId,
+      id,
+      async (tx, key) =>
+        entity === "product"
+          ? productSnapshot(tx, key)
+          : (await tx.select().from(table).where(eq(table.id, key)))[0],
+      async (tx) => (await tx.delete(table).where(eq(table.id, id)).returning({ id: table.id })).length > 0,
+    );
+    return done ? "ok" : "missing";
+  } catch (err) {
+    if (isForeignKeyViolation(err)) return "inUse";
+    throw err;
+  }
 }
