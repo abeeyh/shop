@@ -41,15 +41,15 @@ test.describe("carrinho", () => {
     page,
   }) => {
     await page.goto("/en/wow/raids/venomous-abyss-normal");
-    const slots = page.locator('input[name="slotId"]');
+    const slots = page.locator('input[name="slotId"]').filter({ visible: true });
     await expect(slots.first()).toBeDisabled(); // o primeiro horário do seed está cheio
     await expect(slots.nth(1)).toBeChecked();
     await expect(page.locator("output").filter({ visible: true })).toContainText("2.93"); // 1ª opção: Last boss, 65k gold (#100)
-    await page.getByText("8/8 Saved", { exact: true }).click(); // a opção muda o preço: 140k = 6,30
+    await page.getByText("8/8 Saved", { exact: true }).filter({ visible: true }).click(); // a opção muda o preço: 140k = 6,30
     await expect(page.locator("output").filter({ visible: true })).toContainText("6.30");
     await page.getByLabel("Realm").filter({ visible: true }).fill("Area 52");
     await page.getByLabel("Character name").filter({ visible: true }).fill("Thrall");
-    await page.getByRole("button", { name: "Add to cart" }).click();
+    await page.getByRole("button", { name: "Add to cart" }).filter({ visible: true }).click();
     // sob carga (suíte inteira em paralelo) a action passa de 5 s
     await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible({ timeout: 15_000 });
     await page.goto("/en/carrinho");

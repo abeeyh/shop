@@ -23,6 +23,8 @@ export default async function globalSetup() {
   // RN-72: com pedido não apaga — só desativa
   await sql`update products set active = false where slug like 'e2e-%'`;
   await sql`delete from products where slug like 'e2e-%' and id not in (select product_id from order_items)`;
+  // #158: subcategoria excluída no painel fica no banco (só marcada) e prenderia a categoria de teste
+  await sql`delete from subcategories where category_id in (select id from categories where slug like 'e2e-%') and id not in (select subcategory_id from products where subcategory_id is not null)`;
   await sql`update categories set active = false where slug like 'e2e-%'`;
   await sql`delete from categories where slug like 'e2e-%' and id not in (select category_id from products)`;
   // contas de suporte criadas por convite no E2E (cascata: sessões, senha, 2FA, perfil)
