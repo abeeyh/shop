@@ -250,7 +250,8 @@
       "team": "Équipe",
       "support": "Support",
       "subcategories": "Sous-catégories",
-      "twoFactor": "2FA"
+      "twoFactor": "2FA",
+      "overview": "Vue d'ensemble"
     },
     "login": {
       "title": "Connexion (équipe)",
@@ -465,6 +466,11 @@
       "start": "De",
       "end": "À",
       "error": "Chaque jour ouvert doit avoir une heure de début et de fin différentes."
+    },
+    "groups": {
+      "operation": "Opérations",
+      "catalog": "Catalogue",
+      "manage": "Gestion"
     }
   },
   "Errors": {

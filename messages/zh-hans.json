@@ -250,7 +250,8 @@
       "team": "团队",
       "support": "客服",
       "subcategories": "子分类",
-      "twoFactor": "2FA"
+      "twoFactor": "2FA",
+      "overview": "概览"
     },
     "login": {
       "title": "团队登录",
@@ -465,6 +466,11 @@
       "start": "从",
       "end": "到",
       "error": "每个营业日都需要不同的开始和结束时间。"
+    },
+    "groups": {
+      "operation": "运营",
+      "catalog": "商品目录",
+      "manage": "管理"
     }
   },
   "Errors": {

@@ -59,6 +59,13 @@ test.describe("admin", () => {
     await expect(page).toHaveURL(/\/en\/admin$/); // #116: painel abre sem 2FA
     await page.goto("/en/admin/categorias");
     await expect(page).toHaveURL(/\/en\/admin\/categorias$/);
+    // #144: barra lateral marca a página atual (e só ela)
+    const nav = page.getByRole("navigation", { name: "Admin" });
+    await expect(nav.getByRole("link", { name: "Categories", exact: true })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    await expect(page.locator('aside a[aria-current="page"]')).toHaveCount(1);
     await page.getByRole("link", { name: "2FA" }).click(); // ativar continua possível
     await expect(page).toHaveURL(/\/en\/admin\/2fa$/);
     await page.getByLabel("Password").fill(E2E_ADMIN.password);
@@ -255,6 +262,14 @@ test.describe("admin", () => {
     await expect(sp.getByRole("heading", { name: "No access" })).toBeVisible();
     await sp.goto("/en/admin/pedidos");
     await expect(sp.getByRole("heading", { name: "Orders" })).toBeVisible();
+    // #144: o menu do suporte só mostra o que ele abre (RN-06)
+    const spNav = sp.getByRole("navigation", { name: "Admin" });
+    await expect(spNav.getByRole("link", { name: "Orders", exact: true })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    for (const name of ["Overview", "Coupons", "Products", "Team", "Audit"])
+      await expect(spNav.getByRole("link", { name })).toHaveCount(0);
     await page.goto("/en/admin/equipe");
     const member = page.getByRole("form", { name: supportEmail });
     await member.getByLabel("Active").uncheck();

@@ -250,7 +250,8 @@
       "team": "Equipe",
       "support": "Suporte",
       "subcategories": "Subcategorias",
-      "twoFactor": "2FA"
+      "twoFactor": "2FA",
+      "overview": "Visão geral"
     },
     "login": {
       "title": "Entrar (equipe)",
@@ -465,6 +466,11 @@
       "start": "Das",
       "end": "Até",
       "error": "Cada dia aberto precisa de horário de início e fim, diferentes."
+    },
+    "groups": {
+      "operation": "Operação",
+      "catalog": "Catálogo",
+      "manage": "Gestão"
     }
   },
   "Errors": {
