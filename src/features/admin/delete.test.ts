@@ -20,12 +20,18 @@ describe.skipIf(!process.env.DATABASE_URL)("excluir do catálogo (RN-72)", () =>
     ({ db } = await import("@/db"));
     q = await import("./queries");
     s = await import("@/db/schema");
-    const [staff] = await db.select({ id: s.staffProfiles.userId }).from(s.staffProfiles).limit(1);
-    staffId = staff!.id; // auditoria exige um membro da equipe real
+    // membro da equipe do próprio teste (a auditoria exige um autor real; na CI o banco começa vazio)
+    staffId = `test-${tag}`;
+    await db
+      .insert(s.users)
+      .values({ id: staffId, name: tag, email: `${tag}@shop.test`, emailVerified: true });
+    await db.insert(s.staffProfiles).values({ userId: staffId, role: "admin" });
   });
   afterAll(async () => {
     if (prods.length) await db.delete(s.products).where(inArray(s.products.id, prods));
     if (cats.length) await db.delete(s.categories).where(inArray(s.categories.id, cats));
+    await db.delete(s.auditLog).where(eq(s.auditLog.staffId, staffId));
+    await db.delete(s.users).where(eq(s.users.id, staffId)); // perfil da equipe sai em cascata
   });
 
   const category = async (suffix: string) => {
