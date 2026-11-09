@@ -35,6 +35,14 @@ Agentes especializados: [docs/12-agentes.md](docs/12-agentes.md).
 
 Toda decisão (técnica, de produto, segurança, infra, pagamentos, design) é tomada **assumindo o papel do profissional sênior da área** — "imagine que você é um engenheiro de segurança sênior", "engenheiro de software sênior", "SRE sênior"… — e o papel aparece na resposta: `Como <papel>: <decisão> — <porquê>`. Numa mesma tarefa pode haver mais de um papel. Os papéis dos agentes estão em [docs/12](docs/12-agentes.md).
 
+## Skills de design (#142)
+
+As skills `ui-ux-pro-max` e `design-taste-frontend` (taste-skill), instaladas em `~/.claude/skills`, são **referência e revisão** de UI, não fonte de verdade:
+
+- O [doc 11](docs/11-design.md) prevalece: só os tokens do `globals.css` (paleta e temas — RN-111), Atomic Design e reuso dos componentes existentes. Paleta, fontes, `starter.html` e componentes `fx-*` que a taste-skill sorteia **não** entram na loja sem aprovação e atualização do doc 11.
+- Use a `ui-ux-pro-max` para checar acessibilidade, toque, formulários, layout e animação (busca local: `python "$HOME/.claude/skills/ui-ux-pro-max/scripts/search.py" "<termo>" --domain ux`).
+- Nada de foto, texto ou imagem de terceiros sem licença (as fotos "stand-in" da taste-skill só em protótipo, com crédito).
+
 ## Next.js
 
 Este projeto usa **Next.js 16** (`proxy.ts` no lugar de `middleware`, `cacheComponents` ligado). Leia [AGENTS.md](AGENTS.md) e o guia em `node_modules/next/dist/docs/` antes de escrever código de framework.
