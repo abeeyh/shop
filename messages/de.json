@@ -421,7 +421,19 @@
       "proofUrl": "Link zum Liefernachweis (https — Screenshot oder Log)",
       "note": "Hinweis für den Kunden",
       "proofError": "Gib einen https-Link zum Liefernachweis an.",
-      "stale": "Jemand anderes hat diese Bestellung schon weitergesetzt. Lade die Seite neu."
+      "stale": "Jemand anderes hat diese Bestellung schon weitergesetzt. Lade die Seite neu.",
+      "count": "{n, plural, one {# Bestellung} other {# Bestellungen}}",
+      "search": "Nach ID oder E-Mail suchen",
+      "assignee": "Zuständig",
+      "created": "Erstellt",
+      "emptySearch": "Keine Bestellung gefunden.",
+      "emptyAll": "Noch keine Bestellungen.",
+      "emptyTodo": "Gerade nichts zu tun.",
+      "searchHint": "Nutze den Anfang der ID (z. B. 3e66e13d) oder die vollständige E-Mail.",
+      "back": "Zurück zu den Bestellungen",
+      "timeline": "Verlauf",
+      "confirmStart": "Du übernimmst die Lieferung dieser Bestellung. Der Kunde sieht, dass sie in Bearbeitung ist.",
+      "confirmComplete": "Die Bestellung wird mit diesem Nachweis abgeschlossen und der Kunde benachrichtigt. Das lässt sich nicht rückgängig machen."
     },
     "reports": {
       "new": "Neu",
@@ -431,7 +443,12 @@
       "ids": "Fehler-ID · Request-ID",
       "context": "Sprache · Region · Zeitzone · Version",
       "browser": "Browser",
-      "resolve": "Als erledigt markieren"
+      "resolve": "Als erledigt markieren",
+      "confirmResolve": "Die Meldung verschwindet aus der Liste der neuen.",
+      "countAll": "{n, plural, one {# Meldung} other {# Meldungen}}",
+      "countNew": "{n, plural, one {# neue Meldung} other {# neue Meldungen}}",
+      "emptyAll": "Noch keine Meldungen.",
+      "emptyNew": "Keine neuen Meldungen."
     },
     "team": {
       "role": "Rolle",
@@ -474,7 +491,20 @@
       },
       "assume": "Chat übernehmen",
       "resolve": "Als gelöst markieren",
-      "you": "Du"
+      "you": "Du",
+      "count": "{n, plural, one {# offener Chat} other {# offene Chats}}",
+      "assignee": "Agent",
+      "lastMessage": "Letzte Nachricht",
+      "yourLanguage": "deine Sprache",
+      "empty": "Keine offenen Chats.",
+      "emptyHint": "Die Seite aktualisiert sich alle 15 Sekunden.",
+      "back": "Zurück zur Warteschlange",
+      "customerOrders": "Bestellungen dieser E-Mail",
+      "noOrders": "Keine Bestellungen mit dieser E-Mail.",
+      "confirm": {
+        "assume": "Du übernimmst diesen Chat.",
+        "resolve": "Der Chat wird geschlossen. Schreibt der Kunde erneut, öffnet er sich wieder."
+      }
     },
     "hours": {
       "title": "Supportzeiten (UTC)",
@@ -488,6 +518,10 @@
       "operation": "Betrieb",
       "catalog": "Katalog",
       "manage": "Verwaltung"
+    },
+    "confirm": {
+      "ok": "Bestätigen",
+      "cancel": "Zurück"
     }
   },
   "Errors": {

@@ -421,7 +421,19 @@
       "proofUrl": "Link da prova de entrega (https — print ou log)",
       "note": "Observação para o cliente",
       "proofError": "Informe um link https para a prova de entrega.",
-      "stale": "Outra pessoa já moveu este pedido. Recarregue a página."
+      "stale": "Outra pessoa já moveu este pedido. Recarregue a página.",
+      "count": "{n, plural, one {# pedido} other {# pedidos}}",
+      "search": "Buscar por ID ou e-mail",
+      "assignee": "Responsável",
+      "created": "Criado",
+      "emptySearch": "Nenhum pedido encontrado.",
+      "emptyAll": "Nenhum pedido ainda.",
+      "emptyTodo": "Nada a fazer agora.",
+      "searchHint": "Use o começo do ID (ex.: 3e66e13d) ou o e-mail completo.",
+      "back": "Voltar aos pedidos",
+      "timeline": "Histórico",
+      "confirmStart": "Você assume a entrega deste pedido. O cliente verá que está em andamento.",
+      "confirmComplete": "O pedido será concluído com a prova informada e o cliente será avisado. Não dá para desfazer."
     },
     "reports": {
       "new": "Novo",
@@ -431,7 +443,12 @@
       "ids": "ID do erro · ID da requisição",
       "context": "Idioma · região · fuso · versão",
       "browser": "Navegador",
-      "resolve": "Marcar como resolvido"
+      "resolve": "Marcar como resolvido",
+      "confirmResolve": "O reporte sai da lista de novos.",
+      "countAll": "{n, plural, one {# reporte} other {# reportes}}",
+      "countNew": "{n, plural, one {# reporte novo} other {# reportes novos}}",
+      "emptyAll": "Nenhum reporte ainda.",
+      "emptyNew": "Nenhum reporte novo."
     },
     "team": {
       "role": "Papel",
@@ -474,7 +491,20 @@
       },
       "assume": "Assumir conversa",
       "resolve": "Marcar como resolvida",
-      "you": "Você"
+      "you": "Você",
+      "count": "{n, plural, one {# conversa aberta} other {# conversas abertas}}",
+      "assignee": "Atendente",
+      "lastMessage": "Última mensagem",
+      "yourLanguage": "seu idioma",
+      "empty": "Nenhuma conversa aberta.",
+      "emptyHint": "A página atualiza sozinha a cada 15 segundos.",
+      "back": "Voltar à fila",
+      "customerOrders": "Pedidos deste e-mail",
+      "noOrders": "Nenhum pedido com este e-mail.",
+      "confirm": {
+        "assume": "Você passa a atender esta conversa.",
+        "resolve": "A conversa será encerrada. Se o cliente escrever de novo, ela reabre."
+      }
     },
     "hours": {
       "title": "Horário de atendimento (UTC)",
@@ -488,6 +518,10 @@
       "operation": "Operação",
       "catalog": "Catálogo",
       "manage": "Gestão"
+    },
+    "confirm": {
+      "ok": "Confirmar",
+      "cancel": "Voltar"
     }
   },
   "Errors": {

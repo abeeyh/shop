@@ -1,13 +1,32 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { deliveries, orderItems, orders } from "@/db/schema";
+import { auditLog, deliveries, orderItems, orders, users } from "@/db/schema";
 import { saveAudited } from "@/features/admin/audit";
+import { canonicalEmail } from "@/features/discounts/queries";
 import { ADMIN_PAGE_SIZE } from "@/lib/pagination";
 import { STAFF_STEPS, type OrderStatus, type StaffStep } from "./rules";
 
+// RF-21 (doc 17): busca da fila — começo do ID (hex) ou e-mail exato. Outro texto não acha nada
+// (sem busca parcial por e-mail: a lista nunca mostra e-mail — RN-06).
+export function orderSearchKind(q: string | undefined): "none" | "id" | "email" | "invalid" {
+  const term = q?.trim().toLowerCase() ?? "";
+  if (!term) return "none";
+  if (/^[0-9a-f-]{4,36}$/.test(term)) return "id";
+  if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(term) && term.length <= 254) return "email";
+  return "invalid";
+}
+
 // Fila da equipe (RN-06): sem e-mail completo na lista. #88: só a página pedida sai do banco.
-export async function listOrdersForStaff(status: OrderStatus[] | null, page = 1) {
+export async function listOrdersForStaff(status: OrderStatus[] | null, page = 1, q?: string) {
+  const kind = orderSearchKind(q);
+  const term = q?.trim().toLowerCase() ?? "";
+  const search = {
+    none: undefined,
+    id: sql`${orders.id}::text like ${`${term}%`}`,
+    email: eq(orders.email, canonicalEmail(term)),
+    invalid: sql`false`,
+  }[kind];
   const rows = await db
     .select({
       id: orders.id,
@@ -15,10 +34,12 @@ export async function listOrdersForStaff(status: OrderStatus[] | null, page = 1)
       totalUsdtCents: orders.totalUsdtCents,
       createdAt: orders.createdAt,
       assignedTo: orders.assignedTo,
+      assignee: users.email, // quem assumiu (equipe)
       total: sql<number>`count(*) over()`.mapWith(Number),
     })
     .from(orders)
-    .where(status ? inArray(orders.status, status) : undefined)
+    .leftJoin(users, eq(users.id, orders.assignedTo))
+    .where(and(status ? inArray(orders.status, status) : undefined, search))
     .orderBy(desc(orders.createdAt), desc(orders.id))
     .limit(ADMIN_PAGE_SIZE)
     .offset((page - 1) * ADMIN_PAGE_SIZE);
@@ -65,3 +86,32 @@ export async function advanceOrder(
   );
   return moved;
 }
+
+// RF-22 (doc 17): linha do tempo do pedido — cada passo da equipe vem da auditoria (RN-07)
+export async function orderTimeline(id: string) {
+  const rows = await db
+    .select({ at: auditLog.createdAt, who: users.email, after: auditLog.after })
+    .from(auditLog)
+    .innerJoin(users, eq(users.id, auditLog.staffId))
+    .where(and(eq(auditLog.entity, "order"), eq(auditLog.entityId, id)))
+    .orderBy(asc(auditLog.createdAt));
+  return rows.map((r) => ({
+    at: r.at,
+    who: r.who,
+    status: (r.after as { status?: OrderStatus } | null)?.status ?? null,
+  }));
+}
+
+// RF-24 (doc 17): pedidos do mesmo e-mail ao lado da conversa (sem mostrar o e-mail — RN-06)
+export const listOrdersByEmail = (email: string, limit = 5) =>
+  db
+    .select({
+      id: orders.id,
+      status: orders.status,
+      totalUsdtCents: orders.totalUsdtCents,
+      createdAt: orders.createdAt,
+    })
+    .from(orders)
+    .where(eq(orders.email, canonicalEmail(email)))
+    .orderBy(desc(orders.createdAt))
+    .limit(limit);

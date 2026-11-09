@@ -3,7 +3,7 @@ import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { and, asc, count, eq, gt, inArray, ne } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { db } from "@/db";
-import { supportConversations, supportMessages } from "@/db/schema";
+import { supportConversations, supportMessages, users } from "@/db/schema";
 import { env } from "@/lib/env";
 import { publish } from "@/lib/pubsub";
 import { maskSensitive } from "./mask";
@@ -152,8 +152,10 @@ export const listQueue = () =>
       createdAt: supportConversations.createdAt,
       lastMessageAt: supportConversations.lastMessageAt,
       assignedTo: supportConversations.assignedTo,
+      assignee: users.email, // RF-23 (doc 17): quem está atendendo
     })
     .from(supportConversations)
+    .leftJoin(users, eq(users.id, supportConversations.assignedTo))
     .where(inArray(supportConversations.status, ["aberta", "em_atendimento"]))
     .orderBy(asc(supportConversations.createdAt)) // as mais antigas nunca somem da fila
     .limit(200);
