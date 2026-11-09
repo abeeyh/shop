@@ -78,7 +78,7 @@ Componentes usam **só tokens** (`bg-primary`, `text-muted-foreground`); hex for
 - Escala: 12 / 14 / 16 / 20 / 24 / 32 px; títulos com `clamp()`.
 - Espaçamento: escala de 4 px do Tailwind.
 - Raio (do template): **15 px** cards e painéis, **10 px** cards pequenos, **5 px** inputs, **pílula (9999 px)** botões, badges e busca, 50% avatares.
-- Container: largura máxima **1200 px na loja** (#102) e **1350 px no admin**; margem lateral 16–20 px no celular.
+- Container: largura máxima **1200 px** na loja (#102) e no conteúdo do admin, ao lado da barra lateral de 16 rem (#144); margem lateral 16–20 px no celular.
 - Ícones: lucide-react, 16/20 px.
 
 ## 4. Acessibilidade (obrigatório)
@@ -124,6 +124,7 @@ Se o componente **conhece o domínio**, fica na feature; se é genérico, em `sr
 | Template | `MarketingTemplate`, `AuthTemplate`, `AppTemplate` | `components/templates` |
 | Domínio | `VariantPicker` (#100: um eixo por linha — slider para valores em sequência, caixas para escolhas soltas; mostra o preço e a nota da combinação), `ProductFilters` (painel lateral no desktop, gaveta no celular), `SortSelect`, `CategoryCard`, `ServiceCard`, `RaidSlotCard` (com `Countdown`), `BestSellerCard`, `AdvantageItem`, `ServiceOptionsDrawer` | `features/catalog`, `features/schedule` |
 | Domínio (compra e conta) | `BuyBox` (preço, opções, personagem, total, "Comprar agora"/"Adicionar"), `ProductPanel` (página do produto), `CartSheet` (carrinho na barra lateral — #109), `AccountForms` (cadastro, login, personagens, excluir conta — RN-107 a RN-109) | `features/cart`, `features/account` |
+| Domínio (admin) | `AdminNav` (#144: barra lateral fixa no desktop e gaveta no celular; links agrupados em Operação, Catálogo e Gestão, com ícone e página atual marcada — `aria-current`; mostra só o que o papel abre, RN-06; 2FA, Loja, usuário e Sair no rodapé) | `features/admin` |
 | Domínio (suporte) | `ChatOpenButton` (abre o chat com mensagem pronta: consultar preço, agendar run), `ChatLauncher` (botão flutuante), `ChatWindow`, `ChatMessage`, `ChatComposer`, `OfflineForm`, `SupportQueue` (dashboard) | `features/support` |
 
 ### Convenções

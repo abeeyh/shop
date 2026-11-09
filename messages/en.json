@@ -250,7 +250,8 @@
       "team": "Team",
       "support": "Support",
       "subcategories": "Subcategories",
-      "twoFactor": "2FA"
+      "twoFactor": "2FA",
+      "overview": "Overview"
     },
     "login": {
       "title": "Staff sign in",
@@ -465,6 +466,11 @@
       "start": "From",
       "end": "To",
       "error": "Each open day needs a start and an end time, and they can't be equal."
+    },
+    "groups": {
+      "operation": "Operations",
+      "catalog": "Catalog",
+      "manage": "Management"
     }
   },
   "Errors": {

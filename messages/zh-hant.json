@@ -250,7 +250,8 @@
       "team": "團隊",
       "support": "客服",
       "subcategories": "子分類",
-      "twoFactor": "2FA"
+      "twoFactor": "2FA",
+      "overview": "概覽"
     },
     "login": {
       "title": "團隊登入",
@@ -465,6 +466,11 @@
       "start": "從",
       "end": "到",
       "error": "每個營業日都需要不同的開始與結束時間。"
+    },
+    "groups": {
+      "operation": "營運",
+      "catalog": "商品目錄",
+      "manage": "管理"
     }
   },
   "Errors": {

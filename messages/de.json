@@ -250,7 +250,8 @@
       "team": "Team",
       "support": "Support",
       "subcategories": "Unterkategorien",
-      "twoFactor": "2FA"
+      "twoFactor": "2FA",
+      "overview": "Übersicht"
     },
     "login": {
       "title": "Anmeldung (Team)",
@@ -465,6 +466,11 @@
       "start": "Von",
       "end": "Bis",
       "error": "Jeder geöffnete Tag braucht eine Start- und Endzeit, die sich unterscheiden."
+    },
+    "groups": {
+      "operation": "Betrieb",
+      "catalog": "Katalog",
+      "manage": "Verwaltung"
     }
   },
   "Errors": {
