@@ -543,6 +543,26 @@
         "live": "Vigente",
         "expired": "Expirada"
       }
+    },
+    "options": {
+      "addonName": "Nome do adicional",
+      "percent": "Acréscimo (%)",
+      "addAddon": "Adicionar adicional",
+      "axisName": "Nome do eixo (ex.: Bosses)",
+      "style": "Estilo",
+      "slider": "Slider (valores em sequência)",
+      "boxes": "Caixas (escolhas soltas)",
+      "values": "Valores, separados por vírgula",
+      "valuesHint": "Na ordem em que aparecem para o cliente.",
+      "addAxis": "Adicionar eixo",
+      "variantsHint": "Marque as combinações vendidas e informe o preço em USDT de cada uma.",
+      "include": "Vende",
+      "note": "Nota",
+      "remove": "Remover",
+      "tooMany": "Combinações demais (máximo 200). Reduza os valores dos eixos.",
+      "addonsTitle": "Adicionais",
+      "axesTitle": "Opções do serviço",
+      "variantsTitle": "Combinações e preços"
     }
   },
   "Errors": {

@@ -543,6 +543,26 @@
         "live": "Aktiv",
         "expired": "Abgelaufen"
       }
+    },
+    "options": {
+      "addonName": "Name des Zusatzes",
+      "percent": "Aufpreis (%)",
+      "addAddon": "Zusatz hinzufügen",
+      "axisName": "Name der Achse (z. B. Bosses)",
+      "style": "Stil",
+      "slider": "Schieberegler (Werte in Folge)",
+      "boxes": "Kästchen (einzelne Auswahl)",
+      "values": "Werte, durch Kommas getrennt",
+      "valuesHint": "In der Reihenfolge, die der Kunde sieht.",
+      "addAxis": "Achse hinzufügen",
+      "variantsHint": "Markiere die verkauften Kombinationen und gib den USDT-Preis je Kombination an.",
+      "include": "Verkauft",
+      "note": "Notiz",
+      "remove": "Entfernen",
+      "tooMany": "Zu viele Kombinationen (max. 200). Reduziere die Achsenwerte.",
+      "addonsTitle": "Zusätze",
+      "axesTitle": "Optionen des Service",
+      "variantsTitle": "Kombinationen und Preise"
     }
   },
   "Errors": {
