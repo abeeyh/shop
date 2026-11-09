@@ -200,12 +200,14 @@
       "changed": "O preço mudou (uma promoção acabou ou o cupom mudou). Confira o novo total e tente de novo.",
       "limited": "Muitas tentativas de checkout. Aguarde alguns minutos e tente de novo.",
       "notImplemented": "Pagamento em USDT: API ainda não implementada.",
-      "cardNotImplemented": "Cartão de crédito: API ainda não implementada. Por enquanto, pague com cripto (USDT)."
+      "cardNotImplemented": "Cartão de crédito: API ainda não implementada. Por enquanto, pague com cripto (USDT).",
+      "maintenance": "Pagamentos em manutenção. Seu carrinho fica salvo; volte em breve ou fale com o suporte no chat."
     },
     "method": "Forma de pagamento",
     "crypto": "Cripto (USDT)",
     "card": "Cartão de crédito",
-    "payCard": "Pagar com cartão"
+    "payCard": "Pagar com cartão",
+    "maintenance": "Pagamentos em manutenção. Seu carrinho fica salvo; volte em breve ou fale com o suporte no chat."
   },
   "Order": {
     "title": "Seu pedido",

@@ -73,6 +73,8 @@ Duas formas, em ordem de preferência:
 
 ## 7. Pendências
 
+> **Em manutenção (#146, 2026-11-09):** o checkout fica bloqueado com "pagamentos em manutenção" até `PAYMENTS_ENABLED=true` (padrão `false`). Lista do que falta e ordem para ligar: [doc 17 §7](17-requisitos-admin.md#7-pagamento--em-manutenção).
+
 - [ ] Confirmar por escrito com NOWPayments (ou alternativa) que aceitam venda de gold/boosting.
 - [ ] Abrir conta NOWPayments (sandbox e produção) e preencher `NOWPAYMENTS_API_KEY`/`NOWPAYMENTS_IPN_SECRET`. No sandbox, confirmar se a fatura aceita `price_currency` em USDT; hoje cobra em `usd` com taxa fixa (1 USD ≈ 1 USDT) — `src/lib/payments/crypto.ts`.
 - [ ] Escolher a forma de cartão (on-ramp ou processador high-risk) e confirmar aceitação do setor.

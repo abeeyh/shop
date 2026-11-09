@@ -200,12 +200,14 @@
       "changed": "The price changed (a promotion ended or the coupon changed). Check the new total and try again.",
       "limited": "Too many checkout attempts. Wait a few minutes and try again.",
       "notImplemented": "USDT payment: API not yet implemented.",
-      "cardNotImplemented": "Credit card: API not yet implemented. Pay with crypto (USDT) for now."
+      "cardNotImplemented": "Credit card: API not yet implemented. Pay with crypto (USDT) for now.",
+      "maintenance": "Payments are under maintenance. Your cart is saved; come back soon or talk to support in the chat."
     },
     "method": "Payment method",
     "crypto": "Crypto (USDT)",
     "card": "Credit card",
-    "payCard": "Pay by card"
+    "payCard": "Pay by card",
+    "maintenance": "Payments are under maintenance. Your cart is saved; come back soon or talk to support in the chat."
   },
   "Order": {
     "title": "Your order",

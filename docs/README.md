@@ -18,6 +18,7 @@
 | 14 | [Pagamentos](14-pagamentos-internacionais.md) | USDT + cartão, provedores, cotação, regulação | pesquisa inicial |
 | 15 | [Referência de layout](15-referencia-layout.md) | Análise do template Enfhess dark e mapeamento para a loja | pronto |
 | 16 | [Observabilidade](16-observabilidade.md) | Captura de erros, logs salvos, alertas, fluxo de bug | pronto (Better Stack gratuito + Sentry + log de acesso no banco) |
+| 17 | [Requisitos do painel e das contas](17-requisitos-admin.md) | Requisitos por papel e tela (RF-xx), CRUD por entidade, pagamento em manutenção e o que falta para ligar | rodada 2026-11-09 |
 
 **Regra:** toda mudança de comportamento começa por aqui. Atualize o doc no mesmo PR do código.
 

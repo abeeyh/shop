@@ -30,6 +30,8 @@ const schema = z
     NOWPAYMENTS_API_KEY: z.string().min(1).optional(),
     NOWPAYMENTS_IPN_SECRET: z.string().min(16).optional(),
     NOWPAYMENTS_SANDBOX: z.stringbool().default(true),
+    // #146 (doc 17 §7): pagamento em manutenção até o provedor estar pronto — ligar é decisão explícita
+    PAYMENTS_ENABLED: z.stringbool().default(false),
     // assina o link do pedido (/pedido/[id]?t=) — dono sem conta (RN-01)
     ORDER_LINK_SECRET: z.string().min(32).optional(),
     // assina sessões e criptografa o segredo do 2FA (Better Auth). Obrigatório fora de local.

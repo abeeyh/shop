@@ -200,12 +200,14 @@
       "changed": "Der Preis hat sich geändert (eine Aktion ist abgelaufen oder der Gutschein wurde geändert). Prüfe die neue Summe und versuche es erneut.",
       "limited": "Zu viele Bestellversuche. Warte ein paar Minuten und versuche es erneut.",
       "notImplemented": "USDT-Zahlung: API noch nicht implementiert.",
-      "cardNotImplemented": "Kreditkarte: API noch nicht implementiert. Bezahle vorerst mit Krypto (USDT)."
+      "cardNotImplemented": "Kreditkarte: API noch nicht implementiert. Bezahle vorerst mit Krypto (USDT).",
+      "maintenance": "Zahlungen werden gerade gewartet. Dein Warenkorb bleibt gespeichert; komm bald wieder oder schreib dem Support im Chat."
     },
     "method": "Zahlungsart",
     "crypto": "Krypto (USDT)",
     "card": "Kreditkarte",
-    "payCard": "Mit Karte bezahlen"
+    "payCard": "Mit Karte bezahlen",
+    "maintenance": "Zahlungen werden gerade gewartet. Dein Warenkorb bleibt gespeichert; komm bald wieder oder schreib dem Support im Chat."
   },
   "Order": {
     "title": "Deine Bestellung",
