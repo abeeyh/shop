@@ -15,17 +15,9 @@ import {
   saveCouponRow,
   saveProductRow,
   savePromotionRow,
-  saveSubcategoryRow,
-  subcategoryCategoryOf,
+  saveTagRow,
 } from "./queries";
-import {
-  categoryInput,
-  couponInput,
-  fieldsOf,
-  productInput,
-  promotionInput,
-  subcategoryInput,
-} from "./schemas";
+import { categoryInput, couponInput, fieldsOf, productInput, promotionInput, tagInput } from "./schemas";
 
 export type SaveState = { status: "idle" | "ok" | "error"; fields: string[] };
 
@@ -59,15 +51,15 @@ export async function saveCategory(_prev: SaveState, form: FormData): Promise<Sa
   return persist(() => saveCategoryRow(staffId, id, parsed.data));
 }
 
-// #94: subcategoria (nome e slug únicos na categoria)
-export async function saveSubcategory(_prev: SaveState, form: FormData): Promise<SaveState> {
+// #160: tag (slug único)
+export async function saveTag(_prev: SaveState, form: FormData): Promise<SaveState> {
   const { id, staffId } = await guard(form);
-  const parsed = subcategoryInput.safeParse(Object.fromEntries(form));
+  const parsed = tagInput.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { status: "error", fields: fieldsOf(parsed.error) };
-  return persist(() => saveSubcategoryRow(staffId, id, parsed.data));
+  return persist(() => saveTagRow(staffId, id, parsed.data));
 }
 
-// RN-19, RN-12; unidade do gold vem do tipo da categoria (RN-15); subcategoria tem de ser da categoria
+// RN-19, RN-12; unidade do gold vem do tipo da categoria (RN-15); tags inexistentes: o banco recusa (FK)
 export async function saveProduct(_prev: SaveState, form: FormData): Promise<SaveState> {
   const { id, staffId } = await guard(form);
   const parsed = productInput.safeParse(Object.fromEntries(form));
@@ -75,9 +67,6 @@ export async function saveProduct(_prev: SaveState, form: FormData): Promise<Sav
   const kind = await categoryKindOf(parsed.data.categoryId);
   if (!kind) return { status: "error", fields: ["categoryId"] };
   if (kind === "gold" && parsed.data.optionAxes.length) return { status: "error", fields: ["optionAxes"] };
-  const sub = parsed.data.subcategoryId;
-  if (sub && (await subcategoryCategoryOf(sub)) !== parsed.data.categoryId)
-    return { status: "error", fields: ["subcategoryId"] };
   return persist(() => saveProductRow(staffId, id, parsed.data, kind === "gold" ? "per_1k_gold" : null));
 }
 
@@ -100,13 +89,13 @@ export async function saveCoupon(_prev: SaveState, form: FormData): Promise<Save
 // Doc 17 §3: excluir com confirmação (RN-72: só o que nunca foi usado; senão, desativar). Volta à lista.
 const PATHS = {
   category: "categorias",
-  subcategory: "subcategorias",
+  tag: "tags",
   product: "produtos",
   promotion: "promocoes",
   coupon: "cupons",
 } as const;
 const deleteInput = z.object({
-  entity: z.enum(["category", "subcategory", "product", "promotion", "coupon"]),
+  entity: z.enum(["category", "tag", "product", "promotion", "coupon"]),
 });
 
 export async function deleteEntity(_prev: SaveState, form: FormData): Promise<SaveState> {

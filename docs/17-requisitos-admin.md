@@ -33,7 +33,7 @@ C = criar, R = listar/ver, U = editar, D = excluir. Excluir **só marca** (`dele
 | Entidade | C | R | U | D | Regras | Estado |
 |---|---|---|---|---|---|---|
 | Categoria | ✔ | ✔ busca | ✔ | ✔ sem produtos e sem pedidos | RN-13, RN-72, RN-73 | feito (#152) |
-| Subcategoria | ✔ | ✔ filtro por categoria | ✔ | ✔ sem produtos | RN-72 | feito (#152) |
+| Tag (#160, no lugar da subcategoria) | ✔ | ✔ busca + status | ✔ | ✔ (marca) | RN-13, RN-72 | feito (#160) |
 | Produto | ✔ | ✔ busca + filtro categoria/ativo | ✔ | ✔ nunca vendido nem em carrinho | RN-17, RN-19, RN-72, RN-106 | feito (#152, #154) |
 | Promoção | ✔ | ✔ selo vigente/agendada/expirada | ✔ | ✔ (não tem uso registrado em pedido) | RN-21 a RN-24 | feito (#152) |
 | Cupom | ✔ | ✔ usos/limite | ✔ | ✔ nunca usado | RN-25 a RN-28, RN-72 | feito (#152) |
@@ -49,7 +49,7 @@ Produto — editores visuais no lugar do texto livre (RF-09 a RF-11):
 | RF-09 | Adicionais em linhas (nome + %), com adicionar/remover | feito (#154) |
 | RF-10 | Eixos de variação em linhas (nome, estilo slider/caixas, valores) | feito (#154) |
 | RF-11 | Combinações como grade de preços gerada a partir dos eixos (cada linha: valores, preço, nota, ativa) | feito (#154) |
-| RF-12 | Subcategoria filtrada pela categoria escolhida | feito (#154) |
+| RF-12 | Tags do produto: principal + outras (antes: subcategoria filtrada pela categoria, #154) | feito (#160) |
 
 ## 4. Operação (suporte e admin)
 

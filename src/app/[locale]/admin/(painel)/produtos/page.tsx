@@ -8,7 +8,8 @@ import { EmptyState } from "@/components/molecules/EmptyState";
 import { PageHeader } from "@/components/molecules/PageHeader";
 import { saveProduct } from "@/features/admin/actions";
 import { ActionForm } from "@/features/admin/components/ActionForm";
-import { CategorySelects } from "@/features/admin/components/CategorySelects";
+import { TagPicker } from "@/features/admin/components/TagPicker";
+import { Select } from "@/components/atoms/Select";
 import { ProductOptionsEditor } from "@/features/admin/components/ProductOptionsEditor";
 import { DeleteEntity } from "@/features/admin/components/DeleteEntity";
 import { RouteDrawer } from "@/features/admin/components/RouteDrawer";
@@ -16,7 +17,7 @@ import { Check, Field, tableCls } from "@/features/admin/fields";
 import { crudLabels, deleteLabels, filterLabels, formErrors, optionLabels } from "@/features/admin/labels";
 import { ListFilters } from "@/features/admin/components/ListFilters";
 import { applyListFilter, parseListFilter } from "@/features/admin/filters";
-import { listAllCategories, listAllProducts, listAllSubcategories } from "@/features/admin/queries";
+import { listAllCategories, listAllProducts, listAllTags } from "@/features/admin/queries";
 import { requireStaff } from "@/features/auth/staff";
 import { formatUsdt } from "@/features/catalog";
 
@@ -35,7 +36,6 @@ function formValues(edit: ProductRow | undefined, firstCategory: string) {
     slug: "",
     description: "",
     active: true,
-    subcategoryId: null as string | null,
     maxQuantity: 1,
     priceOnRequest: false,
     hot: false,
@@ -71,9 +71,9 @@ function Editor(p: {
   base: string;
   t: T;
   cats: Awaited<ReturnType<typeof listAllCategories>>;
-  subs: Awaited<ReturnType<typeof listAllSubcategories>>;
+  tags: Awaited<ReturnType<typeof listAllTags>>;
 }) {
-  const { edit, locale, base, t, cats, subs } = p;
+  const { edit, locale, base, t, cats, tags } = p;
   const v = formValues(edit, cats[0]?.id ?? "");
   const c = crudLabels(t);
   return (
@@ -93,15 +93,22 @@ function Editor(p: {
         errors={formErrors(t)}
       >
         <div className="grid gap-4 sm:grid-cols-2">
-          <CategorySelects
-            categories={cats}
-            subcategories={subs}
-            categoryId={v.categoryId}
-            subcategoryId={v.subcategoryId ?? ""}
+          <Field label={t("fields.category")}>
+            <Select name="categoryId" required defaultValue={v.categoryId}>
+              {cats.map((x) => (
+                <option key={x.id} value={x.id}>
+                  {x.name}
+                </option>
+              ))}
+            </Select>
+          </Field>
+          <TagPicker
+            tags={tags}
+            selected={edit?.tagIds ?? []}
             labels={{
-              category: t("fields.category"),
-              subcategory: t("fields.subcategory"),
-              none: t("fields.noSubcategory"),
+              primary: t("fields.primaryTag"),
+              others: t("fields.otherTags"),
+              none: t("fields.noTag"),
             }}
           />
           <Field label={t("fields.name")}>
@@ -150,11 +157,11 @@ export default async function ProductsAdmin({ params, searchParams }: PageProps<
   const filter = parseListFilter(sp);
   setRequestLocale(locale);
   await requireStaff(locale);
-  const [t, rows, cats, subs] = await Promise.all([
+  const [t, rows, cats, tags] = await Promise.all([
     getTranslations({ locale, namespace: "Admin" }),
     listAllProducts(),
     listAllCategories(),
-    listAllSubcategories(),
+    listAllTags(),
   ]);
   const edit = rows.find((r) => r.id === editar);
   const shown = applyListFilter(rows, filter); // RF-03
@@ -225,7 +232,7 @@ export default async function ProductsAdmin({ params, searchParams }: PageProps<
       ) : (
         <EmptyState title={rows.length ? t("crud.noMatch") : t("crud.empty")} />
       )}
-      {open ? <Editor edit={edit} locale={locale} base={base} t={t} cats={cats} subs={subs} /> : null}
+      {open ? <Editor edit={edit} locale={locale} base={base} t={t} cats={cats} tags={tags} /> : null}
     </>
   );
 }

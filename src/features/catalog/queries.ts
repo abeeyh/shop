@@ -1,7 +1,8 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
-import { and, asc, desc, eq, or, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, isNull } from "drizzle-orm";
 import { db } from "@/db";
-import { categories, products, productVariants, subcategories } from "@/db/schema";
+import { categories, products, productTags, productVariants, tags } from "@/db/schema";
+import { hasTag, primaryTagName, primaryTagSort, productTagNames } from "./tags-sql";
 
 const productColumns = {
   id: products.id,
@@ -20,11 +21,9 @@ const productColumns = {
   priceOnRequest: products.priceOnRequest, // RN-106
   hot: products.hot,
   optionAxes: products.optionAxes, // #100: com eixos, o preço do produto é o "a partir de"
-  subcategoryName: subcategories.name,
+  tags: productTagNames, // #160: várias tags; a principal agrupa a página da categoria
+  primaryTag: primaryTagName,
 };
-
-// subcategoria desativada esconde os produtos dela; produto sem subcategoria aparece sempre
-const visibleSubcategory = or(isNull(products.subcategoryId), eq(subcategories.active, true));
 
 export type CatalogProduct = Awaited<ReturnType<typeof listProducts>>[number];
 export type CatalogCategory = Awaited<ReturnType<typeof listCategories>>[number];
@@ -50,22 +49,22 @@ export async function getCategory(slug: string) {
 }
 
 // RN-19: só produtos ativos de categorias ativas (RN-14: loja só US).
-// Na categoria: ordem do admin (subcategoria → posição → nome). Na home: populares e mais vendidos.
-export async function listProducts(filter: { categorySlug?: string; limit?: number }) {
+// Na categoria: ordem do admin (tag principal → posição → nome), filtro opcional por tag (#160).
+// Na home: populares e mais vendidos.
+export async function listProducts(filter: { categorySlug?: string; limit?: number; tag?: string }) {
   const conditions = [
     eq(products.active, true),
     eq(categories.active, true),
-    visibleSubcategory,
+    ...(filter.tag ? [hasTag(filter.tag)] : []),
     ...(filter.categorySlug ? [eq(categories.slug, filter.categorySlug)] : []),
   ];
   const order = filter.categorySlug
-    ? [asc(subcategories.sortOrder), asc(products.sortOrder), asc(products.name)]
+    ? [asc(primaryTagSort), asc(products.sortOrder), asc(products.name)]
     : [desc(products.hot), desc(products.salesCount), asc(products.name)];
   const query = db
     .select(productColumns)
     .from(products)
     .innerJoin(categories, eq(products.categoryId, categories.id))
-    .leftJoin(subcategories, eq(products.subcategoryId, subcategories.id))
     .where(and(...conditions))
     .orderBy(...order);
   return filter.limit ? query.limit(filter.limit) : query;
@@ -76,15 +75,7 @@ export async function getProduct(slug: string) {
     .select(productColumns)
     .from(products)
     .innerJoin(categories, eq(products.categoryId, categories.id))
-    .leftJoin(subcategories, eq(products.subcategoryId, subcategories.id))
-    .where(
-      and(
-        eq(products.slug, slug),
-        eq(products.active, true),
-        eq(categories.active, true),
-        visibleSubcategory,
-      ),
-    );
+    .where(and(eq(products.slug, slug), eq(products.active, true), eq(categories.active, true)));
   return row ?? null;
 }
 
@@ -110,4 +101,23 @@ export async function getProductContent(productId: string) {
     .from(products)
     .where(eq(products.id, productId));
   return row ?? { details: "", images: [], faq: [] };
+}
+
+// #160: tags usadas pelos produtos ativos da categoria (os chips de filtro), na ordem do admin
+export async function listCategoryTags(categorySlug: string) {
+  return db
+    .selectDistinct({ slug: tags.slug, name: tags.name, sortOrder: tags.sortOrder })
+    .from(productTags)
+    .innerJoin(tags, eq(tags.id, productTags.tagId))
+    .innerJoin(products, eq(products.id, productTags.productId))
+    .innerJoin(categories, eq(categories.id, products.categoryId))
+    .where(
+      and(
+        eq(categories.slug, categorySlug),
+        eq(products.active, true),
+        eq(tags.active, true),
+        isNull(tags.deletedAt),
+      ),
+    )
+    .orderBy(asc(tags.sortOrder), asc(tags.name));
 }

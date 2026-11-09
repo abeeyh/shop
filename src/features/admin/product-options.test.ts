@@ -41,7 +41,7 @@ describe("editor visual do produto", () => {
     ]);
     const parsed = productInput.safeParse({
       categoryId: "11111111-1111-4111-8111-111111111111",
-      subcategoryId: "",
+      tags: "",
       name: "Venomous Abyss",
       slug: "venomous-abyss-test",
       description: "",

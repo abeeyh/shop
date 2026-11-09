@@ -5,7 +5,7 @@ import { ConfirmSubmit } from "@/components/molecules/ConfirmSubmit";
 import { deleteEntity, type SaveState } from "../actions";
 
 type Props = {
-  entity: "category" | "subcategory" | "product" | "promotion" | "coupon";
+  entity: "category" | "tag" | "product" | "promotion" | "coupon";
   id: string;
   locale: string;
   labels: {

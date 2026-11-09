@@ -11,6 +11,7 @@ import {
   jsonb,
   pgEnum,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uniqueIndex,
@@ -65,23 +66,17 @@ export const categories = pgTable("categories", {
   ...timestamps,
 });
 
-// Subcategoria opcional dentro da categoria (ex.: Raids → Heroic / Normal) — #94, RN-13
-export const subcategories = pgTable(
-  "subcategories",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    categoryId: uuid("category_id")
-      .notNull()
-      .references(() => categories.id),
-    name: text("name").notNull(),
-    slug: text("slug").notNull(),
-    sortOrder: integer("sort_order").notNull().default(0),
-    active: boolean("active").notNull().default(true),
-    deletedAt: timestamp("deleted_at", { withTimezone: true }), // #158: excluir só marca (RN-72); null = ativo no cadastro
-    ...timestamps,
-  },
-  (t) => [uniqueIndex("subcategories_category_slug_idx").on(t.categoryId, t.slug)],
-);
+// #160: tags do produto no lugar da subcategoria — várias por produto; a de posição 0 é a principal
+// (agrupa a página da categoria). Globais: a mesma "Heroic" serve a Raids e a Full Priority.
+export const tags = pgTable("tags", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  sortOrder: integer("sort_order").notNull().default(0),
+  active: boolean("active").notNull().default(true),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }), // #158: excluir só marca (RN-72)
+  ...timestamps,
+});
 
 // Adicional em % sobre o preço do produto, escolhido pelo cliente (RN-17, ex.: Armor Stack +25%)
 export type ProductAddon = { name: string; percent: number };
@@ -104,7 +99,6 @@ export const products = pgTable(
     priceUsdtCents: integer("price_usdt_cents").notNull(), // RN-12: inteiro, nunca float
     unit: text("unit"), // ex.: "per_1k_gold"
     options: jsonb("options").notNull().default({}),
-    subcategoryId: uuid("subcategory_id").references(() => subcategories.id),
     addons: jsonb("addons").$type<ProductAddon[]>().notNull().default([]),
     maxQuantity: integer("max_quantity").notNull().default(1), // ex.: delve "por tier"
     priceOnRequest: boolean("price_on_request").notNull().default(false), // RN-106: não vai ao carrinho
@@ -129,6 +123,20 @@ export const products = pgTable(
     check("products_price_positive", sql`${t.priceUsdtCents} > 0`),
     check("products_max_quantity", sql`${t.maxQuantity} between 1 and 100`),
   ],
+);
+
+export const productTags = pgTable(
+  "product_tags",
+  {
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    tagId: uuid("tag_id")
+      .notNull()
+      .references(() => tags.id),
+    position: integer("position").notNull().default(0), // 0 = tag principal (#160)
+  },
+  (t) => [primaryKey({ columns: [t.productId, t.tagId] }), index("product_tags_tag_idx").on(t.tagId)],
 );
 
 // #100: variante = uma combinação dos eixos do produto, com preço próprio. Com variantes, o preço do

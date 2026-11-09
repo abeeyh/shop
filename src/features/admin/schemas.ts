@@ -26,10 +26,9 @@ export const categoryInput = z.object({
   active: checkbox,
 });
 
-// #94: subcategoria opcional dentro da categoria (ex.: Raids → Heroic); slug único na categoria
-export const subcategoryInput = z.object({
-  categoryId: z.uuid(),
-  name: text(60).min(2),
+// #160: tag do produto (global, várias por produto); slug único
+export const tagInput = z.object({
+  name: text(40).min(2),
   slug,
   sortOrder: z.coerce.number().int().min(0).max(999),
   active: checkbox,
@@ -116,7 +115,19 @@ const variantLines = z
 export const productInput = z
   .object({
     categoryId: z.uuid(),
-    subcategoryId: z.union([z.literal(""), z.uuid()]).transform((v) => v || null),
+    // #160: ids das tags separados por vírgula, o primeiro é o principal (o seletor do admin monta)
+    tags: z
+      .string()
+      .max(400)
+      .prefault("")
+      .transform((v) =>
+        v
+          .split(",")
+          .map((x) => x.trim())
+          .filter(Boolean),
+      )
+      .pipe(z.array(z.uuid()).max(10))
+      .refine((ids) => new Set(ids).size === ids.length),
     name: text(80).min(2),
     slug,
     description: text(1000),
@@ -174,7 +185,7 @@ export const productInput = z
 
 export type CategoryInput = z.infer<typeof categoryInput>;
 export type ProductInput = z.infer<typeof productInput>;
-export type SubcategoryInput = z.infer<typeof subcategoryInput>;
+export type TagInput = z.infer<typeof tagInput>;
 
 export const fieldsOf = (e: z.ZodError) => [...new Set(e.issues.map((i) => String(i.path[0])))];
 

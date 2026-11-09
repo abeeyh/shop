@@ -53,7 +53,9 @@
     "close": "关闭",
     "breadcrumb": "导航路径",
     "gallery": "图库",
-    "faq": "常见问题"
+    "faq": "常见问题",
+    "tags": "标签",
+    "allTags": "全部"
   },
   "Footer": {
     "about": "World of Warcraft 正式服美服的金币、团队副本、史诗钥石与成就。",
@@ -254,7 +256,8 @@
       "support": "客服",
       "subcategories": "子分类",
       "twoFactor": "2FA",
-      "overview": "概览"
+      "overview": "概览",
+      "tags": "标签"
     },
     "login": {
       "title": "团队登录",
@@ -327,7 +330,10 @@
       "optionAxes": "选项（每行一个：名称 | slider 或 boxes | 值, 值…）",
       "variants": "组合（每行一个：选项=值; 选项=值 | 价格或 - | 备注）",
       "maxQuantity": "每单最大数量",
-      "hot": "热门（突出显示）"
+      "hot": "热门（突出显示）",
+      "primaryTag": "主标签（用于分类页分组）",
+      "otherTags": "其他标签",
+      "noTag": "— 无标签 —"
     },
     "kinds": {
       "gold": "金币",
@@ -347,14 +353,16 @@
       "editLink": "编辑",
       "newPromotion": "新建促销",
       "newCoupon": "新建优惠码",
-      "newSubcategory": "新建子分类"
+      "newSubcategory": "新建子分类",
+      "newTag": "新建标签"
     },
     "table": {
       "activeProducts": "启用中的商品",
       "status": "状态",
       "active": "启用",
       "inactive": "停用",
-      "uses": "使用次数"
+      "uses": "使用次数",
+      "products": "商品"
     },
     "formErrors": {
       "generic": "请检查字段。",
@@ -381,7 +389,8 @@
       "addons": "每行一个附加项，格式为“名称 | 25”（1–100%，名称不重复，最多 10 个）。",
       "optionAxes": "最多 4 个选项，格式为“Bosses | slider | 2/8, 3/8”（名称和值不可重复，最多 30 个值）。",
       "variants": "每个组合需为每个选项填一个已列出的值、价格（或 - 表示询价），且不可重复。没有选项时请留空。",
-      "maxQuantity": "请填写 1 到 100。"
+      "maxQuantity": "请填写 1 到 100。",
+      "tags": "标签：最多选择 10 个，不能重复。"
     },
     "discount": {
       "percent": "百分比",
@@ -402,7 +411,8 @@
         "order": "订单",
         "bug_report": "错误报告",
         "staff": "团队成员",
-        "support_hours": "客服时间"
+        "support_hours": "客服时间",
+        "tag": "标签"
       },
       "actions": {
         "create": "创建",

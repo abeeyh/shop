@@ -53,7 +53,9 @@
     "close": "Fermer",
     "breadcrumb": "Fil d’Ariane",
     "gallery": "Galerie",
-    "faq": "Questions fréquentes"
+    "faq": "Questions fréquentes",
+    "tags": "Tags",
+    "allTags": "Tous"
   },
   "Footer": {
     "about": "Or, raids, Mythique+ et hauts faits pour World of Warcraft Retail US.",
@@ -254,7 +256,8 @@
       "support": "Support",
       "subcategories": "Sous-catégories",
       "twoFactor": "2FA",
-      "overview": "Vue d'ensemble"
+      "overview": "Vue d'ensemble",
+      "tags": "Tags"
     },
     "login": {
       "title": "Connexion (équipe)",
@@ -327,7 +330,10 @@
       "optionAxes": "Options (une par ligne : Nom | slider ou boxes | valeur, valeur…)",
       "variants": "Combinaisons (une par ligne : Axe=valeur; Axe=valeur | prix ou - | note)",
       "maxQuantity": "Quantité max. par commande",
-      "hot": "Populaire (mise en avant)"
+      "hot": "Populaire (mise en avant)",
+      "primaryTag": "Tag principal (regroupe la page de la catégorie)",
+      "otherTags": "Autres tags",
+      "noTag": "— sans tag —"
     },
     "kinds": {
       "gold": "Or",
@@ -347,14 +353,16 @@
       "editLink": "Modifier",
       "newPromotion": "Nouvelle promotion",
       "newCoupon": "Nouveau coupon",
-      "newSubcategory": "Nouvelle sous-catégorie"
+      "newSubcategory": "Nouvelle sous-catégorie",
+      "newTag": "Nouveau tag"
     },
     "table": {
       "activeProducts": "Produits actifs",
       "status": "Statut",
       "active": "Actif",
       "inactive": "Inactif",
-      "uses": "Utilisations"
+      "uses": "Utilisations",
+      "products": "Produits"
     },
     "formErrors": {
       "generic": "Vérifiez les champs.",
@@ -381,7 +389,8 @@
       "addons": "Une option par ligne au format « Nom | 25 » (1–100 %, sans doublon, 10 max.).",
       "optionAxes": "Jusqu'à 4 options au format « Bosses | slider | 2/8, 3/8 » (noms et valeurs uniques, 30 valeurs max).",
       "variants": "Chaque combinaison doit avoir une valeur listée par option, un prix (ou - sur demande) et ne pas se répéter. Sans options, laissez vide.",
-      "maxQuantity": "Utilisez 1 à 100."
+      "maxQuantity": "Utilisez 1 à 100.",
+      "tags": "Tags : choisissez jusqu’à 10, sans doublon."
     },
     "discount": {
       "percent": "Pourcentage",
@@ -402,7 +411,8 @@
         "order": "Commande",
         "bug_report": "Signalement de bug",
         "staff": "Membre de l'équipe",
-        "support_hours": "Horaires du support"
+        "support_hours": "Horaires du support",
+        "tag": "Tag"
       },
       "actions": {
         "create": "Création",

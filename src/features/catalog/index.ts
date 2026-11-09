@@ -11,6 +11,7 @@ export {
   getCategory,
   getProduct,
   getProductContent,
+  listCategoryTags,
   listVariants,
   listCategories,
   listProducts,

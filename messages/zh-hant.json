@@ -53,7 +53,9 @@
     "close": "關閉",
     "breadcrumb": "導覽路徑",
     "gallery": "圖庫",
-    "faq": "常見問題"
+    "faq": "常見問題",
+    "tags": "標籤",
+    "allTags": "全部"
   },
   "Footer": {
     "about": "World of Warcraft 正式版美服的金幣、團隊副本、傳奇+與成就。",
@@ -254,7 +256,8 @@
       "support": "客服",
       "subcategories": "子分類",
       "twoFactor": "2FA",
-      "overview": "概覽"
+      "overview": "概覽",
+      "tags": "標籤"
     },
     "login": {
       "title": "團隊登入",
@@ -327,7 +330,10 @@
       "optionAxes": "選項（每行一個：名稱 | slider 或 boxes | 值, 值…）",
       "variants": "組合（每行一個：選項=值; 選項=值 | 價格或 - | 備註）",
       "maxQuantity": "每筆訂單最大數量",
-      "hot": "熱門（醒目顯示）"
+      "hot": "熱門（醒目顯示）",
+      "primaryTag": "主標籤（用於分類頁分組）",
+      "otherTags": "其他標籤",
+      "noTag": "— 無標籤 —"
     },
     "kinds": {
       "gold": "金幣",
@@ -347,14 +353,16 @@
       "editLink": "編輯",
       "newPromotion": "新增促銷",
       "newCoupon": "新增優惠碼",
-      "newSubcategory": "新增子分類"
+      "newSubcategory": "新增子分類",
+      "newTag": "新增標籤"
     },
     "table": {
       "activeProducts": "啟用中的商品",
       "status": "狀態",
       "active": "啟用",
       "inactive": "停用",
-      "uses": "使用次數"
+      "uses": "使用次數",
+      "products": "商品"
     },
     "formErrors": {
       "generic": "請檢查欄位。",
@@ -381,7 +389,8 @@
       "addons": "每行一個附加項目，格式為「名稱 | 25」（1–100%，名稱不重複，最多 10 個）。",
       "optionAxes": "最多 4 個選項，格式為「Bosses | slider | 2/8, 3/8」（名稱與值不可重複，最多 30 個值）。",
       "variants": "每個組合需為每個選項填一個已列出的值、價格（或 - 表示詢價），且不可重複。沒有選項時請留空。",
-      "maxQuantity": "請填寫 1 到 100。"
+      "maxQuantity": "請填寫 1 到 100。",
+      "tags": "標籤：最多選擇 10 個，不能重複。"
     },
     "discount": {
       "percent": "百分比",
@@ -402,7 +411,8 @@
         "order": "訂單",
         "bug_report": "錯誤回報",
         "staff": "團隊成員",
-        "support_hours": "客服時間"
+        "support_hours": "客服時間",
+        "tag": "標籤"
       },
       "actions": {
         "create": "建立",

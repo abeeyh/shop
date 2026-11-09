@@ -8,7 +8,7 @@ export type ProductCardData = {
   name: string;
   kind: Kind;
   badge?: string; // "Popular" (produto em destaque)
-  tags: string[]; // subcategoria (Heroic, Mythic…)
+  tags: string[]; // #160: tags do produto (Heroic, Saved…)
   description: string;
   price: string;
   original?: string; // RN-22: preço sem promoção, riscado
