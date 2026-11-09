@@ -5,9 +5,9 @@ type Db = (typeof import("@/db"))["db"];
 type Q = typeof import("./queries");
 type S = typeof import("@/db/schema");
 
-// Integração com banco real (docs/13 §8). Doc 17 §3 + RN-72: exclui só o que nunca foi usado; o banco
-// decide pela chave estrangeira; a exclusão entra na auditoria (RN-71).
-describe.skipIf(!process.env.DATABASE_URL)("excluir do catálogo (RN-72)", () => {
+// Integração com banco real (docs/13 §8). #158 + RN-72: excluir só marca (deleted_at) e desativa — o
+// registro fica no banco; categoria com produtos não sai; a exclusão entra na auditoria (RN-71).
+describe.skipIf(!process.env.DATABASE_URL)("excluir do catálogo é marcação (RN-72, #158)", () => {
   let db: Db;
   let q: Q;
   let s: S;
@@ -43,10 +43,14 @@ describe.skipIf(!process.env.DATABASE_URL)("excluir do catálogo (RN-72)", () =>
     return c!.id;
   };
 
-  it("sem uso: exclui e registra o 'antes' na auditoria", async () => {
+  it("marca, desativa, some do painel e registra o 'antes' na auditoria — o registro continua no banco", async () => {
     const id = await category("free");
     expect(await q.deleteCatalogRow("category", staffId, id)).toBe("ok");
-    expect(await db.select().from(s.categories).where(eq(s.categories.id, id))).toHaveLength(0);
+    const [row] = await db.select().from(s.categories).where(eq(s.categories.id, id));
+    expect(row!.deletedAt).not.toBeNull();
+    expect(row!.active).toBe(false);
+    expect((await q.listAllCategories()).some((c) => c.id === id)).toBe(false);
+    expect(await q.deleteCatalogRow("category", staffId, id)).toBe("missing"); // já excluída
     const [log] = await db
       .select()
       .from(s.auditLog)
@@ -54,7 +58,7 @@ describe.skipIf(!process.env.DATABASE_URL)("excluir do catálogo (RN-72)", () =>
     expect((log!.before as { slug: string }).slug).toBe(`${tag}-free`);
   });
 
-  it("em uso (tem produto): recusa e não apaga nada", async () => {
+  it("produto usado também é excluído (só marca); categoria com produto não", async () => {
     const id = await category("used");
     const [p] = await db
       .insert(s.products)
@@ -62,7 +66,9 @@ describe.skipIf(!process.env.DATABASE_URL)("excluir do catálogo (RN-72)", () =>
       .returning({ id: s.products.id });
     prods.push(p!.id);
     expect(await q.deleteCatalogRow("category", staffId, id)).toBe("inUse");
-    expect(await db.select().from(s.categories).where(eq(s.categories.id, id))).toHaveLength(1);
+    expect((await db.select().from(s.categories).where(eq(s.categories.id, id)))[0]!.deletedAt).toBeNull();
+    expect(await q.deleteCatalogRow("product", staffId, p!.id)).toBe("ok");
+    expect(await q.deleteCatalogRow("category", staffId, id)).toBe("ok"); // sem produto vivo, sai
   });
 
   it("id inexistente: nada acontece", async () => {

@@ -6,10 +6,10 @@ test.describe("carrinho", () => {
     await page.goto("/en/wow/gold/gold-us");
     const total = page.locator("output").filter({ visible: true });
     await expect(total).toContainText("45.00"); // 100k × 0,45
-    await page.getByLabel("Realm").fill("Area 52");
-    await page.getByLabel("Character name").fill("Thrall");
-    await page.getByLabel("Amount (thousands of gold)").fill("200");
-    await page.getByLabel("Amount (thousands of gold)").dispatchEvent("change");
+    await page.getByLabel("Realm").filter({ visible: true }).fill("Area 52");
+    await page.getByLabel("Character name").filter({ visible: true }).fill("Thrall");
+    await page.getByLabel("Amount (thousands of gold)").filter({ visible: true }).fill("200");
+    await page.getByLabel("Amount (thousands of gold)").filter({ visible: true }).dispatchEvent("change");
     await expect(total).toContainText("90.00");
     // cliente tenta mandar o próprio preço: o servidor ignora (RN-20)
     await page.locator("form", { has: page.getByRole("button", { name: "Add to cart" }) }).evaluate((f) => {
@@ -29,8 +29,8 @@ test.describe("carrinho", () => {
 
   test("RN-15: personagem inválido mostra erro no campo e não adiciona", async ({ page }) => {
     await page.goto("/en/wow/gold/gold-us");
-    await page.getByLabel("Realm").fill("Area 52");
-    await page.getByLabel("Character name").fill("Th 1");
+    await page.getByLabel("Realm").filter({ visible: true }).fill("Area 52");
+    await page.getByLabel("Character name").filter({ visible: true }).fill("Th 1");
     await page.getByRole("button", { name: "Add to cart" }).click();
     await expect(page.getByText("Use 2–12 letters, no spaces or symbols.")).toBeVisible();
     await page.goto("/en/carrinho");
@@ -41,15 +41,15 @@ test.describe("carrinho", () => {
     page,
   }) => {
     await page.goto("/en/wow/raids/venomous-abyss-normal");
-    const slots = page.locator('input[name="slotId"]');
+    const slots = page.locator('input[name="slotId"]').filter({ visible: true });
     await expect(slots.first()).toBeDisabled(); // o primeiro horário do seed está cheio
     await expect(slots.nth(1)).toBeChecked();
     await expect(page.locator("output").filter({ visible: true })).toContainText("2.93"); // 1ª opção: Last boss, 65k gold (#100)
-    await page.getByText("8/8 Saved", { exact: true }).click(); // a opção muda o preço: 140k = 6,30
+    await page.getByText("8/8 Saved", { exact: true }).filter({ visible: true }).click(); // a opção muda o preço: 140k = 6,30
     await expect(page.locator("output").filter({ visible: true })).toContainText("6.30");
-    await page.getByLabel("Realm").fill("Area 52");
-    await page.getByLabel("Character name").fill("Thrall");
-    await page.getByRole("button", { name: "Add to cart" }).click();
+    await page.getByLabel("Realm").filter({ visible: true }).fill("Area 52");
+    await page.getByLabel("Character name").filter({ visible: true }).fill("Thrall");
+    await page.getByRole("button", { name: "Add to cart" }).filter({ visible: true }).click();
     // sob carga (suíte inteira em paralelo) a action passa de 5 s
     await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible({ timeout: 15_000 });
     await page.goto("/en/carrinho");
@@ -69,12 +69,12 @@ test.describe("carrinho", () => {
       await expect(level).toHaveAttribute("aria-valuetext", v); // um passo de cada vez (sob carga)
     }
     await expect(page.locator("output").filter({ visible: true })).toContainText("4.95");
-    await page.getByLabel("Armor Stack (+25%)").check();
+    await page.getByLabel("Armor Stack (+25%)").filter({ visible: true }).check();
     await expect(page.locator("output").filter({ visible: true })).toContainText("6.19"); // 4,95 × 1,25 = 6,1875
     // sem horário: aviso de que a run é agendada com o suporte depois do pagamento
     await expect(page.getByText(/schedule your run with support/)).toBeVisible();
-    await page.getByLabel("Realm").fill("Area 52");
-    await page.getByLabel("Character name").fill("Thrall");
+    await page.getByLabel("Realm").filter({ visible: true }).fill("Area 52");
+    await page.getByLabel("Character name").filter({ visible: true }).fill("Thrall");
     await page.getByRole("button", { name: "Add to cart" }).click();
     await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible();
     await page.goto("/en/carrinho");
@@ -107,8 +107,8 @@ test("#109: lista → página do produto → Comprar agora cai no pagamento com 
   await page.goto("/en/wow/mythic-plus");
   await page.getByRole("link", { name: "Mythic+ Key" }).click();
   await expect(page).toHaveURL(/\/en\/wow\/mythic-plus\/mythic-plus-key$/, { timeout: 15_000 });
-  await page.getByLabel("Realm").filter({ visible: true }).fill("Area 52");
-  await page.getByLabel("Character name").filter({ visible: true }).fill("Thrall");
+  await page.getByLabel("Realm").filter({ visible: true }).filter({ visible: true }).fill("Area 52");
+  await page.getByLabel("Character name").filter({ visible: true }).filter({ visible: true }).fill("Thrall");
   await page.getByRole("button", { name: "Buy now" }).click();
   await expect(page).toHaveURL(/\/en\/carrinho#pagar$/, { timeout: 15_000 });
   await expect(page.getByText("Area 52 · Alliance · Thrall · +6")).toBeVisible();
@@ -118,8 +118,8 @@ test("#109: lista → página do produto → Comprar agora cai no pagamento com 
 // #109: adicionar abre o carrinho na barra lateral; continuar comprando fecha; ir ao pagamento leva ao checkout
 test("#109: adicionar mostra o carrinho na barra lateral", async ({ page }) => {
   await page.goto("/en/wow/mythic-plus/mythic-plus-key");
-  await page.getByLabel("Realm").fill("Area 52");
-  await page.getByLabel("Character name").fill("Thrall");
+  await page.getByLabel("Realm").filter({ visible: true }).fill("Area 52");
+  await page.getByLabel("Character name").filter({ visible: true }).fill("Thrall");
   await page.getByRole("button", { name: "Add to cart" }).click();
   const sheet = page.getByRole("dialog", { name: "Added to cart" });
   await expect(sheet).toBeVisible({ timeout: 15_000 });
@@ -132,8 +132,8 @@ test("#109: adicionar mostra o carrinho na barra lateral", async ({ page }) => {
   await sheet.getByRole("button", { name: "Keep shopping" }).click();
   await expect(sheet).toBeHidden();
   // de novo (o React limpa os campos depois de uma action que deu certo): abre outra vez
-  await page.getByLabel("Realm").fill("Area 52");
-  await page.getByLabel("Character name").fill("Thrall");
+  await page.getByLabel("Realm").filter({ visible: true }).fill("Area 52");
+  await page.getByLabel("Character name").filter({ visible: true }).fill("Thrall");
   await page.getByRole("button", { name: "Add to cart" }).click();
   await expect(sheet).toBeVisible({ timeout: 15_000 });
   await sheet.getByRole("link", { name: "Go to payment" }).click();
@@ -143,7 +143,7 @@ test("#109: adicionar mostra o carrinho na barra lateral", async ({ page }) => {
 // análise de 2026-11-07: personagem digitado pela metade não trava a prévia do total na combinação anterior
 test("prévia do total acompanha a combinação mesmo com personagem inválido", async ({ page }) => {
   await page.goto("/en/wow/mythic-plus/mythic-plus-key");
-  await page.getByLabel("Character name").fill("T"); // inválido (2–12 letras)
+  await page.getByLabel("Character name").filter({ visible: true }).fill("T"); // inválido (2–12 letras)
   const level = page.getByRole("slider", { name: "Key level" });
   await level.focus();
   for (const v of ["+7", "+8", "+9", "+10"]) {

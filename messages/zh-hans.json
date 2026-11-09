@@ -25,7 +25,8 @@
       "carmesim": "深红",
       "ouro": "黑金",
       "vazio": "虚空洋红"
-    }
+    },
+    "dashboard": "后台"
   },
   "Home": {
     "badge": "WoW 正式服 · 美服",
@@ -543,9 +544,9 @@
       "noMatch": "没有符合筛选条件的内容。",
       "delete": "删除",
       "deleteTitle": "删除 {name}？",
-      "deleteMessage": "删除后无法恢复，并记录在审计中。如果已用于订单、购物车或时段，则无法删除，请改为停用。",
+      "deleteMessage": "会从后台和商店中移除，但仍保留在数据库中：旧订单和审计记录仍会引用它。",
       "deleteConfirm": "删除",
-      "inUse": "已被使用（订单、购物车、时段或其他记录依赖它）。请停用而不是删除。",
+      "inUse": "该分类下还有商品。请先删除或移动这些商品。",
       "close": "关闭",
       "search": "搜索",
       "allCategories": "所有分类",

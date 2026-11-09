@@ -155,6 +155,13 @@
       "when": 1794119231241,
       "tag": "0021_product_content",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1794206037401,
+      "tag": "0022_soft_delete",
+      "breakpoints": true
     }
   ]
 }

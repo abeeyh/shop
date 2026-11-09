@@ -21,6 +21,7 @@ export async function saveAudited(
   id: string | null,
   read: (tx: Tx, id: string) => Promise<object | undefined>,
   write: (tx: Tx) => Promise<string | undefined>,
+  action?: "delete", // #158: exclusão é uma marcação (update), registrada como "delete"
 ): Promise<void> {
   await db.transaction(async (tx) => {
     const before = id ? await read(tx, id) : undefined;
@@ -31,26 +32,9 @@ export async function saveAudited(
       staffId,
       entity,
       entityId: savedId,
-      action: id ? "update" : "create",
+      action: action ?? (id ? "update" : "create"),
       before: before ?? null,
       after: after ?? {},
     });
-  });
-}
-
-// RN-72 + RN-71: exclui e registra o "antes" na mesma transação. Item em uso: o banco recusa pela chave
-// estrangeira (erro 23503) e nada é gravado — quem chama transforma em "desative em vez de excluir".
-export async function deleteAudited(
-  entity: Entity,
-  staffId: string,
-  id: string,
-  read: (tx: Tx, id: string) => Promise<object | undefined>,
-  remove: (tx: Tx) => Promise<boolean>,
-): Promise<boolean> {
-  return db.transaction(async (tx) => {
-    const before = await read(tx, id);
-    if (!before || !(await remove(tx))) return false;
-    await tx.insert(auditLog).values({ staffId, entity, entityId: id, action: "delete", before, after: {} });
-    return true;
   });
 }

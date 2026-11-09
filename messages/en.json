@@ -25,7 +25,8 @@
       "carmesim": "Crimson",
       "ouro": "Noir gold",
       "vazio": "Void magenta"
-    }
+    },
+    "dashboard": "Dashboard"
   },
   "Home": {
     "badge": "WoW Retail · US",
@@ -543,9 +544,9 @@
       "noMatch": "Nothing matches these filters.",
       "delete": "Delete",
       "deleteTitle": "Delete {name}?",
-      "deleteMessage": "It is removed for good and logged in the audit. If it was already used in an order, cart or slot, it cannot be deleted: deactivate it.",
+      "deleteMessage": "It leaves the panel and the store but stays in the database: past orders and the audit log still point to it.",
       "deleteConfirm": "Delete",
-      "inUse": "Already used (an order, cart, slot or other record depends on it). Deactivate it instead of deleting.",
+      "inUse": "This category still has products. Delete or move the products first.",
       "close": "Close",
       "search": "Search",
       "allCategories": "All categories",

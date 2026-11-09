@@ -45,6 +45,7 @@ classDiagram
     +slug: string
     +sortOrder: int
     +active: boolean
+    +deletedAt: datetime?
   }
   class Subcategory {
     +id: string
@@ -52,6 +53,7 @@ classDiagram
     +slug: string
     +sortOrder: int
     +active: boolean
+    +deletedAt: datetime?
   }
   class Product {
     +id: string
@@ -69,6 +71,7 @@ classDiagram
     +images: src+alt[]
     +faq: q+a[]
     +active: boolean
+    +deletedAt: datetime?
   }
   class ProductVariant {
     +options: eixo→valor
@@ -83,6 +86,7 @@ classDiagram
     +scope: store|category|product
     +startsAt: Date (UTC)
     +endsAt: Date (UTC)
+    +deletedAt: datetime?
   }
   class Coupon {
     +code: string
@@ -94,6 +98,7 @@ classDiagram
     +maxUses: int?
     +maxUsesPerEmail: int?
     +minOrderUsdtCents: int?
+    +deletedAt: datetime?
   }
   class CouponRedemption {
     +email: string

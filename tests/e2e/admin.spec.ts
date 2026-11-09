@@ -57,6 +57,10 @@ test.describe("admin", () => {
 
     await login(page);
     await expect(page).toHaveURL(/\/en\/admin$/); // #116: painel abre sem 2FA
+    // #158: equipe logada vê o atalho "Painel" no cabeçalho da loja
+    await page.goto("/en");
+    await page.getByRole("banner").getByRole("link", { name: "Dashboard" }).click();
+    await expect(page).toHaveURL(/\/en\/admin$/);
     await expect(page.getByText("Paid today")).toBeVisible(); // RF-20: o admin vê o faturamento do dia
     await page.goto("/en/admin/categorias");
     await expect(page).toHaveURL(/\/en\/admin\/categorias$/);
@@ -123,6 +127,13 @@ test.describe("admin", () => {
     await page.getByLabel("Active").uncheck();
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByText(/Deactivate or move the active products/)).toBeVisible();
+    // #158: excluir é marcação, mas categoria com produtos não sai
+    await page.getByRole("dialog").getByRole("button", { name: "Delete" }).click();
+    await page
+      .getByRole("dialog", { name: `Delete E2E Keys ${id}?` })
+      .getByRole("button", { name: "Delete" })
+      .click();
+    await expect(page.getByText(/still has products/)).toBeVisible();
 
     // RN-21/RN-22: promoção de 10% no produto → riscado + contagem na página do produto
     await page.goto("/en/admin/promocoes");
@@ -169,13 +180,6 @@ test.describe("admin", () => {
     await expect(page.getByRole("cell", { name: `E2E Key Product ${id}` }).first()).toBeVisible();
     await page.getByRole("link", { name: `Edit E2E Key Product ${id}` }).click();
     await expect(page.getByRole("heading", { name: `Edit E2E Key Product ${id}` })).toBeVisible(); // navegação terminou
-    // doc 17 §3: produto já usado (está num carrinho) não é excluído — a mensagem manda desativar
-    await page.getByRole("dialog").getByRole("button", { name: "Delete" }).click();
-    await page
-      .getByRole("dialog", { name: `Delete E2E Key Product ${id}?` })
-      .getByRole("button", { name: "Delete" })
-      .click();
-    await expect(page.getByText(/Already used/)).toBeVisible();
     // RF-10/RF-11 (doc 17): eixo e grade de preços no editor visual (sem digitar o formato de texto)
     const dialog = page.getByRole("dialog");
     await dialog.getByRole("button", { name: "Add an axis" }).click();

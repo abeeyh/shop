@@ -25,7 +25,8 @@
       "carmesim": "Carmesim",
       "ouro": "Ouro noir",
       "vazio": "Vazio magenta"
-    }
+    },
+    "dashboard": "Painel"
   },
   "Home": {
     "badge": "WoW Retail · US",
@@ -543,9 +544,9 @@
       "noMatch": "Nada encontrado com esses filtros.",
       "delete": "Excluir",
       "deleteTitle": "Excluir {name}?",
-      "deleteMessage": "Some de vez e entra na auditoria. Se já foi usado em pedido, carrinho ou horário, não dá para excluir: desative.",
+      "deleteMessage": "Sai do painel e da loja, mas fica guardado no banco: pedidos antigos e a auditoria continuam apontando para ele.",
       "deleteConfirm": "Excluir",
-      "inUse": "Já foi usado (pedido, carrinho, horário ou outro cadastro depende dele). Desative em vez de excluir.",
+      "inUse": "A categoria ainda tem produtos. Exclua ou mova os produtos antes.",
       "close": "Fechar",
       "search": "Buscar",
       "allCategories": "Todas as categorias",

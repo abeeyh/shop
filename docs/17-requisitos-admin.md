@@ -28,7 +28,7 @@ Estados: **feito**, **fazer** (entra nesta rodada), **depois** (fora desta rodad
 
 ## 3. CRUD por entidade (admin)
 
-C = criar, R = listar/ver, U = editar, D = excluir. Excluir só o que **nunca** foi usado (RN-72); o resto só desativa — o botão explica por quê.
+C = criar, R = listar/ver, U = editar, D = excluir. Excluir **só marca** (`deleted_at`) e desativa: some do painel e da loja e fica no banco (RN-72, #158). Categoria com produtos não sai.
 
 | Entidade | C | R | U | D | Regras | Estado |
 |---|---|---|---|---|---|---|
