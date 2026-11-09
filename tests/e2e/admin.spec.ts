@@ -166,7 +166,7 @@ test.describe("admin", () => {
 
     // tira o produto e a categoria do teste da vitrine (RN-72: desativa, não apaga)
     await page.goto(`/en/admin/produtos?q=${encodeURIComponent(`E2E Key Product ${id}`)}`); // RF-03: busca
-    await expect(page.getByRole("cell", { name: `E2E Key Product ${id}` })).toBeVisible();
+    await expect(page.getByRole("cell", { name: `E2E Key Product ${id}` }).first()).toBeVisible();
     await page.getByRole("link", { name: `Edit E2E Key Product ${id}` }).click();
     await expect(page.getByRole("heading", { name: `Edit E2E Key Product ${id}` })).toBeVisible(); // navegação terminou
     // doc 17 §3: produto já usado (está num carrinho) não é excluído — a mensagem manda desativar

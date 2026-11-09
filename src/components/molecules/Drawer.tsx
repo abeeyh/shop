@@ -17,7 +17,10 @@ export function Drawer({ children, title, closeLabel, onClose, wide }: Props) {
     <dialog
       ref={ref}
       aria-label={title}
-      onClose={onClose}
+      // só o fechamento DESTA gaveta: o de um <dialog> dentro dela (confirmação) chega aqui pelo React
+      onClose={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       onClick={(e) => {
         // o alvo é o <dialog> tanto no fundo quanto na área vazia dentro dele: decide pela posição
         const r = e.currentTarget.getBoundingClientRect();
