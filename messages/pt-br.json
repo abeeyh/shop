@@ -409,7 +409,11 @@
         "delete": "Excluiu"
       },
       "older": "Mais antigos",
-      "newest": "Mais recentes"
+      "newest": "Mais recentes",
+      "subtitle": "Quem mudou o quê no painel, do mais recente ao mais antigo.",
+      "allEntities": "Tudo",
+      "everyone": "Todas as pessoas",
+      "empty": "Nenhuma alteração com esses filtros."
     },
     "orders": {
       "todo": "A fazer",
@@ -466,7 +470,15 @@
         "emailTaken": "Este e-mail já tem uma conta.",
         "self": "Você não pode desativar nem rebaixar a própria conta.",
         "lastAdmin": "Precisa sobrar pelo menos um admin ativo."
-      }
+      },
+      "count": "{n, plural, one {# pessoa na equipe} other {# pessoas na equipe}}",
+      "copy": "Copiar link",
+      "copied": "Copiado",
+      "deactivateTitle": "Desativar {email}?",
+      "deactivateMessage": "A pessoa sai na hora de todas as sessões e não entra mais no painel até ser reativada.",
+      "members": "Membros",
+      "pending": "Convites pendentes",
+      "expires": "vence"
     },
     "accept": {
       "title": "Entrar para a equipe",
@@ -480,7 +492,8 @@
         "mismatch": "As senhas não conferem.",
         "pwned": "Esta senha apareceu em um vazamento de dados. Escolha outra.",
         "expired": "Este convite é inválido, já foi usado ou expirou. Peça um novo a um admin."
-      }
+      },
+      "nextStep": "Peça um convite novo para quem administra a loja. Cada link vale 7 dias e só pode ser usado uma vez."
     },
     "support": {
       "customer": "Cliente",

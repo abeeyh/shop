@@ -1,7 +1,9 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { buttonVariants } from "@/components/atoms/Button";
+import { ConfirmSubmit } from "@/components/molecules/ConfirmSubmit";
+import { CopyButton } from "@/components/molecules/CopyButton";
 import { Input } from "@/components/atoms/Input";
 import { Select } from "@/components/atoms/Select";
 import { PASSWORD_MAX, PASSWORD_MIN, PASSWORD_PATTERN } from "@/lib/password";
@@ -49,6 +51,8 @@ type InviteLabels = {
   languages: string;
   submit: string;
   link: string;
+  copy: string;
+  copied: string;
   errors: Record<string, string>;
 };
 
@@ -92,6 +96,7 @@ export function InviteForm({
           <code data-testid="invite-link" className="rounded-sm bg-input px-3 py-2 break-all text-heading">
             {state.link}
           </code>
+          <CopyButton text={state.link} label={labels.copy} copied={labels.copied} />
         </div>
       ) : null}
       {state.status === "error" ? (
@@ -119,6 +124,8 @@ type MemberLabels = {
   save: string;
   saved: string;
   errors: Record<string, string>;
+  // RF-05 (doc 17): desativar derruba as sessões na hora — pede confirmação
+  deactivate: { title: string; message: string; confirm: string; cancel: string };
 };
 
 // RN-05/RN-06: papel, idiomas e ativo (desativar derruba as sessões no servidor)
@@ -137,6 +144,8 @@ export function MemberForm({
     status: "idle",
     fields: [],
   });
+  const [active, setActive] = useState(member.active);
+  const deactivating = member.active && !active;
   return (
     <form action={action} aria-label={member.email} className="grid gap-3">
       <input type="hidden" name="locale" value={locale} />
@@ -153,7 +162,8 @@ export function MemberForm({
           <input
             type="checkbox"
             name="active"
-            defaultChecked={member.active}
+            checked={active}
+            onChange={(e) => setActive(e.target.checked)}
             className="size-4.5 accent-primary"
           />
           {labels.active}
@@ -161,9 +171,25 @@ export function MemberForm({
       </div>
       <Languages langs={langs} selected={member.languages} legend={labels.languages} />
       <div className="flex flex-wrap items-center gap-3">
-        <button type="submit" disabled={pending} className={buttonVariants({ variant: "ghost", size: "sm" })}>
-          {labels.save}
-        </button>
+        {deactivating ? (
+          <ConfirmSubmit
+            label={labels.save}
+            title={labels.deactivate.title}
+            message={labels.deactivate.message}
+            confirmLabel={labels.deactivate.confirm}
+            cancelLabel={labels.deactivate.cancel}
+            disabled={pending}
+            danger
+          />
+        ) : (
+          <button
+            type="submit"
+            disabled={pending}
+            className={buttonVariants({ variant: "ghost", size: "sm" })}
+          >
+            {labels.save}
+          </button>
+        )}
         <p role="status" className="text-sm">
           {state.status === "ok" ? labels.saved : null}
         </p>

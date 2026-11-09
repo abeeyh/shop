@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
-import { GradientCard } from "@/components/molecules/GradientCard";
+import { AuthShell } from "@/components/organisms/AuthShell";
 import { getStaff } from "@/features/auth/staff";
 import { TwoFactorSetup } from "@/features/auth/components/AuthForms";
 
@@ -17,23 +17,24 @@ export default async function TwoFactorPage({ params }: PageProps<"/[locale]/adm
   if (staff.twoFactor) redirect(`/${locale}/admin`);
   const t = await getTranslations({ locale, namespace: "Admin" });
   return (
-    <main className="mx-auto grid w-full max-w-md gap-6 px-4 py-20">
-      <h1 className="font-heading text-3xl font-bold text-heading">{t("setup.title")}</h1>
-      <p className="text-muted-foreground">{t("setup.intro")}</p>
-      <GradientCard tone="solid">
-        <TwoFactorSetup
-          locale={locale}
-          labels={{
-            password: t("setup.password"),
-            start: t("setup.start"),
-            secret: t("setup.secret"),
-            backupCodes: t("setup.backupCodes"),
-            code: t("setup.code"),
-            confirm: t("setup.confirm"),
-          }}
-          errors={{ invalid: t("errors.invalid"), limited: t("errors.limited") }}
-        />
-      </GradientCard>
-    </main>
+    <AuthShell
+      title={t("setup.title")}
+      intro={t("setup.intro")}
+      storeHref={`/${locale}`}
+      storeLabel={t("nav.store")}
+    >
+      <TwoFactorSetup
+        locale={locale}
+        labels={{
+          password: t("setup.password"),
+          start: t("setup.start"),
+          secret: t("setup.secret"),
+          backupCodes: t("setup.backupCodes"),
+          code: t("setup.code"),
+          confirm: t("setup.confirm"),
+        }}
+        errors={{ invalid: t("errors.invalid"), limited: t("errors.limited") }}
+      />
+    </AuthShell>
   );
 }

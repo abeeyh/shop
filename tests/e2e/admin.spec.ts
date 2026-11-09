@@ -335,6 +335,7 @@ test.describe("admin", () => {
     const member = page.getByRole("form", { name: supportEmail });
     await member.getByLabel("Active").uncheck();
     await member.getByRole("button", { name: "Save" }).click();
+    await member.getByRole("dialog").getByRole("button", { name: "Confirm" }).click(); // RF-05: desativar confirma
     await expect(member.getByRole("status")).toHaveText("Saved");
     await sp.goto("/en/admin/pedidos");
     await expect(sp).toHaveURL(/\/en\/admin\/entrar$/); // RN-05: sessões derrubadas na hora

@@ -409,7 +409,11 @@
         "delete": "Gelöscht"
       },
       "older": "Ältere",
-      "newest": "Neueste"
+      "newest": "Neueste",
+      "subtitle": "Wer was im Panel geändert hat, das Neueste zuerst.",
+      "allEntities": "Alles",
+      "everyone": "Alle",
+      "empty": "Keine Änderungen mit diesen Filtern."
     },
     "orders": {
       "todo": "Offen",
@@ -466,7 +470,15 @@
         "emailTaken": "Für diese E-Mail gibt es schon ein Konto.",
         "self": "Du kannst dein eigenes Konto nicht deaktivieren oder herabstufen.",
         "lastAdmin": "Mindestens ein aktiver Admin muss bleiben."
-      }
+      },
+      "count": "{n, plural, one {# Person im Team} other {# Personen im Team}}",
+      "copy": "Link kopieren",
+      "copied": "Kopiert",
+      "deactivateTitle": "{email} deaktivieren?",
+      "deactivateMessage": "Die Person wird sofort aus allen Sitzungen abgemeldet und kommt nicht mehr ins Panel, bis sie wieder aktiviert wird.",
+      "members": "Mitglieder",
+      "pending": "Offene Einladungen",
+      "expires": "läuft ab"
     },
     "accept": {
       "title": "Dem Team beitreten",
@@ -480,7 +492,8 @@
         "mismatch": "Die Passwörter stimmen nicht überein.",
         "pwned": "Dieses Passwort ist in einem Datenleck aufgetaucht. Wähle ein anderes.",
         "expired": "Diese Einladung ist ungültig, schon benutzt oder abgelaufen. Bitte einen Admin um eine neue."
-      }
+      },
+      "nextStep": "Bitte den Admin des Shops um eine neue Einladung. Jeder Link gilt 7 Tage und nur einmal."
     },
     "support": {
       "customer": "Kunde",
