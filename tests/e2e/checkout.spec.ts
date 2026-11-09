@@ -73,14 +73,21 @@ test.describe("checkout USDT", () => {
     await expect(page.getByTestId("order-status")).toHaveText("Awaiting payment");
   });
 
-  test("#86: sem provedor de pagamento o checkout é bloqueado com aviso e não cria pedido", async ({
+  test("#146: pagamento em manutenção — aviso, botão bloqueado e o servidor recusa sem criar pedido", async ({
     page,
   }) => {
     await addService(page);
     await page.goto("/en/carrinho");
+    const notice =
+      "Payments are under maintenance. Your cart is saved; come back soon or talk to support in the chat.";
+    await expect(page.getByRole("status").filter({ hasText: notice })).toBeVisible();
+    const pay = page.getByRole("button", { name: "Pay with USDT" });
+    await expect(pay).toBeDisabled();
+    // mesmo forçando o envio, o servidor recusa (doc 17 §7)
     await page.getByLabel("Email").fill("buyer@example.com");
-    await page.getByRole("button", { name: "Pay with USDT" }).click();
-    await expect(page.getByText("USDT payment: API not yet implemented.")).toBeVisible();
+    await pay.evaluate((b: HTMLButtonElement) => (b.disabled = false));
+    await pay.click();
+    await expect(page.getByRole("alert").filter({ hasText: notice })).toBeVisible();
     await expect(page).toHaveURL(/\/en\/carrinho$/);
   });
 
@@ -93,7 +100,7 @@ test.describe("checkout USDT", () => {
     await expect(page.getByRole("button", { name: "Pay by card" })).toBeDisabled();
     await expect(page.getByRole("radio", { name: "TRC-20" })).toBeHidden(); // rede só vale para cripto
     await page.getByRole("radio", { name: "Crypto (USDT)" }).check();
-    await expect(page.getByRole("button", { name: "Pay with USDT" })).toBeEnabled();
+    await expect(page.getByRole("button", { name: "Pay with USDT" })).toBeVisible(); // em manutenção: bloqueado (#146)
   });
 
   test("link do pedido sem a assinatura certa não mostra nada (docs/09: IDOR)", async ({ page }) => {
@@ -109,7 +116,9 @@ test.describe("checkout USDT", () => {
     await page.goto("/en/carrinho");
     await page.getByLabel("Email").fill("a@b");
     await page.getByLabel("Email").evaluate((el: HTMLInputElement) => (el.type = "text")); // passa do HTML5
-    await page.getByRole("button", { name: "Pay with USDT" }).click();
+    const pay = page.getByRole("button", { name: "Pay with USDT" });
+    await pay.evaluate((b: HTMLButtonElement) => (b.disabled = false)); // em manutenção (#146) o e-mail é validado antes
+    await pay.click();
     await expect(page.getByText("Enter a valid email.")).toBeVisible();
     await expect(page).toHaveURL(/\/en\/carrinho$/);
   });

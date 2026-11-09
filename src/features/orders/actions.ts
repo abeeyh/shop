@@ -28,7 +28,8 @@ export type CheckoutState = {
     | "changed"
     | "limited"
     | "notImplemented"
-    | "cardNotImplemented";
+    | "cardNotImplemented"
+    | "maintenance";
 };
 
 const input = z.object({
@@ -66,7 +67,9 @@ async function createOrder(order: Parameters<typeof insertOrder>[0], cartId: str
 
 // RN-35/RN-36: meio de pagamento sem provedor ligado — nada é criado nem reservado
 // (cartão: provedor ainda não escolhido, #25; USDT: sem chave do gateway)
+// #146: com o pagamento em manutenção (PAYMENTS_ENABLED desligado) nada passa, mesmo com chave
 function providerMissing(method: "usdt" | "card") {
+  if (!env.PAYMENTS_ENABLED) return "maintenance" as const;
   if (method === "card") return "cardNotImplemented" as const;
   return invoiceReady() ? null : ("notImplemented" as const);
 }
