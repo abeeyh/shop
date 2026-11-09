@@ -5,18 +5,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense } from "react";
 import { Tooltip } from "@/components/atoms/Tooltip";
+import { Avatar } from "./Avatar";
 import { signOut } from "../actions";
 
 type Props = {
   locale: string;
   signedIn: boolean;
+  avatar?: { avatar: string | null; name: string }; // #162: logado, o avatar no lugar do ícone
   iconClass: string;
   labels: { account: string; signIn: string; signOut: string };
 };
 
 // #130: usuário e "sair" lado a lado no cabeçalho. Entrar e sair voltam para a página atual (?voltar=;
 // o servidor só aceita caminho interno — features/account/next.ts).
-function Tools({ locale, signedIn, iconClass, labels, path }: Props & { path: string | null }) {
+function Tools({ locale, signedIn, iconClass, labels, path, avatar }: Props & { path: string | null }) {
   const back = path ? `?voltar=${encodeURIComponent(path)}` : "";
   const userLabel = signedIn ? labels.account : labels.signIn;
   return (
@@ -27,7 +29,11 @@ function Tools({ locale, signedIn, iconClass, labels, path }: Props & { path: st
           aria-label={userLabel}
           className={iconClass}
         >
-          <UserRound aria-hidden="true" className="size-5" />
+          {avatar ? (
+            <Avatar avatar={avatar.avatar} name={avatar.name} className="size-full text-sm" />
+          ) : (
+            <UserRound aria-hidden="true" className="size-5" />
+          )}
         </Link>
       </Tooltip>
       {signedIn ? (

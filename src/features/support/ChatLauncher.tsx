@@ -3,7 +3,9 @@ import { getTranslations } from "next-intl/server";
 import { connection } from "next/server";
 import { canonicalLocale } from "@/i18n/routing";
 import { getTimezone } from "@/lib/preferences";
-import { getConversation, guestConversationId } from "./chat";
+import { getCustomer } from "@/features/account/session";
+import { currentConversationId } from "./access";
+import { getConversation } from "./chat";
 import { isOpen, nextOpening } from "./hours";
 import { listHours } from "./hours-queries";
 import { customerCanReply } from "./rules";
@@ -13,11 +15,12 @@ import { ChatWidget } from "./components/ChatWidget";
 export async function ChatLauncher({ locale }: { locale: string }) {
   // online/offline depende da hora da requisição (RN-99) e o banco não existe no build da imagem
   await connection();
-  const [t, current, hours, timeZone] = await Promise.all([
+  const [t, current, hours, timeZone, customer] = await Promise.all([
     getTranslations({ locale, namespace: "Chat" }),
-    guestConversationId(),
+    currentConversationId(), // #162: logado, a conversa da conta (em qualquer aparelho)
     listHours(),
     getTimezone(),
+    getCustomer(),
   ]);
   // RN-93: resolvida há mais de 7 dias → oferece conversa nova
   const conversation = current ? await getConversation(current) : null;
@@ -32,6 +35,7 @@ export async function ChatLauncher({ locale }: { locale: string }) {
       online={online}
       backAt={backAt}
       timeZone={timeZone}
+      accountEmail={customer?.email ?? null}
       labels={{
         open: t("open"),
         close: t("close"),

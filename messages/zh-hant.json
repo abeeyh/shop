@@ -679,6 +679,30 @@
       "characterDuplicate": "此角色已儲存。",
       "exists": "此電子郵件已有帳號，請直接登入。",
       "staff": "這是團隊帳號：請從管理後台登入（/admin）。"
+    },
+    "profile": {
+      "title": "個人資料",
+      "name": "怎麼稱呼你",
+      "avatar": "頭像",
+      "none": "只顯示首字母",
+      "save": "儲存資料",
+      "saved": "資料已儲存",
+      "error": "請檢查欄位後重試。",
+      "avatars": {
+        "sword": "劍",
+        "shield": "盾",
+        "wand": "法杖",
+        "skull": "骷髏",
+        "crown": "王冠",
+        "flame": "火焰",
+        "ghost": "幽靈",
+        "gem": "寶石"
+      }
+    },
+    "support": {
+      "title": "客服",
+      "start": "聯絡客服",
+      "history": "以往對話"
     }
   }
 }

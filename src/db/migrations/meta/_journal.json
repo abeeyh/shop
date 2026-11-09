@@ -176,6 +176,13 @@
       "when": 1794206699514,
       "tag": "0024_drop_subcategories",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1794207057368,
+      "tag": "0025_profile_chat",
+      "breakpoints": true
     }
   ]
 }

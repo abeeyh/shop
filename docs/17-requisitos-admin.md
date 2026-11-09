@@ -79,7 +79,8 @@ Produto — editores visuais no lugar do texto livre (RF-09 a RF-11):
 | RF-42 | Minhas compras com status e link do pedido | RN-107 | feito |
 | RF-43 | Tema salvo na conta | RN-111 | feito |
 | RF-44 | Excluir a conta | RN-109 | feito |
-| RF-45 | Conversa do chat ligada à conta | RN-92 | depois (#113) |
+| RF-45 | Conversa do chat ligada à conta | RN-92 | feito (#162) |
+| RF-48 | Perfil com nome e avatar pronto (sem upload) e o chat do suporte dentro do perfil | pedido do dono | feito (#162) |
 | RF-46 | Exportar meus dados (LGPD) | doc 09 §4 | depois (#113) |
 | RF-47 | Fuso e idioma no perfil | RN-82 | depois (#113) |
 

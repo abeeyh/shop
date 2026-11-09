@@ -34,6 +34,15 @@ type Labels = {
   errors: Record<string, string>;
 };
 
+// #162: logado, mostra o e-mail da conta (o servidor usa o da sessão); visitante digita
+function EmailField({ accountEmail }: { accountEmail: string | null }) {
+  return accountEmail ? (
+    <Input value={accountEmail} readOnly aria-readonly="true" />
+  ) : (
+    <Input name="email" type="email" required maxLength={254} autoComplete="email" />
+  );
+}
+
 // RN-92: botão de chat em todas as páginas da loja
 export function ChatWidget({
   locale,
@@ -42,6 +51,7 @@ export function ChatWidget({
   online,
   backAt,
   timeZone,
+  accountEmail,
   labels,
 }: {
   locale: string;
@@ -50,6 +60,7 @@ export function ChatWidget({
   online: boolean;
   backAt: string | null;
   timeZone: string | null;
+  accountEmail: string | null; // #162: logado, o chat usa o e-mail da conta
   labels: Labels;
 }) {
   const [open, setOpen] = useState(false);
@@ -116,7 +127,7 @@ export function ChatWidget({
               <input type="hidden" name="locale" value={locale} />
               <label className="grid gap-1 text-sm">
                 <span className="font-semibold text-foreground">{labels.email}</span>
-                <Input name="email" type="email" required maxLength={254} autoComplete="email" />
+                <EmailField accountEmail={accountEmail} />
               </label>
               <label className="grid gap-1 text-sm">
                 <span className="font-semibold text-foreground">{labels.name}</span>

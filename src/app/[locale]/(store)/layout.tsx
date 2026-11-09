@@ -103,6 +103,7 @@ async function StoreHeader({ locale }: { locale: string }) {
           <AccountTools
             locale={locale}
             signedIn={customer !== null}
+            avatar={customer ? { avatar: customer.avatar, name: customer.name || customer.email } : undefined}
             iconClass={iconLink}
             labels={{ account: t("account"), signIn: t("signIn"), signOut: t("signOut") }}
           />

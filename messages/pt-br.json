@@ -679,6 +679,30 @@
       "characterDuplicate": "Este personagem já está salvo.",
       "exists": "Este e-mail já tem conta. Entre com ele.",
       "staff": "Esta é uma conta da equipe: entre pelo painel (/admin)."
+    },
+    "profile": {
+      "title": "Perfil",
+      "name": "Como quer ser chamado",
+      "avatar": "Avatar",
+      "none": "Só a inicial",
+      "save": "Salvar perfil",
+      "saved": "Perfil salvo",
+      "error": "Confira os campos e tente de novo.",
+      "avatars": {
+        "sword": "Espada",
+        "shield": "Escudo",
+        "wand": "Varinha",
+        "skull": "Caveira",
+        "crown": "Coroa",
+        "flame": "Chama",
+        "ghost": "Fantasma",
+        "gem": "Joia"
+      }
+    },
+    "support": {
+      "title": "Suporte",
+      "start": "Falar com o suporte",
+      "history": "Conversas anteriores"
     }
   }
 }

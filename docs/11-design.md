@@ -131,6 +131,7 @@ Se o componente **conhece o domínio**, fica na feature; se é genérico, em `sr
 | Domínio (admin) | `ProductOptionsEditor` (adicionais em linhas, eixos com estilo e valores, grade de preços gerada dos eixos — incluir, preço, sob consulta, nota; escreve o mesmo texto que o servidor valida — RF-09 a RF-11), `TagPicker` (tag principal + outras tags do produto — #160) | `features/admin/components` |
 | Domínio (admin) | `RouteDrawer` (gaveta de criar/editar aberta pela URL `?novo=1`/`?editar=id`; `wide` para o produto — RF-04), `DeleteEntity` (excluir com confirmação; só marca o registro — RN-72, #158; categoria com produtos avisa), `ListFilters` (busca + categoria + status na URL, select filtra na hora — RF-03) | `features/admin/components` |
 | Domínio (admin) | `AdminNav` (#144: barra lateral fixa no desktop e gaveta no celular; links agrupados em Operação, Catálogo e Gestão, com ícone e página atual marcada — `aria-current`; mostra só o que o papel abre, RN-06; 2FA, Loja, usuário e Sair no rodapé) | `features/admin` |
+| Domínio (conta) | `Avatar` (avatar pronto ou inicial, no gradiente do tema — #162), `ProfileForm` (nome + avatares em rádios), `SupportPanel` (chat da conta no perfil + histórico) | `features/account/components` |
 | Domínio (suporte) | `ChatOpenButton` (abre o chat com mensagem pronta: consultar preço, agendar run), `ChatLauncher` (botão flutuante), `ChatWindow`, `ChatMessage`, `ChatComposer`, `OfflineForm`, `SupportQueue` (dashboard) | `features/support` |
 
 ### Convenções

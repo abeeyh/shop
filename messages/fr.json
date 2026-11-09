@@ -679,6 +679,30 @@
       "characterDuplicate": "Ce personnage est déjà enregistré.",
       "exists": "Cet e-mail a déjà un compte. Connectez-vous.",
       "staff": "C’est un compte de l’équipe : connectez-vous au panneau (/admin)."
+    },
+    "profile": {
+      "title": "Profil",
+      "name": "Comment vous appeler",
+      "avatar": "Avatar",
+      "none": "Juste l’initiale",
+      "save": "Enregistrer le profil",
+      "saved": "Profil enregistré",
+      "error": "Vérifiez les champs et réessayez.",
+      "avatars": {
+        "sword": "Épée",
+        "shield": "Bouclier",
+        "wand": "Baguette",
+        "skull": "Crâne",
+        "crown": "Couronne",
+        "flame": "Flamme",
+        "ghost": "Fantôme",
+        "gem": "Gemme"
+      }
+    },
+    "support": {
+      "title": "Support",
+      "start": "Parler au support",
+      "history": "Conversations précédentes"
     }
   }
 }

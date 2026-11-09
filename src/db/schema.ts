@@ -308,6 +308,7 @@ export const users = pgTable("users", {
   image: text("image"),
   twoFactorEnabled: boolean("two_factor_enabled").notNull().default(false), // RN-02, RN-05
   theme: text("theme"), // RN-111 (#132): tema escolhido; null = padrão. Validado no app (lib/theme)
+  avatar: text("avatar"), // #162: avatar pronto da loja (chave validada em features/account/avatars); null = inicial
   ...timestamps,
 });
 
@@ -538,12 +539,15 @@ export const supportConversations = pgTable(
     status: conversationStatus("status").notNull().default("aberta"),
     assignedTo: text("assigned_to").references(() => users.id),
     guestTokenHash: text("guest_token_hash").notNull(),
+    // #162 (RN-92): conversa de quem está logado fica na conta; excluir a conta solta a ligação (RN-109)
+    userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     lastMessageAt: timestamp("last_message_at", { withTimezone: true }).notNull().defaultNow(),
     resolvedAt: timestamp("resolved_at", { withTimezone: true }),
   },
   (t) => [
     index("support_conversations_status_idx").on(t.status, t.createdAt),
+    index("support_conversations_user_idx").on(t.userId, t.status),
     index("support_conversations_email_idx").on(t.guestEmail, t.status),
   ],
 );

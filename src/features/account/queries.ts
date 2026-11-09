@@ -75,3 +75,7 @@ export const isStaff = async (userId: string) =>
 export async function deleteCustomer(userId: string) {
   await db.delete(users).where(eq(users.id, userId));
 }
+
+// #162: perfil do cliente (o nome também é usado no chat)
+export const saveProfile = (userId: string, v: { name: string; avatar: string | null }) =>
+  db.update(users).set({ name: v.name, avatar: v.avatar, updatedAt: new Date() }).where(eq(users.id, userId));

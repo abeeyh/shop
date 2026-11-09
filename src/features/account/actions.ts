@@ -14,7 +14,15 @@ import { env } from "@/lib/env";
 import { logger } from "@/lib/logger";
 import { getRequestId } from "@/lib/request-id";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
-import { addCharacter, deleteCharacter, deleteCustomer, isStaff, staffPasswordHash } from "./queries";
+import { AVATARS } from "./avatars";
+import {
+  addCharacter,
+  deleteCharacter,
+  deleteCustomer,
+  isStaff,
+  saveProfile,
+  staffPasswordHash,
+} from "./queries";
 import { characterInput, signInInput, signUpInput } from "./schemas";
 import { safeNext } from "./next";
 import { syncThemeOnLogin } from "@/features/preferences/theme";
@@ -97,6 +105,23 @@ export async function signOut(form: FormData): Promise<void> {
   // #130: sair pelo cabeçalho fica na mesma página (área da conta volta para a home)
   const next = safeNext(form.get("next"), l);
   redirect(next && !next.startsWith(`/${l}/conta`) ? next : `/${l}`);
+}
+
+// #162: nome e avatar pronto do perfil (só da própria conta; avatar só da lista)
+const profileInput = z.object({
+  name: z.string().trim().max(40),
+  avatar: z.union([z.literal(""), z.enum(AVATARS)]).transform((v) => v || null),
+});
+
+export type ProfileState = { status: "idle" | "ok" | "error" };
+
+export async function updateProfile(_prev: ProfileState, form: FormData): Promise<ProfileState> {
+  const customer = await getCustomer();
+  const input = profileInput.safeParse(Object.fromEntries(form));
+  if (!customer || !input.success) return { status: "error" };
+  await saveProfile(customer.id, input.data);
+  refresh(); // cabeçalho e perfil mostram o avatar novo
+  return { status: "ok" };
 }
 
 // RN-108: personagem salvo (até 10; repetido não duplica)

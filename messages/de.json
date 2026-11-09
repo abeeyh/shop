@@ -679,6 +679,30 @@
       "characterDuplicate": "Dieser Charakter ist bereits gespeichert.",
       "exists": "Für diese E-Mail gibt es schon ein Konto. Melde dich an.",
       "staff": "Das ist ein Team-Konto: Melde dich im Panel an (/admin)."
+    },
+    "profile": {
+      "title": "Profil",
+      "name": "Wie sollen wir dich nennen",
+      "avatar": "Avatar",
+      "none": "Nur die Initiale",
+      "save": "Profil speichern",
+      "saved": "Profil gespeichert",
+      "error": "Prüfe die Felder und versuche es erneut.",
+      "avatars": {
+        "sword": "Schwert",
+        "shield": "Schild",
+        "wand": "Zauberstab",
+        "skull": "Schädel",
+        "crown": "Krone",
+        "flame": "Flamme",
+        "ghost": "Geist",
+        "gem": "Juwel"
+      }
+    },
+    "support": {
+      "title": "Support",
+      "start": "Mit dem Support sprechen",
+      "history": "Frühere Gespräche"
     }
   }
 }
