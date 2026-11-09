@@ -184,6 +184,7 @@ classDiagram
     +active: boolean
   }
   class SupportConversation {
+    +userId: string?
     +locale: string
     +status: aberta|em_atendimento|resolvida
     +guestEmail: string?
@@ -196,6 +197,7 @@ classDiagram
   }
   SupportConversation "1" *-- "*" SupportMessage
   SupportConversation "*" --> "0..1" Order
+  SupportConversation "*" --> "0..1" User : conta (#162)
   SupportConversation "*" --> "0..1" StaffProfile : atendente
 ```
 

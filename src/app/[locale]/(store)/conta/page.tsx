@@ -15,6 +15,10 @@ import {
   removeCharacter,
   signOut,
 } from "@/features/account";
+import { Avatar } from "@/features/account/components/Avatar";
+import { ProfileForm } from "@/features/account/components/ProfileForm";
+import { SupportPanel } from "@/features/account/components/SupportPanel";
+import { AVATARS } from "@/features/account/avatars";
 import { formatUsdt } from "@/features/catalog";
 import { orderPath } from "@/features/orders";
 import { getTimezone } from "@/lib/preferences";
@@ -31,7 +35,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/conta">)
 
 const h2 = "font-heading text-xl font-semibold text-heading";
 
-// RN-107 a RN-109: pedidos da conta, personagens salvos, sair e excluir a conta
+// RN-107 a RN-109: perfil (#162: nome, avatar e chat do suporte), pedidos, personagens, sair e excluir a conta
 export default async function AccountPage({ params }: PageProps<"/[locale]/conta">) {
   await connection();
   const { locale } = await params;
@@ -57,11 +61,18 @@ export default async function AccountPage({ params }: PageProps<"/[locale]/conta
   return (
     <div className="mx-auto grid w-full max-w-3xl gap-6 px-4 py-12">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="font-heading text-[clamp(1.75rem,4vw,2.5rem)] font-bold text-heading">
-            {t("title")}
-          </h1>
-          <p className="text-sm text-muted-foreground">{customer.email}</p>
+        <div className="flex items-center gap-4">
+          <Avatar
+            avatar={customer.avatar}
+            name={customer.name || customer.email}
+            className="size-16 text-2xl"
+          />
+          <div>
+            <h1 className="font-heading text-[clamp(1.75rem,4vw,2.5rem)] font-bold text-heading">
+              {customer.name || t("title")}
+            </h1>
+            <p className="text-sm text-muted-foreground">{customer.email}</p>
+          </div>
         </div>
         <form action={signOut}>
           <input type="hidden" name="locale" value={locale} />
@@ -70,6 +81,28 @@ export default async function AccountPage({ params }: PageProps<"/[locale]/conta
           </button>
         </form>
       </div>
+
+      <GradientCard tone="solid" className="grid gap-3">
+        <h2 className={h2}>{t("profile.title")}</h2>
+        <ProfileForm
+          name={customer.name}
+          avatar={customer.avatar}
+          avatarNames={Object.fromEntries(AVATARS.map((a) => [a, t(`profile.avatars.${a}`)]))}
+          labels={{
+            name: t("profile.name"),
+            avatar: t("profile.avatar"),
+            none: t("profile.none"),
+            save: t("profile.save"),
+            saved: t("profile.saved"),
+            error: t("profile.error"),
+          }}
+        />
+      </GradientCard>
+
+      <GradientCard tone="solid" className="grid gap-3">
+        <h2 className={h2}>{t("support.title")}</h2>
+        <SupportPanel locale={locale} userId={customer.id} timeZone={timeZone} />
+      </GradientCard>
 
       <GradientCard tone="solid" className="grid gap-3">
         <h2 className={h2}>{t("orders.title")}</h2>

@@ -30,6 +30,8 @@ export const auth = betterAuth({
   // aceito no doc 09). Sem verificação de e-mail por enquanto (#29)
   // #107: 8+; maiúscula, minúscula e número conferidos nas actions (lib/password.ts)
   emailAndPassword: { enabled: true, minPasswordLength: 8, autoSignIn: true },
+  // #162: avatar pronto vem junto com a sessão (cabeçalho sem consulta extra); só o servidor grava
+  user: { additionalFields: { avatar: { type: "string", required: false, input: false } } },
   // cliente: 7 dias; a equipe tem teto de 12 h conferido em getStaff (features/auth/staff.ts)
   session: { expiresIn: 60 * 60 * 24 * 7, updateAge: 60 * 60 * 24 },
   advanced: { ipAddress: { ipAddressHeaders: [env.CLIENT_IP_HEADER ?? "x-forwarded-for"] } },

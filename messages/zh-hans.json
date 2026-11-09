@@ -679,6 +679,30 @@
       "characterDuplicate": "此角色已保存。",
       "exists": "此邮箱已有账号，请直接登录。",
       "staff": "这是团队账号：请从管理后台登录（/admin）。"
+    },
+    "profile": {
+      "title": "个人资料",
+      "name": "怎么称呼你",
+      "avatar": "头像",
+      "none": "只显示首字母",
+      "save": "保存资料",
+      "saved": "资料已保存",
+      "error": "请检查字段后重试。",
+      "avatars": {
+        "sword": "剑",
+        "shield": "盾",
+        "wand": "法杖",
+        "skull": "骷髅",
+        "crown": "王冠",
+        "flame": "火焰",
+        "ghost": "幽灵",
+        "gem": "宝石"
+      }
+    },
+    "support": {
+      "title": "客服",
+      "start": "联系客服",
+      "history": "以往对话"
     }
   }
 }

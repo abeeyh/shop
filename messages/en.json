@@ -679,6 +679,30 @@
       "characterDuplicate": "This character is already saved.",
       "exists": "This email already has an account. Sign in instead.",
       "staff": "This is a team account: sign in at the admin panel (/admin)."
+    },
+    "profile": {
+      "title": "Profile",
+      "name": "What should we call you",
+      "avatar": "Avatar",
+      "none": "Just the initial",
+      "save": "Save profile",
+      "saved": "Profile saved",
+      "error": "Check the fields and try again.",
+      "avatars": {
+        "sword": "Sword",
+        "shield": "Shield",
+        "wand": "Wand",
+        "skull": "Skull",
+        "crown": "Crown",
+        "flame": "Flame",
+        "ghost": "Ghost",
+        "gem": "Gem"
+      }
+    },
+    "support": {
+      "title": "Support",
+      "start": "Talk to support",
+      "history": "Past conversations"
     }
   }
 }
