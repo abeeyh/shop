@@ -3,7 +3,7 @@
   "groups": [
     {
       "category": "8",
-      "subcategory": null,
+      "tag": null,
       "slug": "keystone-achievement",
       "name": "Keystone Achievement",
       "description": "Keystone Hero, Legend or Myth achievement with the world tour.",
@@ -40,7 +40,7 @@
     },
     {
       "category": "8",
-      "subcategory": null,
+      "tag": null,
       "slug": "mythic-plus-key",
       "name": "Mythic+ Key",
       "description": "Personal loot. Armor Stack +25% added price. From +15 the buyer plays (no AFK).",
@@ -176,7 +176,7 @@
     },
     {
       "category": "8",
-      "subcategory": null,
+      "tag": null,
       "slug": "mythic-plus-bundle-4-keys",
       "name": "Bundle 4x Keys",
       "description": "Four keys of the chosen level. Armor Stack +25% added price.",
@@ -210,7 +210,7 @@
     },
     {
       "category": "35",
-      "subcategory": null,
+      "tag": null,
       "slug": "arena-rating",
       "name": "Arena Rating",
       "description": "2v2 or 3v3 arena rating boost.",
@@ -287,7 +287,7 @@
     },
     {
       "category": "36",
-      "subcategory": null,
+      "tag": null,
       "slug": "glory-of-the-icecrown-raider",
       "name": "Glory of the Icecrown Raider",
       "description": "1 hour and a half (requires 2 characters or 2 lockouts).",
@@ -315,7 +315,7 @@
     },
     {
       "category": "37",
-      "subcategory": null,
+      "tag": null,
       "slug": "delve",
       "name": "Delve",
       "description": "Price per tier: choose the tier range and how many tiers.",
@@ -355,7 +355,7 @@
     },
     {
       "category": "40",
-      "subcategory": "2",
+      "tag": "2",
       "slug": "the-unbinding-of-kith-ix-heroic",
       "name": "The Unbinding of Kith'ix",
       "description": "Pick the run below; loot rules are shown for each option.",
@@ -385,7 +385,7 @@
     },
     {
       "category": "40",
-      "subcategory": "2",
+      "tag": "2",
       "slug": "tidebound-grotto-heroic",
       "name": "Tidebound Grotto",
       "description": "Pick the run below; loot rules are shown for each option.",
@@ -415,7 +415,7 @@
     },
     {
       "category": "40",
-      "subcategory": "2",
+      "tag": "2",
       "slug": "venomous-abyss-heroic",
       "name": "Venomous Abyss",
       "description": "Pick the run below; loot rules are shown for each option.",
@@ -480,7 +480,7 @@
     },
     {
       "category": "40",
-      "subcategory": "2",
+      "tag": "2",
       "slug": "venomous-abyss-tidebound-grotto-9-9-heroic",
       "name": "Venomous Abyss + Tidebound Grotto 9/9",
       "description": "Pick the run below; loot rules are shown for each option.",
@@ -517,7 +517,7 @@
     },
     {
       "category": "40",
-      "subcategory": "3",
+      "tag": "3",
       "slug": "tidebound-grotto-normal",
       "name": "Tidebound Grotto",
       "description": "Pick the run below; loot rules are shown for each option.",
@@ -547,7 +547,7 @@
     },
     {
       "category": "40",
-      "subcategory": "3",
+      "tag": "3",
       "slug": "venomous-abyss-normal",
       "name": "Venomous Abyss",
       "description": "Pick the run below; loot rules are shown for each option.",
@@ -584,7 +584,7 @@
     },
     {
       "category": "40",
-      "subcategory": "3",
+      "tag": "3",
       "slug": "venomous-abyss-tidebound-grotto-9-9-normal",
       "name": "Venomous Abyss + Tidebound Grotto 9/9",
       "description": "Pick the run below; loot rules are shown for each option.",
@@ -614,7 +614,7 @@
     },
     {
       "category": "41",
-      "subcategory": "4",
+      "tag": "4",
       "slug": "the-unbinding-of-kith-ix-fp-mythic",
       "name": "The Unbinding of Kith'ix",
       "description": "Full priority: every item you can equip is yours.",
@@ -651,7 +651,7 @@
     },
     {
       "category": "41",
-      "subcategory": "4",
+      "tag": "4",
       "slug": "venomous-abyss-fp-mythic",
       "name": "Venomous Abyss",
       "description": "Full priority: every item you can equip is yours.",
@@ -768,7 +768,7 @@
     },
     {
       "category": "41",
-      "subcategory": "4",
+      "tag": "4",
       "slug": "tidebound-grotto-fp-mythic",
       "name": "Tidebound Grotto",
       "description": "Full priority: every item you can equip is yours.",
@@ -805,7 +805,7 @@
     },
     {
       "category": "41",
-      "subcategory": "5",
+      "tag": "5",
       "slug": "the-unbinding-of-kith-ix-fp-heroic-vip",
       "name": "The Unbinding of Kith'ix",
       "description": "Full priority: every item you can equip is yours.",
@@ -842,7 +842,7 @@
     },
     {
       "category": "41",
-      "subcategory": "5",
+      "tag": "5",
       "slug": "venomous-abyss-fp-heroic-vip",
       "name": "Venomous Abyss",
       "description": "Full priority: every item you can equip is yours.",
@@ -886,7 +886,7 @@
     },
     {
       "category": "41",
-      "subcategory": "5",
+      "tag": "5",
       "slug": "venomous-abyss-kith-ix-9-9-fp-heroic-vip",
       "name": "Venomous Abyss + Kith'ix 9/9",
       "description": "Full priority: every item you can equip is yours.",
@@ -923,7 +923,7 @@
     },
     {
       "category": "41",
-      "subcategory": "5",
+      "tag": "5",
       "slug": "all-3-raids-fp-heroic-vip",
       "name": "All 3 Raids",
       "description": "Full priority: every item you can equip is yours.",
@@ -960,7 +960,7 @@
     },
     {
       "category": "41",
-      "subcategory": "6",
+      "tag": "6",
       "slug": "venomous-abyss-fp-normal",
       "name": "Venomous Abyss",
       "description": "Full priority: every item you can equip is yours.",
@@ -1037,7 +1037,7 @@
     },
     {
       "category": "41",
-      "subcategory": "6",
+      "tag": "6",
       "slug": "venomous-abyss-tidebound-grotto-9-9-fp-normal",
       "name": "Venomous Abyss + Tidebound Grotto 9/9",
       "description": "Full priority: every item you can equip is yours.",

@@ -128,7 +128,7 @@ Se o componente **conhece o domínio**, fica na feature; se é genérico, em `sr
 | Átomo | `StatusBadge` (selo com cor **e** texto: neutral, info, success, warning, danger — RF-07; cor do status do pedido em `features/orders/status-tone.ts`) | `components/atoms` |
 | Organismo | `AuthShell` (telas de entrada da equipe: marca, "voltar à loja", título, apoio e o cartão do formulário — RF-32) | `components/organisms` |
 | Molécula | `CopyButton` (copia um texto e confirma por 2 s — link do convite) | `components/molecules` |
-| Domínio (admin) | `ProductOptionsEditor` (adicionais em linhas, eixos com estilo e valores, grade de preços gerada dos eixos — incluir, preço, sob consulta, nota; escreve o mesmo texto que o servidor valida — RF-09 a RF-11), `CategorySelects` (subcategoria filtrada pela categoria — RF-12) | `features/admin/components` |
+| Domínio (admin) | `ProductOptionsEditor` (adicionais em linhas, eixos com estilo e valores, grade de preços gerada dos eixos — incluir, preço, sob consulta, nota; escreve o mesmo texto que o servidor valida — RF-09 a RF-11), `TagPicker` (tag principal + outras tags do produto — #160) | `features/admin/components` |
 | Domínio (admin) | `RouteDrawer` (gaveta de criar/editar aberta pela URL `?novo=1`/`?editar=id`; `wide` para o produto — RF-04), `DeleteEntity` (excluir com confirmação; só marca o registro — RN-72, #158; categoria com produtos avisa), `ListFilters` (busca + categoria + status na URL, select filtra na hora — RF-03) | `features/admin/components` |
 | Domínio (admin) | `AdminNav` (#144: barra lateral fixa no desktop e gaveta no celular; links agrupados em Operação, Catálogo e Gestão, com ícone e página atual marcada — `aria-current`; mostra só o que o papel abre, RN-06; 2FA, Loja, usuário e Sair no rodapé) | `features/admin` |
 | Domínio (suporte) | `ChatOpenButton` (abre o chat com mensagem pronta: consultar preço, agendar run), `ChatLauncher` (botão flutuante), `ChatWindow`, `ChatMessage`, `ChatComposer`, `OfflineForm`, `SupportQueue` (dashboard) | `features/support` |
@@ -194,8 +194,8 @@ Garantia: revisão de PR, agente `frontend-ui` e checagem no CI de classes visua
 #102 (2026-11-07): **minimalista, escuro e com destaque nos pontos de ação** — tudo a poucos cliques.
 
 - **Cabeçalho em uma linha:** logo · busca · globo (idioma e fuso, já detectados) · conta · carrinho; logo abaixo, **abas das categorias** (rolam de lado no celular, aba atual marcada). Sem menu escondido.
-- **Produtos em lista densa** (`ProductCard` em linha): ícone · nome + etiquetas (subcategoria, "Popular") + descrição curta · preço em **ouro** ("a partir de" quando tem opções) · "Comprar". A linha inteira é o link. Nada de imagem decorativa repetida.
-- **Subcategorias** como atalhos fixos no topo da lista (âncoras).
+- **Produtos em lista densa** (`ProductCard` em linha): ícone · nome + etiquetas (tags do produto, "Popular") + descrição curta · preço em **ouro** ("a partir de" quando tem opções) · "Comprar". A linha inteira é o link. Nada de imagem decorativa repetida.
+- **Tags** como chips de filtro fixos no topo da lista (`?tag=`); a página agrupa pela tag principal (#160).
 - **Compra:** da lista, o produto abre na **página dele**, com as opções (#109). "Comprar agora" adiciona e vai direto ao pagamento; "Adicionar ao carrinho" abre o **carrinho na barra lateral** (itens, total, ir ao pagamento ou continuar comprando).
 - **"Popular"** só nos destaques escolhidos (borda em gradiente girando) — selo em tudo não destaca nada.
 - **Efeitos** (todos desligados com `prefers-reduced-motion`):

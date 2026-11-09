@@ -47,7 +47,7 @@ classDiagram
     +active: boolean
     +deletedAt: datetime?
   }
-  class Subcategory {
+  class Tag {
     +id: string
     +name: string
     +slug: string
@@ -159,8 +159,7 @@ classDiagram
     +type: string
   }
   Category "1" *-- "*" Product
-  Category "1" --> "0..*" Subcategory
-  Subcategory "0..1" --> "0..*" Product
+  Product "0..*" --> "0..*" Tag : tags (posição 0 = principal)
   Cart "1" *-- "*" CartItem
   CartItem "*" --> "1" Product
   CartItem "*" --> "0..1" RaidSlot

@@ -25,7 +25,7 @@ export async function ProductPanel({ locale, product, timeZone }: Props) {
         <KindTile kind={product.categoryKind} />
         <div>
           <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-            {[product.categoryName, product.subcategoryName].filter(Boolean).join(" · ")}
+            {[product.categoryName, product.primaryTag].filter(Boolean).join(" · ")}
           </p>
           <h1 className="font-heading text-[clamp(1.5rem,3vw,2rem)] font-bold tracking-tight text-heading">
             {product.name}

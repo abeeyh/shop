@@ -12,7 +12,7 @@ const FIELDS = [
   "imageUrl",
   "sortOrder",
   "categoryId",
-  "subcategoryId",
+  "tags",
   "addons",
   "optionAxes",
   "variants",

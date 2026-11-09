@@ -55,7 +55,7 @@ export function toProducts(items) {
     return {
       externalId: i.id,
       categoryRef: i.serviceCategoryId,
-      subcategoryRef: i.serviceSubcategoryId ?? null,
+      tagRef: i.serviceSubcategoryId ?? null, // #160: vira a tag principal
       name,
       slug,
       description: cleanName(i.description).slice(0, 1000),
@@ -104,7 +104,7 @@ export function toCatalog(items, groups) {
       name: g.name,
       description: g.description ?? "",
       categoryRef: Number(g.category),
-      subcategoryRef: g.subcategory === null ? null : Number(g.subcategory),
+      tagRef: g.tag === null || g.tag === undefined ? null : Number(g.tag),
       optionAxes: g.axes,
       addons: first.addons,
       maxQuantity: first.maxQuantity,

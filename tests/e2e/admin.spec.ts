@@ -203,30 +203,27 @@ test.describe("admin", () => {
     await expect(page.getByRole("status")).toHaveText("Saved");
 
     // doc 17 §3: o que nunca foi usado pode ser excluído (e vai para a auditoria)
-    await page.goto("/en/admin/subcategorias?novo=1");
-    await page
-      .getByRole("dialog")
-      .getByRole("combobox", { name: "Category", exact: true })
-      .selectOption({ label: `E2E Keys ${id}` });
+    // #160: tags no lugar das subcategorias — criar e excluir (só marca, #158)
+    await page.goto("/en/admin/tags?novo=1");
     await page.getByLabel("Name", { exact: true }).fill(`E2E Temp ${id}`);
     await page.getByLabel("Slug (URL)").fill(`e2e-temp-${id}`);
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");
-    await page.goto("/en/admin/subcategorias");
+    await page.goto("/en/admin/tags");
     await page.getByRole("link", { name: `Edit E2E Temp ${id}` }).click();
     await page.getByRole("dialog").getByRole("button", { name: "Delete" }).click();
     await page
       .getByRole("dialog", { name: `Delete E2E Temp ${id}?` })
       .getByRole("button", { name: "Delete" })
       .click();
-    await expect(page).toHaveURL(/\/en\/admin\/subcategorias$/);
+    await expect(page).toHaveURL(/\/en\/admin\/tags$/);
     await expect(page.getByRole("cell", { name: new RegExp(`E2E Temp ${id}`) })).toHaveCount(0);
 
     // RN-71: as alterações aparecem na auditoria com quem e o antes → depois
     await page.goto("/en/admin/auditoria");
     await expect(page.getByText(`Updated Category: E2E Keys ${id}`).first()).toBeVisible();
     await expect(page.getByText(`Created Product: E2E Key Product ${id}`)).toBeVisible();
-    await expect(page.getByText(`Deleted Subcategory: E2E Temp ${id}`)).toBeVisible();
+    await expect(page.getByText(`Deleted Tag: E2E Temp ${id}`)).toBeVisible();
     await expect(page.getByText(E2E_ADMIN.email).first()).toBeVisible();
     // #88: cursor e página inválidos na URL voltam para a primeira página (sem erro)
     await page.goto("/en/admin/auditoria?antes=2026-02-30T00:00:00.000000Z_x");

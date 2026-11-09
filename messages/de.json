@@ -53,7 +53,9 @@
     "close": "Schließen",
     "breadcrumb": "Brotkrümelnavigation",
     "gallery": "Galerie",
-    "faq": "Häufige Fragen"
+    "faq": "Häufige Fragen",
+    "tags": "Tags",
+    "allTags": "Alle"
   },
   "Footer": {
     "about": "Gold, Raids, Mythisch+ und Erfolge für World of Warcraft Retail US.",
@@ -254,7 +256,8 @@
       "support": "Support",
       "subcategories": "Unterkategorien",
       "twoFactor": "2FA",
-      "overview": "Übersicht"
+      "overview": "Übersicht",
+      "tags": "Tags"
     },
     "login": {
       "title": "Anmeldung (Team)",
@@ -327,7 +330,10 @@
       "optionAxes": "Optionen (eine pro Zeile: Name | slider oder boxes | Wert, Wert…)",
       "variants": "Kombinationen (eine pro Zeile: Achse=Wert; Achse=Wert | Preis oder - | Notiz)",
       "maxQuantity": "Max. Anzahl pro Bestellung",
-      "hot": "Beliebt (hervorgehoben)"
+      "hot": "Beliebt (hervorgehoben)",
+      "primaryTag": "Haupt-Tag (gruppiert die Kategorieseite)",
+      "otherTags": "Weitere Tags",
+      "noTag": "— ohne Tag —"
     },
     "kinds": {
       "gold": "Gold",
@@ -347,14 +353,16 @@
       "editLink": "Bearbeiten",
       "newPromotion": "Neue Aktion",
       "newCoupon": "Neuer Gutschein",
-      "newSubcategory": "Neue Unterkategorie"
+      "newSubcategory": "Neue Unterkategorie",
+      "newTag": "Neuer Tag"
     },
     "table": {
       "activeProducts": "Aktive Produkte",
       "status": "Status",
       "active": "Aktiv",
       "inactive": "Inaktiv",
-      "uses": "Nutzungen"
+      "uses": "Nutzungen",
+      "products": "Produkte"
     },
     "formErrors": {
       "generic": "Prüfe die Felder.",
@@ -381,7 +389,8 @@
       "addons": "Ein Extra pro Zeile als „Name | 25“ (1–100 %, keine Doppelten, max. 10).",
       "optionAxes": "Bis zu 4 Optionen im Format „Bosses | slider | 2/8, 3/8“ (eindeutige Namen und Werte, max. 30 Werte).",
       "variants": "Jede Kombination braucht einen gelisteten Wert pro Option, einen Preis (oder - für auf Anfrage) und darf sich nicht wiederholen. Ohne Optionen leer lassen.",
-      "maxQuantity": "Nutze 1 bis 100."
+      "maxQuantity": "Nutze 1 bis 100.",
+      "tags": "Tags: bis zu 10 wählen, ohne Wiederholung."
     },
     "discount": {
       "percent": "Prozent",
@@ -402,7 +411,8 @@
         "order": "Bestellung",
         "bug_report": "Fehlermeldung",
         "staff": "Teammitglied",
-        "support_hours": "Support-Zeiten"
+        "support_hours": "Support-Zeiten",
+        "tag": "Tag"
       },
       "actions": {
         "create": "Erstellt",

@@ -53,7 +53,9 @@
     "close": "Fechar",
     "breadcrumb": "Navegação estrutural",
     "gallery": "Galeria",
-    "faq": "Perguntas frequentes"
+    "faq": "Perguntas frequentes",
+    "tags": "Tags",
+    "allTags": "Todos"
   },
   "Footer": {
     "about": "Gold, raids, Mítica+ e conquistas para World of Warcraft Retail US.",
@@ -254,7 +256,8 @@
       "support": "Suporte",
       "subcategories": "Subcategorias",
       "twoFactor": "2FA",
-      "overview": "Visão geral"
+      "overview": "Visão geral",
+      "tags": "Tags"
     },
     "login": {
       "title": "Entrar (equipe)",
@@ -327,7 +330,10 @@
       "optionAxes": "Opções (uma por linha: Nome | slider ou boxes | valor, valor…)",
       "variants": "Combinações (uma por linha: Eixo=valor; Eixo=valor | preço ou - | nota)",
       "maxQuantity": "Quantidade máxima por pedido",
-      "hot": "Popular (destaque)"
+      "hot": "Popular (destaque)",
+      "primaryTag": "Tag principal (agrupa a página da categoria)",
+      "otherTags": "Outras tags",
+      "noTag": "— sem tag —"
     },
     "kinds": {
       "gold": "Gold",
@@ -347,14 +353,16 @@
       "editLink": "Editar",
       "newPromotion": "Nova promoção",
       "newCoupon": "Novo cupom",
-      "newSubcategory": "Nova subcategoria"
+      "newSubcategory": "Nova subcategoria",
+      "newTag": "Nova tag"
     },
     "table": {
       "activeProducts": "Produtos ativos",
       "status": "Status",
       "active": "Ativo",
       "inactive": "Inativo",
-      "uses": "Usos"
+      "uses": "Usos",
+      "products": "Produtos"
     },
     "formErrors": {
       "generic": "Confira os campos.",
@@ -381,7 +389,8 @@
       "addons": "Um adicional por linha no formato “Nome | 25” (1–100%, sem nome repetido, até 10).",
       "optionAxes": "Até 4 opções no formato “Bosses | slider | 2/8, 3/8” (nomes e valores únicos, até 30 valores).",
       "variants": "Cada combinação precisa de um valor listado por opção, um preço (ou - para sob consulta) e não pode repetir. Sem opções, deixe vazio.",
-      "maxQuantity": "Use de 1 a 100."
+      "maxQuantity": "Use de 1 a 100.",
+      "tags": "Tags: escolha até 10, sem repetir."
     },
     "discount": {
       "percent": "Percentual",
@@ -402,7 +411,8 @@
         "order": "Pedido",
         "bug_report": "Reporte de bug",
         "staff": "Membro da equipe",
-        "support_hours": "Horário do suporte"
+        "support_hours": "Horário do suporte",
+        "tag": "Tag"
       },
       "actions": {
         "create": "Criou",

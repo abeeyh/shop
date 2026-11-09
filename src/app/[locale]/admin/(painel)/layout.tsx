@@ -35,7 +35,7 @@ async function Sidebar({ locale }: { locale: string }) {
             label: t("groups.catalog"),
             items: [
               item("categories", "/categorias"),
-              item("subcategories", "/subcategorias"),
+              item("tags", "/tags"),
               item("products", "/produtos"),
               item("promotions", "/promocoes"),
               item("coupons", "/cupons"),

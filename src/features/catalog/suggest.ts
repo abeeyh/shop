@@ -1,7 +1,7 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
-import { and, asc, desc, eq, isNull, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, or, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { categories, products, subcategories } from "@/db/schema";
+import { categories, products } from "@/db/schema";
 import { activePromotions } from "@/features/discounts/queries";
 import { categoryHref, formatUsdt, productHref, promoPrice } from "./format";
 
@@ -42,15 +42,7 @@ export async function suggest(locale: string, q: string): Promise<Suggestions> {
       })
       .from(products)
       .innerJoin(categories, eq(products.categoryId, categories.id))
-      .leftJoin(subcategories, eq(products.subcategoryId, subcategories.id))
-      .where(
-        and(
-          eq(products.active, true),
-          eq(categories.active, true),
-          or(isNull(products.subcategoryId), eq(subcategories.active, true)),
-          nameHit,
-        ),
-      )
+      .where(and(eq(products.active, true), eq(categories.active, true), nameHit))
       .orderBy(
         desc(sql`${products.name} ilike ${prefix}`),
         desc(sql`${products.name} ilike ${like}`),

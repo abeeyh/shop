@@ -4,7 +4,8 @@ import { auditLog } from "@/db/schema";
 
 export type Entity =
   | "category"
-  | "subcategory"
+  | "subcategory" // histórico (#94, antes das tags)
+  | "tag"
   | "product"
   | "promotion"
   | "coupon"

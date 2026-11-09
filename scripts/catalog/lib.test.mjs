@@ -63,11 +63,11 @@ describe("importação do catálogo (#94)", () => {
     expect(new Set(out.map((p) => p.slug)).size).toBe(2);
   });
 
-  it("o JSON do projeto importa sem slug repetido e com subcategoria nas raids", () => {
+  it("o JSON do projeto importa sem slug repetido e com tag principal nas raids (#160)", () => {
     const { info } = JSON.parse(readFileSync(new URL("./products.json", import.meta.url), "utf8"));
     const out = toProducts(info);
     expect(new Set(out.map((p) => p.slug)).size).toBe(out.length);
-    expect(out.filter((p) => p.categoryRef === 40).every((p) => p.subcategoryRef !== null)).toBe(true);
+    expect(out.filter((p) => p.categoryRef === 40).every((p) => p.tagRef !== null)).toBe(true);
     expect(out.every((p) => p.priceUsdtCents > 0 && p.name.length >= 2)).toBe(true);
   });
 });
@@ -89,7 +89,7 @@ describe("agrupamento em variantes (#100)", () => {
     slug: "va",
     name: "Venomous Abyss",
     category: "41",
-    subcategory: "4",
+    tag: "4",
     axes,
     variants,
   });

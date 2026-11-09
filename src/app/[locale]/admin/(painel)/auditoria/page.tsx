@@ -20,7 +20,8 @@ import { getTimezone } from "@/lib/preferences";
 // RF-30: entidades que aparecem no filtro (as mesmas da auditoria — audit.ts)
 const ENTITIES: Entity[] = [
   "category",
-  "subcategory",
+  "tag",
+  "subcategory", // histórico (antes das tags — #160)
   "product",
   "promotion",
   "coupon",
