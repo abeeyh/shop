@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 test.describe("carrinho", () => {
   test("RN-15/RN-20: gold — preço vem do servidor, mesmo com campo de preço adulterado", async ({ page }) => {
     await page.goto("/en/wow/gold/gold-us");
-    const total = page.locator("output");
+    const total = page.locator("output").filter({ visible: true });
     await expect(total).toContainText("45.00"); // 100k × 0,45
     await page.getByLabel("Realm").fill("Area 52");
     await page.getByLabel("Character name").fill("Thrall");
@@ -44,9 +44,9 @@ test.describe("carrinho", () => {
     const slots = page.locator('input[name="slotId"]');
     await expect(slots.first()).toBeDisabled(); // o primeiro horário do seed está cheio
     await expect(slots.nth(1)).toBeChecked();
-    await expect(page.locator("output")).toContainText("2.93"); // 1ª opção: Last boss, 65k gold (#100)
+    await expect(page.locator("output").filter({ visible: true })).toContainText("2.93"); // 1ª opção: Last boss, 65k gold (#100)
     await page.getByText("8/8 Saved", { exact: true }).click(); // a opção muda o preço: 140k = 6,30
-    await expect(page.locator("output")).toContainText("6.30");
+    await expect(page.locator("output").filter({ visible: true })).toContainText("6.30");
     await page.getByLabel("Realm").fill("Area 52");
     await page.getByLabel("Character name").fill("Thrall");
     await page.getByRole("button", { name: "Add to cart" }).click();
@@ -60,7 +60,7 @@ test.describe("carrinho", () => {
     page,
   }) => {
     await page.goto("/en/wow/mythic-plus/mythic-plus-key");
-    await expect(page.locator("output")).toContainText("3.15"); // +6 (1º nível do slider)
+    await expect(page.locator("output").filter({ visible: true })).toContainText("3.15"); // +6 (1º nível do slider)
     // #100: o slider anda pelo teclado (4 passos: +6 → +10)
     const level = page.getByRole("slider", { name: "Key level" });
     await level.focus();
@@ -68,9 +68,9 @@ test.describe("carrinho", () => {
       await level.press("ArrowRight");
       await expect(level).toHaveAttribute("aria-valuetext", v); // um passo de cada vez (sob carga)
     }
-    await expect(page.locator("output")).toContainText("4.95");
+    await expect(page.locator("output").filter({ visible: true })).toContainText("4.95");
     await page.getByLabel("Armor Stack (+25%)").check();
-    await expect(page.locator("output")).toContainText("6.19"); // 4,95 × 1,25 = 6,1875
+    await expect(page.locator("output").filter({ visible: true })).toContainText("6.19"); // 4,95 × 1,25 = 6,1875
     // sem horário: aviso de que a run é agendada com o suporte depois do pagamento
     await expect(page.getByText(/schedule your run with support/)).toBeVisible();
     await page.getByLabel("Realm").fill("Area 52");
@@ -150,5 +150,5 @@ test("prévia do total acompanha a combinação mesmo com personagem inválido",
     await level.press("ArrowRight");
     await expect(level).toHaveAttribute("aria-valuetext", v);
   }
-  await expect(page.locator("output")).toContainText("4.95");
+  await expect(page.locator("output").filter({ visible: true })).toContainText("4.95");
 });
