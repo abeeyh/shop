@@ -3,9 +3,15 @@ import type { ReactNode } from "react";
 
 type Column = { title: string; links: { href: string; label: string }[] };
 
-type SiteFooterProps = { about: string; columns: Column[]; copyright: string; extra?: ReactNode };
+type SiteFooterProps = {
+  about: string;
+  columns: Column[];
+  copyright: string;
+  extra?: ReactNode;
+  credits?: ReactNode; // licenças de arte de terceiros (CC BY pede crédito)
+};
 
-export function SiteFooter({ about, columns, copyright, extra }: SiteFooterProps) {
+export function SiteFooter({ about, columns, copyright, extra, credits }: SiteFooterProps) {
   return (
     <footer className="mt-16 border-t border-border bg-background py-12">
       <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-5">
@@ -30,6 +36,7 @@ export function SiteFooter({ about, columns, copyright, extra }: SiteFooterProps
           <p className="text-[13px] text-muted-foreground">{copyright}</p>
           {extra}
         </div>
+        {credits ? <p className="mt-3 text-xs text-muted-foreground">{credits}</p> : null}
       </div>
     </footer>
   );

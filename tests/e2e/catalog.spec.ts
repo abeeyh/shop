@@ -109,3 +109,21 @@ test("#139: galeria e FAQ não ficam atrás da caixa de compra", async ({ page, 
   expect(await overlap(faq)).toBe(false);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true); // sem rolagem lateral
 });
+
+// #166: grade (padrão) ou lista — a escolha vai na URL e o cookie lembra nas outras páginas
+test("#166: alterna lista/grade e a escolha vale na busca", async ({ page }) => {
+  await page.goto("/en/wow/raids");
+  const view = page.getByRole("group", { name: "View" }).filter({ visible: true });
+  // grade é o padrão (pedido do dono)
+  await expect(view.getByRole("link", { name: "Grid" })).toHaveAttribute("aria-current", "true");
+  await expect(page.locator("main article").filter({ visible: true }).first()).toBeVisible(); // cartões
+  await view.getByRole("link", { name: "List" }).click();
+  await expect(page).toHaveURL(/vista=lista/);
+  await expect(page.locator("main article").filter({ visible: true })).toHaveCount(0);
+  await page.goto("/en/produtos?q=venomous");
+  const view2 = page.getByRole("group", { name: "View" }).filter({ visible: true });
+  await expect(view2.getByRole("link", { name: "List" })).toHaveAttribute("aria-current", "true"); // cookie
+  await view2.getByRole("link", { name: "Grid" }).click();
+  await expect(page).toHaveURL(/vista=grade/);
+  await expect(page.locator("main article").filter({ visible: true }).first()).toBeVisible();
+});
