@@ -134,6 +134,7 @@ export default async function SupportConversation({ params }: PageProps<"/[local
               team: t("support.customer"),
               placeholder: chat("placeholder"),
               send: chat("send"),
+              typing: t("support.typing"),
               errors: {
                 error: chat("errors.error"),
                 limited: chat("errors.limited"),

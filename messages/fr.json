@@ -537,7 +537,8 @@
       "confirm": {
         "assume": "Vous prenez cette discussion en charge.",
         "resolve": "La discussion sera fermée. Si le client écrit à nouveau, elle se rouvre."
-      }
+      },
+      "typing": "Le client écrit…"
     },
     "hours": {
       "title": "Horaires du support (UTC)",

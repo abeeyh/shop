@@ -537,7 +537,8 @@
       "confirm": {
         "assume": "Du übernimmst diesen Chat.",
         "resolve": "Der Chat wird geschlossen. Schreibt der Kunde erneut, öffnet er sich wieder."
-      }
+      },
+      "typing": "Kunde schreibt…"
     },
     "hours": {
       "title": "Supportzeiten (UTC)",

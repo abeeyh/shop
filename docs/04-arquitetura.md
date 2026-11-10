@@ -161,6 +161,7 @@ sequenceDiagram
 - `staff_profiles` (user_id, role `suporte|admin`, languages text[], active, invited_by, created_at) — RN-04 a RN-06; clientes não têm linha aqui. Desativar apaga as sessões na hora (RN-05)
 - `staff_invites` (id, email, role, languages, token_hash (sha-256), expires_at (7 dias), used_at, invited_by) — RN-04: o link do convite é mostrado uma vez ao admin (e-mail entra com o provedor)
 - `support_hours` (weekday 0=domingo, start_min, end_min — minutos UTC; fim < início atravessa a meia-noite) — RN-99; sem linhas = sempre aberto; editado em `/admin/equipe` com auditoria
+- Chat — "digitando" (#168): o lado do cliente chama a action `customerTyping` (no máx. 1 vez a cada 3 s, limite `chatTyping` por conversa) que publica `{typing:"customer"}` no canal da conversa; o SSE entrega e só a tela da equipe mostra (some em 4 s ou quando a mensagem chega). A equipe não publica "digitando".
 - `support_conversations` (id, user_id? (#162: conversa de quem está logado; `set null` ao excluir a conta), guest_email?, guest_name?, order_id?, locale, status `aberta|em_atendimento|resolvida`, assigned_to?, guest_token_hash?, created_at, last_message_at, resolved_at) — RN-92, RN-93
 - `support_messages` (id, conversation_id, author_type `customer|staff|system`, author_id?, body, created_at, read_at) — corpo já mascarado (RN-95)
 - `support_attachments` (id, message_id, storage_key, mime, size_bytes) — RN-96

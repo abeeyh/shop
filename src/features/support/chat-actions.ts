@@ -9,12 +9,14 @@ import { routing } from "@/i18n/routing";
 import { clientIp, rateLimitKey } from "@/lib/client-ip";
 import { env } from "@/lib/env";
 import { logger } from "@/lib/logger";
+import { publish } from "@/lib/pubsub";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
 import { currentConversationId } from "./access";
 import {
   addMessage,
   createConversation,
   getConversation,
+  channelOf,
   openCountByEmail,
   setConversationStatus,
   setGuestCookie,
@@ -109,4 +111,13 @@ export async function staffSetStatus(form: FormData) {
   const staff = await requireStaff(input.locale, ["admin", "suporte"]);
   await setConversationStatus(input.id, input.status, staff.user.id);
   refresh();
+}
+
+// #168: "cliente digitando" — só o lado do cliente avisa e só a equipe mostra (a equipe nunca avisa, então o
+// cliente não vê "digitando" do suporte). Vai só o sinal, nunca o texto. Limite por conversa; Valkey fora = ignora.
+export async function customerTyping(): Promise<void> {
+  const id = await currentConversationId();
+  if (!id) return;
+  const r = await rateLimit({ key: `chatTyping:${id}`, ...RATE_LIMITS.chatTyping });
+  if (r.allowed) await publish(channelOf(id), JSON.stringify({ typing: "customer" }));
 }

@@ -14,7 +14,9 @@ export type ChatMessage = {
 export function useChat(conversationId: string | null) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [status, setStatus] = useState<string | null>(null);
+  const [customerTyping, setCustomerTyping] = useState(false); // #168: só a tela da equipe usa
   const last = useRef(0);
+  const typingTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     if (!conversationId) return;
@@ -36,15 +38,24 @@ export function useChat(conversationId: string | null) {
     const source = new EventSource(`/api/support/conversations/${conversationId}/stream`);
     source.onopen = () => void catchUp();
     source.onmessage = (e) => {
-      const data = JSON.parse(e.data) as Partial<ChatMessage> & { status?: string };
-      if (data.status && data.id === undefined) setStatus(data.status);
-      else merge([data as ChatMessage]);
+      const data = JSON.parse(e.data) as Partial<ChatMessage> & { status?: string; typing?: string };
+      if (data.typing === "customer") {
+        // some sozinho se o cliente parar (ele avisa no máx. a cada 3 s enquanto digita)
+        setCustomerTyping(true);
+        clearTimeout(typingTimer.current);
+        typingTimer.current = setTimeout(() => setCustomerTyping(false), 4_000);
+      } else if (data.status && data.id === undefined) setStatus(data.status);
+      else {
+        if (data.authorType === "customer") setCustomerTyping(false); // a mensagem chegou
+        merge([data as ChatMessage]);
+      }
     };
     return () => {
       alive = false;
+      clearTimeout(typingTimer.current);
       source.close();
     };
   }, [conversationId]);
 
-  return { messages, status };
+  return { messages, status, customerTyping };
 }

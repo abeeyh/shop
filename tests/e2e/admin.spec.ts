@@ -360,12 +360,16 @@ test.describe("admin", () => {
     await page.getByRole("link", { name: `E2E Visitor ${id}` }).click();
     await expect(page.getByTestId("conversation-status")).toHaveText("Open");
     await expect(page.getByText("My card is [cartão removido], can you help?")).toBeVisible();
+    // #168: o suporte digitando NÃO aparece para o cliente (só o sinal do cliente é enviado)
     await page.getByPlaceholder("Write a message").fill("Hi! Which realm?");
+    await expect(vp.getByText(/typing/i)).toHaveCount(0);
     await page.getByRole("button", { name: "Send" }).click();
     await expect(vp.getByText("Hi! Which realm?")).toBeVisible(); // SSE: sem recarregar
-    await vp.getByPlaceholder("Write a message").fill("Area 52, thanks");
+    await vp.getByPlaceholder("Write a message").pressSequentially("Area 52, thanks");
+    await expect(page.getByText("Customer is typing…")).toBeVisible(); // #168: a equipe vê o cliente digitando
     await vp.getByRole("button", { name: "Send" }).click();
     await expect(page.getByText("Area 52, thanks")).toBeVisible();
+    await expect(page.getByText("Customer is typing…")).toHaveCount(0); // a mensagem chegou: some
     await page.reload();
     await expect(page.getByTestId("conversation-status")).toHaveText("In progress"); // respondeu = assumiu
     await page.getByRole("button", { name: "Mark as resolved" }).click();

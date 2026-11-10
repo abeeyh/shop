@@ -205,6 +205,7 @@ Garantia: revisão de PR, agente `frontend-ui` e checagem no CI de classes visua
   - brilho que atravessa o botão principal no hover + halo violeta;
   - barra lateral do carrinho entra deslizando (de baixo no celular);
   - slider de opções com trilho em gradiente;
+  - #168 — movimento em todo o projeto (CSS, sem biblioteca; 150–300 ms, saída mais rápida que a entrada): diálogo de confirmação entra com escala e o fundo escurecido em fade; conteúdo de `<details>` (FAQ, filtros, menus) abre com fade + 4 px; mensagens de retorno (`role=status`/`alert`) entram em fade quando o texto aparece; botões apertam no clique (escala 0,97); mensagem nova do chat sobe; contador do carrinho pulsa quando muda; troca de tema transiciona as cores; "cliente digitando" com três pontos (só na tela da equipe);
   - #164: linha de produto e bloco de categoria **sobem 2 px** no hover; o herói da home **entra uma vez** (opacidade + 10 px, `@keyframes enter`).
 - Uma ação principal por tela continua valendo (botão violeta); a secundária usa `gradient-outline`.
 - Imagens: arte **própria ou licenciada**; nada de arte oficial da Blizzard.
