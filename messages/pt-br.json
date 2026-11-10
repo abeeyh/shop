@@ -537,7 +537,8 @@
       "confirm": {
         "assume": "Você passa a atender esta conversa.",
         "resolve": "A conversa será encerrada. Se o cliente escrever de novo, ela reabre."
-      }
+      },
+      "typing": "Cliente digitando…"
     },
     "hours": {
       "title": "Horário de atendimento (UTC)",

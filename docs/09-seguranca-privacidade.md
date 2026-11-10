@@ -52,6 +52,7 @@ Contas, senhas (hash), e-mails, pedidos e pagamentos (USDT e cartão), dados de 
 13b. Suporte tentando alterar preço, promoção ou cupom → 403 (RN-06); toda alteração auditada (RN-71). *(Antes do #116 também valia para admin sem 2FA; hoje o 2FA é opcional.)*
 13c. Mensagem de chat com `<script>` → exibida como texto, nunca HTML.
 13d. Visitante tenta ler conversa de outro (trocando o `id`) → 404 (RN-92). Dono = cookie do visitante **ou** a conta logada à qual a conversa pertence (#162); conversa de visitante não aparece para outra conta logada.
+13e. "Digitando" (#168): vai só o sinal (nunca o texto), só de quem é dono da conversa, com limite por conversa; nada é gravado.
 13e. Atendente de suporte tenta mudar preço, cupom, reembolso ou equipe → 403 (RN-06).
 13f. Mensagem com número de cartão ou frase-semente → gravada mascarada (RN-95).
 13g. Anexo que não é imagem, maior que 5 MB ou com extensão falsa → recusado pelo conteúdo, não pela extensão (RN-96).

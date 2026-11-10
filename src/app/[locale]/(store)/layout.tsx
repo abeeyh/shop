@@ -86,7 +86,10 @@ async function StoreHeader({ locale }: { locale: string }) {
             <Link href={`/${locale}/carrinho`} aria-label={t("cart", { n: cartCount })} className={iconLink}>
               <ShoppingCart aria-hidden="true" className="size-5" />
               {cartCount ? (
-                <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-primary px-1.5 text-center font-heading text-[11px] leading-5 font-bold text-primary-foreground">
+                <span
+                  key={cartCount} // #168: muda o número → pulsa
+                  className="count-pop absolute -top-1 -right-1 min-w-5 rounded-full bg-primary px-1.5 text-center font-heading text-[11px] leading-5 font-bold text-primary-foreground"
+                >
                   {cartCount}
                 </span>
               ) : null}

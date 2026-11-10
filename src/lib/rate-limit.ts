@@ -13,6 +13,7 @@ export const RATE_LIMITS = {
   chatStart: { limit: 5, windowMs: 60 * 60_000 }, // RN-97: conversas novas por IP
   chatMessage: { limit: 20, windowMs: 60_000 }, // RN-97: por conversa e por lado (cliente/equipe)
   sse: { limit: 30, windowMs: 60_000 }, // aberturas de SSE do chat por IP
+  chatTyping: { limit: 30, windowMs: 60_000 }, // #168: aviso de "digitando" por conversa (o cliente manda no máx. 1 a cada 3 s)
   checkout: { limit: 10, windowMs: 10 * 60_000 }, // por IP: cada checkout reserva vaga e cupom
   login: { limit: 10, windowMs: 10 * 60_000 }, // por IP e por e-mail: senha e código do 2FA (docs/09 §2)
   signup: { limit: 5, windowMs: 60 * 60_000 }, // RN-107: contas novas por IP (sem CAPTCHA até o #29)
