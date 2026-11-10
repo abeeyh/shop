@@ -381,7 +381,27 @@
       "newPromotion": "Nova promoção",
       "newCoupon": "Novo cupom",
       "newSubcategory": "Nova subcategoria",
-      "newTag": "Nova tag"
+      "newTag": "Nova tag",
+      "sec": {
+        "info": "Informações",
+        "infoHint": "O básico que as pessoas veem e procuram.",
+        "display": "Exibição",
+        "displayHint": "Como aparece e em que posição fica na loja.",
+        "status": "Status",
+        "statusHint": "O que está inativo some da loja, mas continua no painel.",
+        "pricing": "Preço e quantidade",
+        "pricingHint": "Preço em USDT. Com opções, o preço vem das combinações.",
+        "options": "Opções",
+        "optionsHint": "Adicionais, escolhas e o preço de cada combinação.",
+        "discount": "Desconto",
+        "discountHint": "Quanto abate e onde vale.",
+        "schedule": "Vigência",
+        "scheduleHint": "Início e fim do período, em UTC.",
+        "limits": "Limites",
+        "limitsHint": "Quantas vezes pode ser usado e o pedido mínimo.",
+        "danger": "Zona de perigo",
+        "dangerHint": "Excluir tira do painel e da loja. O registro fica no banco para os pedidos antigos e a auditoria."
+      }
     },
     "table": {
       "activeProducts": "Produtos ativos",
@@ -600,7 +620,6 @@
       "deleteMessage": "Sai do painel e da loja, mas fica guardado no banco: pedidos antigos e a auditoria continuam apontando para ele.",
       "deleteConfirm": "Excluir",
       "inUse": "A categoria ainda tem produtos. Exclua ou mova os produtos antes.",
-      "close": "Fechar",
       "search": "Buscar",
       "allCategories": "Todas as categorias",
       "allStatuses": "Todos",
@@ -609,7 +628,8 @@
         "scheduled": "Agendada",
         "live": "Vigente",
         "expired": "Expirada"
-      }
+      },
+      "actions": "Ações"
     },
     "options": {
       "addonName": "Nome do adicional",

@@ -381,7 +381,27 @@
       "newPromotion": "Neue Aktion",
       "newCoupon": "Neuer Gutschein",
       "newSubcategory": "Neue Unterkategorie",
-      "newTag": "Neuer Tag"
+      "newTag": "Neuer Tag",
+      "sec": {
+        "info": "Angaben",
+        "infoHint": "Die Grundlagen, die Leute sehen und suchen.",
+        "display": "Darstellung",
+        "displayHint": "Wie es aussieht und wo es im Shop steht.",
+        "status": "Status",
+        "statusHint": "Inaktives verschwindet aus dem Shop, bleibt aber im Panel.",
+        "pricing": "Preis und Menge",
+        "pricingHint": "Preis in USDT. Bei Optionen ergibt sich der Preis aus den Kombinationen.",
+        "options": "Optionen",
+        "optionsHint": "Zusätze, Auswahlmöglichkeiten und der Preis jeder Kombination.",
+        "discount": "Rabatt",
+        "discountHint": "Wie viel abgezogen wird und wo er gilt.",
+        "schedule": "Gültigkeit",
+        "scheduleHint": "Beginn und Ende des Zeitraums, in UTC.",
+        "limits": "Limits",
+        "limitsHint": "Wie oft es genutzt werden kann und der Mindestbestellwert.",
+        "danger": "Gefahrenbereich",
+        "dangerHint": "Löschen entfernt den Eintrag aus Panel und Shop. Der Datensatz bleibt für frühere Bestellungen und das Audit-Protokoll in der Datenbank."
+      }
     },
     "table": {
       "activeProducts": "Aktive Produkte",
@@ -600,7 +620,6 @@
       "deleteMessage": "Verschwindet aus Panel und Shop, bleibt aber in der Datenbank: alte Bestellungen und das Audit verweisen weiter darauf.",
       "deleteConfirm": "Löschen",
       "inUse": "Diese Kategorie hat noch Produkte. Lösche oder verschiebe sie zuerst.",
-      "close": "Schließen",
       "search": "Suchen",
       "allCategories": "Alle Kategorien",
       "allStatuses": "Alle",
@@ -609,7 +628,8 @@
         "scheduled": "Geplant",
         "live": "Aktiv",
         "expired": "Abgelaufen"
-      }
+      },
+      "actions": "Aktionen"
     },
     "options": {
       "addonName": "Name des Zusatzes",

@@ -12,6 +12,6 @@ export const ORDER_STATUS_TONE: Record<OrderStatus, BadgeTone> = {
   concluido: "success",
   reembolso_solicitado: "warning",
   reembolsado: "neutral",
-  cancelado: "neutral",
+  cancelado: "danger", // #172: cancelado em vermelho
   falha_pagamento: "danger",
 };

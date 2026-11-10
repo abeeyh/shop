@@ -21,6 +21,7 @@ Referência visual: começou no template **Enfhess (dark)** da ThemeMarch (anál
 | Gradiente — fim | `#22d3ee` (ciano) | Idem |
 | Destrutivo / erro | `#e11d48` | Excluir, erros (4,7:1 com branco) |
 | Texto de erro | `#fb7185` | Mensagem de erro sobre o fundo (7,4:1) |
+| Sucesso | `#34d399` (verde) | Selo `success` — pedido concluído, item ativo (10:1 no fundo; igual em todos os temas — #172) |
 | Texto principal | `#f7f7fb` (títulos) / `#c8c8d4` (corpo) | 12,1:1 |
 | Texto secundário | `#8e8ea3` | Legendas, placeholders (6,2:1 no fundo; 5,7:1 no input) |
 
@@ -63,7 +64,7 @@ Regras:
   --primary: #6d4aff;  --primary-hover: #5a37ec;  --primary-foreground: #ffffff;
   --link: #a99bff;  --ring: #a99bff;  --gold: #f5c451;
   --gradient-from: #6d4aff;  --gradient-to: #22d3ee;
-  --destructive: #e11d48;  --error-text: #fb7185;
+  --destructive: #e11d48;  --error-text: #fb7185;  --success: #34d399;
 }
 /* @theme inline expõe cada um como cor do Tailwind: bg-card, text-gold, from-gradient-from… */
 ```
@@ -129,7 +130,8 @@ Se o componente **conhece o domínio**, fica na feature; se é genérico, em `sr
 | Organismo | `AuthShell` (telas de entrada da equipe: marca, "voltar à loja", título, apoio e o cartão do formulário — RF-32) | `components/organisms` |
 | Molécula | `CopyButton` (copia um texto e confirma por 2 s — link do convite) | `components/molecules` |
 | Domínio (admin) | `ProductOptionsEditor` (adicionais em linhas, eixos com estilo e valores, grade de preços gerada dos eixos — incluir, preço, sob consulta, nota; escreve o mesmo texto que o servidor valida — RF-09 a RF-11), `TagPicker` (tag principal + outras tags do produto — #160) | `features/admin/components` |
-| Domínio (admin) | `RouteDrawer` (gaveta de criar/editar aberta pela URL `?novo=1`/`?editar=id`; `wide` para o produto — RF-04), `DeleteEntity` (excluir com confirmação; só marca o registro — RN-72, #158; categoria com produtos avisa), `ListFilters` (busca + categoria + status na URL, select filtra na hora — RF-03) | `features/admin/components` |
+| Molécula | `FormSection` (seção de formulário: título, ajuda e campos; `tone="danger"` para a zona de perigo), `ListTable` (tabela no desktop, cartões no celular via `data-label` — RF-08), `BackLink` (voltar à lista) — #172 | `components/molecules` |
+| Domínio (admin) | `EntityForm` (formulário de criar/editar: coluna principal + lateral, barra de salvar fixa no rodapé com Salvar/Cancelar; criar volta à lista), `EntityFormPage` (cabeçalho com voltar, formulário e zona de perigo com excluir), `RowActions` (Editar + Excluir por linha), `DeleteEntity` (excluir com confirmação; só marca o registro — RN-72, #158; categoria com produtos avisa), `ListFilters` (busca + categoria + status na URL, select filtra na hora — RF-03) | `features/admin/components` |
 | Domínio (admin) | `AdminNav` (#144: barra lateral fixa no desktop e gaveta no celular; links agrupados em Operação, Catálogo e Gestão, com ícone e página atual marcada — `aria-current`; mostra só o que o papel abre, RN-06; 2FA, Loja, usuário e Sair no rodapé) | `features/admin` |
 | Domínio (conta) | `Avatar` (avatar pronto ou inicial, no gradiente do tema — #162), `ProfileForm` (nome + avatares em rádios), `SupportPanel` (chat da conta no perfil + histórico) | `features/account/components` |
 | Domínio (suporte) | `ChatOpenButton` (abre o chat com mensagem pronta: consultar preço, agendar run), `ChatLauncher` (botão flutuante), `ChatWindow`, `ChatMessage`, `ChatComposer`, `OfflineForm`, `SupportQueue` (dashboard) | `features/support` |
@@ -216,3 +218,14 @@ Garantia: revisão de PR, agente `frontend-ui` e checagem no CI de classes visua
   - página do produto no celular: **compra logo depois do título** (galeria e descrição longa vêm depois);
   - categoria: o card não repete a tag que já é o título da seção;
   - alvos de toque ≥ 44 px também nas abas, chips, logo e selects; etiquetas com texto ≥ 12 px; trilho de abas esmaece na borda no celular (indica que rola).
+
+## 9. Painel admin: listas e formulários (#172, substitui a gaveta do #152)
+
+Pedido do dono (2026-11-10): a gaveta por cima da lista não ficou boa. Estratégia (checada com a `ui-ux-pro-max`: confirmar ação destrutiva, mostrar sucesso/erro do envio, formulário em seções):
+
+- **Criar e editar são páginas próprias**: `/admin/<entidade>/novo` e `/admin/<entidade>/<id>` (categorias, tags, produtos, promoções, cupons). Link profundo, recarregar funciona e o "voltar" (`BackLink` + Cancelar) sempre cai na lista. Id inexistente ou inválido → "não encontrada".
+- **Formulário em seções** (`FormSection`, título + ajuda): Informações, Preço/Opções (produto), Desconto, Limites e Vigência (promoção/cupom) na coluna principal; Exibição e Status na lateral. **2 colunas a partir de `lg`**, 1 coluna no celular.
+- **Barra de salvar fixa** no rodapé (`position: sticky`): Salvar, Cancelar, "Salvo" (`role=status`) e os erros de campo (`role=alert`) ficam sempre à vista. Criar leva de volta à lista; editar fica na página.
+- **Zona de perigo** (borda `error-text`) no fim da edição: Excluir com `ConfirmSubmit`; só marca `deleted_at` e desativa (RN-72) — a regra continua no servidor (`deleteEntity`).
+- **Listas**: cabeçalho com contagem e "Novo", busca/filtro onde já existe (`ListFilters`), nome como link para editar e coluna de ações por linha (Editar, Excluir com confirmação e o nome do item no `aria-label`). Vazia: `EmptyState` com o botão de criar. **Celular: cada linha vira um cartão** (`ListTable`), sem rolagem lateral (RF-08). As tabelas simples (pedidos, auditoria, suporte) mantêm a rolagem lateral com o mesmo visual.
+- Só tokens do tema; nenhuma cor nova. Alvos ≥ 44 px, nada depende de hover.

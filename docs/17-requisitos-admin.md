@@ -20,11 +20,11 @@ Estados: **feito**, **fazer** (entra nesta rodada), **depois** (fora desta rodad
 | RF-01 | Barra lateral agrupada, página atual marcada, só o que o papel abre (#144) | feito |
 | RF-02 | Toda tela tem cabeçalho igual (título, descrição curta, ação principal) — componente `PageHeader` | feito (#149–#152) |
 | RF-03 | Toda lista tem estado vazio com o próximo passo, e busca quando passar de uma tela | feito (#152) |
-| RF-04 | Criar e editar em gaveta (`Drawer`) — a lista continua visível; fechar não perde a lista | feito (#152) |
+| RF-04 | Criar e editar em página própria (`/novo`, `/<id>`) com formulário em seções, barra de salvar fixa e zona de perigo (#172; substituiu a gaveta do #152) | feito (#172) |
 | RF-05 | Ação destrutiva ou que muda estado (excluir, desativar, resolver, avançar pedido, assumir) pede confirmação e mostra o resultado | feito (#150, #152) |
 | RF-06 | Datas no fuso de quem vê, com o fuso escrito; um formatador só (hoje há 5 cópias) | feito (#149–#155) |
 | RF-07 | Status com selo de cor (ativo/inativo, status do pedido, vigente/agendada/expirada) — `StatusBadge` | feito (#149, #152) |
-| RF-08 | Tabelas viram cartões no celular; nada de rolagem lateral na página | fazer |
+| RF-08 | Listas do catálogo viram cartões no celular (`ListTable`); nada de rolagem lateral na página | feito (#172) |
 
 ## 3. CRUD por entidade (admin)
 

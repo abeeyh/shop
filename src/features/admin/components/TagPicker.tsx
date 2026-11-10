@@ -16,7 +16,7 @@ export function TagPicker({ tags, selected, labels }: Props) {
   const [others, setOthers] = useState<string[]>(selected.slice(1));
   const value = [primary, ...others.filter((x) => x !== primary)].filter(Boolean).join(",");
   return (
-    <div className="grid gap-3 sm:col-span-2">
+    <div className="grid gap-3">
       <input type="hidden" name="tags" value={value} />
       <label className="grid gap-1.5 text-sm">
         <span className="font-semibold text-foreground">{labels.primary}</span>
