@@ -9,7 +9,7 @@ const badge = cva(
       tone: {
         neutral: "border-border bg-muted text-muted-foreground",
         info: "border-link/30 bg-link/10 text-link",
-        success: "border-gradient-to/30 bg-gradient-to/10 text-gradient-to",
+        success: "border-success/30 bg-success/10 text-success",
         warning: "border-gold/30 bg-gold/10 text-gold",
         danger: "border-error-text/30 bg-error-text/10 text-error-text",
       },

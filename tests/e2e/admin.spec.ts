@@ -85,30 +85,34 @@ test.describe("admin", () => {
     await other.close();
 
     const id = Date.now().toString(36);
-    // RF-04 (doc 17): criar e editar em gaveta aberta pelo cabeçalho
+    // doc 11 §8: criar e editar em página própria (/novo e /<id>), voltando para a lista ao criar
     await page.goto("/en/admin/categorias");
     await page.getByRole("link", { name: "New category" }).click();
     await page.getByLabel("Name", { exact: true }).fill(`E2E Keys ${id}`);
     await page.getByLabel("Slug (URL)").fill(`e2e-keys-${id}`);
     await page.getByLabel("Type").selectOption("dungeon"); // M+: vai ao carrinho sem horário
     await page.getByRole("button", { name: "Save" }).click();
-    await expect(page.getByRole("status")).toHaveText("Saved");
-    await page.getByRole("button", { name: "Close" }).click(); // fecha a gaveta e a lista já tem a categoria
+    await expect(page).toHaveURL(/\/en\/admin\/categorias$/); // criou: volta para a lista, que já tem a categoria
     await expect(page.getByRole("cell", { name: new RegExp(`E2E Keys ${id}`) }).first()).toBeVisible();
 
     await page.goto("/en/admin/produtos");
     await page.getByRole("link", { name: "New product" }).click();
+    await expect(page.getByRole("heading", { name: "New product" })).toBeVisible(); // a lista também tem um filtro "Category"
     await page
-      .getByRole("dialog")
       .getByRole("combobox", { name: "Category", exact: true })
       .selectOption({ label: `E2E Keys ${id}` });
     await page.getByLabel("Name", { exact: true }).fill(`E2E Key Product ${id}`);
     await page.getByLabel("Slug (URL)").fill(`e2e-product-${id}`);
     await page.getByLabel("Price (USDT)").fill("9.99");
     await page.getByRole("button", { name: "Save" }).click();
-    await expect(page.getByRole("status")).toHaveText("Saved");
+    await expect(page).toHaveURL(/\/en\/admin\/produtos$/);
 
-    // slug repetido é recusado no campo (o formulário de criação limpa depois de salvar)
+    // slug repetido é recusado no campo
+    await page.getByRole("link", { name: "New product" }).click();
+    await expect(page.getByRole("heading", { name: "New product" })).toBeVisible(); // a lista também tem um filtro "Category"
+    await page
+      .getByRole("combobox", { name: "Category", exact: true })
+      .selectOption({ label: `E2E Keys ${id}` });
     await page.getByLabel("Name", { exact: true }).fill(`E2E Key Product ${id} 2`);
     await page.getByLabel("Slug (URL)").fill(`e2e-product-${id}`);
     await page.getByLabel("Price (USDT)").fill("1");
@@ -127,7 +131,7 @@ test.describe("admin", () => {
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByText(/Deactivate or move the active products/)).toBeVisible();
     // #158: excluir é marcação, mas categoria com produtos não sai
-    await page.getByRole("dialog").getByRole("button", { name: "Delete" }).click();
+    await page.getByRole("button", { name: "Delete" }).click();
     await page
       .getByRole("dialog", { name: `Delete E2E Keys ${id}?` })
       .getByRole("button", { name: "Delete" })
@@ -136,12 +140,12 @@ test.describe("admin", () => {
 
     // RN-21/RN-22: promoção de 10% no produto → riscado + contagem na página do produto
     await page.goto("/en/admin/promocoes");
-    await page.getByRole("link", { name: "New promotion" }).click();
+    await page.getByRole("link", { name: "New promotion" }).first().click();
     await page.getByLabel("Name", { exact: true }).fill(`E2E Promo ${id}`);
     await page.getByLabel("Value (% or USDT)").fill("10");
     await page.getByLabel("Applies to").selectOption({ label: `E2E Key Product ${id}` });
     await page.getByRole("button", { name: "Save" }).click();
-    await expect(page.getByRole("status")).toHaveText("Saved");
+    await expect(page).toHaveURL(/\/en\/admin\/promocoes$/);
     await page.goto(`/en/wow/e2e-keys-${id}/e2e-product-${id}`);
     await expect(page.locator("s").getByText("9.99 USDT")).toBeVisible();
     await expect(page.getByText("8.99 USDT").first()).toBeVisible();
@@ -152,12 +156,12 @@ test.describe("admin", () => {
 
     // RN-25/RN-26: cupom de 50% vence a promoção; código inválido tem mensagem genérica
     await page.goto("/en/admin/cupons");
-    await page.getByRole("link", { name: "New coupon" }).click();
+    await page.getByRole("link", { name: "New coupon" }).first().click();
     await page.getByLabel("Code").fill(`e2e${id}`);
     await page.getByLabel("Value (% or USDT)").fill("50");
     await page.getByLabel("Applies to").selectOption({ label: `E2E Key Product ${id}` });
     await page.getByRole("button", { name: "Save" }).click();
-    await expect(page.getByRole("status")).toHaveText("Saved");
+    await expect(page).toHaveURL(/\/en\/admin\/cupons$/);
 
     await page.goto(`/en/wow/e2e-keys-${id}/e2e-product-${id}`);
     await page.getByLabel("Realm").fill("Area 52"); // #94: serviço pede o personagem
@@ -180,7 +184,7 @@ test.describe("admin", () => {
     await page.getByRole("link", { name: `Edit E2E Key Product ${id}` }).click();
     await expect(page.getByRole("heading", { name: `Edit E2E Key Product ${id}` })).toBeVisible(); // navegação terminou
     // RF-10/RF-11 (doc 17): eixo e grade de preços no editor visual (sem digitar o formato de texto)
-    const dialog = page.getByRole("dialog");
+    const dialog = page.locator("main");
     await dialog.getByRole("button", { name: "Add an axis" }).click();
     await dialog.getByLabel("Axis name (e.g. Bosses)").fill("Tier");
     await dialog.getByLabel("Values, separated by commas").fill("Bronze, Gold");
@@ -189,8 +193,8 @@ test.describe("admin", () => {
     await dialog.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");
     await page.reload();
-    await expect(page.getByRole("dialog").getByLabel("Price (USDT) Gold")).toHaveValue("7.50");
-    await expect(page.getByRole("dialog").getByLabel("Sells Bronze")).toBeChecked();
+    await expect(page.getByLabel("Price (USDT) Gold")).toHaveValue("7.50");
+    await expect(page.getByLabel("Sells Bronze")).toBeChecked();
     await page.getByLabel("Active").uncheck();
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("status")).toHaveText("Saved");
@@ -203,14 +207,13 @@ test.describe("admin", () => {
 
     // doc 17 §3: o que nunca foi usado pode ser excluído (e vai para a auditoria)
     // #160: tags no lugar das subcategorias — criar e excluir (só marca, #158)
-    await page.goto("/en/admin/tags?novo=1");
+    await page.goto("/en/admin/tags/novo");
     await page.getByLabel("Name", { exact: true }).fill(`E2E Temp ${id}`);
     await page.getByLabel("Slug (URL)").fill(`e2e-temp-${id}`);
     await page.getByRole("button", { name: "Save" }).click();
-    await expect(page.getByRole("status")).toHaveText("Saved");
-    await page.goto("/en/admin/tags");
-    await page.getByRole("link", { name: `Edit E2E Temp ${id}` }).click();
-    await page.getByRole("dialog").getByRole("button", { name: "Delete" }).click();
+    await expect(page).toHaveURL(/\/en\/admin\/tags$/);
+    // excluir direto pela linha da lista (ação por linha)
+    await page.getByRole("button", { name: `Delete E2E Temp ${id}` }).click();
     await page
       .getByRole("dialog", { name: `Delete E2E Temp ${id}?` })
       .getByRole("button", { name: "Delete" })

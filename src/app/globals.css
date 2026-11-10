@@ -6,6 +6,7 @@
   --heading: #f7f7fb;
   --link: #a99bff;
   --error-text: #fb7185;
+  --success: #34d399; /* #172: status concluído (verde em todos os temas) */
   --gradient-from: #6d4aff;
   --gradient-to: #22d3ee;
   --gold: #f5c451;
@@ -169,6 +170,7 @@
   --color-heading: var(--heading);
   --color-link: var(--link);
   --color-error-text: var(--error-text);
+  --color-success: var(--success);
   --color-gradient-from: var(--gradient-from);
   --color-gradient-to: var(--gradient-to);
   --color-gold: var(--gold);

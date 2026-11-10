@@ -381,7 +381,27 @@
       "newPromotion": "新建促销",
       "newCoupon": "新建优惠码",
       "newSubcategory": "新建子分类",
-      "newTag": "新建标签"
+      "newTag": "新建标签",
+      "sec": {
+        "info": "基本信息",
+        "infoHint": "用户能看到和搜索到的基础内容。",
+        "display": "展示",
+        "displayHint": "外观以及在商店中的位置。",
+        "status": "状态",
+        "statusHint": "停用的内容会从商店消失，但仍保留在后台。",
+        "pricing": "价格和数量",
+        "pricingHint": "以 USDT 计价。有选项时，价格由各组合决定。",
+        "options": "选项",
+        "optionsHint": "附加项、选择项以及每种组合的价格。",
+        "discount": "折扣",
+        "discountHint": "减免多少以及适用范围。",
+        "schedule": "有效期",
+        "scheduleHint": "时间段的开始和结束，使用 UTC。",
+        "limits": "限制",
+        "limitsHint": "可使用的次数和最低订单金额。",
+        "danger": "危险区域",
+        "dangerHint": "删除后将从后台和商店移除。记录仍保留在数据库中，供历史订单和审计日志使用。"
+      }
     },
     "table": {
       "activeProducts": "启用中的商品",
@@ -600,7 +620,6 @@
       "deleteMessage": "会从后台和商店中移除，但仍保留在数据库中：旧订单和审计记录仍会引用它。",
       "deleteConfirm": "删除",
       "inUse": "该分类下还有商品。请先删除或移动这些商品。",
-      "close": "关闭",
       "search": "搜索",
       "allCategories": "所有分类",
       "allStatuses": "全部",
@@ -609,7 +628,8 @@
         "scheduled": "已排期",
         "live": "生效中",
         "expired": "已过期"
-      }
+      },
+      "actions": "操作"
     },
     "options": {
       "addonName": "附加项名称",

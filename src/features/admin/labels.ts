@@ -45,9 +45,6 @@ export const deleteLabels = (t: AdminT, name: string) => ({
   generic: t("formErrors.generic"),
 });
 
-// RF-04/RF-02: textos comuns da gaveta e do cabeçalho
-export const crudLabels = (t: AdminT) => ({ close: t("crud.close"), search: t("crud.search") });
-
 export const filterLabels = (t: AdminT) => ({
   search: t("crud.search"),
   category: t("fields.category"),

@@ -381,7 +381,27 @@
       "newPromotion": "Nouvelle promotion",
       "newCoupon": "Nouveau coupon",
       "newSubcategory": "Nouvelle sous-catégorie",
-      "newTag": "Nouveau tag"
+      "newTag": "Nouveau tag",
+      "sec": {
+        "info": "Informations",
+        "infoHint": "L'essentiel que les gens voient et recherchent.",
+        "display": "Affichage",
+        "displayHint": "Son apparence et sa position dans la boutique.",
+        "status": "Statut",
+        "statusHint": "Ce qui est inactif disparaît de la boutique mais reste dans le panneau.",
+        "pricing": "Prix et quantité",
+        "pricingHint": "Prix en USDT. Avec des options, le prix vient des combinaisons.",
+        "options": "Options",
+        "optionsHint": "Suppléments, choix et prix de chaque combinaison.",
+        "discount": "Remise",
+        "discountHint": "Le montant retiré et où elle s'applique.",
+        "schedule": "Validité",
+        "scheduleHint": "Début et fin de la période, en UTC.",
+        "limits": "Limites",
+        "limitsHint": "Nombre d'utilisations possibles et commande minimale.",
+        "danger": "Zone de danger",
+        "dangerHint": "Supprimer retire l'élément du panneau et de la boutique. L'enregistrement reste en base pour les anciennes commandes et l'audit."
+      }
     },
     "table": {
       "activeProducts": "Produits actifs",
@@ -600,7 +620,6 @@
       "deleteMessage": "Il quitte le panneau et la boutique mais reste en base : les anciennes commandes et l’audit y font toujours référence.",
       "deleteConfirm": "Supprimer",
       "inUse": "Cette catégorie contient encore des produits. Supprimez-les ou déplacez-les d’abord.",
-      "close": "Fermer",
       "search": "Rechercher",
       "allCategories": "Toutes les catégories",
       "allStatuses": "Tous",
@@ -609,7 +628,8 @@
         "scheduled": "Programmée",
         "live": "En cours",
         "expired": "Expirée"
-      }
+      },
+      "actions": "Actions"
     },
     "options": {
       "addonName": "Nom de l’option",

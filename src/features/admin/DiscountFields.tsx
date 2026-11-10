@@ -1,7 +1,7 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { Input } from "@/components/atoms/Input";
 import { Select } from "@/components/atoms/Select";
-import { Check, Field } from "./fields";
+import { Field } from "./fields";
 import type { AdminT } from "./labels";
 
 export type DiscountValues = {
@@ -30,7 +30,7 @@ export const targetOf = (v: Pick<DiscountValues, "scope" | "categoryId" | "produ
 export const valueOf = (v: Pick<DiscountValues, "type" | "value">) =>
   v.type === "percent" ? String(v.value) : (v.value / 100).toFixed(2);
 
-// Campos comuns a promoção e cupom (RN-21, RN-25)
+// Valor e alvo do desconto, comuns a promoção e cupom (RN-21, RN-25)
 export function DiscountFields({
   t,
   v,
@@ -42,17 +42,9 @@ export function DiscountFields({
   categories: Option[];
   products: Option[];
 }) {
-  const now = currentDate();
   const d = v
-    ? { ...v, value: valueOf(v), target: targetOf(v) }
-    : {
-        type: "percent",
-        value: "",
-        target: "store",
-        startsAt: now,
-        endsAt: new Date(now.getTime() + 7 * 86_400_000),
-        active: true,
-      };
+    ? { type: v.type, value: valueOf(v), target: targetOf(v) }
+    : { type: "percent", value: "", target: "store" };
   return (
     <>
       <Field label={t("fields.type")}>
@@ -83,13 +75,28 @@ export function DiscountFields({
           </optgroup>
         </Select>
       </Field>
+    </>
+  );
+}
+
+// Janela de vigência (UTC): novo = de agora a 7 dias
+export function DiscountSchedule({
+  t,
+  v,
+}: {
+  t: AdminT;
+  v: Pick<DiscountValues, "startsAt" | "endsAt"> | null;
+}) {
+  const now = currentDate();
+  const d = v ?? { startsAt: now, endsAt: new Date(now.getTime() + 7 * 86_400_000) };
+  return (
+    <>
       <Field label={t("fields.startsAt")}>
         <Input name="startsAt" type="datetime-local" required defaultValue={toUtcInput(d.startsAt)} />
       </Field>
       <Field label={t("fields.endsAt")}>
         <Input name="endsAt" type="datetime-local" required defaultValue={toUtcInput(d.endsAt)} />
       </Field>
-      <Check label={t("fields.active")} name="active" defaultChecked={d.active} />
     </>
   );
 }

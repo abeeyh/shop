@@ -14,6 +14,7 @@ type Props = {
   value?: string;
   disabled?: boolean;
   size?: "sm" | "md";
+  ariaLabel?: string; // lista com várias linhas: o botão diz a qual item se refere
 };
 
 // RF-05 (doc 17): ação que muda estado pede confirmação. Fica DENTRO do <form>: o botão de confirmar
@@ -27,6 +28,7 @@ export function ConfirmSubmit(p: Props) {
       <button
         type="button"
         disabled={p.disabled}
+        aria-label={p.ariaLabel}
         onClick={(e) => {
           // campo obrigatório inválido: mostra o erro no próprio campo em vez de abrir o diálogo por cima
           if (e.currentTarget.form?.reportValidity() === false) return;

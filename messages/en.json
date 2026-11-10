@@ -381,7 +381,27 @@
       "newPromotion": "New promotion",
       "newCoupon": "New coupon",
       "newSubcategory": "New subcategory",
-      "newTag": "New tag"
+      "newTag": "New tag",
+      "sec": {
+        "info": "Details",
+        "infoHint": "The basics people see and search for.",
+        "display": "Display",
+        "displayHint": "How it looks and where it sits in the store.",
+        "status": "Status",
+        "statusHint": "Inactive items disappear from the store but stay in the panel.",
+        "pricing": "Price and quantity",
+        "pricingHint": "Price in USDT. With options, the price comes from the combinations.",
+        "options": "Options",
+        "optionsHint": "Add-ons, choices and the price of each combination.",
+        "discount": "Discount",
+        "discountHint": "How much it takes off and where it applies.",
+        "schedule": "Validity",
+        "scheduleHint": "Start and end of the period, in UTC.",
+        "limits": "Limits",
+        "limitsHint": "How many times it can be used and the minimum order.",
+        "danger": "Danger zone",
+        "dangerHint": "Deleting removes it from the panel and the store. The record stays in the database for past orders and the audit log."
+      }
     },
     "table": {
       "activeProducts": "Active products",
@@ -600,7 +620,6 @@
       "deleteMessage": "It leaves the panel and the store but stays in the database: past orders and the audit log still point to it.",
       "deleteConfirm": "Delete",
       "inUse": "This category still has products. Delete or move the products first.",
-      "close": "Close",
       "search": "Search",
       "allCategories": "All categories",
       "allStatuses": "All",
@@ -609,7 +628,8 @@
         "scheduled": "Scheduled",
         "live": "Live",
         "expired": "Expired"
-      }
+      },
+      "actions": "Actions"
     },
     "options": {
       "addonName": "Add-on name",

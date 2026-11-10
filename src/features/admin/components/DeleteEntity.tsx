@@ -8,6 +8,8 @@ type Props = {
   entity: "category" | "tag" | "product" | "promotion" | "coupon";
   id: string;
   locale: string;
+  compact?: boolean; // na linha da lista: sem espaço extra e com o nome do item no rótulo
+  name?: string;
   labels: {
     delete: string;
     title: string;
@@ -20,13 +22,13 @@ type Props = {
 };
 
 // Doc 17 §3 + RN-72: excluir pede confirmação; o que já foi usado não sai — a mensagem manda desativar
-export function DeleteEntity({ entity, id, locale, labels }: Props) {
+export function DeleteEntity({ entity, id, locale, compact, name, labels }: Props) {
   const [state, action, pending] = useActionState<SaveState, FormData>(deleteEntity, {
     status: "idle",
     fields: [],
   });
   return (
-    <form action={action} className="grid gap-2 border-t border-border pt-4">
+    <form action={action} className={compact ? "grid gap-1" : "grid gap-2"}>
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="entity" value={entity} />
@@ -34,6 +36,7 @@ export function DeleteEntity({ entity, id, locale, labels }: Props) {
         <ConfirmSubmit
           danger
           label={labels.delete}
+          ariaLabel={name ? `${labels.delete} ${name}` : undefined}
           title={labels.title}
           message={labels.message}
           confirmLabel={labels.confirm}
