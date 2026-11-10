@@ -1,5 +1,5 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
-import { and, asc, desc, eq, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { categories, products, productTags, productVariants, tags } from "@/db/schema";
 import { hasTag, primaryTagName, primaryTagSort, productTagNames } from "./tags-sql";
@@ -120,4 +120,22 @@ export async function listCategoryTags(categorySlug: string) {
       ),
     )
     .orderBy(asc(tags.sortOrder), asc(tags.name));
+}
+
+// #164: produto em destaque do herói da home — o popular mais vendido que tem imagem (mostra a coisa real)
+export async function getFeaturedProduct() {
+  const [row] = await db
+    .select({ ...productColumns, images: products.images })
+    .from(products)
+    .innerJoin(categories, eq(products.categoryId, categories.id))
+    .where(
+      and(
+        eq(products.active, true),
+        eq(categories.active, true),
+        sql`jsonb_array_length(${products.images}) > 0`,
+      ),
+    )
+    .orderBy(desc(products.hot), desc(products.salesCount), asc(products.name))
+    .limit(1);
+  return row ?? null;
 }

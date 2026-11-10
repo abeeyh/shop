@@ -204,6 +204,12 @@ Garantia: revisão de PR, agente `frontend-ui` e checagem no CI de classes visua
   - luz que segue o cursor em linhas e blocos (`data-spotlight` + `SpotlightTracker`; só mouse);
   - brilho que atravessa o botão principal no hover + halo violeta;
   - barra lateral do carrinho entra deslizando (de baixo no celular);
-  - slider de opções com trilho em gradiente.
+  - slider de opções com trilho em gradiente;
+  - #164: linha de produto e bloco de categoria **sobem 2 px** no hover; o herói da home **entra uma vez** (opacidade + 10 px, `@keyframes enter`).
 - Uma ação principal por tela continua valendo (botão violeta); a secundária usa `gradient-outline`.
 - Imagens: arte **própria ou licenciada**; nada de arte oficial da Blizzard.
+- **#164 (redesenho guiado pelas skills de design — ui-ux-pro-max na auditoria, taste-skill em 3 regras; paleta e fontes deste doc mantidas):**
+  - home: herói em 2 colunas no desktop com o **produto em destaque** de verdade (o popular mais vendido que tem imagem: imagem, preço, "Ver opções"); categorias em grade compacta (2 colunas no celular, 1 linha no desktop, ícone em cima do nome);
+  - página do produto no celular: **compra logo depois do título** (galeria e descrição longa vêm depois);
+  - categoria: o card não repete a tag que já é o título da seção;
+  - alvos de toque ≥ 44 px também nas abas, chips, logo e selects; etiquetas com texto ≥ 12 px; trilho de abas esmaece na borda no celular (indica que rola).

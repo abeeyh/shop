@@ -36,7 +36,9 @@
     "ctaRaid": "預約團隊副本",
     "categories": "分類",
     "bestSellers": "熱銷",
-    "viewAll": "查看全部"
+    "viewAll": "查看全部",
+    "featured": "精選",
+    "seeOptions": "查看選項"
   },
   "Catalog": {
     "perK": "每 1,000 金幣",

@@ -36,7 +36,9 @@
     "ctaRaid": "Agendar raid",
     "categories": "Categorias",
     "bestSellers": "Mais vendidos",
-    "viewAll": "Ver todos"
+    "viewAll": "Ver todos",
+    "featured": "Em destaque",
+    "seeOptions": "Ver opções"
   },
   "Catalog": {
     "perK": "por 1.000 de gold",

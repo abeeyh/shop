@@ -36,7 +36,9 @@
     "ctaRaid": "Book a raid",
     "categories": "Categories",
     "bestSellers": "Best sellers",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "featured": "Featured",
+    "seeOptions": "See options"
   },
   "Catalog": {
     "perK": "per 1,000 gold",

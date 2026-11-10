@@ -17,7 +17,7 @@ export function SiteHeader({ homeHref, tools, search, mobileSearch, tabs }: Site
         <div className="flex min-h-16 items-center gap-3">
           <Link
             href={homeHref}
-            className="mr-auto flex items-center gap-2.5 font-heading text-lg font-bold text-heading md:mr-0"
+            className="mr-auto flex min-h-11 items-center gap-2.5 font-heading text-lg font-bold text-heading md:mr-0"
           >
             <span
               aria-hidden="true"

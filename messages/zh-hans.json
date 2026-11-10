@@ -36,7 +36,9 @@
     "ctaRaid": "预约团队副本",
     "categories": "分类",
     "bestSellers": "热销",
-    "viewAll": "查看全部"
+    "viewAll": "查看全部",
+    "featured": "精选",
+    "seeOptions": "查看选项"
   },
   "Catalog": {
     "perK": "每 1,000 金币",

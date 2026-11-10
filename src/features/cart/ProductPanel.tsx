@@ -37,18 +37,25 @@ export async function ProductPanel({ locale, product, timeZone }: Props) {
         <ShieldCheck aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-link" />
         {c("selfPlay")}
       </p>
-      <ProductGallery images={content.images} label={c("gallery")} />
-      <ProductDetailsText details={content.details} />
     </div>
   );
+  // #164: galeria e descrição longa vêm DEPOIS da compra no celular (antes, ~1000 px até o preço)
+  const more =
+    content.images.length || content.details ? (
+      <div className="flex min-w-0 flex-col gap-3 lg:col-start-1">
+        <ProductGallery images={content.images} label={c("gallery")} />
+        <ProductDetailsText details={content.details} />
+      </div>
+    ) : null;
   return (
-    // #139: a caixa de compra fica sozinha na coluna da direita (ocupa as duas linhas, então o sticky
-    // anda junto sem cobrir nada); galeria e FAQ ficam na esquerda. Celular: info → compra → FAQ
+    // #139: a caixa de compra fica sozinha na coluna da direita (ocupa todas as linhas, então o sticky
+    // anda junto sem cobrir nada). #164 — celular: título → compra → galeria/descrição → FAQ
     <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_26rem]">
       {info}
-      <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
+      <div className="lg:col-start-2 lg:row-span-3 lg:row-start-1">
         <BuyBox locale={locale} product={product} timeZone={timeZone} />
       </div>
+      {more}
       <div className="min-w-0 lg:col-start-1">
         <ProductFaq faq={content.faq} title={c("faq")} />
       </div>

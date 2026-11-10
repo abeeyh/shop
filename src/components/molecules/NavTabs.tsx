@@ -11,7 +11,7 @@ function Tabs({ items, label, path }: Props & { path: string | null }) {
   return (
     <nav
       aria-label={label}
-      className="no-scrollbar -mx-4 flex gap-1 overflow-x-auto px-4 pb-2.5 sm:-mx-5 sm:px-5"
+      className="no-scrollbar -mx-4 flex gap-1 overflow-x-auto [mask-image:linear-gradient(to_right,black_85%,transparent)] px-4 pb-2.5 sm:-mx-5 sm:[mask-image:none] sm:px-5"
     >
       {items.map((item) => {
         const current = !!path && (path === item.href || path.startsWith(`${item.href}/`));
@@ -20,7 +20,7 @@ function Tabs({ items, label, path }: Props & { path: string | null }) {
             key={item.href}
             href={item.href}
             aria-current={current ? "page" : undefined}
-            className="flex min-h-9 shrink-0 items-center rounded-full px-3.5 font-heading text-sm font-semibold whitespace-nowrap text-muted-foreground transition-colors hover:bg-accent hover:text-heading aria-[current=page]:bg-accent aria-[current=page]:text-heading"
+            className="flex min-h-11 shrink-0 items-center rounded-full px-3.5 font-heading text-sm font-semibold whitespace-nowrap text-muted-foreground transition-colors hover:bg-accent hover:text-heading aria-[current=page]:bg-accent aria-[current=page]:text-heading"
           >
             {item.label}
           </Link>
