@@ -57,12 +57,18 @@
     "gallery": "Galerie",
     "faq": "Questions fréquentes",
     "tags": "Tags",
-    "allTags": "Tous"
+    "allTags": "Tous",
+    "view": {
+      "group": "Affichage",
+      "list": "Liste",
+      "grid": "Grille"
+    }
   },
   "Footer": {
     "about": "Or, raids, Mythique+ et hauts faits pour World of Warcraft Retail US.",
     "copyright": "© 2026 Shop · Non affilié à Blizzard Entertainment.",
-    "report": "Signaler un problème"
+    "report": "Signaler un problème",
+    "iconCredits": "Icônes de catégorie :"
   },
   "NotFound": {
     "title": "Page introuvable",

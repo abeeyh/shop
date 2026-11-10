@@ -57,12 +57,18 @@
     "gallery": "Gallery",
     "faq": "Frequently asked questions",
     "tags": "Tags",
-    "allTags": "All"
+    "allTags": "All",
+    "view": {
+      "group": "View",
+      "list": "List",
+      "grid": "Grid"
+    }
   },
   "Footer": {
     "about": "Gold, raids, Mythic+ and achievements for World of Warcraft Retail US.",
     "copyright": "© 2026 Shop · Not affiliated with Blizzard Entertainment.",
-    "report": "Report a problem"
+    "report": "Report a problem",
+    "iconCredits": "Category icons:"
   },
   "NotFound": {
     "title": "Page not found",

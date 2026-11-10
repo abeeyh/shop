@@ -57,12 +57,18 @@
     "gallery": "Galeria",
     "faq": "Perguntas frequentes",
     "tags": "Tags",
-    "allTags": "Todos"
+    "allTags": "Todos",
+    "view": {
+      "group": "Exibição",
+      "list": "Lista",
+      "grid": "Grade"
+    }
   },
   "Footer": {
     "about": "Gold, raids, Mítica+ e conquistas para World of Warcraft Retail US.",
     "copyright": "© 2026 Shop · Sem afiliação com a Blizzard Entertainment.",
-    "report": "Reportar problema"
+    "report": "Reportar problema",
+    "iconCredits": "Ícones de categoria:"
   },
   "NotFound": {
     "title": "Página não encontrada",

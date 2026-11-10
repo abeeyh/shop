@@ -8,8 +8,10 @@ import {
   getCategory,
   listCategoryTags,
   listProducts,
-  ProductCard,
+  ProductList,
+  productView,
   toProductCard,
+  ViewToggle,
 } from "@/features/catalog";
 import { activePromotions } from "@/features/discounts/queries";
 import { UpcomingRaids } from "@/features/schedule/UpcomingRaids";
@@ -38,12 +40,16 @@ function groupByPrimaryTag<T extends { primaryTag: string | null }>(items: T[]) 
 
 export default async function CategoryPage({ params, searchParams }: PageProps<"/[locale]/wow/[category]">) {
   await connection();
-  const [{ locale, category: slug }, { tag }] = await Promise.all([params, searchParams]);
+  const [{ locale, category: slug }, { tag, vista }] = await Promise.all([params, searchParams]);
   setRequestLocale(locale);
   const category = await getCategory(slug);
   if (!category) notFound();
 
-  const [timeZone, tagList] = await Promise.all([getTimezone(), listCategoryTags(category.slug)]);
+  const [timeZone, tagList, view] = await Promise.all([
+    getTimezone(),
+    listCategoryTags(category.slug),
+    productView(vista), // #166: lista ou grade
+  ]);
   // só tag que existe na categoria vira filtro (entrada não confiável — docs/09)
   const selected = tagList.find((x) => x.slug === tag)?.slug;
   const [products, c, promos] = await Promise.all([
@@ -54,6 +60,8 @@ export default async function CategoryPage({ params, searchParams }: PageProps<"
   const labels = cardLabels(c);
 
   const groups = groupByPrimaryTag(products);
+  const viewHref = (v: string) =>
+    `?${new URLSearchParams({ ...(selected ? { tag: selected } : {}), vista: v })}`;
   const anchor = (name: string | null) =>
     `sub-${(name ?? "geral").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 
@@ -66,11 +74,18 @@ export default async function CategoryPage({ params, searchParams }: PageProps<"
         <span aria-hidden="true">/</span>
         <span aria-current="page">{category.name}</span>
       </nav>
-      <div className="mb-6 flex max-w-2xl flex-col gap-2">
-        <h1 className="font-heading text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tight text-heading">
-          {category.name}
-        </h1>
-        <p className="text-muted-foreground">{category.description}</p>
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div className="flex max-w-2xl flex-col gap-2">
+          <h1 className="font-heading text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tight text-heading">
+            {category.name}
+          </h1>
+          <p className="text-muted-foreground">{category.description}</p>
+        </div>
+        <ViewToggle
+          view={view}
+          hrefs={{ lista: viewHref("lista"), grade: viewHref("grade") }}
+          labels={{ group: c("view.group"), lista: c("view.list"), grade: c("view.grid") }}
+        />
       </div>
       {/* #160: tags como chips de filtro (?tag=), fixos logo abaixo do cabeçalho */}
       {tagList.length > 1 ? (
@@ -108,16 +123,12 @@ export default async function CategoryPage({ params, searchParams }: PageProps<"
                   {g.name}
                 </h2>
               ) : null}
-              <div className="grid gap-2">
-                {g.items.map((p) => (
-                  <ProductCard
-                    key={p.id}
-                    p={toProductCard(locale, p, labels, promos)}
-                    cta={c("buy")}
-                    hideTag={g.name}
-                  />
-                ))}
-              </div>
+              <ProductList
+                view={view}
+                cta={c("buy")}
+                hideTag={g.name}
+                items={g.items.map((p) => ({ key: p.id, p: toProductCard(locale, p, labels, promos) }))}
+              />
             </section>
           ))}
         </div>

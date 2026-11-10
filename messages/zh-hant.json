@@ -57,12 +57,18 @@
     "gallery": "圖庫",
     "faq": "常見問題",
     "tags": "標籤",
-    "allTags": "全部"
+    "allTags": "全部",
+    "view": {
+      "group": "顯示方式",
+      "list": "清單",
+      "grid": "網格"
+    }
   },
   "Footer": {
     "about": "World of Warcraft 正式版美服的金幣、團隊副本、傳奇+與成就。",
     "copyright": "© 2026 Shop · 與 Blizzard Entertainment 無關。",
-    "report": "回報問題"
+    "report": "回報問題",
+    "iconCredits": "分類圖示："
   },
   "NotFound": {
     "title": "找不到頁面",

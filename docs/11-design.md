@@ -208,6 +208,8 @@ Garantia: revisão de PR, agente `frontend-ui` e checagem no CI de classes visua
   - #164: linha de produto e bloco de categoria **sobem 2 px** no hover; o herói da home **entra uma vez** (opacidade + 10 px, `@keyframes enter`).
 - Uma ação principal por tela continua valendo (botão violeta); a secundária usa `gradient-outline`.
 - Imagens: arte **própria ou licenciada**; nada de arte oficial da Blizzard.
+- **#166 — ícones das categorias:** SVG no estilo de RPG de fantasia (WoW) do **game-icons.net** (Lorc e Delapouite, **CC BY 3.0**; crédito no rodapé da loja): gold = duas moedas, raid = cabeça de dragão, Mythic+ = portão de masmorra, PvP = espadas cruzadas, conquistas = troféu, delves = entrada de caverna. Guardados como caminho SVG em `features/catalog/components/kind-icons.ts` (cor do tema via `currentColor`). Ícones oficiais do jogo continuam fora (arte da Blizzard).
+- **#166 — lista ou grade:** na categoria e na busca o cliente escolhe a exibição (`ViewToggle`); lista é o padrão. A escolha vai na URL (`?vista=grade`) e fica lembrada num cookie (`vista`, não sensível). Na grade, `ProductTile`: ícone grande da categoria, nome, etiquetas, preço e "Comprar" (o cartão inteiro é o link).
 - **#164 (redesenho guiado pelas skills de design — ui-ux-pro-max na auditoria, taste-skill em 3 regras; paleta e fontes deste doc mantidas):**
   - home: herói em 2 colunas no desktop com o **produto em destaque** de verdade (o popular mais vendido que tem imagem: imagem, preço, "Ver opções"); categorias em grade compacta (2 colunas no celular, 1 linha no desktop, ícone em cima do nome);
   - página do produto no celular: **compra logo depois do título** (galeria e descrição longa vêm depois);

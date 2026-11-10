@@ -9,7 +9,9 @@ import { activePromotions } from "@/features/discounts/queries";
 import { clientIp, rateLimitKey } from "@/lib/client-ip";
 import { env } from "@/lib/env";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
-import { ProductCard } from "./components/ProductCard";
+import { ProductList } from "./components/ProductList";
+import { ViewToggle } from "./components/ViewToggle";
+import { productView } from "./view";
 import { ProductFilters } from "./components/ProductFilters";
 import { cardLabels, categoryHref, toProductCard } from "./format";
 import { listCategories } from "./queries";
@@ -125,15 +127,21 @@ type Props = { locale: string; raw: Record<string, string | string[] | undefined
 
 // RN-100 a RN-105: busca e filtros na URL, aplicados no servidor
 export async function ProductSearch({ locale, raw }: Props) {
-  const [categories, t, c, promos] = await Promise.all([
+  const [categories, t, c, promos, view] = await Promise.all([
     listCategories(),
     getTranslations({ locale, namespace: "Search" }),
     getTranslations({ locale, namespace: "Catalog" }),
     activePromotions(),
+    productView(raw.vista), // #166: lista ou grade
   ]);
   const f = parseFilters(raw, { categories: categories.map((x) => x.slug) });
   const base = `/${locale}/produtos`;
   const href = (patch: Partial<Filters>) => base + filtersToQuery(f, patch);
+  // #166: mesmo endereço (filtros, busca, página) com a exibição escolhida
+  const withView = (v: string) => {
+    const h = href({});
+    return `${h}${h.includes("?") ? "&" : "?"}vista=${v}`;
+  };
   const allowed = await searchAllowed(f);
   const { items, total } = allowed ? await searchProducts(f) : { items: [], total: 0 };
   const labels = cardLabels(c);
@@ -143,9 +151,16 @@ export async function ProductSearch({ locale, raw }: Props) {
 
   return (
     <>
-      <p role="status" className="mb-6 text-muted-foreground">
-        {status}
-      </p>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <p role="status" className="text-muted-foreground">
+          {status}
+        </p>
+        <ViewToggle
+          view={view}
+          hrefs={{ lista: withView("lista"), grade: withView("grade") }}
+          labels={{ group: c("view.group"), lista: c("view.list"), grade: c("view.grid") }}
+        />
+      </div>
       {f.tooShort ? <p className="mb-4 text-sm text-error-text">{t("min")}</p> : null}
       <div className="grid items-start gap-6 lg:grid-cols-[280px_1fr]">
         <ProductFilters
@@ -158,16 +173,15 @@ export async function ProductSearch({ locale, raw }: Props) {
         <div>
           <ActiveFilters chips={buildChips(f, categories, t, href)} clearHref={base} t={t} />
           {items.length ? (
-            <div className="grid gap-2">
-              {items.map((p) => (
-                <ProductCard
-                  key={p.id}
-                  p={toProductCard(locale, p, labels, promos)}
-                  cta={c("buy")}
-                  flag={p.available ? undefined : t("unavailable")}
-                />
-              ))}
-            </div>
+            <ProductList
+              view={view}
+              cta={c("buy")}
+              items={items.map((p) => ({
+                key: p.id,
+                p: toProductCard(locale, p, labels, promos),
+                flag: p.available ? undefined : t("unavailable"),
+              }))}
+            />
           ) : allowed ? (
             <EmptyState locale={locale} categories={categories} clearHref={base} t={t} />
           ) : null}

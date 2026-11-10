@@ -57,12 +57,18 @@
     "gallery": "图库",
     "faq": "常见问题",
     "tags": "标签",
-    "allTags": "全部"
+    "allTags": "全部",
+    "view": {
+      "group": "显示方式",
+      "list": "列表",
+      "grid": "网格"
+    }
   },
   "Footer": {
     "about": "World of Warcraft 正式服美服的金币、团队副本、史诗钥石与成就。",
     "copyright": "© 2026 Shop · 与 Blizzard Entertainment 无关。",
-    "report": "反馈问题"
+    "report": "反馈问题",
+    "iconCredits": "分类图标："
   },
   "NotFound": {
     "title": "找不到页面",

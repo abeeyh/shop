@@ -141,6 +141,23 @@ export default async function StoreLayout({ children, params }: LayoutProps<"/[l
         columns={[]}
         copyright={footer("copyright")}
         extra={<ReportLink locale={locale} label={footer("report")} />}
+        credits={
+          // #166: CC BY 3.0 pede crédito aos autores dos ícones
+          <>
+            {footer("iconCredits")}{" "}
+            <a href="https://game-icons.net" rel="noopener noreferrer" className="text-link hover:underline">
+              game-icons.net
+            </a>{" "}
+            (Lorc, Delapouite) ·{" "}
+            <a
+              href="https://creativecommons.org/licenses/by/3.0/"
+              rel="noopener noreferrer"
+              className="text-link hover:underline"
+            >
+              CC BY 3.0
+            </a>
+          </>
+        }
       />
       <Suspense fallback={null}>
         <ChatLauncher locale={locale} />
