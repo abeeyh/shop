@@ -8,6 +8,9 @@ import {
   cardLabels,
   CategoryCard,
   categoryHref,
+  FeaturedProduct,
+  getFeaturedProduct,
+  productHref,
   listCategories,
   listProducts,
   ProductCard,
@@ -21,7 +24,7 @@ const BEST_SELLERS = 8;
 const sectionTitle = "mb-4 font-heading text-xl font-bold tracking-tight text-heading";
 
 // #88: cada seção da home chega sozinha (streaming); a mais lenta não segura as outras
-async function HomeCategories({ locale }: { locale: string }) {
+async function HomeCtas({ locale }: { locale: string }) {
   await connection();
   const [categories, t] = await Promise.all([
     listCategories(),
@@ -31,34 +34,42 @@ async function HomeCategories({ locale }: { locale: string }) {
   const firstOf = (kind: string) => categories.find((x) => x.kind === kind);
   const gold = firstOf("gold");
   const raid = firstOf("raid");
+  return (
+    <div className="flex flex-wrap gap-3">
+      {gold ? (
+        <Link
+          href={categoryHref(locale, gold.slug)}
+          className={buttonVariants({ variant: "primary", size: "lg" })}
+        >
+          {t("ctaGold")}
+        </Link>
+      ) : null}
+      {raid ? (
+        <Link
+          href={categoryHref(locale, raid.slug)}
+          className={buttonVariants({ variant: "gradient-outline", size: "lg" })}
+        >
+          {t("ctaRaid")}
+        </Link>
+      ) : null}
+    </div>
+  );
+}
 
+async function HomeCategories({ locale }: { locale: string }) {
+  await connection();
+  const [categories, t] = await Promise.all([
+    listCategories(),
+    getTranslations({ locale, namespace: "Home" }),
+  ]);
   return (
     <>
-      <div className="flex flex-wrap gap-3">
-        {gold ? (
-          <Link
-            href={categoryHref(locale, gold.slug)}
-            className={buttonVariants({ variant: "primary", size: "lg" })}
-          >
-            {t("ctaGold")}
-          </Link>
-        ) : null}
-        {raid ? (
-          <Link
-            href={categoryHref(locale, raid.slug)}
-            className={buttonVariants({ variant: "gradient-outline", size: "lg" })}
-          >
-            {t("ctaRaid")}
-          </Link>
-        ) : null}
-      </div>
-
-      {/* #102: todas as categorias numa olhada, 1 clique até a lista */}
+      {/* #102/#164: todas as categorias numa olhada (2 colunas no celular, 1 linha no desktop) */}
       <section className="pt-12" aria-labelledby="categorias">
         <h2 id="categorias" className={sectionTitle}>
           {t("categories")}
         </h2>
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,170px),1fr))] gap-2.5">
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 lg:grid-cols-7">
           {categories.map((cat) => (
             <CategoryCard
               key={cat.id}
@@ -70,6 +81,32 @@ async function HomeCategories({ locale }: { locale: string }) {
         </div>
       </section>
     </>
+  );
+}
+
+// #164: o herói mostra o produto de verdade (taste-skill: "show the real thing"); sem imagem, some
+async function HomeFeatured({ locale }: { locale: string }) {
+  await connection();
+  const [p, t, c, promos] = await Promise.all([
+    getFeaturedProduct(),
+    getTranslations({ locale, namespace: "Home" }),
+    getTranslations({ locale, namespace: "Catalog" }),
+    activePromotions(),
+  ]);
+  const image = p?.images[0];
+  if (!p || !image) return null;
+  const card = toProductCard(locale, p, cardLabels(c), promos);
+  return (
+    <FeaturedProduct
+      href={productHref(locale, p)}
+      name={p.name}
+      meta={[p.categoryName, p.primaryTag].filter(Boolean).join(" · ")}
+      image={image}
+      price={card.price}
+      original={card.original}
+      unit={card.unit}
+      labels={{ featured: t("featured"), cta: t("seeOptions") }}
+    />
   );
 }
 
@@ -128,15 +165,23 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
 
   return (
     <div className="mx-auto w-full max-w-[1200px] px-4 py-10 sm:px-5 lg:py-14">
-      <section className="mb-7 flex max-w-3xl flex-col gap-4">
-        <span className="badge-glow self-start rounded-full px-3 py-1 font-heading text-xs font-semibold text-heading">
-          {t("badge")}
-        </span>
-        <h1 className="bg-linear-to-r from-heading via-heading to-link bg-clip-text font-heading text-[clamp(2rem,5vw,3.25rem)] leading-[1.05] font-bold tracking-tight text-balance text-transparent">
-          {t("title")}
-        </h1>
-        <p className="max-w-xl text-pretty text-muted-foreground">{t("subtitle")}</p>
-      </section>
+      <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+        <section className="flex animate-[enter_0.5s_ease-out_both] flex-col gap-4">
+          <span className="badge-glow self-start rounded-full px-3 py-1 font-heading text-xs font-semibold text-heading">
+            {t("badge")}
+          </span>
+          <h1 className="bg-linear-to-r from-heading via-heading to-link bg-clip-text font-heading text-[clamp(2rem,5vw,3.25rem)] leading-[1.05] font-bold tracking-tight text-balance text-transparent">
+            {t("title")}
+          </h1>
+          <p className="max-w-xl text-pretty text-muted-foreground">{t("subtitle")}</p>
+          <Suspense fallback={<div className="h-12" />}>
+            <HomeCtas locale={locale} />
+          </Suspense>
+        </section>
+        <Suspense fallback={<div className="aspect-[16/10] rounded-xl border border-border bg-card/60" />}>
+          <HomeFeatured locale={locale} />
+        </Suspense>
+      </div>
       <Suspense fallback={<HomeSkeleton label={c("loading")} count={4} />}>
         <HomeCategories locale={locale} />
       </Suspense>

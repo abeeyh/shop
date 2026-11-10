@@ -86,7 +86,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps<"
                 href={x.slug ? `?tag=${encodeURIComponent(x.slug)}` : `/${locale}/wow/${category.slug}`}
                 scroll={false}
                 aria-current={on ? "page" : undefined}
-                className={`flex min-h-9 shrink-0 items-center rounded-full border px-3.5 font-heading text-sm font-semibold ${on ? "border-primary bg-primary/15 text-heading" : "border-border text-heading hover:bg-accent"}`}
+                className={`flex min-h-11 shrink-0 items-center rounded-full border px-3.5 font-heading text-sm font-semibold ${on ? "border-primary bg-primary/15 text-heading" : "border-border text-heading hover:bg-accent"}`}
               >
                 {x.name}
               </Link>
@@ -110,7 +110,12 @@ export default async function CategoryPage({ params, searchParams }: PageProps<"
               ) : null}
               <div className="grid gap-2">
                 {g.items.map((p) => (
-                  <ProductCard key={p.id} p={toProductCard(locale, p, labels, promos)} cta={c("buy")} />
+                  <ProductCard
+                    key={p.id}
+                    p={toProductCard(locale, p, labels, promos)}
+                    cta={c("buy")}
+                    hideTag={g.name}
+                  />
                 ))}
               </div>
             </section>

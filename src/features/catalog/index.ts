@@ -1,5 +1,6 @@
 export { CategoryCard } from "./components/CategoryCard";
 export { KindTile } from "./components/KindIcon";
+export { FeaturedProduct } from "./components/FeaturedProduct";
 export { ProductCard } from "./components/ProductCard";
 export { ProductDetailsText, ProductFaq, ProductGallery } from "./components/ProductDetails";
 export { ProductFilters } from "./components/ProductFilters";
@@ -10,6 +11,7 @@ export { cardLabels, categoryHref, formatUsdt, productHref, promoPrice, toProduc
 export {
   getCategory,
   getProduct,
+  getFeaturedProduct,
   getProductContent,
   listCategoryTags,
   listVariants,

@@ -17,11 +17,22 @@ export type ProductCardData = {
 
 // #102: produto em linha (lista densa, minimalista): ícone · nome + etiquetas · preço · "Comprar".
 // A linha inteira é o link (um só por produto, acessível); "Comprar" é só o rótulo visual dele.
-export function ProductCard({ p, cta, flag }: { p: ProductCardData; cta: string; flag?: string }) {
+// hideTag: na página da categoria, a tag que já é o título da seção não se repete no card
+export function ProductCard({
+  p,
+  cta,
+  flag,
+  hideTag,
+}: {
+  p: ProductCardData;
+  cta: string;
+  flag?: string;
+  hideTag?: string | null;
+}) {
   return (
     <div
       data-spotlight
-      className="grid grid-cols-[2.75rem_1fr_auto] items-center gap-x-4 gap-y-1 rounded-lg border border-border bg-card/60 px-4 py-3.5 transition-colors hover:border-gradient-from/50 sm:grid-cols-[2.75rem_1fr_auto_auto]"
+      className="grid grid-cols-[2.75rem_1fr_auto] items-center gap-x-4 gap-y-1 rounded-lg border border-border bg-card/60 px-4 py-3.5 transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-gradient-from/50 sm:grid-cols-[2.75rem_1fr_auto_auto]"
     >
       <KindTile kind={p.kind} />
       <div className="min-w-0">
@@ -35,23 +46,25 @@ export function ProductCard({ p, cta, flag }: { p: ProductCardData; cta: string;
         </h3>
         <div className="mt-1 flex flex-wrap items-center gap-1.5">
           {p.badge ? (
-            <span className="badge-glow rounded-full px-2 py-0.5 text-[11px] font-semibold text-heading">
+            <span className="badge-glow rounded-full px-2 py-0.5 text-xs font-semibold text-heading">
               {p.badge}
             </span>
           ) : null}
           {flag ? (
-            <span className="rounded-full bg-destructive/20 px-2 py-0.5 text-[11px] font-semibold text-error-text">
+            <span className="rounded-full bg-destructive/20 px-2 py-0.5 text-xs font-semibold text-error-text">
               {flag}
             </span>
           ) : null}
-          {p.tags.map((t) => (
-            <span
-              key={t}
-              className="rounded-full bg-secondary px-2 py-0.5 text-[11px] font-semibold text-foreground"
-            >
-              {t}
-            </span>
-          ))}
+          {p.tags
+            .filter((t) => t !== hideTag)
+            .map((t) => (
+              <span
+                key={t}
+                className="rounded-full bg-secondary px-2 py-0.5 text-xs font-semibold text-foreground"
+              >
+                {t}
+              </span>
+            ))}
           {p.description ? (
             <span className="hidden min-w-0 flex-1 truncate text-[13px] text-muted-foreground sm:block">
               {p.description}

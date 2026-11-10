@@ -36,7 +36,9 @@
     "ctaRaid": "Raid buchen",
     "categories": "Kategorien",
     "bestSellers": "Bestseller",
-    "viewAll": "Alle anzeigen"
+    "viewAll": "Alle anzeigen",
+    "featured": "Im Fokus",
+    "seeOptions": "Optionen ansehen"
   },
   "Catalog": {
     "perK": "pro 1.000 Gold",

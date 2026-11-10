@@ -208,6 +208,13 @@ body::before {
   filter: blur(40px);
   animation: aurora 18s ease-in-out infinite alternate;
 }
+/* #164: entrada única do herói (some com prefers-reduced-motion — regra no fim do arquivo) */
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
 @keyframes aurora {
   to {
     transform: translate3d(4vw, 3vh, 0) scale(1.08);

@@ -36,7 +36,9 @@
     "ctaRaid": "Réserver un raid",
     "categories": "Catégories",
     "bestSellers": "Meilleures ventes",
-    "viewAll": "Tout voir"
+    "viewAll": "Tout voir",
+    "featured": "À la une",
+    "seeOptions": "Voir les options"
   },
   "Catalog": {
     "perK": "pour 1 000 pièces d'or",

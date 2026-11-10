@@ -47,7 +47,6 @@ export function PreferenceSelects(p: Props) {
         p.labels.language,
         <Select
           id={`${p.idPrefix}-locale`}
-          size="sm"
           className={p.stacked ? undefined : "w-auto"}
           value={p.locale}
           onChange={(e) => router.replace(pathname, { locale: e.target.value })}
@@ -64,7 +63,6 @@ export function PreferenceSelects(p: Props) {
         p.labels.theme,
         <Select
           id={`${p.idPrefix}-theme`}
-          size="sm"
           className={p.stacked ? undefined : "w-auto"}
           key={p.theme} // tema da conta chegou ao entrar: o seletor acompanha
           defaultValue={p.theme}
@@ -86,7 +84,6 @@ export function PreferenceSelects(p: Props) {
         p.labels.timezone,
         <Select
           id={`${p.idPrefix}-timezone`}
-          size="sm"
           className={p.stacked ? undefined : "w-auto max-w-48"}
           value={p.timezone}
           disabled={pending || p.detecting}
