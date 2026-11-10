@@ -206,19 +206,16 @@
       "email": "Gib eine gültige E-Mail an.",
       "empty": "Dein Warenkorb ist leer.",
       "unavailable": "Entferne die nicht verfügbaren Artikel, um fortzufahren.",
-      "payment": "Die Zahlung konnte nicht erstellt werden. Versuche es gleich noch einmal.",
       "coupon": "Dieser Gutschein hat sein Nutzungslimit erreicht. Entferne ihn, um fortzufahren.",
       "changed": "Der Preis hat sich geändert (eine Aktion ist abgelaufen oder der Gutschein wurde geändert). Prüfe die neue Summe und versuche es erneut.",
       "limited": "Zu viele Bestellversuche. Warte ein paar Minuten und versuche es erneut.",
-      "notImplemented": "USDT-Zahlung: API noch nicht implementiert.",
-      "cardNotImplemented": "Kreditkarte: API noch nicht implementiert. Bezahle vorerst mit Krypto (USDT).",
-      "maintenance": "Zahlungen werden gerade gewartet. Dein Warenkorb bleibt gespeichert; komm bald wieder oder schreib dem Support im Chat."
+      "cardNotImplemented": "Kreditkarte: API noch nicht implementiert. Bezahle vorerst mit Krypto (USDT)."
     },
     "method": "Zahlungsart",
     "crypto": "Krypto (USDT)",
     "card": "Kreditkarte",
     "payCard": "Mit Karte bezahlen",
-    "maintenance": "Zahlungen werden gerade gewartet. Dein Warenkorb bleibt gespeichert; komm bald wieder oder schreib dem Support im Chat."
+    "maintenance": "Derzeit bestätigt der Support Zahlungen von Hand: Bestellung aufgeben, auf Bezahlen klicken und uns im Chat schreiben."
   },
   "Order": {
     "title": "Deine Bestellung",
@@ -230,14 +227,17 @@
     "waiting": "Warte auf die Zahlungsbestätigung. Lade die Seite neu, um sie zu aktualisieren.",
     "partial": "Wir haben {paid} erhalten. Sende den Rest, um die Zahlung abzuschließen.",
     "statuses": {
-      "pendente": "Zahlung ausstehend",
+      "solicitado": "Angefragt",
+      "aguardando_pagamento": "Wartet auf Zahlung",
       "pagamento_parcial": "Teilweise bezahlt",
       "pago": "Bezahlt",
-      "em_andamento": "In Bearbeitung",
+      "agendado": "Geplant",
+      "concluido_parcial": "Teilweise abgeschlossen",
       "concluido": "Abgeschlossen",
-      "expirado": "Abgelaufen",
+      "reembolso_solicitado": "Erstattung angefragt",
       "reembolsado": "Erstattet",
-      "contestado": "Angefochten"
+      "cancelado": "Storniert",
+      "falha_pagamento": "Zahlung fehlgeschlagen"
     },
     "discount": "Gutscheinrabatt",
     "delivered": "Geliefert — danke!",
@@ -245,7 +245,26 @@
     "scheduleTitle": "Run planen",
     "scheduleText": "Sprich im Chat mit dem Support, um Datum und Uhrzeit deines Runs festzulegen.",
     "scheduleButton": "Mit dem Support planen",
-    "scheduleMessage": "Hallo! Ich möchte den Run für Bestellung {order} planen."
+    "scheduleMessage": "Hallo! Ich möchte den Run für Bestellung {order} planen.",
+    "payNow": "Bezahlen",
+    "manualPayment": "Derzeit bestätigt der Support deine Zahlung. Schreib uns im Chat, um zu bezahlen.",
+    "partialReview": "Wir haben einen Teil der Zahlung erhalten. Der Support prüft deine Bestellung.",
+    "paymentChat": "Mit dem Support bezahlen",
+    "paymentMessage": "Hallo! Ich möchte Bestellung {order} bezahlen.",
+    "failedNotice": "Die Zahlung ist fehlgeschlagen oder wurde angefochten. Es wird nichts weiter abgebucht; schreib dem Support im Chat, wenn du Hilfe brauchst.",
+    "refundNotice": "Erstattung angefragt. Das Team prüft sie und meldet sich bald.",
+    "cancelledNotice": "Diese Bestellung wurde storniert, weil innerhalb von 2 Stunden keine Zahlung einging.",
+    "errors": {
+      "payment": "Die Zahlung konnte nicht erstellt werden. Versuch es gleich noch einmal.",
+      "stale": "Diese Bestellung hat sich bereits geändert. Lade die Seite neu."
+    },
+    "refund": {
+      "button": "Erstattung anfragen",
+      "title": "Erstattung anfragen?",
+      "message": "Das Team prüft die Anfrage. Nur ein Admin kann die Erstattung freigeben.",
+      "confirm": "Erstattung anfragen",
+      "cancel": "Zurück"
+    }
   },
   "Admin": {
     "title": "Admin",
@@ -440,8 +459,6 @@
       "order": "Bestellung",
       "tx": "Transaktion",
       "proof": "Liefernachweis",
-      "start": "Lieferung starten",
-      "complete": "Als abgeschlossen markieren",
       "proofUrl": "Link zum Liefernachweis (https — Screenshot oder Log)",
       "note": "Hinweis für den Kunden",
       "proofError": "Gib einen https-Link zum Liefernachweis an.",
@@ -456,8 +473,25 @@
       "searchHint": "Nutze den Anfang der ID (z. B. 3e66e13d) oder die vollständige E-Mail.",
       "back": "Zurück zu den Bestellungen",
       "timeline": "Verlauf",
-      "confirmStart": "Du übernimmst die Lieferung dieser Bestellung. Der Kunde sieht, dass sie in Bearbeitung ist.",
-      "confirmComplete": "Die Bestellung wird mit diesem Nachweis abgeschlossen und der Kunde benachrichtigt. Das lässt sich nicht rückgängig machen."
+      "steps": {
+        "confirmPayment": "Zahlung bestätigen",
+        "schedule": "Planen",
+        "partial": "Als teilweise abgeschlossen markieren",
+        "complete": "Als abgeschlossen markieren",
+        "requestRefund": "Erstattung anfragen",
+        "refund": "Erstatten",
+        "fail": "Zahlung als fehlgeschlagen markieren"
+      },
+      "confirmSteps": {
+        "confirmPayment": "Bestätige erst, wenn die Zahlung vollständig im richtigen Netzwerk angekommen ist. Wird im Audit-Log gespeichert.",
+        "schedule": "Du übernimmst diese Bestellung und planst den Service. Der Kunde sieht, dass sie geplant ist.",
+        "partial": "Ein Teil der Bestellung ist geliefert. Füge den Nachweis hinzu; der Kunde sieht ihn.",
+        "complete": "Die Bestellung wird mit diesem Nachweis abgeschlossen und der Kunde benachrichtigt. Nicht umkehrbar.",
+        "requestRefund": "Die Bestellung geht in die Erstattungsprüfung. Nur ein Admin kann erstatten.",
+        "refund": "Bestätige erst, nachdem das Geld an den Kunden zurückging. Nicht umkehrbar.",
+        "fail": "Die Zahlung ist fehlgeschlagen oder wurde angefochten. Der Kunde wird informiert; Platz und Gutschein werden freigegeben."
+      },
+      "nextSteps": "Nächste Schritte"
     },
     "reports": {
       "new": "Neu",

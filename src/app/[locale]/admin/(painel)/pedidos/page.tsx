@@ -17,8 +17,15 @@ import { getTimezone } from "@/lib/preferences";
 
 export const instant = false;
 
-// "a fazer" = pago (assumir) e em andamento (entregar) — RN-50
-const TODO = ["pago", "em_andamento"] as const;
+// "a fazer" (RN-50, #170): confirmar pagamento (manual ou parcial), agendar, entregar e reembolso pedido
+const TODO = [
+  "aguardando_pagamento",
+  "pagamento_parcial",
+  "pago",
+  "agendado",
+  "concluido_parcial",
+  "reembolso_solicitado",
+] as const;
 
 type T = Awaited<ReturnType<typeof getTranslations<"Admin">>>;
 type OT = Awaited<ReturnType<typeof getTranslations<"Order">>>;

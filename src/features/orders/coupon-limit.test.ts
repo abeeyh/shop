@@ -91,6 +91,7 @@ describe.skipIf(!process.env.DATABASE_URL)("limite de uso do cupom (RN-25, RN-27
     expect(await status(first)).toBe("released");
 
     const second = await q.insertOrder(order("b@example.com"));
+    await q.startPayment(second); // #170: cliente clicou em "Pagar"
     await db.update(s.orders).set({ network: "trc20" }).where(eq(s.orders.id, second));
     const result = await q.applyPaymentEvent({
       provider: "test",

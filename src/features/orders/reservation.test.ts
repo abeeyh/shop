@@ -82,13 +82,13 @@ describe.skipIf(!process.env.DATABASE_URL)("reserva de vaga (RN-34)", () => {
     expect(await reserved()).toBe(2);
   });
 
-  it("pendente vencido expira e devolve a vaga; rodar de novo não devolve duas vezes", async () => {
+  it("aguardando vencido é cancelado e devolve a vaga; rodar de novo não devolve duas vezes", async () => {
     const rows = await db
       .select({ id: s.orders.id, status: s.orders.status })
       .from(s.orders)
       .innerJoin(s.orderItems, eq(s.orderItems.orderId, s.orders.id))
       .where(eq(s.orderItems.raidSlotId, slotId));
-    const open = rows.find((r) => r.status === "pendente")!;
+    const open = rows.find((r) => r.status === "solicitado")!;
     await db
       .update(s.orders)
       .set({ expiresAt: new Date(Date.now() - 1000) })

@@ -54,7 +54,7 @@ const schema = z
     message: "production não usa o sandbox do NOWPayments",
     path: ["NOWPAYMENTS_SANDBOX"],
   })
-  // fatura criada sem como confirmar o pagamento deixaria pedido pago parado em "pendente"
+  // fatura criada sem como confirmar o pagamento deixaria pedido pago parado em "aguardando_pagamento"
   .refine((v) => !v.NOWPAYMENTS_API_KEY || v.NOWPAYMENTS_IPN_SECRET, {
     message: "NOWPAYMENTS_API_KEY exige NOWPAYMENTS_IPN_SECRET",
     path: ["NOWPAYMENTS_IPN_SECRET"],

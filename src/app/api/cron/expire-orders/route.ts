@@ -5,7 +5,7 @@ import { getRequestId } from "@/lib/request-id";
 
 const errorBody = (code: string, requestId: string) => ({ error: { code, message: code, requestId } });
 
-// Cron a cada minuto: pedido sem pagamento em 30 min expira e devolve a vaga (RN-34)
+// Cron a cada minuto: pedido sem pagamento em 2 h é cancelado e devolve a vaga (RN-34)
 export async function GET(request: Request) {
   const requestId = getRequestId(request.headers);
   if (!isAuthorizedCron(request.headers)) {

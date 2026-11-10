@@ -14,7 +14,7 @@ import { Field } from "@/features/admin/fields";
 import { requireStaff } from "@/features/auth/staff";
 import { describeItem } from "@/features/cart/describe";
 import { formatUsdt } from "@/features/catalog";
-import { nextStaffStep } from "@/features/orders/rules";
+import { STAFF_STEPS, staffSteps, type StaffStep } from "@/features/orders/rules";
 import { getOrderForStaff, orderTimeline } from "@/features/orders/staff";
 import { ORDER_STATUS_TONE } from "@/features/orders/status-tone";
 import { canonicalLocale } from "@/i18n/routing";
@@ -63,18 +63,18 @@ function Timeline(p: {
   );
 }
 
-// RN-50/RN-52 + RF-05: próximo passo da entrega, com confirmação (concluir exige a prova)
-function StepForm({ step, locale, id, t }: { step: "start" | "complete"; locale: string; id: string; t: T }) {
+// RN-50/RN-52 + RF-05: um passo da esteira, com confirmação (entrega pede a prova)
+function StepForm({ step, locale, id, t }: { step: StaffStep; locale: string; id: string; t: T }) {
   return (
     <GradientCard tone="solid" className="grid gap-4">
       <ActionForm
         action={advance}
         locale={locale}
         id={id}
-        submit={t(step === "start" ? "orders.start" : "orders.complete")}
+        submit={t(`orders.steps.${step}`)}
         confirm={{
-          title: t(step === "start" ? "orders.start" : "orders.complete"),
-          message: t(step === "start" ? "orders.confirmStart" : "orders.confirmComplete"),
+          title: t(`orders.steps.${step}`),
+          message: t(`orders.confirmSteps.${step}`),
           confirm: t("confirm.ok"),
           cancel: t("confirm.cancel"),
         }}
@@ -86,7 +86,7 @@ function StepForm({ step, locale, id, t }: { step: "start" | "complete"; locale:
         }}
       >
         <input type="hidden" name="step" value={step} />
-        {step === "complete" ? (
+        {STAFF_STEPS[step].proof ? (
           <>
             <Field label={t("orders.proofUrl")}>
               <Input name="proofUrl" type="url" required maxLength={500} />
@@ -118,7 +118,7 @@ export default async function OrderAdmin({ params }: PageProps<"/[locale]/admin/
   const lang = canonicalLocale(locale);
   const when = (d: Date) => <LocalTime iso={d.toISOString()} locale={lang} timeZone={timeZone} />;
   const admin = staff.role === "admin";
-  const step = nextStaffStep(order.status);
+  const steps = staffSteps(order.status, admin ? "admin" : "suporte");
   const row = "flex flex-wrap justify-between gap-2 text-sm";
 
   return (
@@ -182,7 +182,13 @@ export default async function OrderAdmin({ params }: PageProps<"/[locale]/admin/
         <Timeline created={order.createdAt} events={timeline} t={t} o={o} when={when} />
       </div>
 
-      {step ? <StepForm step={step} locale={locale} id={order.id} t={t} /> : null}
+      {steps.length ? (
+        <section aria-label={t("orders.nextSteps")} className="grid gap-4 md:grid-cols-2">
+          {steps.map((s) => (
+            <StepForm key={s} step={s} locale={locale} id={order.id} t={t} />
+          ))}
+        </section>
+      ) : null}
     </>
   );
 }

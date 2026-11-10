@@ -213,16 +213,19 @@ export const cartItems = pgTable(
   (t) => [index("cart_items_cart_idx").on(t.cartId), check("cart_items_quantity", sql`${t.quantity} > 0`)],
 );
 
-// Pedido (RN-50). Preços congelados no checkout; só o IPN assinado muda para pago (RN-32).
+// Pedido (RN-50). Preços congelados no checkout; pago vem do IPN assinado (RN-32) ou da equipe, auditado (#170).
 export const orderStatus = pgEnum("order_status", [
-  "pendente",
-  "pagamento_parcial",
+  "solicitado", // #170: checkout feito, cliente ainda não clicou em "Pagar"
+  "aguardando_pagamento",
+  "pagamento_parcial", // RN-37: sinalizado para o suporte avaliar
   "pago",
-  "em_andamento",
+  "agendado",
+  "concluido_parcial",
   "concluido",
-  "expirado",
+  "reembolso_solicitado",
   "reembolsado",
-  "contestado",
+  "cancelado", // RN-34: sem pagamento em 2 h
+  "falha_pagamento", // pagamento falhou ou foi contestado; o cliente vê o aviso
 ]);
 export const paymentNetwork = pgEnum("payment_network", ["trc20", "erc20"]); // RN-37
 
@@ -234,7 +237,7 @@ export const orders = pgTable(
     // RN-107: conta que fez o pedido (logado); null = visitante ou conta excluída (RN-109)
     userId: text("user_id").references((): AnyPgColumn => users.id, { onDelete: "set null" }),
     locale: text("locale").notNull(),
-    status: orderStatus("status").notNull().default("pendente"),
+    status: orderStatus("status").notNull().default("solicitado"),
     subtotalUsdtCents: integer("subtotal_usdt_cents").notNull(),
     discountUsdtCents: integer("discount_usdt_cents").notNull().default(0),
     totalUsdtCents: integer("total_usdt_cents").notNull(),
@@ -248,7 +251,7 @@ export const orders = pgTable(
     paidUsdtCents: integer("paid_usdt_cents"), // valor recebido segundo o IPN (RN-37)
     txHash: text("tx_hash"),
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(), // RN-34
-    assignedTo: text("assigned_to"), // equipe que assumiu a entrega (pago → em_andamento)
+    assignedTo: text("assigned_to"), // equipe que assumiu a entrega (pago → agendado)
     ...timestamps,
   },
   (t) => [

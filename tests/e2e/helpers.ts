@@ -51,12 +51,13 @@ export async function addService(page: Page, path = "/en/wow/mythic-plus/mythic-
   await expect(page.getByRole("status").getByText("Added to cart")).toBeVisible({ timeout: 15_000 });
 }
 
-export async function seedOrder(): Promise<{ id: string; path: string }> {
+// #170: por padrão o cliente já clicou em "Pagar" (aguardando pagamento)
+export async function seedOrder(status = "aguardando_pagamento"): Promise<{ id: string; path: string }> {
   const sql = postgres(process.env.DATABASE_URL!, { max: 1 });
   try {
     const [order] = await sql<{ id: string }[]>`
-      insert into orders (email, locale, network, subtotal_usdt_cents, total_usdt_cents, provider, expires_at)
-      values ('buyer@example.com', 'en', 'erc20', 1200, 1200, 'nowpayments', now() + interval '30 minutes')
+      insert into orders (email, locale, status, network, subtotal_usdt_cents, total_usdt_cents, provider, expires_at)
+      values ('buyer@example.com', 'en', ${status}, 'erc20', 1200, 1200, 'nowpayments', now() + interval '2 hours')
       returning id`;
     await sql`
       insert into order_items (order_id, product_id, product_name, options, unit_price_usdt_cents, quantity)

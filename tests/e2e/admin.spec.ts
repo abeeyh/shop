@@ -1,7 +1,7 @@
 import { createHmac } from "node:crypto";
 import { expect, test, type Page } from "@playwright/test";
 import { E2E_ADMIN } from "./global-setup";
-import { ipn, seedOrder } from "./helpers";
+import { seedOrder } from "./helpers";
 
 // #20: admin com 2FA e CRUD de categorias/produtos. RN-02, RN-04, RN-13, RN-19, RN-70, RN-72, RN-73.
 
@@ -46,7 +46,6 @@ test.describe("admin", () => {
     page,
     browser,
     baseURL,
-    request,
   }) => {
     test.setTimeout(120_000); // percorre o admin inteiro numa sessão (2FA é ativado uma vez por rodada)
     // outro aparelho entra só com a senha antes da ativação
@@ -231,33 +230,31 @@ test.describe("admin", () => {
     await page.goto("/en/admin/pedidos?todos=1&pagina=-3");
     await expect(page.getByRole("heading", { level: 1, name: "Orders" })).toBeVisible();
 
-    // RN-50/RN-52: pedido pago → equipe inicia → conclui com prova → cliente vê no pedido
+    // RN-50/RN-52 (#170): suporte confirma o pagamento à mão → agenda → conclui com prova → cliente vê
     const buyer = await browser.newContext({ baseURL });
     const buyerPage = await buyer.newPage();
     const { id: orderId, path: orderPath } = await seedOrder();
     await buyerPage.goto(orderPath);
-    const paid = { payment_id: Date.now() + Math.random(), order_id: orderId, pay_currency: "usdterc20" };
-    await ipn(request, {
-      ...paid,
-      price_amount: 12,
-      pay_amount: 12,
-      payment_status: "finished",
-      actually_paid: 12,
-    });
     await page.goto("/en/admin/pedidos");
     await page.getByRole("link", { name: orderId.slice(0, 8) }).click();
     const staffStatus = page.getByTestId("staff-order-status");
-    await expect(staffStatus).toHaveText("Paid");
+    await expect(staffStatus).toHaveText("Awaiting payment");
     // RF-05/RF-22 (doc 17): avançar pede confirmação; cancelar não muda nada
-    await page.getByRole("button", { name: "Start delivery" }).click();
+    await page.getByRole("button", { name: "Confirm payment" }).click();
     await page.getByRole("dialog").getByRole("button", { name: "Go back" }).click();
-    await expect(staffStatus).toHaveText("Paid");
-    await page.getByRole("button", { name: "Start delivery" }).click();
+    await expect(staffStatus).toHaveText("Awaiting payment");
+    await page.getByRole("button", { name: "Confirm payment" }).click();
     await page.getByRole("dialog").getByRole("button", { name: "Confirm" }).click();
-    await expect(staffStatus).toHaveText("In progress");
-    await page.getByLabel(/Delivery proof link/).fill("https://example.com/proof.png");
-    await page.getByLabel("Note for the customer").fill("Gold sent by mail.");
-    await page.getByRole("button", { name: "Mark as completed" }).click();
+    await expect(staffStatus).toHaveText("Paid");
+    await page.getByRole("button", { name: "Schedule", exact: true }).click();
+    await page.getByRole("dialog").getByRole("button", { name: "Confirm" }).click();
+    await expect(staffStatus).toHaveText("Scheduled");
+    const done = page
+      .locator("form")
+      .filter({ has: page.getByRole("button", { name: "Mark as completed" }) });
+    await done.getByLabel(/Delivery proof link/).fill("https://example.com/proof.png");
+    await done.getByLabel("Note for the customer").fill("Gold sent by mail.");
+    await done.getByRole("button", { name: "Mark as completed" }).click();
     await page.getByRole("dialog").getByRole("button", { name: "Confirm" }).click();
     await expect(staffStatus).toHaveText("Completed");
     await expect(page.getByRole("region", { name: "History" }).getByText("Completed")).toBeVisible(); // linha do tempo
