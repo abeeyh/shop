@@ -100,12 +100,13 @@ components (Atomic) ◄───────────────────
 
 1. Cliente escolhe o produto e as opções (combinação da variante — #100, adicionais, realm/facção/personagem — ou um personagem salvo, RN-108; horário quando a raid tem agenda) e, se quiser, um cupom.
 2. O servidor recalcula o total em USDT a partir do banco (RN-20) e aplica o maior desconto entre promoção e cupom (RN-23, RN-26).
-3. "Finalizar": escolhe **USDT** ou **cartão** (RN-35). A action cria o pedido `pendente`, reserva gold/vaga (RN-34) e:
-   - USDT: cria fatura no gateway (rede escolhida — RN-37), esvazia o carrinho e redireciona para a fatura; falha do gateway → pedido `expirado` e carrinho intacto;
+3. "Finalizar": escolhe **USDT** ou **cartão** (RN-35). A action cria o pedido `solicitado`, reserva gold/vaga (RN-34), esvazia o carrinho e abre a página do pedido. Lá o botão "Pagar" (`payOrder`, #170):
+   - USDT com gateway ligado: cria a fatura (rede escolhida — RN-37), guarda junto `aguardando_pagamento` e redireciona; falha do gateway → continua `solicitado` para tentar de novo;
+   - USDT com gateway em manutenção (`PAYMENTS_ENABLED` desligado ou sem chave): `aguardando_pagamento` e o suporte confirma o pagamento à mão no admin (auditado). TODO: remover quando o gateway entrar (#25/#146);
    - Cartão: trava a cotação por 15 min e cria o checkout (RN-36, RN-38).
 4. Webhook/IPN assinado → evento gravado em `payment_events` (RN-33) → pedido `pago` (RN-32) ou `pagamento_parcial` (RN-37).
-5. Admin atribui o pedido à equipe → `em_andamento` → registra a prova de entrega → `concluido` (RN-52).
-6. Pagamento não confirmado em 30 min → cron marca `expirado` e libera a reserva (RN-34).
+5. Equipe agenda → `agendado` → registra a prova de entrega → `concluido_parcial` ou `concluido` (RN-52). Reembolso: cliente ou equipe pedem → `reembolso_solicitado` → admin → `reembolsado`.
+6. Pagamento não confirmado em 2 h → cron marca `cancelado` e libera a reserva (RN-34).
 
 Sequência em [06](06-uml.md#3-sequência--compra). Pagamentos em [14](14-pagamentos-internacionais.md).
 

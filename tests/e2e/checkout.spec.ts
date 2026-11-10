@@ -1,12 +1,12 @@
 import { expect, test } from "@playwright/test";
 import { addService, ipn, seedOrder } from "./helpers";
 
-// #18/#86: IPN assinado sobre pedido criado no banco (sem provedor o checkout é bloqueado).
+// #18/#86: IPN assinado sobre pedido criado no banco (o gateway real não roda no teste).
 // RN-01, RN-32, RN-33, RN-37, RN-50.
 test.describe("checkout USDT", () => {
   test.skip(({ isMobile }) => isMobile, "fluxo de servidor; o layout do carrinho já é coberto no celular");
 
-  test("RN-37/RN-50/RN-33: pendente → parcial → pago; IPN repetido não muda nada", async ({
+  test("RN-37/RN-50/RN-33: aguardando → parcial → pago; IPN repetido não muda nada", async ({
     page,
     request,
   }) => {
@@ -73,22 +73,28 @@ test.describe("checkout USDT", () => {
     await expect(page.getByTestId("order-status")).toHaveText("Awaiting payment");
   });
 
-  test("#146: pagamento em manutenção — aviso, botão bloqueado e o servidor recusa sem criar pedido", async ({
+  test("#170: checkout cria o pedido solicitado; Pagar sem gateway fica aguardando o suporte", async ({
     page,
   }) => {
     await addService(page);
     await page.goto("/en/carrinho");
     const notice =
-      "Payments are under maintenance. Your cart is saved; come back soon or talk to support in the chat.";
+      "For now our support team confirms payments by hand: place the order, click Pay and talk to us in the chat.";
     await expect(page.getByRole("status").filter({ hasText: notice })).toBeVisible();
-    const pay = page.getByRole("button", { name: "Pay with USDT" });
-    await expect(pay).toBeDisabled();
-    // mesmo forçando o envio, o servidor recusa (doc 17 §7)
     await page.getByLabel("Email").fill("buyer@example.com");
-    await pay.evaluate((b: HTMLButtonElement) => (b.disabled = false));
-    await pay.click();
-    await expect(page.getByRole("alert").filter({ hasText: notice })).toBeVisible();
-    await expect(page).toHaveURL(/\/en\/carrinho$/);
+    await page.getByRole("button", { name: "Pay with USDT" }).click();
+    await expect(page).toHaveURL(/\/en\/pedido\/[0-9a-f-]+\?t=/);
+    const status = page.getByTestId("order-status");
+    await expect(status).toHaveText("Requested");
+    await page.getByRole("button", { name: "Pay", exact: true }).click();
+    await expect(status).toHaveText("Awaiting payment");
+    await expect(
+      page.getByText("Our support team confirms your payment for now.", { exact: false }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Pay with support" }).click();
+    await expect(page.getByRole("textbox", { name: "How can we help?" })).toHaveValue(
+      /I'd like to pay for order/,
+    );
   });
 
   test("#120: escolher cartão mostra 'API ainda não implementada' e não deixa pagar", async ({ page }) => {
@@ -100,7 +106,7 @@ test.describe("checkout USDT", () => {
     await expect(page.getByRole("button", { name: "Pay by card" })).toBeDisabled();
     await expect(page.getByRole("radio", { name: "TRC-20" })).toBeHidden(); // rede só vale para cripto
     await page.getByRole("radio", { name: "Crypto (USDT)" }).check();
-    await expect(page.getByRole("button", { name: "Pay with USDT" })).toBeVisible(); // em manutenção: bloqueado (#146)
+    await expect(page.getByRole("button", { name: "Pay with USDT" })).toBeEnabled();
   });
 
   test("link do pedido sem a assinatura certa não mostra nada (docs/09: IDOR)", async ({ page }) => {
@@ -117,7 +123,6 @@ test.describe("checkout USDT", () => {
     await page.getByLabel("Email").fill("a@b");
     await page.getByLabel("Email").evaluate((el: HTMLInputElement) => (el.type = "text")); // passa do HTML5
     const pay = page.getByRole("button", { name: "Pay with USDT" });
-    await pay.evaluate((b: HTMLButtonElement) => (b.disabled = false)); // em manutenção (#146) o e-mail é validado antes
     await pay.click();
     await expect(page.getByText("Enter a valid email.")).toBeVisible();
     await expect(page).toHaveURL(/\/en\/carrinho$/);

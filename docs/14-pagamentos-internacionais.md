@@ -18,12 +18,12 @@ sequenceDiagram
   participant L as Loja
   participant G as Gateway cripto
   participant B as Blockchain
-  L->>G: cria fatura (valor em USDT, rede, expira em 30 min)
+  L->>G: cria fatura ao clicar em Pagar (valor em USDT, rede; pedido cancela em 2 h)
   G-->>C: endereço + QR
   C->>B: envia USDT
   B-->>G: confirmações
-  G->>L: IPN assinado (HMAC) — finished / partially_paid / expired
-  L->>L: pedido → pago | pagamento_parcial | expirado (RN-32, RN-37)
+  G->>L: IPN assinado (HMAC) — finished / partially_paid / expired / failed
+  L->>L: pedido → pago | pagamento_parcial | cancelado | falha_pagamento (RN-32, RN-37)
 ```
 
 | Gateway | Taxa (fontes secundárias) | Observação |

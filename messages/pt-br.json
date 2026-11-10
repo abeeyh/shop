@@ -206,19 +206,16 @@
       "email": "Informe um e-mail válido.",
       "empty": "Seu carrinho está vazio.",
       "unavailable": "Remova os itens indisponíveis para continuar.",
-      "payment": "Não conseguimos criar o pagamento. Tente de novo em instantes.",
       "coupon": "Este cupom atingiu o limite de usos. Remova-o para continuar.",
       "changed": "O preço mudou (uma promoção acabou ou o cupom mudou). Confira o novo total e tente de novo.",
       "limited": "Muitas tentativas de checkout. Aguarde alguns minutos e tente de novo.",
-      "notImplemented": "Pagamento em USDT: API ainda não implementada.",
-      "cardNotImplemented": "Cartão de crédito: API ainda não implementada. Por enquanto, pague com cripto (USDT).",
-      "maintenance": "Pagamentos em manutenção. Seu carrinho fica salvo; volte em breve ou fale com o suporte no chat."
+      "cardNotImplemented": "Cartão de crédito: API ainda não implementada. Por enquanto, pague com cripto (USDT)."
     },
     "method": "Forma de pagamento",
     "crypto": "Cripto (USDT)",
     "card": "Cartão de crédito",
     "payCard": "Pagar com cartão",
-    "maintenance": "Pagamentos em manutenção. Seu carrinho fica salvo; volte em breve ou fale com o suporte no chat."
+    "maintenance": "Por enquanto o suporte confirma os pagamentos à mão: faça o pedido, clique em Pagar e fale com a gente no chat."
   },
   "Order": {
     "title": "Seu pedido",
@@ -230,14 +227,17 @@
     "waiting": "Aguardando a confirmação do pagamento. Recarregue a página para atualizar.",
     "partial": "Recebemos {paid}. Envie o restante para concluir o pagamento.",
     "statuses": {
-      "pendente": "Aguardando pagamento",
-      "pagamento_parcial": "Pago em parte",
+      "solicitado": "Solicitado",
+      "aguardando_pagamento": "Aguardando pagamento",
+      "pagamento_parcial": "Pagamento parcial",
       "pago": "Pago",
-      "em_andamento": "Em andamento",
+      "agendado": "Agendado",
+      "concluido_parcial": "Concluído parcialmente",
       "concluido": "Concluído",
-      "expirado": "Expirado",
+      "reembolso_solicitado": "Reembolso solicitado",
       "reembolsado": "Reembolsado",
-      "contestado": "Contestado"
+      "cancelado": "Cancelado",
+      "falha_pagamento": "Falha no pagamento"
     },
     "discount": "Desconto do cupom",
     "delivered": "Entregue — obrigado!",
@@ -245,7 +245,26 @@
     "scheduleTitle": "Agende sua run",
     "scheduleText": "Fale com o suporte pelo chat para escolher a data e o horário da sua run.",
     "scheduleButton": "Agendar com o suporte",
-    "scheduleMessage": "Olá! Quero agendar a run do pedido {order}."
+    "scheduleMessage": "Olá! Quero agendar a run do pedido {order}.",
+    "payNow": "Pagar",
+    "manualPayment": "Por enquanto o suporte confirma o seu pagamento. Fale com a gente no chat para pagar.",
+    "partialReview": "Recebemos parte do pagamento. O suporte vai avaliar o seu pedido.",
+    "paymentChat": "Pagar com o suporte",
+    "paymentMessage": "Olá! Quero pagar o pedido {order}.",
+    "failedNotice": "O pagamento falhou ou foi contestado. Nada mais será cobrado; fale com o suporte no chat se precisar de ajuda.",
+    "refundNotice": "Reembolso solicitado. A equipe está analisando e responde em breve.",
+    "cancelledNotice": "Este pedido foi cancelado porque o pagamento não chegou em 2 horas.",
+    "errors": {
+      "payment": "Não conseguimos criar o pagamento. Tente de novo em instantes.",
+      "stale": "Este pedido já mudou. Recarregue a página."
+    },
+    "refund": {
+      "button": "Pedir reembolso",
+      "title": "Pedir reembolso?",
+      "message": "A equipe vai analisar o pedido. Só um admin aprova o reembolso.",
+      "confirm": "Pedir reembolso",
+      "cancel": "Voltar"
+    }
   },
   "Admin": {
     "title": "Admin",
@@ -440,8 +459,6 @@
       "order": "Pedido",
       "tx": "Transação",
       "proof": "Prova de entrega",
-      "start": "Iniciar entrega",
-      "complete": "Marcar como concluído",
       "proofUrl": "Link da prova de entrega (https — print ou log)",
       "note": "Observação para o cliente",
       "proofError": "Informe um link https para a prova de entrega.",
@@ -456,8 +473,25 @@
       "searchHint": "Use o começo do ID (ex.: 3e66e13d) ou o e-mail completo.",
       "back": "Voltar aos pedidos",
       "timeline": "Histórico",
-      "confirmStart": "Você assume a entrega deste pedido. O cliente verá que está em andamento.",
-      "confirmComplete": "O pedido será concluído com a prova informada e o cliente será avisado. Não dá para desfazer."
+      "steps": {
+        "confirmPayment": "Confirmar pagamento",
+        "schedule": "Agendar",
+        "partial": "Marcar como concluído parcialmente",
+        "complete": "Marcar como concluído",
+        "requestRefund": "Solicitar reembolso",
+        "refund": "Reembolsar",
+        "fail": "Marcar falha no pagamento"
+      },
+      "confirmSteps": {
+        "confirmPayment": "Só confirme depois de conferir que o pagamento chegou inteiro e na rede certa. Fica registrado na auditoria.",
+        "schedule": "Você assume este pedido e agenda o serviço. O cliente verá que está agendado.",
+        "partial": "Parte do pedido foi entregue. Anexe a prova; o cliente verá.",
+        "complete": "O pedido será concluído com esta prova e o cliente será avisado. Não dá para desfazer.",
+        "requestRefund": "O pedido vai para análise de reembolso. Só um admin pode reembolsar.",
+        "refund": "Confirme só depois de devolver o dinheiro ao cliente. Não dá para desfazer.",
+        "fail": "O pagamento falhou ou foi contestado. O cliente será avisado e a vaga e o cupom voltam."
+      },
+      "nextSteps": "Próximos passos"
     },
     "reports": {
       "new": "Novo",

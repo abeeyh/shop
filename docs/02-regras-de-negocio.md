@@ -19,7 +19,7 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 | RN-03 | A loja **nunca** pede, recebe ou guarda login/senha de Battle.net do cliente. No MVP todo serviço é *self-play* (o cliente joga junto). *(proposta — confirmar)* |
 | RN-04 | Papéis: `cliente`, `suporte` e `admin`. Contas de **suporte** e **admin** só são criadas por um admin, por convite de e-mail; nunca pelo cadastro público. *(aprovada em 2026-11-06)* |
 | RN-05 | Suporte e admin podem ativar 2FA (RN-02, opcional desde o #116). Conta de equipe desativada perde o acesso e todas as sessões na hora. *(proposta — confirmar)* |
-| RN-06 | **Suporte pode:** atender o chat, ver pedidos (status, itens, personagem/realm, histórico — sem cotação, valor cobrado em cartão nem hash completo da transação), mudar pedido `pago → em_andamento → concluido` com prova de entrega (RN-52) tratar reportes de bug (RN-91) e ler a documentação interna (RN-74). **Não pode:** categorias, produtos, preços, promoções, cupons, reembolsos nem contas de equipe. Admin pode tudo. *(aprovada em 2026-11-06)* |
+| RN-06 | **Suporte pode:** atender o chat, ver pedidos (status, itens, personagem/realm, histórico — sem cotação, valor cobrado em cartão nem hash completo da transação), confirmar pagamento à mão enquanto o gateway está em manutenção, agendar, concluir (parcial ou total) com prova de entrega (RN-52) e registrar pedido de reembolso (#170); tratar reportes de bug (RN-91) e ler a documentação interna (RN-74). **Não pode:** categorias, produtos, preços, promoções, cupons, reembolsar, marcar falha de pagamento nem contas de equipe. Admin pode tudo. *(aprovada em 2026-11-06)* |
 | RN-07 | Toda ação de suporte ou admin em pedido, conversa ou reporte entra na auditoria (como RN-71). *(proposta — confirmar)* |
 
 ## Catálogo
@@ -86,7 +86,7 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 | RN-31 | ~~Moeda de cobrança BRL.~~ *(revogada em 2026-11-06 — substituída por RN-35)* |
 | RN-32 | Pedido só muda para **pago** por webhook/IPN assinado do provedor; retorno do navegador não confirma pagamento. *(proposta — confirmar)* |
 | RN-33 | Webhook repetido não gera efeito duplicado (idempotência pelo ID do evento). *(proposta — confirmar)* |
-| RN-34 | Vaga de raid e gold são reservados ao criar o checkout e liberados se o pagamento não for confirmado em 30 min. No MVP o gold não tem estoque cadastrado, então só a vaga de raid é reservada; pedido `pagamento_parcial` mantém a vaga até o admin resolver. *(proposta — confirmar)* |
+| RN-34 | Vaga de raid e gold são reservados ao criar o checkout e liberados se o pagamento não for confirmado em **2 horas**: o pedido `solicitado`/`aguardando_pagamento` vira `cancelado` (#170). No MVP o gold não tem estoque cadastrado, então só a vaga de raid é reservada; pedido `pagamento_parcial` mantém a vaga até o suporte avaliar. `falha_pagamento` também libera vaga e cupom. *(alterada em 2026-11-10; proposta — confirmar)* |
 | RN-35 | Meios de pagamento: **USDT** (cripto, via gateway) e **cartão**. O valor-base é sempre o preço em USDT. *(aprovada em 2026-11-06)* |
 | RN-36 | Cartão: valor cobrado = preço final em USDT (já com desconto) × cotação USDT→moeda do cartão, **travada no início do checkout** por 15 min; a cotação e o valor cobrado ficam gravados no pedido. *(proposta — confirmar)* |
 | RN-37 | USDT: redes aceitas TRC-20 e ERC-20 *(proposta — confirmar)*; pagamento a menor deixa o pedido `pagamento_parcial` (sem entrega); a maior gera crédito ou devolução manual pelo admin. *(proposta — confirmar)* |
@@ -96,8 +96,8 @@ Fonte da verdade do comportamento do produto. Cada regra tem um ID (`RN-xx`) cit
 
 | ID | Regra |
 |----|-------|
-| RN-50 | Estados do pedido: `pendente → pago → em_andamento → concluido`; `pendente → expirado`; `pendente → pagamento_parcial → pago`; `pago/em_andamento → reembolsado`; `pago/em_andamento/concluido → contestado` (RN-51). Diagrama em [06 §4](06-uml.md#4-estados--pedido-rn-50-rn-51). *(alterada em 2026-11-06; proposta — confirmar)* |
-| RN-51 | Chargeback/contestação marca o pedido como `contestado` e notifica o admin. *(proposta — confirmar)* |
+| RN-50 | Estados do pedido (#170): `solicitado → aguardando_pagamento → pago → agendado → concluido_parcial → concluido`. O checkout cria `solicitado`; o botão "Pagar" leva a `aguardando_pagamento` (fatura do gateway; com o gateway em manutenção, o suporte confirma o pagamento à mão, auditado — RN-07). `aguardando_pagamento → pagamento_parcial` (sinalizado para o suporte avaliar) `→ pago`; sem pagamento em 2 h `→ cancelado` (RN-34); falha ou contestação `→ falha_pagamento` (só admin ou IPN; o cliente vê o aviso). Depois de pago, cliente ou equipe pedem reembolso `→ reembolso_solicitado → reembolsado` (só admin). Diagrama em [06 §4](06-uml.md#4-estados--pedido-rn-50-rn-51). *(alterada em 2026-11-10; proposta — confirmar)* |
+| RN-51 | Chargeback/contestação marca o pedido como `falha_pagamento` (antes `contestado`) e o cliente vê o aviso no pedido. *(alterada em 2026-11-10; proposta — confirmar)* |
 | RN-52 | Pedido só vira `concluido` com **prova de entrega** registrada pelo admin (ex.: print do envio de gold, log da raid/run). *(proposta — confirmar)* |
 
 ## Admin (dashboard)

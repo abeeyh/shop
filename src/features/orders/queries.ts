@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { couponRedemptions, coupons, orderItems, orders, paymentEvents, raidSlots } from "@/db/schema";
 import { PAY_CURRENCY } from "@/lib/payments/crypto";
 import { inWindow } from "@/features/pricing/rules";
-import { nextStatus, settle, type Network, type OrderStatus, type PaymentOutcome } from "./rules";
+import { nextStatus, settle, UNPAID, type Network, type OrderStatus, type PaymentOutcome } from "./rules";
 
 export type NewOrder = {
   email: string;
@@ -89,45 +89,69 @@ export async function insertOrder({ items, ...order }: NewOrder): Promise<string
   });
 }
 
-export async function setInvoice(id: string, provider: string, providerPaymentId: string, payUrl: string) {
-  await db
+// #170: o cliente clicou em "Pagar" — sai de solicitado; com gateway, guarda a fatura junto.
+// UPDATE condicional: dois cliques não mudam nada. false = pedido já não estava em solicitado.
+export async function startPayment(
+  id: string,
+  invoice?: { provider: string; providerPaymentId: string; payUrl: string },
+): Promise<boolean> {
+  const [r] = await db
     .update(orders)
-    .set({ provider, providerPaymentId, payUrl, updatedAt: new Date() })
-    .where(eq(orders.id, id));
+    .set({ status: "aguardando_pagamento", ...invoice, updatedAt: new Date() })
+    .where(and(eq(orders.id, id), eq(orders.status, "solicitado")))
+    .returning({ id: orders.id });
+  return !!r;
 }
 
-// RN-34/RN-50: só pedido `pendente` expira (o IPN trava a linha; pago no meio do caminho não expira)
-// e as vagas voltam na mesma transação
+// #170: cliente pede reembolso de pedido pago (a equipe analisa; só o admin reembolsa)
+export async function requestRefund(id: string, from: OrderStatus[]): Promise<boolean> {
+  const [r] = await db
+    .update(orders)
+    .set({ status: "reembolso_solicitado", updatedAt: new Date() })
+    .where(and(eq(orders.id, id), inArray(orders.status, from)))
+    .returning({ id: orders.id });
+  return !!r;
+}
+
+// RN-27/RN-34: cupom reservado volta a valer e as vagas voltam (pedido cancelado ou com falha)
+export async function releaseReservations(tx: Tx, ids: string[]) {
+  await tx
+    .update(couponRedemptions)
+    .set({ status: "released" })
+    .where(and(inArray(couponRedemptions.orderId, ids), eq(couponRedemptions.status, "reserved")));
+  const seats = await tx
+    .select({ slotId: orderItems.raidSlotId, n: sql<number>`count(*)::int` })
+    .from(orderItems)
+    .where(and(inArray(orderItems.orderId, ids), isNotNull(orderItems.raidSlotId)))
+    .groupBy(orderItems.raidSlotId);
+  for (const s of seats)
+    await tx
+      .update(raidSlots)
+      .set({ reserved: sql`greatest(${raidSlots.reserved} - ${s.n}, 0)`, updatedAt: new Date() })
+      .where(eq(raidSlots.id, s.slotId!));
+}
+
+// RN-34/RN-50: só pedido ainda sem pagamento é cancelado (o IPN trava a linha; pago no meio do
+// caminho não cancela) e as vagas voltam na mesma transação
 async function expireWhere(where: SQL | undefined): Promise<number> {
   return db.transaction(async (tx) => {
     const expired = await tx
       .update(orders)
-      .set({ status: "expirado", updatedAt: new Date() })
-      .where(and(eq(orders.status, "pendente"), where))
+      .set({ status: "cancelado", updatedAt: new Date() })
+      .where(and(inArray(orders.status, UNPAID), where))
       .returning({ id: orders.id });
-    if (!expired.length) return 0;
-    const ids = expired.map((o) => o.id);
-    await tx // RN-27: cupom reservado volta a valer
-      .update(couponRedemptions)
-      .set({ status: "released" })
-      .where(and(inArray(couponRedemptions.orderId, ids), eq(couponRedemptions.status, "reserved")));
-    const seats = await tx
-      .select({ slotId: orderItems.raidSlotId, n: sql<number>`count(*)::int` })
-      .from(orderItems)
-      .where(and(inArray(orderItems.orderId, ids), isNotNull(orderItems.raidSlotId)))
-      .groupBy(orderItems.raidSlotId);
-    for (const s of seats)
-      await tx
-        .update(raidSlots)
-        .set({ reserved: sql`greatest(${raidSlots.reserved} - ${s.n}, 0)`, updatedAt: new Date() })
-        .where(eq(raidSlots.id, s.slotId!));
+    if (expired.length)
+      await releaseReservations(
+        tx,
+        expired.map((o) => o.id),
+      );
     return expired.length;
   });
 }
 
 export const markExpired = (id: string) => expireWhere(eq(orders.id, id));
 
-// cron /api/cron/expire-orders: pendente com prazo vencido (RN-34)
+// cron /api/cron/expire-orders: sem pagamento com prazo vencido (RN-34)
 export const expireDueOrders = (now = new Date()) => expireWhere(lt(orders.expiresAt, now));
 
 export async function getOrder(id: string) {
@@ -158,7 +182,7 @@ export type PaymentEvent = {
 export type ApplyResult =
   "duplicate" | "unknown_order" | "mismatch" | "late_payment" | "ignored" | OrderStatus;
 
-const OPEN: OrderStatus[] = ["pendente", "pagamento_parcial"];
+const OPEN: OrderStatus[] = ["aguardando_pagamento", "pagamento_parcial"];
 
 type LockedOrder = { status: OrderStatus; total: number; network: Network | null; paid: number | null };
 
@@ -183,7 +207,8 @@ type Decision = Exclude<ApplyResult, OrderStatus> | { status: OrderStatus; paid:
 function decide(order: LockedOrder, e: PaymentEvent): Decision {
   if (!matches(order, e)) return "mismatch";
   if (!e.outcome) return "ignored";
-  if (!OPEN.includes(order.status)) return e.outcome === "expired" ? "ignored" : "late_payment";
+  if (!OPEN.includes(order.status))
+    return e.outcome === "expired" || e.outcome === "failed" ? "ignored" : "late_payment";
   const next = nextStatus(order.status, settle(e.outcome, e.paidCents, e.payAmountCents));
   // parcial que cresce continua parcial, mas o valor recebido é atualizado
   const paid = Math.max(order.paid ?? 0, e.paidCents);
@@ -222,6 +247,7 @@ export async function applyPaymentEvent(e: PaymentEvent): Promise<ApplyResult> {
         .update(couponRedemptions)
         .set({ status: "used" })
         .where(eq(couponRedemptions.orderId, e.orderId));
+    if (d.status === "falha_pagamento") await releaseReservations(tx, [e.orderId]);
     return d.status;
   });
 }

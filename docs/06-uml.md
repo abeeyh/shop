@@ -211,7 +211,7 @@ sequenceDiagram
   participant FX as Cotação
   participant P as Provedor (cripto ou cartão)
   U->>W: Finalizar compra (USDT ou cartão)
-  W->>DB: recalcula total em USDT (RN-20), cria pedido pendente, reserva gold/vaga (RN-34)
+  W->>DB: recalcula total em USDT (RN-20), cria pedido solicitado, reserva gold/vaga (RN-34)
   alt cartão
     W->>FX: cotação USDT→moeda do cartão
     W->>DB: grava cotação travada 15 min (RN-36)
@@ -230,19 +230,28 @@ sequenceDiagram
 
 ```mermaid
 stateDiagram-v2
-  [*] --> pendente
-  pendente --> pago: pagamento confirmado
-  pendente --> pagamento_parcial: USDT a menor
-  pagamento_parcial --> pago: complemento
-  pendente --> expirado: 30 min sem pagamento
-  pago --> em_andamento: admin atribui
-  em_andamento --> concluido: prova de entrega (RN-52)
-  pago --> reembolsado
-  em_andamento --> reembolsado
-  pago --> contestado: chargeback
-  em_andamento --> contestado: chargeback
-  concluido --> contestado: chargeback
-  expirado --> [*]
+  [*] --> solicitado: checkout
+  solicitado --> aguardando_pagamento: cliente clica em Pagar
+  solicitado --> pago: suporte confirma à mão (#170)
+  aguardando_pagamento --> pago: IPN ou suporte confirma
+  aguardando_pagamento --> pagamento_parcial: USDT a menor (suporte avalia)
+  pagamento_parcial --> pago: complemento ou suporte confirma
+  solicitado --> cancelado: 2 h sem pagamento
+  aguardando_pagamento --> cancelado: 2 h sem pagamento
+  aguardando_pagamento --> falha_pagamento: falha/contestação
+  pagamento_parcial --> falha_pagamento: falha/contestação
+  pago --> falha_pagamento: contestação (admin)
+  pago --> agendado: equipe agenda
+  agendado --> concluido_parcial: prova parcial (RN-52)
+  agendado --> concluido: prova de entrega (RN-52)
+  concluido_parcial --> concluido: prova de entrega
+  pago --> reembolso_solicitado: cliente ou equipe
+  agendado --> reembolso_solicitado
+  concluido_parcial --> reembolso_solicitado
+  concluido --> reembolso_solicitado
+  reembolso_solicitado --> reembolsado: só admin
+  cancelado --> [*]
+  falha_pagamento --> [*]
   reembolsado --> [*]
   concluido --> [*]
 ```

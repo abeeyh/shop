@@ -3,12 +3,15 @@ import type { OrderStatus } from "./rules";
 
 // RF-07 (doc 17): cor do selo de cada status (RN-50). Ouro = precisa de alguém; vermelho = problema.
 export const ORDER_STATUS_TONE: Record<OrderStatus, BadgeTone> = {
-  pendente: "neutral",
-  pagamento_parcial: "warning",
+  solicitado: "neutral",
+  aguardando_pagamento: "neutral",
+  pagamento_parcial: "warning", // RN-37: o suporte avalia
   pago: "warning",
-  em_andamento: "info",
+  agendado: "info",
+  concluido_parcial: "info",
   concluido: "success",
-  expirado: "neutral",
+  reembolso_solicitado: "warning",
   reembolsado: "neutral",
-  contestado: "danger",
+  cancelado: "neutral",
+  falha_pagamento: "danger",
 };

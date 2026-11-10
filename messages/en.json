@@ -206,19 +206,16 @@
       "email": "Enter a valid email.",
       "empty": "Your cart is empty.",
       "unavailable": "Remove the unavailable items to continue.",
-      "payment": "We couldn't create the payment. Try again in a moment.",
       "coupon": "This coupon reached its usage limit. Remove it to continue.",
       "changed": "The price changed (a promotion ended or the coupon changed). Check the new total and try again.",
       "limited": "Too many checkout attempts. Wait a few minutes and try again.",
-      "notImplemented": "USDT payment: API not yet implemented.",
-      "cardNotImplemented": "Credit card: API not yet implemented. Pay with crypto (USDT) for now.",
-      "maintenance": "Payments are under maintenance. Your cart is saved; come back soon or talk to support in the chat."
+      "cardNotImplemented": "Credit card: API not yet implemented. Pay with crypto (USDT) for now."
     },
     "method": "Payment method",
     "crypto": "Crypto (USDT)",
     "card": "Credit card",
     "payCard": "Pay by card",
-    "maintenance": "Payments are under maintenance. Your cart is saved; come back soon or talk to support in the chat."
+    "maintenance": "For now our support team confirms payments by hand: place the order, click Pay and talk to us in the chat."
   },
   "Order": {
     "title": "Your order",
@@ -230,14 +227,17 @@
     "waiting": "Waiting for the payment confirmation. This page updates when you reload it.",
     "partial": "We received {paid}. Send the rest to complete the payment.",
     "statuses": {
-      "pendente": "Awaiting payment",
+      "solicitado": "Requested",
+      "aguardando_pagamento": "Awaiting payment",
       "pagamento_parcial": "Partially paid",
       "pago": "Paid",
-      "em_andamento": "In progress",
+      "agendado": "Scheduled",
+      "concluido_parcial": "Partially completed",
       "concluido": "Completed",
-      "expirado": "Expired",
+      "reembolso_solicitado": "Refund requested",
       "reembolsado": "Refunded",
-      "contestado": "Disputed"
+      "cancelado": "Cancelled",
+      "falha_pagamento": "Payment failed"
     },
     "discount": "Coupon discount",
     "delivered": "Delivered — thank you!",
@@ -245,7 +245,26 @@
     "scheduleTitle": "Schedule your run",
     "scheduleText": "Talk to support in the chat to pick the date and time of your run.",
     "scheduleButton": "Schedule with support",
-    "scheduleMessage": "Hi! I'd like to schedule the run for order {order}."
+    "scheduleMessage": "Hi! I'd like to schedule the run for order {order}.",
+    "payNow": "Pay",
+    "manualPayment": "Our support team confirms your payment for now. Talk to us in the chat to pay.",
+    "partialReview": "We received part of the payment. Our support team will review your order.",
+    "paymentChat": "Pay with support",
+    "paymentMessage": "Hi! I'd like to pay for order {order}.",
+    "failedNotice": "The payment failed or was disputed. Nothing else will be charged; talk to support in the chat if you need help.",
+    "refundNotice": "Refund requested. Our team is reviewing it and will reply soon.",
+    "cancelledNotice": "This order was cancelled because no payment arrived within 2 hours.",
+    "errors": {
+      "payment": "We couldn't create the payment. Try again in a moment.",
+      "stale": "This order has already changed. Reload the page."
+    },
+    "refund": {
+      "button": "Request a refund",
+      "title": "Request a refund?",
+      "message": "Our team will review the request. Only an admin can approve the refund.",
+      "confirm": "Request refund",
+      "cancel": "Go back"
+    }
   },
   "Admin": {
     "title": "Admin",
@@ -440,8 +459,6 @@
       "order": "Order",
       "tx": "Transaction",
       "proof": "Delivery proof",
-      "start": "Start delivery",
-      "complete": "Mark as completed",
       "proofUrl": "Delivery proof link (https — screenshot or log)",
       "note": "Note for the customer",
       "proofError": "Add an https link to the delivery proof.",
@@ -456,8 +473,25 @@
       "searchHint": "Use the start of the ID (e.g. 3e66e13d) or the full email.",
       "back": "Back to orders",
       "timeline": "History",
-      "confirmStart": "You take over the delivery of this order. The customer will see it is in progress.",
-      "confirmComplete": "The order will be completed with this proof and the customer will be notified. This cannot be undone."
+      "steps": {
+        "confirmPayment": "Confirm payment",
+        "schedule": "Schedule",
+        "partial": "Mark as partially completed",
+        "complete": "Mark as completed",
+        "requestRefund": "Request refund",
+        "refund": "Refund",
+        "fail": "Mark payment as failed"
+      },
+      "confirmSteps": {
+        "confirmPayment": "Only confirm after checking the payment arrived in full on the right network. This is recorded in the audit log.",
+        "schedule": "You take over this order and schedule the service. The customer will see it is scheduled.",
+        "partial": "Part of the order is delivered. Add the proof; the customer will see it.",
+        "complete": "The order will be completed with this proof and the customer will be notified. This cannot be undone.",
+        "requestRefund": "The order goes to refund review. Only an admin can refund it.",
+        "refund": "Confirm only after the money was returned to the customer. This cannot be undone.",
+        "fail": "The payment failed or was disputed. The customer will be told and the slot and coupon are released."
+      },
+      "nextSteps": "Next steps"
     },
     "reports": {
       "new": "New",

@@ -1,10 +1,11 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { auditLog, deliveries, orderItems, orders, users } from "@/db/schema";
+import { auditLog, couponRedemptions, deliveries, orderItems, orders, users } from "@/db/schema";
 import { saveAudited } from "@/features/admin/audit";
 import { canonicalEmail } from "@/features/discounts/queries";
 import { ADMIN_PAGE_SIZE } from "@/lib/pagination";
+import { releaseReservations } from "./queries";
 import { STAFF_STEPS, type OrderStatus, type StaffStep } from "./rules";
 
 // RF-21 (doc 17): busca da fila — começo do ID (hex) ou e-mail exato. Outro texto não acha nada
@@ -76,12 +77,25 @@ export async function advanceOrder(
     async (tx) => {
       const [r] = await tx
         .update(orders)
-        .set({ status: to, updatedAt: new Date(), ...(step === "start" ? { assignedTo: staffId } : {}) })
-        .where(and(eq(orders.id, id), eq(orders.status, from)))
+        .set({ status: to, updatedAt: new Date(), ...(step === "schedule" ? { assignedTo: staffId } : {}) })
+        .where(and(eq(orders.id, id), inArray(orders.status, from)))
         .returning({ id: orders.id });
-      if (r && proof) await tx.insert(deliveries).values({ orderId: id, staffId, ...proof });
       moved = !!r;
-      return r?.id;
+      if (!r) return undefined;
+      if (proof)
+        // parcial e depois concluído: vale a prova mais nova (RN-52)
+        await tx
+          .insert(deliveries)
+          .values({ orderId: id, staffId, ...proof })
+          .onConflictDoUpdate({
+            target: deliveries.orderId,
+            set: { staffId, ...proof, deliveredAt: new Date() },
+          });
+      if (to === "pago")
+        // RN-27: confirmado à mão (#170), o cupom conta como usado como no IPN
+        await tx.update(couponRedemptions).set({ status: "used" }).where(eq(couponRedemptions.orderId, id));
+      if (to === "falha_pagamento") await releaseReservations(tx, [id]);
+      return r.id;
     },
   );
   return moved;

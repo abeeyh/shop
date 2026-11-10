@@ -206,19 +206,16 @@
       "email": "Indiquez un e-mail valide.",
       "empty": "Votre panier est vide.",
       "unavailable": "Retirez les articles indisponibles pour continuer.",
-      "payment": "Impossible de créer le paiement. Réessayez dans un instant.",
       "coupon": "Ce coupon a atteint sa limite d'utilisation. Retirez-le pour continuer.",
       "changed": "Le prix a changé (une promotion s'est terminée ou le coupon a changé). Vérifiez le nouveau total et réessayez.",
       "limited": "Trop de tentatives de paiement. Patientez quelques minutes puis réessayez.",
-      "notImplemented": "Paiement en USDT : API pas encore implémentée.",
-      "cardNotImplemented": "Carte bancaire : API pas encore implémentée. Payez en crypto (USDT) pour l’instant.",
-      "maintenance": "Les paiements sont en maintenance. Votre panier est conservé ; revenez bientôt ou contactez le support dans le chat."
+      "cardNotImplemented": "Carte bancaire : API pas encore implémentée. Payez en crypto (USDT) pour l’instant."
     },
     "method": "Moyen de paiement",
     "crypto": "Crypto (USDT)",
     "card": "Carte bancaire",
     "payCard": "Payer par carte",
-    "maintenance": "Les paiements sont en maintenance. Votre panier est conservé ; revenez bientôt ou contactez le support dans le chat."
+    "maintenance": "Pour l'instant, le support confirme les paiements à la main : passez la commande, cliquez sur Payer et écrivez-nous dans le chat."
   },
   "Order": {
     "title": "Votre commande",
@@ -230,14 +227,17 @@
     "waiting": "En attente de la confirmation du paiement. Rechargez la page pour la mettre à jour.",
     "partial": "Nous avons reçu {paid}. Envoyez le reste pour finaliser le paiement.",
     "statuses": {
-      "pendente": "En attente de paiement",
-      "pagamento_parcial": "Partiellement payé",
-      "pago": "Payé",
-      "em_andamento": "En cours",
-      "concluido": "Terminé",
-      "expirado": "Expiré",
-      "reembolsado": "Remboursé",
-      "contestado": "Contesté"
+      "solicitado": "Demandée",
+      "aguardando_pagamento": "En attente de paiement",
+      "pagamento_parcial": "Paiement partiel",
+      "pago": "Payée",
+      "agendado": "Planifiée",
+      "concluido_parcial": "Terminée en partie",
+      "concluido": "Terminée",
+      "reembolso_solicitado": "Remboursement demandé",
+      "reembolsado": "Remboursée",
+      "cancelado": "Annulée",
+      "falha_pagamento": "Échec du paiement"
     },
     "discount": "Remise du coupon",
     "delivered": "Livré — merci !",
@@ -245,7 +245,26 @@
     "scheduleTitle": "Planifiez votre run",
     "scheduleText": "Contactez le support dans le chat pour choisir la date et l'heure de votre run.",
     "scheduleButton": "Planifier avec le support",
-    "scheduleMessage": "Bonjour ! Je voudrais planifier le run de la commande {order}."
+    "scheduleMessage": "Bonjour ! Je voudrais planifier le run de la commande {order}.",
+    "payNow": "Payer",
+    "manualPayment": "Pour l'instant, le support confirme votre paiement. Écrivez-nous dans le chat pour payer.",
+    "partialReview": "Nous avons reçu une partie du paiement. Le support va examiner votre commande.",
+    "paymentChat": "Payer avec le support",
+    "paymentMessage": "Bonjour ! Je voudrais payer la commande {order}.",
+    "failedNotice": "Le paiement a échoué ou a été contesté. Rien d'autre ne sera débité ; contactez le support dans le chat si besoin.",
+    "refundNotice": "Remboursement demandé. L'équipe l'examine et vous répond bientôt.",
+    "cancelledNotice": "Cette commande a été annulée car aucun paiement n'est arrivé sous 2 heures.",
+    "errors": {
+      "payment": "Impossible de créer le paiement. Réessayez dans un instant.",
+      "stale": "Cette commande a déjà changé. Rechargez la page."
+    },
+    "refund": {
+      "button": "Demander un remboursement",
+      "title": "Demander un remboursement ?",
+      "message": "L'équipe va examiner la demande. Seul un admin peut approuver le remboursement.",
+      "confirm": "Demander le remboursement",
+      "cancel": "Retour"
+    }
   },
   "Admin": {
     "title": "Admin",
@@ -440,8 +459,6 @@
       "order": "Commande",
       "tx": "Transaction",
       "proof": "Preuve de livraison",
-      "start": "Démarrer la livraison",
-      "complete": "Marquer comme terminée",
       "proofUrl": "Lien de la preuve de livraison (https — capture ou log)",
       "note": "Note pour le client",
       "proofError": "Ajoutez un lien https vers la preuve de livraison.",
@@ -456,8 +473,25 @@
       "searchHint": "Utilisez le début de l’ID (ex. 3e66e13d) ou l’e-mail complet.",
       "back": "Retour aux commandes",
       "timeline": "Historique",
-      "confirmStart": "Vous prenez en charge la livraison de cette commande. Le client verra qu’elle est en cours.",
-      "confirmComplete": "La commande sera terminée avec cette preuve et le client sera prévenu. Impossible d’annuler."
+      "steps": {
+        "confirmPayment": "Confirmer le paiement",
+        "schedule": "Planifier",
+        "partial": "Marquer comme terminée en partie",
+        "complete": "Marquer comme terminée",
+        "requestRefund": "Demander le remboursement",
+        "refund": "Rembourser",
+        "fail": "Marquer l'échec du paiement"
+      },
+      "confirmSteps": {
+        "confirmPayment": "Ne confirmez qu'après avoir vérifié que le paiement est arrivé en entier sur le bon réseau. C'est enregistré dans l'audit.",
+        "schedule": "Vous prenez cette commande et planifiez le service. Le client verra qu'elle est planifiée.",
+        "partial": "Une partie de la commande est livrée. Ajoutez la preuve ; le client la verra.",
+        "complete": "La commande sera terminée avec cette preuve et le client sera prévenu. Action définitive.",
+        "requestRefund": "La commande passe en examen de remboursement. Seul un admin peut rembourser.",
+        "refund": "Confirmez seulement après avoir rendu l'argent au client. Action définitive.",
+        "fail": "Le paiement a échoué ou a été contesté. Le client sera prévenu ; la place et le coupon sont libérés."
+      },
+      "nextSteps": "Étapes suivantes"
     },
     "reports": {
       "new": "Nouveau",

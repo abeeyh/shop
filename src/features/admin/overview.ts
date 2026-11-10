@@ -11,8 +11,16 @@ import {
   users,
 } from "@/db/schema";
 
-const TO_DO = ["pago", "em_andamento"] as const; // RN-50: pagos esperando entrega
-const PAID = ["pago", "em_andamento", "concluido"] as const;
+// RN-50 (#170): o que espera alguém da equipe (mesma lista da aba "A fazer" dos pedidos)
+const TO_DO = [
+  "aguardando_pagamento",
+  "pagamento_parcial",
+  "pago",
+  "agendado",
+  "concluido_parcial",
+  "reembolso_solicitado",
+] as const;
+const PAID = ["pago", "agendado", "concluido_parcial", "concluido", "reembolso_solicitado"] as const;
 const ENDING_SOON_MS = 3 * 24 * 60 * 60 * 1000;
 
 // RF-20 (doc 17): contagens da visão geral do suporte — agregadas no banco, sem trazer linhas
@@ -32,7 +40,7 @@ export async function supportOverview() {
 }
 
 // RF-20: o que só o admin vê (RN-06: faturamento, descontos, equipe). "Hoje" no fuso de quem olha.
-// shortcut: pago = criado hoje e já pago (sem coluna paid_at; o pagamento chega em até 30 min — RN-34)
+// shortcut: pago = criado hoje e já pago (sem coluna paid_at; o pagamento chega em até 2 h — RN-34)
 export async function adminOverview(timeZone: string) {
   const now = new Date();
   const soon = new Date(now.getTime() + ENDING_SOON_MS);

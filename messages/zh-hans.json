@@ -206,19 +206,16 @@
       "email": "请输入有效的电子邮箱。",
       "empty": "你的购物车是空的。",
       "unavailable": "请移除无法购买的商品以继续。",
-      "payment": "无法创建付款，请稍后再试。",
       "coupon": "该优惠码已达到使用上限，请移除后继续。",
       "changed": "价格已变动（促销已结束或优惠码已变更），请确认新的总额后再试一次。",
       "limited": "结算尝试次数过多，请稍等几分钟再试。",
-      "notImplemented": "USDT 付款：API 尚未实现。",
-      "cardNotImplemented": "信用卡：API 尚未实现。目前请使用加密货币（USDT）付款。",
-      "maintenance": "支付正在维护中。您的购物车已保存；请稍后再来，或在聊天中联系客服。"
+      "cardNotImplemented": "信用卡：API 尚未实现。目前请使用加密货币（USDT）付款。"
     },
     "method": "付款方式",
     "crypto": "加密货币（USDT）",
     "card": "信用卡",
     "payCard": "用信用卡付款",
-    "maintenance": "支付正在维护中。您的购物车已保存；请稍后再来，或在聊天中联系客服。"
+    "maintenance": "目前由客服手动确认付款：下单后点击付款，并在聊天中联系我们。"
   },
   "Order": {
     "title": "你的订单",
@@ -230,14 +227,17 @@
     "waiting": "等待付款确认，刷新页面即可更新。",
     "partial": "已收到 {paid}，请补足余额以完成付款。",
     "statuses": {
-      "pendente": "等待付款",
+      "solicitado": "已提交",
+      "aguardando_pagamento": "等待付款",
       "pagamento_parcial": "部分付款",
       "pago": "已付款",
-      "em_andamento": "进行中",
+      "agendado": "已排期",
+      "concluido_parcial": "部分完成",
       "concluido": "已完成",
-      "expirado": "已过期",
+      "reembolso_solicitado": "已申请退款",
       "reembolsado": "已退款",
-      "contestado": "争议中"
+      "cancelado": "已取消",
+      "falha_pagamento": "付款失败"
     },
     "discount": "优惠码折扣",
     "delivered": "已交付 — 谢谢！",
@@ -245,7 +245,26 @@
     "scheduleTitle": "预约你的场次",
     "scheduleText": "在聊天中联系客服，选择场次的日期和时间。",
     "scheduleButton": "与客服预约",
-    "scheduleMessage": "你好！我想预约订单 {order} 的场次。"
+    "scheduleMessage": "你好！我想预约订单 {order} 的场次。",
+    "payNow": "付款",
+    "manualPayment": "目前由客服确认你的付款。请在聊天中联系我们完成付款。",
+    "partialReview": "我们已收到部分付款。客服会审核你的订单。",
+    "paymentChat": "通过客服付款",
+    "paymentMessage": "你好！我想为订单 {order} 付款。",
+    "failedNotice": "付款失败或被争议。不会再扣款；如需帮助请在聊天中联系客服。",
+    "refundNotice": "已申请退款。团队正在审核，很快会回复。",
+    "cancelledNotice": "此订单已取消，因为 2 小时内未收到付款。",
+    "errors": {
+      "payment": "无法创建付款。请稍后再试。",
+      "stale": "此订单已有变化。请刷新页面。"
+    },
+    "refund": {
+      "button": "申请退款",
+      "title": "申请退款？",
+      "message": "团队会审核申请。只有管理员可以批准退款。",
+      "confirm": "申请退款",
+      "cancel": "返回"
+    }
   },
   "Admin": {
     "title": "管理后台",
@@ -440,8 +459,6 @@
       "order": "订单",
       "tx": "交易",
       "proof": "交付证明",
-      "start": "开始交付",
-      "complete": "标记为已完成",
       "proofUrl": "交付证明链接（https — 截图或日志）",
       "note": "给客户的备注",
       "proofError": "请提供交付证明的 https 链接。",
@@ -456,8 +473,25 @@
       "searchHint": "使用 ID 开头（例如 3e66e13d）或完整邮箱。",
       "back": "返回订单",
       "timeline": "历史",
-      "confirmStart": "你将负责此订单的交付。客户会看到订单处理中。",
-      "confirmComplete": "订单将附上此凭证完成，并通知客户。此操作无法撤销。"
+      "steps": {
+        "confirmPayment": "确认付款",
+        "schedule": "排期",
+        "partial": "标记为部分完成",
+        "complete": "标记为已完成",
+        "requestRefund": "申请退款",
+        "refund": "退款",
+        "fail": "标记付款失败"
+      },
+      "confirmSteps": {
+        "confirmPayment": "请在确认款项已足额到达正确网络后再确认。此操作会记入审计日志。",
+        "schedule": "你将接手此订单并安排服务。客户会看到订单已排期。",
+        "partial": "订单已部分交付。请添加凭证；客户可以看到。",
+        "complete": "订单将附上此凭证完成，并通知客户。此操作无法撤销。",
+        "requestRefund": "订单将进入退款审核。只有管理员可以退款。",
+        "refund": "请在款项退还客户后再确认。此操作无法撤销。",
+        "fail": "付款失败或被争议。将通知客户，并释放名额和优惠券。"
+      },
+      "nextSteps": "下一步"
     },
     "reports": {
       "new": "新反馈",

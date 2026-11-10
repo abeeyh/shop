@@ -6,6 +6,9 @@ import { z } from "zod";
 import { GradientCard } from "@/components/molecules/GradientCard";
 import { formatUsdt } from "@/features/catalog";
 import { DeliveryBox, getOrder, isOrderToken, needsScheduling, PaymentBox } from "@/features/orders";
+import { askRefund } from "@/features/orders/actions";
+import { OrderActionForm } from "@/features/orders/components/OrderActionForm";
+import { canRequestRefund, type OrderStatus } from "@/features/orders/rules";
 import { ChatOpenButton } from "@/features/support";
 
 // #100: combinação e adicionais comprados (o personagem não aparece: o link pode ser compartilhado)
@@ -17,6 +20,58 @@ function chosen(options: unknown): string {
 import { getDelivery } from "@/features/orders/staff";
 
 export const instant = false;
+
+const DELIVERED: OrderStatus[] = ["concluido_parcial", "concluido"];
+// #170: aviso ao cliente nos estados que pedem explicação (falha de pagamento = feedback obrigatório)
+const NOTICE: Partial<Record<OrderStatus, "failedNotice" | "refundNotice" | "cancelledNotice">> = {
+  falha_pagamento: "failedNotice",
+  reembolso_solicitado: "refundNotice",
+  cancelado: "cancelledNotice",
+};
+
+// Dono do pedido = quem tem o link assinado; senão 404
+async function ownedOrder(id: string, token: string) {
+  const order = z.uuid().safeParse(id).success && isOrderToken(id, token) ? await getOrder(id) : null;
+  if (!order) notFound();
+  return order;
+}
+
+type OT = Awaited<ReturnType<typeof getTranslations<"Order">>>;
+
+function StatusNotice({ status, t }: { status: OrderStatus; t: OT }) {
+  const key = NOTICE[status];
+  if (!key) return null;
+  const tone =
+    status === "falha_pagamento"
+      ? "border-destructive/50 bg-destructive/10 text-error-text"
+      : "border-border bg-secondary";
+  return (
+    <p role="status" className={`rounded-md border p-4 text-sm ${tone}`}>
+      {t(key)}
+    </p>
+  );
+}
+
+function RefundRequest({ locale, id, token, t }: { locale: string; id: string; token: string; t: OT }) {
+  return (
+    <div className="border-t border-border pt-4">
+      <OrderActionForm
+        action={askRefund}
+        locale={locale}
+        id={id}
+        token={token}
+        label={t("refund.button")}
+        errors={{ payment: t("errors.payment"), stale: t("errors.stale") }}
+        confirm={{
+          title: t("refund.title"),
+          message: t("refund.message"),
+          confirm: t("refund.confirm"),
+          cancel: t("refund.cancel"),
+        }}
+      />
+    </div>
+  );
+}
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/pedido/[id]">): Promise<Metadata> {
   const { locale } = await params;
@@ -31,13 +86,11 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/[l
   await connection();
   const [{ locale, id }, { t: token }] = await Promise.all([params, searchParams]);
   setRequestLocale(locale);
-  const valid =
-    z.uuid().safeParse(id).success && isOrderToken(id, typeof token === "string" ? token : undefined);
-  const order = valid ? await getOrder(id) : null;
-  if (!order) notFound();
+  const tk = typeof token === "string" ? token : "";
+  const order = await ownedOrder(id, tk);
   const [t, delivery] = await Promise.all([
     getTranslations({ locale, namespace: "Order" }),
-    order.status === "concluido" ? getDelivery(order.id) : null, // RN-52
+    DELIVERED.includes(order.status) ? getDelivery(order.id) : null, // RN-52
   ]);
 
   return (
@@ -80,13 +133,8 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/[l
             {t("partial", { paid: formatUsdt(locale, order.paidUsdtCents) })}
           </p>
         ) : null}
-        <PaymentBox
-          status={order.status}
-          network={order.network}
-          expiresAt={order.expiresAt}
-          payUrl={order.payUrl}
-          t={t}
-        />
+        <StatusNotice status={order.status} t={t} />
+        <PaymentBox order={order} locale={locale} token={tk} t={t} />
         {needsScheduling(order) ? (
           // RN-16 (#94): sem horário fixo — o cliente marca a run com o suporte pelo chat
           <div className="grid gap-3 rounded-md border border-link/30 bg-link/10 p-4 text-sm">
@@ -99,6 +147,9 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/[l
           </div>
         ) : null}
         <DeliveryBox delivery={delivery} t={t} />
+        {canRequestRefund(order.status) ? (
+          <RefundRequest locale={locale} id={order.id} token={tk} t={t} />
+        ) : null}
       </GradientCard>
     </div>
   );

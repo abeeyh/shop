@@ -56,7 +56,7 @@ gantt
 
 - [x] Carrinho com total recalculado no servidor (RN-20).
 - [x] Adapter `crypto` + fatura + IPN assinado e idempotente (RN-30, RN-32, RN-33, RN-35, RN-37). *Sem adapter fake (#86): sem a conta NOWPayments o checkout é bloqueado com "API ainda não implementada"; o E2E cobre o IPN com pedido criado no banco e segredo de teste. Sandbox real depende da conta.*
-- [x] Reserva de gold/vaga e expiração em 30 min (RN-34). *Agendar `/api/cron/expire-orders` a cada minuto na hospedagem (#2).*
+- [x] Reserva de gold/vaga e cancelamento em 2 h (RN-34, #170). *Agendar `/api/cron/expire-orders` a cada minuto na hospedagem (#2).*
 
 **Pronto quando:** pagamento de teste em USDT (sandbox) leva o pedido a `pago`; pagamento a menor leva a `pagamento_parcial`; IPN repetido não duplica.
 
@@ -70,7 +70,7 @@ gantt
 - [ ] Dashboard admin (2FA opcional desde o #116 — RN-02, RN-70): **categorias e produtos** (RN-13, RN-19, RN-72, RN-73), preços, slots, pedidos. *Feito: login com 2FA, categorias, produtos e preços (#20). Faltam slots e pedidos (#23).*
 - [x] **Promoções por tempo** (RN-21 a RN-24) e **cupons** (RN-25 a RN-29) com regra "vale o maior" (RN-26). *Datas digitadas em UTC no admin. Ordenação por preço final e filtro "em promoção": #74.*
 - [x] Auditoria de alterações de preço, promoção e cupom (RN-71). *Pedidos entram com o fluxo de entrega (#23 — RN-07).*
-- [x] Fluxo `pago → em_andamento → concluido` com prova de entrega (RN-50, RN-52). *Prova como link https até existir o storage de arquivos.*
+- [x] Fluxo `solicitado → aguardando_pagamento → pago → agendado → concluido_parcial → concluido` com prova de entrega e pagamento manual pelo suporte enquanto o gateway está em manutenção (RN-50, RN-52, #170). *Prova como link https até existir o storage de arquivos.*
 - [x] "Reportar problema" e lista de reportes no admin (RN-90, RN-91). *CAPTCHA pendente da decisão do Turnstile.*
 
 **Pronto quando:** admin cria categoria, produto, promoção e cupom pelo dashboard; um pedido de teste recebe o maior desconto correto; e o admin conclui o pedido com prova anexada, visível ao cliente no idioma dele.
@@ -78,7 +78,7 @@ gantt
 ## F4 — Cartão
 
 - [ ] Provedor de cartão escolhido e com aceitação do setor confirmada por escrito ([14 §3](14-pagamentos-internacionais.md#3-cartão)).
-- [ ] Cotação travada 15 min, 3-D Secure, chargeback → `contestado` (RN-36, RN-38, RN-51).
+- [ ] Cotação travada 15 min, 3-D Secure, chargeback → `falha_pagamento` (RN-36, RN-38, RN-51).
 
 **Pronto quando:** pagamento de teste com cartão leva o pedido a `pago` com cotação e valor cobrado gravados.
 

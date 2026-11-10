@@ -4,11 +4,16 @@ import { refresh } from "next/cache";
 import { z } from "zod";
 import { requireStaff } from "@/features/auth/staff";
 import { routing } from "@/i18n/routing";
+import { STAFF_STEPS, type StaffStep } from "./rules";
 import { advanceOrder } from "./staff";
 
 export type StepState = { status: "idle" | "ok" | "error"; fields: string[] };
 
-const base = z.object({ locale: z.enum(routing.locales), id: z.uuid(), step: z.enum(["start", "complete"]) });
+const base = z.object({
+  locale: z.enum(routing.locales),
+  id: z.uuid(),
+  step: z.enum(Object.keys(STAFF_STEPS) as [StaffStep, ...StaffStep[]]),
+});
 // RN-52: concluir exige a prova (link https para o print/log da entrega)
 const proof = z.object({
   proofUrl: z.url({ protocol: /^https$/ }).max(500),
@@ -19,9 +24,11 @@ const proof = z.object({
 export async function advance(_prev: StepState, form: FormData): Promise<StepState> {
   const input = base.safeParse(Object.fromEntries(form));
   if (!input.success) return { status: "error", fields: ["generic"] };
-  const staff = await requireStaff(input.data.locale, ["admin", "suporte"]);
+  const step = STAFF_STEPS[input.data.step];
+  // RN-06: reembolso e falha de pagamento só o admin
+  const staff = await requireStaff(input.data.locale, step.admin ? ["admin"] : ["admin", "suporte"]);
   let delivery: z.infer<typeof proof> | undefined;
-  if (input.data.step === "complete") {
+  if (step.proof) {
     const p = proof.safeParse(Object.fromEntries(form));
     if (!p.success) return { status: "error", fields: ["proofUrl"] };
     delivery = p.data;
