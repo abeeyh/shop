@@ -4,6 +4,7 @@
     "description": "Gold, raids, Mythic+ and achievements for World of Warcraft US. Pay in USDT."
   },
   "Nav": {
+    "allProducts": "All",
     "label": "Main",
     "skip": "Skip to content",
     "language": "Language",

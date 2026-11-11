@@ -16,6 +16,15 @@ test("home lista categorias e mais vendidos (loja só US — #92)", async ({ bro
   await context.close();
 });
 
+test("#177: aba Todos da barra de categorias abre /produtos", async ({ page }) => {
+  await page.goto("/en/wow/gold");
+  await page
+    .getByRole("navigation", { name: "Main" })
+    .getByRole("link", { name: "All", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/en\/produtos$/);
+});
+
 test("categoria mostra produtos com preço em USDT (sem estimativa fake na moeda local)", async ({ page }) => {
   await page.goto("/pt-br/wow/gold");
   await expect(page.getByRole("heading", { level: 1, name: "Gold" })).toBeVisible();

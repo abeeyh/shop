@@ -4,6 +4,7 @@
     "description": "World of Warcraft 美服的金幣、團隊副本、傳奇+與成就。以 USDT 付款。"
   },
   "Nav": {
+    "allProducts": "全部",
     "label": "主選單",
     "skip": "跳至內容",
     "language": "語言",

@@ -48,7 +48,11 @@ async function StoreHeader({ locale }: { locale: string }) {
       onRequest: s("onRequest"),
     },
   };
-  const nav = categories.map((c) => ({ href: categoryHref(locale, c.slug), label: c.name }));
+  // #177: "Todos" abre a lista com todos os produtos
+  const nav = [
+    { href: `/${locale}/produtos`, label: t("allProducts") },
+    ...categories.map((c) => ({ href: categoryHref(locale, c.slug), label: c.name })),
+  ];
   const prefs = {
     locale,
     locales: routing.locales.map((code) => ({ code, label: LOCALE_LABELS[code] ?? code })),
