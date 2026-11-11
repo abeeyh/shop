@@ -52,10 +52,19 @@ jobs:
       - run: pnpm db:seed
       - run: pnpm test:coverage
       - run: pnpm build
-      - name: E2E (Playwright, celular e desktop)
+      # #175: o apt do runner às vezes não resolve o espelho do Ubuntu. Tenta 3x com espera; se o apt
+      # continuar fora, instala só o navegador (o ubuntu-latest já traz as bibliotecas) e avisa no log.
+      - name: Navegador do Playwright
         run: |
-          pnpm exec playwright install --with-deps chromium
-          pnpm e2e
+          echo 'Acquire::Retries "5";' | sudo tee /etc/apt/apt.conf.d/80-retries > /dev/null
+          for i in 1 2 3; do
+            pnpm exec playwright install --with-deps chromium && exit 0
+            echo "tentativa $i falhou"; sleep $((i * 30))
+          done
+          echo "::warning::apt indisponível: Chromium instalado sem as dependências do sistema"
+          pnpm exec playwright install chromium
+      - name: E2E (Playwright, celular e desktop)
+        run: pnpm e2e
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
