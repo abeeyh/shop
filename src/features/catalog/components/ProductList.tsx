@@ -8,7 +8,8 @@ type Props = { items: Item[]; view: "lista" | "grade"; cta: string; hideTag?: st
 export function ProductList({ items, view, cta, hideTag }: Props) {
   if (view === "grade")
     return (
-      <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      // #180: colunas pelo espaço que a lista tem (não pela tela): o cartão nunca fica mais estreito que 15rem
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,15rem),1fr))] gap-3">
         {items.map((i) => (
           <ProductTile key={i.key} p={i.p} cta={cta} flag={i.flag} hideTag={hideTag} />
         ))}
