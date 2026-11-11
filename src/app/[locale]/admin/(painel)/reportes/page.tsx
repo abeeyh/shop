@@ -1,25 +1,43 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 import { connection } from "next/server";
-import { buttonVariants } from "@/components/atoms/Button";
+import { StatusBadge } from "@/components/atoms/StatusBadge";
+import { ConfirmSubmit } from "@/components/molecules/ConfirmSubmit";
+import { EmptyState } from "@/components/molecules/EmptyState";
 import { GradientCard } from "@/components/molecules/GradientCard";
+import { LocalTime } from "@/components/molecules/LocalTime";
+import { PageHeader } from "@/components/molecules/PageHeader";
 import { Pagination } from "@/components/molecules/Pagination";
 import { requireStaff } from "@/features/auth/staff";
 import { markResolved } from "@/features/support/actions";
 import { listReports } from "@/features/support/queries";
+import { canonicalLocale } from "@/i18n/routing";
 import { pageCount, pageParam } from "@/lib/pagination";
+import { getTimezone } from "@/lib/preferences";
 
 export const instant = false;
 
 type Report = Awaited<ReturnType<typeof listReports>>["rows"][number];
 type T = Awaited<ReturnType<typeof getTranslations<"Admin">>>;
 
-function ReportCard({ r, t, locale }: { r: Report; t: T; locale: string }) {
+function ReportCard({
+  r,
+  t,
+  locale,
+  timeZone,
+}: {
+  r: Report;
+  t: T;
+  locale: string;
+  timeZone: string | null;
+}) {
   return (
     <GradientCard tone="solid" className="grid gap-2 text-sm">
       <p className="flex flex-wrap justify-between gap-2 text-muted-foreground">
-        <span>{r.createdAt.toISOString().slice(0, 16).replace("T", " ")} UTC</span>
-        <span>{r.status === "novo" ? t("reports.new") : t("reports.resolved")}</span>
+        <LocalTime iso={r.createdAt.toISOString()} locale={canonicalLocale(locale)} timeZone={timeZone} />
+        <StatusBadge tone={r.status === "novo" ? "warning" : "success"}>
+          {r.status === "novo" ? t("reports.new") : t("reports.resolved")}
+        </StatusBadge>
       </p>
       <p className="whitespace-pre-line text-heading">{r.description}</p>
       <dl className="grid gap-x-4 gap-y-1 text-xs sm:grid-cols-[auto_1fr]">
@@ -42,9 +60,13 @@ function ReportCard({ r, t, locale }: { r: Report; t: T; locale: string }) {
         <form action={markResolved}>
           <input type="hidden" name="locale" value={locale} />
           <input type="hidden" name="id" value={r.id} />
-          <button type="submit" className={buttonVariants({ variant: "ghost", size: "sm" })}>
-            {t("reports.resolve")}
-          </button>
+          <ConfirmSubmit
+            label={t("reports.resolve")}
+            title={t("reports.resolve")}
+            message={t("reports.confirmResolve")}
+            confirmLabel={t("confirm.ok")}
+            cancelLabel={t("confirm.cancel")}
+          />
         </form>
       ) : null}
     </GradientCard>
@@ -59,27 +81,42 @@ export default async function ReportsAdmin({ params, searchParams }: PageProps<"
   await requireStaff(locale, ["admin", "suporte"]);
   const all = todos === "1";
   const page = pageParam(pagina);
-  const [t, s, { rows, total }] = await Promise.all([
+  const [t, s, timeZone, { rows, total }] = await Promise.all([
     getTranslations({ locale, namespace: "Admin" }),
     getTranslations({ locale, namespace: "Search" }),
+    getTimezone(),
     listReports(all ? null : "novo", page),
   ]);
+  const tab = (on: boolean) =>
+    `rounded-full px-3 py-1.5 text-sm font-semibold ${on ? "bg-accent text-heading" : "text-muted-foreground hover:text-heading"}`;
   const base = `/${locale}/admin/reportes`;
   const pageHref = (p: number) =>
     `${base}?${new URLSearchParams({ ...(all ? { todos: "1" } : {}), pagina: String(p) })}`;
   return (
     <>
-      <h1 className="font-heading text-3xl font-bold text-heading">{t("nav.reports")}</h1>
-      <Link href={all ? base : `${base}?todos=1`} className="text-sm text-link hover:underline">
-        {all ? t("reports.onlyNew") : t("orders.all")}
-      </Link>
-      <ul className="grid gap-4">
-        {rows.map((r) => (
-          <li key={r.id}>
-            <ReportCard r={r} t={t} locale={locale} />
-          </li>
-        ))}
-      </ul>
+      <PageHeader
+        title={t("nav.reports")}
+        description={all ? t("reports.countAll", { n: total }) : t("reports.countNew", { n: total })}
+      />
+      <nav aria-label={t("nav.reports")} className="flex gap-2">
+        <Link href={base} aria-current={all ? undefined : "page"} className={tab(!all)}>
+          {t("reports.onlyNew")}
+        </Link>
+        <Link href={`${base}?todos=1`} aria-current={all ? "page" : undefined} className={tab(all)}>
+          {t("orders.all")}
+        </Link>
+      </nav>
+      {rows.length ? (
+        <ul className="grid gap-4">
+          {rows.map((r) => (
+            <li key={r.id}>
+              <ReportCard r={r} t={t} locale={locale} timeZone={timeZone} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <EmptyState title={all ? t("reports.emptyAll") : t("reports.emptyNew")} />
+      )}
       <Pagination
         page={page}
         pages={pageCount(total)}

@@ -25,7 +25,8 @@
       "carmesim": "深紅",
       "ouro": "黑金",
       "vazio": "虛空洋紅"
-    }
+    },
+    "dashboard": "後台"
   },
   "Home": {
     "badge": "WoW 正式版 · 美服",
@@ -35,7 +36,9 @@
     "ctaRaid": "預約團隊副本",
     "categories": "分類",
     "bestSellers": "熱銷",
-    "viewAll": "查看全部"
+    "viewAll": "查看全部",
+    "featured": "精選",
+    "seeOptions": "查看選項"
   },
   "Catalog": {
     "perK": "每 1,000 金幣",
@@ -52,12 +55,20 @@
     "close": "關閉",
     "breadcrumb": "導覽路徑",
     "gallery": "圖庫",
-    "faq": "常見問題"
+    "faq": "常見問題",
+    "tags": "標籤",
+    "allTags": "全部",
+    "view": {
+      "group": "顯示方式",
+      "list": "清單",
+      "grid": "網格"
+    }
   },
   "Footer": {
     "about": "World of Warcraft 正式版美服的金幣、團隊副本、傳奇+與成就。",
     "copyright": "© 2026 Shop · 與 Blizzard Entertainment 無關。",
-    "report": "回報問題"
+    "report": "回報問題",
+    "iconCredits": "分類圖示："
   },
   "NotFound": {
     "title": "找不到頁面",
@@ -195,17 +206,16 @@
       "email": "請輸入有效的電子郵件。",
       "empty": "你的購物車是空的。",
       "unavailable": "請移除無法購買的商品以繼續。",
-      "payment": "無法建立付款，請稍後再試。",
       "coupon": "此優惠碼已達使用上限，請移除後繼續。",
       "changed": "價格已變動（促銷已結束或優惠碼已變更），請確認新的總額後再試一次。",
       "limited": "結帳嘗試次數過多，請稍候幾分鐘再試。",
-      "notImplemented": "USDT 付款：API 尚未實作。",
       "cardNotImplemented": "信用卡：API 尚未實作。目前請以加密貨幣（USDT）付款。"
     },
     "method": "付款方式",
     "crypto": "加密貨幣（USDT）",
     "card": "信用卡",
-    "payCard": "以信用卡付款"
+    "payCard": "以信用卡付款",
+    "maintenance": "目前由客服手動確認付款：下單後點擊付款，並在聊天中聯絡我們。"
   },
   "Order": {
     "title": "你的訂單",
@@ -217,14 +227,17 @@
     "waiting": "等待付款確認，重新整理頁面即可更新。",
     "partial": "已收到 {paid}，請補足餘額以完成付款。",
     "statuses": {
-      "pendente": "等待付款",
+      "solicitado": "已提交",
+      "aguardando_pagamento": "等待付款",
       "pagamento_parcial": "部分付款",
       "pago": "已付款",
-      "em_andamento": "進行中",
+      "agendado": "已排程",
+      "concluido_parcial": "部分完成",
       "concluido": "已完成",
-      "expirado": "已過期",
+      "reembolso_solicitado": "已申請退款",
       "reembolsado": "已退款",
-      "contestado": "爭議中"
+      "cancelado": "已取消",
+      "falha_pagamento": "付款失敗"
     },
     "discount": "優惠碼折扣",
     "delivered": "已交付 — 感謝你！",
@@ -232,7 +245,26 @@
     "scheduleTitle": "預約你的場次",
     "scheduleText": "在聊天中聯絡客服，選擇場次的日期與時間。",
     "scheduleButton": "與客服預約",
-    "scheduleMessage": "你好！我想預約訂單 {order} 的場次。"
+    "scheduleMessage": "你好！我想預約訂單 {order} 的場次。",
+    "payNow": "付款",
+    "manualPayment": "目前由客服確認你的付款。請在聊天中聯絡我們完成付款。",
+    "partialReview": "我們已收到部分付款。客服會審核你的訂單。",
+    "paymentChat": "透過客服付款",
+    "paymentMessage": "你好！我想為訂單 {order} 付款。",
+    "failedNotice": "付款失敗或遭到爭議。不會再扣款；如需協助請在聊天中聯絡客服。",
+    "refundNotice": "已申請退款。團隊正在審核，很快會回覆。",
+    "cancelledNotice": "此訂單已取消，因為 2 小時內未收到付款。",
+    "errors": {
+      "payment": "無法建立付款。請稍後再試。",
+      "stale": "此訂單已有變動。請重新整理頁面。"
+    },
+    "refund": {
+      "button": "申請退款",
+      "title": "申請退款？",
+      "message": "團隊會審核申請。只有管理員可以核准退款。",
+      "confirm": "申請退款",
+      "cancel": "返回"
+    }
   },
   "Admin": {
     "title": "管理後台",
@@ -250,7 +282,9 @@
       "team": "團隊",
       "support": "客服",
       "subcategories": "子分類",
-      "twoFactor": "2FA"
+      "twoFactor": "2FA",
+      "overview": "概覽",
+      "tags": "標籤"
     },
     "login": {
       "title": "團隊登入",
@@ -279,7 +313,22 @@
       "limited": "嘗試次數過多，請稍候幾分鐘再試。"
     },
     "dashboard": {
-      "title": "你好，{name}"
+      "title": "你好，{name}",
+      "subtitle": "現在需要處理的事項。",
+      "now": "現在",
+      "ordersToDo": "待處理訂單",
+      "openChats": "進行中的對話",
+      "oldestChat": "最早：",
+      "newReports": "新回報",
+      "paidToday": "今日已付款",
+      "revenue": "已收 {value}",
+      "endingSoon": "3 天內到期的折扣",
+      "no2fa": "未開啟 2FA 的成員",
+      "recentOrders": "最新訂單",
+      "recentActivity": "最近活動",
+      "seeAll": "查看全部",
+      "emptyOrders": "還沒有訂單。",
+      "emptyActivity": "沒有記錄的變更。"
     },
     "fields": {
       "name": "名稱",
@@ -308,7 +357,10 @@
       "optionAxes": "選項（每行一個：名稱 | slider 或 boxes | 值, 值…）",
       "variants": "組合（每行一個：選項=值; 選項=值 | 價格或 - | 備註）",
       "maxQuantity": "每筆訂單最大數量",
-      "hot": "熱門（醒目顯示）"
+      "hot": "熱門（醒目顯示）",
+      "primaryTag": "主標籤（用於分類頁分組）",
+      "otherTags": "其他標籤",
+      "noTag": "— 無標籤 —"
     },
     "kinds": {
       "gold": "金幣",
@@ -328,14 +380,36 @@
       "editLink": "編輯",
       "newPromotion": "新增促銷",
       "newCoupon": "新增優惠碼",
-      "newSubcategory": "新增子分類"
+      "newSubcategory": "新增子分類",
+      "newTag": "新增標籤",
+      "sec": {
+        "info": "基本資訊",
+        "infoHint": "使用者能看到和搜尋到的基礎內容。",
+        "display": "顯示",
+        "displayHint": "外觀以及在商店中的位置。",
+        "status": "狀態",
+        "statusHint": "停用的內容會從商店消失，但仍保留在後台。",
+        "pricing": "價格和數量",
+        "pricingHint": "以 USDT 計價。有選項時，價格由各組合決定。",
+        "options": "選項",
+        "optionsHint": "附加項、選擇項以及每種組合的價格。",
+        "discount": "折扣",
+        "discountHint": "減免多少以及適用範圍。",
+        "schedule": "有效期",
+        "scheduleHint": "時間段的開始和結束，使用 UTC。",
+        "limits": "限制",
+        "limitsHint": "可使用的次數和最低訂單金額。",
+        "danger": "危險區域",
+        "dangerHint": "刪除後將從後台和商店移除。記錄仍保留在資料庫中，供歷史訂單和稽核日誌使用。"
+      }
     },
     "table": {
       "activeProducts": "啟用中的商品",
       "status": "狀態",
       "active": "啟用",
       "inactive": "停用",
-      "uses": "使用次數"
+      "uses": "使用次數",
+      "products": "商品"
     },
     "formErrors": {
       "generic": "請檢查欄位。",
@@ -362,7 +436,8 @@
       "addons": "每行一個附加項目，格式為「名稱 | 25」（1–100%，名稱不重複，最多 10 個）。",
       "optionAxes": "最多 4 個選項，格式為「Bosses | slider | 2/8, 3/8」（名稱與值不可重複，最多 30 個值）。",
       "variants": "每個組合需為每個選項填一個已列出的值、價格（或 - 表示詢價），且不可重複。沒有選項時請留空。",
-      "maxQuantity": "請填寫 1 到 100。"
+      "maxQuantity": "請填寫 1 到 100。",
+      "tags": "標籤：最多選擇 10 個，不能重複。"
     },
     "discount": {
       "percent": "百分比",
@@ -383,14 +458,20 @@
         "order": "訂單",
         "bug_report": "錯誤回報",
         "staff": "團隊成員",
-        "support_hours": "客服時間"
+        "support_hours": "客服時間",
+        "tag": "標籤"
       },
       "actions": {
         "create": "建立",
-        "update": "修改"
+        "update": "修改",
+        "delete": "刪除了"
       },
       "older": "更早",
-      "newest": "最新"
+      "newest": "最新",
+      "subtitle": "誰在後台改了什麼，最新的在前。",
+      "allEntities": "全部",
+      "everyone": "所有人",
+      "empty": "沒有符合篩選條件的變更。"
     },
     "orders": {
       "todo": "待處理",
@@ -398,12 +479,39 @@
       "order": "訂單",
       "tx": "交易",
       "proof": "交付證明",
-      "start": "開始交付",
-      "complete": "標記為已完成",
       "proofUrl": "交付證明連結（https — 截圖或紀錄）",
       "note": "給客戶的備註",
       "proofError": "請提供交付證明的 https 連結。",
-      "stale": "其他人已更新此訂單，請重新整理頁面。"
+      "stale": "其他人已更新此訂單，請重新整理頁面。",
+      "count": "{n} 個訂單",
+      "search": "依 ID 或電子郵件搜尋",
+      "assignee": "負責人",
+      "created": "建立時間",
+      "emptySearch": "找不到訂單。",
+      "emptyAll": "還沒有訂單。",
+      "emptyTodo": "目前沒有待辦。",
+      "searchHint": "使用 ID 開頭（例如 3e66e13d）或完整電子郵件。",
+      "back": "返回訂單",
+      "timeline": "歷史",
+      "steps": {
+        "confirmPayment": "確認付款",
+        "schedule": "排程",
+        "partial": "標記為部分完成",
+        "complete": "標記為已完成",
+        "requestRefund": "申請退款",
+        "refund": "退款",
+        "fail": "標記付款失敗"
+      },
+      "confirmSteps": {
+        "confirmPayment": "請在確認款項已足額到達正確網路後再確認。此操作會記入稽核紀錄。",
+        "schedule": "你將接手此訂單並安排服務。客戶會看到訂單已排程。",
+        "partial": "訂單已部分交付。請附上憑證；客戶可以看到。",
+        "complete": "訂單將附上此憑證完成，並通知客戶。此操作無法復原。",
+        "requestRefund": "訂單將進入退款審核。只有管理員可以退款。",
+        "refund": "請在款項退還客戶後再確認。此操作無法復原。",
+        "fail": "付款失敗或遭到爭議。將通知客戶，並釋出名額與優惠券。"
+      },
+      "nextSteps": "下一步"
     },
     "reports": {
       "new": "新回報",
@@ -413,7 +521,12 @@
       "ids": "錯誤 ID · 請求 ID",
       "context": "語言 · 地區 · 時區 · 版本",
       "browser": "瀏覽器",
-      "resolve": "標記為已解決"
+      "resolve": "標記為已解決",
+      "confirmResolve": "此回報將從新回報清單中移除。",
+      "countAll": "{n} 個回報",
+      "countNew": "{n} 個新回報",
+      "emptyAll": "還沒有回報。",
+      "emptyNew": "沒有新回報。"
     },
     "team": {
       "role": "角色",
@@ -430,7 +543,15 @@
         "emailTaken": "此電子郵件已有帳號。",
         "self": "你不能停用或降級自己的帳號。",
         "lastAdmin": "至少要保留一位啟用中的管理員。"
-      }
+      },
+      "count": "團隊共 {n} 人",
+      "copy": "複製連結",
+      "copied": "已複製",
+      "deactivateTitle": "停用 {email}？",
+      "deactivateMessage": "此人會立即登出所有工作階段，重新啟用前無法進入後台。",
+      "members": "成員",
+      "pending": "待接受的邀請",
+      "expires": "到期"
     },
     "accept": {
       "title": "加入團隊",
@@ -444,7 +565,8 @@
         "mismatch": "兩次輸入的密碼不一致。",
         "pwned": "此密碼曾出現在資料外洩中，請換一個。",
         "expired": "此邀請無效、已使用或已過期，請向管理員索取新的邀請。"
-      }
+      },
+      "nextStep": "請向商店管理員索取新的邀請。每個連結有效 7 天且只能使用一次。"
     },
     "support": {
       "customer": "客戶",
@@ -456,7 +578,21 @@
       },
       "assume": "接手此對話",
       "resolve": "標記為已解決",
-      "you": "你"
+      "you": "你",
+      "count": "{n} 個進行中的對話",
+      "assignee": "客服",
+      "lastMessage": "最後訊息",
+      "yourLanguage": "你的語言",
+      "empty": "沒有進行中的對話。",
+      "emptyHint": "頁面每 15 秒自動更新。",
+      "back": "返回佇列",
+      "customerOrders": "此電子郵件的訂單",
+      "noOrders": "此電子郵件沒有訂單。",
+      "confirm": {
+        "assume": "你將接手此對話。",
+        "resolve": "對話將被關閉。如果客戶再次傳訊，會重新開啟。"
+      },
+      "typing": "客戶正在輸入…"
     },
     "hours": {
       "title": "客服時間（UTC）",
@@ -465,6 +601,55 @@
       "start": "從",
       "end": "到",
       "error": "每個營業日都需要不同的開始與結束時間。"
+    },
+    "groups": {
+      "operation": "營運",
+      "catalog": "商品目錄",
+      "manage": "管理"
+    },
+    "confirm": {
+      "ok": "確認",
+      "cancel": "返回"
+    },
+    "crud": {
+      "count": "{n} 項",
+      "empty": "還沒有內容。",
+      "noMatch": "沒有符合篩選條件的內容。",
+      "delete": "刪除",
+      "deleteTitle": "刪除 {name}？",
+      "deleteMessage": "會從後台和商店中移除，但仍保留在資料庫中：舊訂單和稽核紀錄仍會參照它。",
+      "deleteConfirm": "刪除",
+      "inUse": "此分類下還有商品。請先刪除或移動這些商品。",
+      "search": "搜尋",
+      "allCategories": "所有分類",
+      "allStatuses": "全部",
+      "window": {
+        "inactive": "未啟用",
+        "scheduled": "已排程",
+        "live": "生效中",
+        "expired": "已過期"
+      },
+      "actions": "操作"
+    },
+    "options": {
+      "addonName": "附加項名稱",
+      "percent": "加價（%）",
+      "addAddon": "新增附加項",
+      "axisName": "選項軸名稱（例如 Bosses）",
+      "style": "樣式",
+      "slider": "滑桿（依序的值）",
+      "boxes": "方塊（獨立選項）",
+      "values": "取值，以逗號分隔",
+      "valuesHint": "依客戶看到的順序。",
+      "addAxis": "新增選項軸",
+      "variantsHint": "勾選要出售的組合，並為每個組合填寫 USDT 價格。",
+      "include": "出售",
+      "note": "備註",
+      "remove": "移除",
+      "tooMany": "組合過多（最多 200）。請減少選項軸的取值。",
+      "addonsTitle": "附加項",
+      "axesTitle": "服務選項",
+      "variantsTitle": "組合與價格"
     }
   },
   "Errors": {
@@ -557,6 +742,30 @@
       "characterDuplicate": "此角色已儲存。",
       "exists": "此電子郵件已有帳號，請直接登入。",
       "staff": "這是團隊帳號：請從管理後台登入（/admin）。"
+    },
+    "profile": {
+      "title": "個人資料",
+      "name": "怎麼稱呼你",
+      "avatar": "頭像",
+      "none": "只顯示首字母",
+      "save": "儲存資料",
+      "saved": "資料已儲存",
+      "error": "請檢查欄位後重試。",
+      "avatars": {
+        "sword": "劍",
+        "shield": "盾",
+        "wand": "法杖",
+        "skull": "骷髏",
+        "crown": "王冠",
+        "flame": "火焰",
+        "ghost": "幽靈",
+        "gem": "寶石"
+      }
+    },
+    "support": {
+      "title": "客服",
+      "start": "聯絡客服",
+      "history": "以往對話"
     }
   }
 }

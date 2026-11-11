@@ -8,6 +8,7 @@ type Props = {
   locale: string;
   defaultEmail?: string; // RN-107: e-mail da conta logada (o cliente pode trocar)
   disabled: boolean;
+  manualPayment: boolean; // #170: gateway em manutenção — o suporte confirma o pagamento
   expectedTotal: number; // total mostrado; o servidor recalcula e só compara (RN-20)
   labels: {
     email: string;
@@ -20,6 +21,7 @@ type Props = {
     card: string;
     payCard: string;
     cardNotImplemented: string;
+    manualPayment: string;
     errors: Record<string, string>;
   };
 };
@@ -30,7 +32,14 @@ const choice =
   "flex min-h-11 cursor-pointer items-center gap-3 rounded-md border border-border bg-input px-4 font-semibold text-heading has-[:checked]:border-primary has-[:checked]:bg-primary/10";
 
 // RN-01: visitante paga só com e-mail; RN-37: rede escolhida em destaque (rede errada = perda)
-export function CheckoutForm({ locale, defaultEmail, disabled, expectedTotal, labels }: Props) {
+export function CheckoutForm({
+  locale,
+  defaultEmail,
+  disabled,
+  manualPayment,
+  expectedTotal,
+  labels,
+}: Props) {
   const [state, action, pending] = useActionState<CheckoutState, FormData>(placeOrder, { error: "" });
   // RN-35 (#120): cripto (USDT) ou cartão; o cartão ainda não tem provedor (#25)
   const [method, setMethod] = useState<"usdt" | "card">("usdt");
@@ -38,6 +47,11 @@ export function CheckoutForm({ locale, defaultEmail, disabled, expectedTotal, la
     <form action={action} className="grid gap-4 border-t border-border pt-4">
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="expectedTotal" value={expectedTotal} />
+      {manualPayment ? (
+        <p role="status" className="rounded-md border border-gold/40 bg-gold/10 p-3 text-sm text-heading">
+          {labels.manualPayment}
+        </p>
+      ) : null}
       <label className="grid gap-1.5 text-sm">
         <span className="font-semibold text-foreground">{labels.email}</span>
         <input

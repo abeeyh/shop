@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useRef } from "react";
 import { buttonVariants } from "@/components/atoms/Button";
 import { Textarea } from "@/components/atoms/Input";
-import type { ChatState } from "../chat-actions";
+import { customerTyping, type ChatState } from "../chat-actions";
 import { useChat } from "./useChat";
 
 type Labels = {
@@ -12,6 +12,7 @@ type Labels = {
   placeholder: string;
   send: string;
   errors: Record<string, string>;
+  typing?: string; // #168: só a equipe vê "cliente digitando"
 };
 
 // Lista de mensagens + envio. O lado (cliente ou equipe) muda só o rótulo e a action.
@@ -30,7 +31,14 @@ export function ChatThread({
   draft?: string; // texto inicial do campo (mensagem pronta)
   labels: Labels;
 }) {
-  const { messages } = useChat(conversationId);
+  const { messages, customerTyping: typing } = useChat(conversationId);
+  const lastPing = useRef(0);
+  // #168: o cliente avisa que está digitando (no máx. 1 vez a cada 3 s); a equipe nunca avisa
+  const onType = () => {
+    if (viewer !== "customer" || Date.now() - lastPing.current < 3_000) return;
+    lastPing.current = Date.now();
+    void customerTyping();
+  };
   const [state, formAction, pending] = useActionState(action, { status: "idle" });
   const end = useRef<HTMLLIElement>(null);
   useEffect(() => {
@@ -44,7 +52,10 @@ export function ChatThread({
         {messages.map((m) => {
           const mine = m.authorType === viewer;
           return (
-            <li key={m.id} className={`grid gap-0.5 ${mine ? "justify-items-end" : "justify-items-start"}`}>
+            <li
+              key={m.id}
+              className={`chat-msg grid gap-0.5 ${mine ? "justify-items-end" : "justify-items-start"}`}
+            >
               <span className="text-xs text-muted-foreground">{mine ? labels.you : labels.team}</span>
               <p
                 className={`max-w-[85%] rounded-md px-3 py-2 whitespace-pre-line ${mine ? "bg-primary text-primary-foreground" : "bg-muted text-heading"}`}
@@ -56,6 +67,16 @@ export function ChatThread({
         })}
         <li ref={end} aria-hidden="true" />
       </ol>
+      {viewer === "staff" && typing && labels.typing ? (
+        <p role="status" className="flex items-center gap-2 text-xs text-muted-foreground">
+          <span aria-hidden="true" className="typing-dots inline-flex gap-1">
+            <span />
+            <span />
+            <span />
+          </span>
+          {labels.typing}
+        </p>
+      ) : null}
       <form action={formAction} className="grid gap-2">
         {Object.entries(hidden ?? {}).map(([k, v]) => (
           <input key={k} type="hidden" name={k} value={v} />
@@ -70,6 +91,7 @@ export function ChatThread({
           maxLength={2000}
           defaultValue={draft}
           placeholder={labels.placeholder}
+          onInput={onType}
           className="min-h-16"
         />
         <button

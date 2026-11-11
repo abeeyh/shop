@@ -11,6 +11,7 @@ import {
   jsonb,
   pgEnum,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uniqueIndex,
@@ -61,25 +62,21 @@ export const categories = pgTable("categories", {
   imageUrl: text("image_url"),
   sortOrder: integer("sort_order").notNull().default(0),
   active: boolean("active").notNull().default(true),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }), // #158: excluir só marca (RN-72); null = ativo no cadastro
   ...timestamps,
 });
 
-// Subcategoria opcional dentro da categoria (ex.: Raids → Heroic / Normal) — #94, RN-13
-export const subcategories = pgTable(
-  "subcategories",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    categoryId: uuid("category_id")
-      .notNull()
-      .references(() => categories.id),
-    name: text("name").notNull(),
-    slug: text("slug").notNull(),
-    sortOrder: integer("sort_order").notNull().default(0),
-    active: boolean("active").notNull().default(true),
-    ...timestamps,
-  },
-  (t) => [uniqueIndex("subcategories_category_slug_idx").on(t.categoryId, t.slug)],
-);
+// #160: tags do produto no lugar da subcategoria — várias por produto; a de posição 0 é a principal
+// (agrupa a página da categoria). Globais: a mesma "Heroic" serve a Raids e a Full Priority.
+export const tags = pgTable("tags", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  sortOrder: integer("sort_order").notNull().default(0),
+  active: boolean("active").notNull().default(true),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }), // #158: excluir só marca (RN-72)
+  ...timestamps,
+});
 
 // Adicional em % sobre o preço do produto, escolhido pelo cliente (RN-17, ex.: Armor Stack +25%)
 export type ProductAddon = { name: string; percent: number };
@@ -102,7 +99,6 @@ export const products = pgTable(
     priceUsdtCents: integer("price_usdt_cents").notNull(), // RN-12: inteiro, nunca float
     unit: text("unit"), // ex.: "per_1k_gold"
     options: jsonb("options").notNull().default({}),
-    subcategoryId: uuid("subcategory_id").references(() => subcategories.id),
     addons: jsonb("addons").$type<ProductAddon[]>().notNull().default([]),
     maxQuantity: integer("max_quantity").notNull().default(1), // ex.: delve "por tier"
     priceOnRequest: boolean("price_on_request").notNull().default(false), // RN-106: não vai ao carrinho
@@ -115,6 +111,7 @@ export const products = pgTable(
     images: jsonb("images").$type<{ src: string; alt: string }[]>().notNull().default([]),
     faq: jsonb("faq").$type<{ q: string; a: string }[]>().notNull().default([]),
     active: boolean("active").notNull().default(true),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }), // #158: excluir só marca (RN-72); null = ativo no cadastro
     salesCount: integer("sales_count").notNull().default(0),
     ...timestamps,
   },
@@ -126,6 +123,20 @@ export const products = pgTable(
     check("products_price_positive", sql`${t.priceUsdtCents} > 0`),
     check("products_max_quantity", sql`${t.maxQuantity} between 1 and 100`),
   ],
+);
+
+export const productTags = pgTable(
+  "product_tags",
+  {
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    tagId: uuid("tag_id")
+      .notNull()
+      .references(() => tags.id),
+    position: integer("position").notNull().default(0), // 0 = tag principal (#160)
+  },
+  (t) => [primaryKey({ columns: [t.productId, t.tagId] }), index("product_tags_tag_idx").on(t.tagId)],
 );
 
 // #100: variante = uma combinação dos eixos do produto, com preço próprio. Com variantes, o preço do
@@ -202,16 +213,19 @@ export const cartItems = pgTable(
   (t) => [index("cart_items_cart_idx").on(t.cartId), check("cart_items_quantity", sql`${t.quantity} > 0`)],
 );
 
-// Pedido (RN-50). Preços congelados no checkout; só o IPN assinado muda para pago (RN-32).
+// Pedido (RN-50). Preços congelados no checkout; pago vem do IPN assinado (RN-32) ou da equipe, auditado (#170).
 export const orderStatus = pgEnum("order_status", [
-  "pendente",
-  "pagamento_parcial",
+  "solicitado", // #170: checkout feito, cliente ainda não clicou em "Pagar"
+  "aguardando_pagamento",
+  "pagamento_parcial", // RN-37: sinalizado para o suporte avaliar
   "pago",
-  "em_andamento",
+  "agendado",
+  "concluido_parcial",
   "concluido",
-  "expirado",
+  "reembolso_solicitado",
   "reembolsado",
-  "contestado",
+  "cancelado", // RN-34: sem pagamento em 2 h
+  "falha_pagamento", // pagamento falhou ou foi contestado; o cliente vê o aviso
 ]);
 export const paymentNetwork = pgEnum("payment_network", ["trc20", "erc20"]); // RN-37
 
@@ -223,7 +237,7 @@ export const orders = pgTable(
     // RN-107: conta que fez o pedido (logado); null = visitante ou conta excluída (RN-109)
     userId: text("user_id").references((): AnyPgColumn => users.id, { onDelete: "set null" }),
     locale: text("locale").notNull(),
-    status: orderStatus("status").notNull().default("pendente"),
+    status: orderStatus("status").notNull().default("solicitado"),
     subtotalUsdtCents: integer("subtotal_usdt_cents").notNull(),
     discountUsdtCents: integer("discount_usdt_cents").notNull().default(0),
     totalUsdtCents: integer("total_usdt_cents").notNull(),
@@ -237,7 +251,7 @@ export const orders = pgTable(
     paidUsdtCents: integer("paid_usdt_cents"), // valor recebido segundo o IPN (RN-37)
     txHash: text("tx_hash"),
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(), // RN-34
-    assignedTo: text("assigned_to"), // equipe que assumiu a entrega (pago → em_andamento)
+    assignedTo: text("assigned_to"), // equipe que assumiu a entrega (pago → agendado)
     ...timestamps,
   },
   (t) => [
@@ -297,6 +311,7 @@ export const users = pgTable("users", {
   image: text("image"),
   twoFactorEnabled: boolean("two_factor_enabled").notNull().default(false), // RN-02, RN-05
   theme: text("theme"), // RN-111 (#132): tema escolhido; null = padrão. Validado no app (lib/theme)
+  avatar: text("avatar"), // #162: avatar pronto da loja (chave validada em features/account/avatars); null = inicial
   ...timestamps,
 });
 
@@ -391,6 +406,7 @@ const discountColumns = {
   startsAt: timestamp("starts_at", { withTimezone: true }).notNull(), // UTC (RN-83)
   endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
   active: boolean("active").notNull().default(true),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }), // #158: excluir só marca (RN-72); null = ativo no cadastro
 };
 
 export const promotions = pgTable(
@@ -449,7 +465,7 @@ export const auditLog = pgTable(
       .references(() => users.id),
     entity: text("entity").notNull(), // category | product | promotion | coupon (e pedido com #23)
     entityId: text("entity_id").notNull(),
-    action: text("action").notNull(), // create | update
+    action: text("action").notNull(), // create | update | delete (#152)
     before: jsonb("before"),
     after: jsonb("after").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -526,12 +542,15 @@ export const supportConversations = pgTable(
     status: conversationStatus("status").notNull().default("aberta"),
     assignedTo: text("assigned_to").references(() => users.id),
     guestTokenHash: text("guest_token_hash").notNull(),
+    // #162 (RN-92): conversa de quem está logado fica na conta; excluir a conta solta a ligação (RN-109)
+    userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     lastMessageAt: timestamp("last_message_at", { withTimezone: true }).notNull().defaultNow(),
     resolvedAt: timestamp("resolved_at", { withTimezone: true }),
   },
   (t) => [
     index("support_conversations_status_idx").on(t.status, t.createdAt),
+    index("support_conversations_user_idx").on(t.userId, t.status),
     index("support_conversations_email_idx").on(t.guestEmail, t.status),
   ],
 );

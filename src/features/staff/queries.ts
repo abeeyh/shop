@@ -174,3 +174,16 @@ export const updateStaff = (
       return r?.id;
     },
   );
+
+// convites ainda válidos e não usados (o link em si nunca é mostrado de novo — só o hash fica no banco)
+export const listPendingInvites = () =>
+  db
+    .select({
+      id: staffInvites.id,
+      email: staffInvites.email,
+      role: staffInvites.role,
+      expiresAt: staffInvites.expiresAt,
+    })
+    .from(staffInvites)
+    .where(and(isNull(staffInvites.usedAt), gt(staffInvites.expiresAt, new Date())))
+    .orderBy(asc(staffInvites.expiresAt));

@@ -39,7 +39,7 @@ describe.skipIf(!process.env.DATABASE_URL)("variantes no admin (#100)", () => {
   const input = (variants: string) =>
     schemas.productInput.parse({
       categoryId,
-      subcategoryId: "",
+      tags: "",
       name: "Test Raid",
       slug,
       description: "",

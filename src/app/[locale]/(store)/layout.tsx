@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Globe, ShoppingCart } from "lucide-react";
+import { Globe, LayoutDashboard, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -9,7 +9,7 @@ import { NavTabs } from "@/components/molecules/NavTabs";
 import { Popover } from "@/components/molecules/Popover";
 import { SpotlightTracker } from "@/components/molecules/SpotlightTracker";
 import { SiteHeader } from "@/components/organisms/SiteHeader";
-import { AccountTools, getCustomer } from "@/features/account";
+import { AccountTools, getCustomer, hasStaffSession } from "@/features/account";
 import { countItems, getCartId } from "@/features/cart";
 import { ChatLauncher } from "@/features/support/ChatLauncher";
 import { ReportLink } from "@/features/support/components/ReportLink";
@@ -24,7 +24,7 @@ import { THEMES } from "@/lib/theme";
 async function StoreHeader({ locale }: { locale: string }) {
   await connection(); // categorias e preferências vêm do banco/cookie: hora da requisição
   const cartId = await getCartId();
-  const [categories, timezone, theme, t, s, cartCount, customer] = await Promise.all([
+  const [categories, timezone, theme, t, s, cartCount, customer, staff] = await Promise.all([
     listCategories(),
     getTimezone(),
     getTheme(),
@@ -32,6 +32,7 @@ async function StoreHeader({ locale }: { locale: string }) {
     getTranslations({ locale, namespace: "Search" }),
     cartId ? countItems(cartId) : 0,
     getCustomer(),
+    hasStaffSession(), // #158: equipe logada ganha o atalho para o painel
   ]);
   // #110: busca com sugestões de produtos e categorias enquanto digita
   const searchProps = {
@@ -85,16 +86,27 @@ async function StoreHeader({ locale }: { locale: string }) {
             <Link href={`/${locale}/carrinho`} aria-label={t("cart", { n: cartCount })} className={iconLink}>
               <ShoppingCart aria-hidden="true" className="size-5" />
               {cartCount ? (
-                <span className="absolute -top-1 -right-1 min-w-5 rounded-full bg-primary px-1.5 text-center font-heading text-[11px] leading-5 font-bold text-primary-foreground">
+                <span
+                  key={cartCount} // #168: muda o número → pulsa
+                  className="count-pop absolute -top-1 -right-1 min-w-5 rounded-full bg-primary px-1.5 text-center font-heading text-[11px] leading-5 font-bold text-primary-foreground"
+                >
                   {cartCount}
                 </span>
               ) : null}
             </Link>
           </Tooltip>
+          {staff ? (
+            <Tooltip label={t("dashboard")}>
+              <Link href={`/${locale}/admin`} aria-label={t("dashboard")} className={iconLink}>
+                <LayoutDashboard aria-hidden="true" className="size-5" />
+              </Link>
+            </Tooltip>
+          ) : null}
           {/* RN-107/RN-110: equipe logada não é cliente — aparece como visitante na loja */}
           <AccountTools
             locale={locale}
             signedIn={customer !== null}
+            avatar={customer ? { avatar: customer.avatar, name: customer.name || customer.email } : undefined}
             iconClass={iconLink}
             labels={{ account: t("account"), signIn: t("signIn"), signOut: t("signOut") }}
           />
@@ -132,6 +144,23 @@ export default async function StoreLayout({ children, params }: LayoutProps<"/[l
         columns={[]}
         copyright={footer("copyright")}
         extra={<ReportLink locale={locale} label={footer("report")} />}
+        credits={
+          // #166: CC BY 3.0 pede crédito aos autores dos ícones
+          <>
+            {footer("iconCredits")}{" "}
+            <a href="https://game-icons.net" rel="noopener noreferrer" className="text-link hover:underline">
+              game-icons.net
+            </a>{" "}
+            (Lorc, Delapouite) ·{" "}
+            <a
+              href="https://creativecommons.org/licenses/by/3.0/"
+              rel="noopener noreferrer"
+              className="text-link hover:underline"
+            >
+              CC BY 3.0
+            </a>
+          </>
+        }
       />
       <Suspense fallback={null}>
         <ChatLauncher locale={locale} />

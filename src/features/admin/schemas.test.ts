@@ -5,7 +5,7 @@ describe("#100: eixos e combinações do produto", () => {
   const cat = "8f14e45f-ceea-4167-a5a3-5f3c0e6b9a51";
   const base = {
     categoryId: cat,
-    subcategoryId: "",
+    tags: "",
     name: "Venomous Abyss",
     slug: "va",
     description: "",
@@ -69,7 +69,7 @@ describe("formulários do admin (RN-12, RN-13, RN-19)", () => {
     categoryId: "8f14e45f-ceea-4167-a5a3-5f3c0e6b9a51",
     name: "Gold — US",
     slug: "gold-us",
-    subcategoryId: "",
+    tags: "",
     description: "",
     imageUrl: "",
     price: "0.45",
@@ -111,7 +111,13 @@ describe("formulários do admin (RN-12, RN-13, RN-19)", () => {
       priceOnRequest: true,
     });
     expect(productInput.safeParse({ ...product, price: "" }).success).toBe(false);
-    expect(productInput.parse({ ...product, subcategoryId: "" }).subcategoryId).toBeNull();
+    // #160: tags na ordem (a primeira é a principal); vazio = sem tag; repetida ou id inválido é recusado
+    const a = "11111111-1111-4111-8111-111111111111";
+    const b = "22222222-2222-4222-8222-222222222222";
+    expect(productInput.parse({ ...product, tags: "" }).tags).toEqual([]);
+    expect(productInput.parse({ ...product, tags: `${a}, ${b}` }).tags).toEqual([a, b]);
+    expect(productInput.safeParse({ ...product, tags: `${a},${a}` }).success).toBe(false);
+    expect(productInput.safeParse({ ...product, tags: "heroic" }).success).toBe(false);
   });
 
   it("RN-13: categoria exige tipo válido; checkbox desmarcado = inativa", () => {

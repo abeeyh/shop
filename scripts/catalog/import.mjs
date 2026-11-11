@@ -1,31 +1,23 @@
 // Importa o catálogo no formato do sistema de origem ({ info: [{ id, name, price, serviceCategoryId, … }] }).
-// Idempotente: categoria pelo slug, subcategoria por (categoria, slug), produto pelo externalId.
+// Idempotente: categoria e tag pelo slug, produto pelo externalId.
 // #100: itens listados em groups.json viram um produto (pelo slug) com variantes (pelo externalId).
 // Uso: pnpm catalog:import [arquivo.json]   (padrão: scripts/catalog/products.json; lê DATABASE_URL)
-// O mapa id → categoria/subcategoria fica em scripts/catalog/categories.json (o JSON de produtos não tem nomes).
+// O mapa id → categoria/tag fica em scripts/catalog/categories.json (o JSON de produtos não tem nomes).
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { and, eq, inArray, notInArray, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, notInArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
-import { categories, products, productVariants, subcategories } from "../../src/db/schema.ts";
+import { categories, products, productTags, productVariants, tags } from "../../src/db/schema.ts";
 import { contentBySlug, toCatalog } from "./lib.mjs";
 
 const here = (f) => resolve(import.meta.dirname, f);
-// categoryRef/subcategoryRef são ids da origem — viram category_id/subcategory_id em place()
+const idBySlug = async (db, table, slug) =>
+  (await db.select({ id: table.id }).from(table).where(eq(table.slug, slug)))[0].id;
+// categoryRef/tagRef são ids da origem — viram category_id em place() e a tag principal em setPrimaryTag()
 const withoutRefs = (p) => Object.fromEntries(Object.entries(p).filter(([k]) => !k.endsWith("Ref")));
 
-// tudo ou nada: um erro no meio (ex.: índice único) não deixa o catálogo meio importado
-export const importCatalog = (db, file = here("products.json")) =>
-  db.transaction((tx) => importInto(tx, file));
-
-async function importInto(db, file) {
-  const map = JSON.parse(readFileSync(here("categories.json"), "utf8"));
-  const { info } = JSON.parse(readFileSync(file, "utf8"));
-  const unknown = [...new Set(info.map((i) => String(i.serviceCategoryId)))].filter(
-    (id) => !map.categories[id],
-  );
-  if (unknown.length) throw new Error(`categorias sem mapa em categories.json: ${unknown.join(", ")}`);
-
+// categorias pelo slug (#158: excluída no painel continua excluída — o upsert não devolve linha)
+async function upsertCategories(db, map) {
   const catIds = {};
   for (const [ref, c] of Object.entries(map.categories)) {
     const values = {
@@ -40,24 +32,59 @@ async function importInto(db, file) {
       .values({ ...values, active: true })
       .onConflictDoUpdate({
         target: categories.slug,
+        setWhere: isNull(categories.deletedAt), // #158: excluído no painel continua excluído
         set: { ...values, active: true, updatedAt: sql`now()` },
       })
       .returning({ id: categories.id });
-    catIds[ref] = row.id;
+    // excluída no painel: o upsert não devolve linha — usa o id existente (os produtos ainda apontam)
+    catIds[ref] = row?.id ?? (await idBySlug(db, categories, c.slug));
   }
-  const subIds = {};
-  for (const [ref, s] of Object.entries(map.subcategories)) {
-    const values = { categoryId: catIds[s.category], slug: s.slug, name: s.name, sortOrder: s.sortOrder };
+  return catIds;
+}
+
+// #160: tags pelo slug (o mesmo slug de categorias diferentes é a mesma tag). Excluída continua excluída.
+async function upsertTags(db, map) {
+  const tagIds = {};
+  for (const [ref, t] of Object.entries(map.tags)) {
+    const values = { slug: t.slug, name: t.name, sortOrder: t.sortOrder };
     const [row] = await db
-      .insert(subcategories)
+      .insert(tags)
       .values(values)
       .onConflictDoUpdate({
-        target: [subcategories.categoryId, subcategories.slug],
-        set: { name: s.name, sortOrder: s.sortOrder, updatedAt: sql`now()` },
+        target: tags.slug,
+        setWhere: isNull(tags.deletedAt),
+        set: { ...values, updatedAt: sql`now()` },
       })
-      .returning({ id: subcategories.id });
-    subIds[ref] = row.id;
+      .returning({ id: tags.id });
+    tagIds[ref] = row?.id ?? (await idBySlug(db, tags, t.slug));
   }
+  return tagIds;
+}
+
+// tag principal (posição 0) vinda da origem; as outras tags que o admin pôs ficam
+async function setPrimaryTag(db, productId, tagId) {
+  if (!tagId) return;
+  await db.delete(productTags).where(and(eq(productTags.productId, productId), eq(productTags.position, 0)));
+  await db
+    .insert(productTags)
+    .values({ productId, tagId, position: 0 })
+    .onConflictDoUpdate({ target: [productTags.productId, productTags.tagId], set: { position: 0 } });
+}
+
+// tudo ou nada: um erro no meio (ex.: índice único) não deixa o catálogo meio importado
+export const importCatalog = (db, file = here("products.json")) =>
+  db.transaction((tx) => importInto(tx, file));
+
+async function importInto(db, file) {
+  const map = JSON.parse(readFileSync(here("categories.json"), "utf8"));
+  const { info } = JSON.parse(readFileSync(file, "utf8"));
+  const unknown = [...new Set(info.map((i) => String(i.serviceCategoryId)))].filter(
+    (id) => !map.categories[id],
+  );
+  if (unknown.length) throw new Error(`categorias sem mapa em categories.json: ${unknown.join(", ")}`);
+
+  const catIds = await upsertCategories(db, map);
+  const tagIds = await upsertTags(db, map);
 
   const { groups } = JSON.parse(readFileSync(here("groups.json"), "utf8"));
   const catalog = toCatalog(info, groups);
@@ -66,16 +93,21 @@ async function importInto(db, file) {
   for (const p of [...catalog.singles, ...catalog.groups]) p.hot = hot.has(p.slug);
   const place = (p) => ({
     categoryId: catIds[String(p.categoryRef)],
-    subcategoryId: p.subcategoryRef === null ? null : (subIds[String(p.subcategoryRef)] ?? null),
     region: "US", // RN-14: loja só US
     active: true,
   });
   for (const p of catalog.singles) {
     const values = { ...withoutRefs(p), ...place(p), optionAxes: [] };
-    await db
+    const [row] = await db
       .insert(products)
       .values(values)
-      .onConflictDoUpdate({ target: products.externalId, set: { ...values, updatedAt: sql`now()` } });
+      .onConflictDoUpdate({
+        target: products.externalId,
+        setWhere: isNull(products.deletedAt),
+        set: { ...values, updatedAt: sql`now()` },
+      })
+      .returning({ id: products.id });
+    if (row) await setPrimaryTag(db, row.id, tagIds[String(p.tagRef)]);
   }
   for (const g of catalog.groups) {
     const { variants, ...group } = g;
@@ -83,8 +115,14 @@ async function importInto(db, file) {
     const [row] = await db
       .insert(products)
       .values(values)
-      .onConflictDoUpdate({ target: products.slug, set: { ...values, updatedAt: sql`now()` } })
+      .onConflictDoUpdate({
+        target: products.slug,
+        setWhere: isNull(products.deletedAt),
+        set: { ...values, updatedAt: sql`now()` },
+      })
       .returning({ id: products.id });
+    if (!row) continue; // #158: produto excluído no painel não volta pela importação
+    await setPrimaryTag(db, row.id, tagIds[String(g.tagRef)]);
     for (const v of variants) {
       const vv = { ...v, productId: row.id, active: true };
       await db
@@ -127,7 +165,7 @@ async function importInto(db, file) {
       .where(eq(products.slug, slug));
   return {
     categories: Object.keys(catIds).length,
-    subcategories: Object.keys(subIds).length,
+    tags: new Set(Object.values(tagIds)).size,
     products: all.length,
     variants: catalog.groupedIds.length,
     onRequest: all.filter((r) => r.priceOnRequest).length,
@@ -158,7 +196,7 @@ if (import.meta.main) {
   const db = drizzle(process.env.DATABASE_URL);
   const r = await importCatalog(db, process.argv[2] ? resolve(process.argv[2]) : undefined);
   console.log(
-    `catálogo: ${r.categories} categorias, ${r.subcategories} subcategorias, ${r.products} produtos, ${r.variants} variantes (${r.onRequest} sob consulta), ${r.withContent} com página detalhada`,
+    `catálogo: ${r.categories} categorias, ${r.tags} tags, ${r.products} produtos, ${r.variants} variantes (${r.onRequest} sob consulta), ${r.withContent} com página detalhada`,
   );
   await db.$client.end();
 }

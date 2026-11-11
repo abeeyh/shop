@@ -165,3 +165,64 @@ test.describe("tema", () => {
     await expect(page.locator("html")).not.toHaveAttribute("data-theme", /./);
   });
 });
+
+// #162: perfil com nome e avatar; chat do suporte ligado à conta (RN-92)
+test.describe("perfil e chat da conta", () => {
+  test.use({ extraHTTPHeaders: { "x-forwarded-for": "198.51.100.9" } }); // outro balde de cadastro/h
+  test("avatar no cabeçalho; chat aberto no perfil acompanha a conta em outro navegador", async ({
+    page,
+    browser,
+    baseURL,
+  }, info) => {
+    test.skip(info.project.name !== "desktop", "um projeto basta (limite de cadastros/h)");
+    test.setTimeout(90_000);
+    const stamp = Date.now();
+    const email = `e2e-profile-${stamp}@example.com`;
+    const password = `Shop-e2e-${stamp}-p5!R`;
+    await page.goto("/en/cadastro");
+    await field(page, "Email").fill(email);
+    await field(page, "Password").fill(password);
+    await page.getByRole("button", { name: "Create account" }).click();
+    await expect(page).toHaveURL(/\/en\/conta$/, { timeout: 20_000 });
+
+    // nome e avatar pronto
+    await field(page, "What should we call you").fill("Thrall");
+    await page.getByTitle("Crown").click(); // o rádio fica escondido: clica no avatar (label)
+    await page.getByRole("button", { name: "Save profile" }).click();
+    await expect(page.getByText("Profile saved")).toBeVisible();
+    await page.reload();
+    await expect(page.getByRole("heading", { level: 1, name: "Thrall" })).toBeVisible();
+    await expect(page.getByRole("radio", { name: "Crown" })).toBeChecked();
+
+    // chat: o botão do perfil abre o chat com o e-mail da conta (só leitura)
+    await page.getByRole("button", { name: "Talk to support" }).click();
+    const dialog = page.getByRole("region", { name: "Support" });
+    await expect(dialog.getByRole("textbox", { name: "Email" })).toHaveValue(email);
+    await expect(dialog.getByRole("textbox", { name: "Email" })).toHaveAttribute("readonly", "");
+    await dialog.getByLabel("How can we help?").fill(`E2E perfil ${stamp}`);
+    const live = page.waitForRequest(/\/api\/support\/conversations\/[0-9a-f-]{36}\/(stream|messages)/);
+    await dialog.getByRole("button", { name: "Start chat" }).click();
+    const conversationId = /conversations\/([0-9a-f-]{36})\//.exec((await live).url())![1];
+    await expect(dialog.getByText(`E2E perfil ${stamp}`)).toBeVisible();
+
+    // outro navegador (sem o cookie do chat): entrar na conta mostra a conversa no perfil
+    const other = await browser.newContext({
+      baseURL,
+      extraHTTPHeaders: { "x-forwarded-for": "198.51.100.9" },
+    });
+    const p2 = await other.newPage();
+    await p2.goto("/en/entrar");
+    await field(p2, "Email").fill(email);
+    await field(p2, "Password").fill(password);
+    await p2.getByRole("button", { name: "Sign in" }).click();
+    await expect(p2).toHaveURL(/\/en\/conta$/, { timeout: 15_000 });
+    await expect(p2.getByText(`E2E perfil ${stamp}`).filter({ visible: true }).first()).toBeVisible();
+    await other.close();
+
+    // quem não é dono (sem a conta nem o cookie do chat) não lê a conversa: 404
+    const stranger = await browser.newContext({ baseURL });
+    const res = await stranger.request.get(`/api/support/conversations/${conversationId}/messages`);
+    expect(res.status()).toBe(404);
+    await stranger.close();
+  });
+});

@@ -25,7 +25,8 @@
       "carmesim": "Cramoisi",
       "ouro": "Or noir",
       "vazio": "Magenta du Vide"
-    }
+    },
+    "dashboard": "Tableau de bord"
   },
   "Home": {
     "badge": "WoW Retail · US",
@@ -35,7 +36,9 @@
     "ctaRaid": "Réserver un raid",
     "categories": "Catégories",
     "bestSellers": "Meilleures ventes",
-    "viewAll": "Tout voir"
+    "viewAll": "Tout voir",
+    "featured": "À la une",
+    "seeOptions": "Voir les options"
   },
   "Catalog": {
     "perK": "pour 1 000 pièces d'or",
@@ -52,12 +55,20 @@
     "close": "Fermer",
     "breadcrumb": "Fil d’Ariane",
     "gallery": "Galerie",
-    "faq": "Questions fréquentes"
+    "faq": "Questions fréquentes",
+    "tags": "Tags",
+    "allTags": "Tous",
+    "view": {
+      "group": "Affichage",
+      "list": "Liste",
+      "grid": "Grille"
+    }
   },
   "Footer": {
     "about": "Or, raids, Mythique+ et hauts faits pour World of Warcraft Retail US.",
     "copyright": "© 2026 Shop · Non affilié à Blizzard Entertainment.",
-    "report": "Signaler un problème"
+    "report": "Signaler un problème",
+    "iconCredits": "Icônes de catégorie :"
   },
   "NotFound": {
     "title": "Page introuvable",
@@ -195,17 +206,16 @@
       "email": "Indiquez un e-mail valide.",
       "empty": "Votre panier est vide.",
       "unavailable": "Retirez les articles indisponibles pour continuer.",
-      "payment": "Impossible de créer le paiement. Réessayez dans un instant.",
       "coupon": "Ce coupon a atteint sa limite d'utilisation. Retirez-le pour continuer.",
       "changed": "Le prix a changé (une promotion s'est terminée ou le coupon a changé). Vérifiez le nouveau total et réessayez.",
       "limited": "Trop de tentatives de paiement. Patientez quelques minutes puis réessayez.",
-      "notImplemented": "Paiement en USDT : API pas encore implémentée.",
       "cardNotImplemented": "Carte bancaire : API pas encore implémentée. Payez en crypto (USDT) pour l’instant."
     },
     "method": "Moyen de paiement",
     "crypto": "Crypto (USDT)",
     "card": "Carte bancaire",
-    "payCard": "Payer par carte"
+    "payCard": "Payer par carte",
+    "maintenance": "Pour l'instant, le support confirme les paiements à la main : passez la commande, cliquez sur Payer et écrivez-nous dans le chat."
   },
   "Order": {
     "title": "Votre commande",
@@ -217,14 +227,17 @@
     "waiting": "En attente de la confirmation du paiement. Rechargez la page pour la mettre à jour.",
     "partial": "Nous avons reçu {paid}. Envoyez le reste pour finaliser le paiement.",
     "statuses": {
-      "pendente": "En attente de paiement",
-      "pagamento_parcial": "Partiellement payé",
-      "pago": "Payé",
-      "em_andamento": "En cours",
-      "concluido": "Terminé",
-      "expirado": "Expiré",
-      "reembolsado": "Remboursé",
-      "contestado": "Contesté"
+      "solicitado": "Demandée",
+      "aguardando_pagamento": "En attente de paiement",
+      "pagamento_parcial": "Paiement partiel",
+      "pago": "Payée",
+      "agendado": "Planifiée",
+      "concluido_parcial": "Terminée en partie",
+      "concluido": "Terminée",
+      "reembolso_solicitado": "Remboursement demandé",
+      "reembolsado": "Remboursée",
+      "cancelado": "Annulée",
+      "falha_pagamento": "Échec du paiement"
     },
     "discount": "Remise du coupon",
     "delivered": "Livré — merci !",
@@ -232,7 +245,26 @@
     "scheduleTitle": "Planifiez votre run",
     "scheduleText": "Contactez le support dans le chat pour choisir la date et l'heure de votre run.",
     "scheduleButton": "Planifier avec le support",
-    "scheduleMessage": "Bonjour ! Je voudrais planifier le run de la commande {order}."
+    "scheduleMessage": "Bonjour ! Je voudrais planifier le run de la commande {order}.",
+    "payNow": "Payer",
+    "manualPayment": "Pour l'instant, le support confirme votre paiement. Écrivez-nous dans le chat pour payer.",
+    "partialReview": "Nous avons reçu une partie du paiement. Le support va examiner votre commande.",
+    "paymentChat": "Payer avec le support",
+    "paymentMessage": "Bonjour ! Je voudrais payer la commande {order}.",
+    "failedNotice": "Le paiement a échoué ou a été contesté. Rien d'autre ne sera débité ; contactez le support dans le chat si besoin.",
+    "refundNotice": "Remboursement demandé. L'équipe l'examine et vous répond bientôt.",
+    "cancelledNotice": "Cette commande a été annulée car aucun paiement n'est arrivé sous 2 heures.",
+    "errors": {
+      "payment": "Impossible de créer le paiement. Réessayez dans un instant.",
+      "stale": "Cette commande a déjà changé. Rechargez la page."
+    },
+    "refund": {
+      "button": "Demander un remboursement",
+      "title": "Demander un remboursement ?",
+      "message": "L'équipe va examiner la demande. Seul un admin peut approuver le remboursement.",
+      "confirm": "Demander le remboursement",
+      "cancel": "Retour"
+    }
   },
   "Admin": {
     "title": "Admin",
@@ -250,7 +282,9 @@
       "team": "Équipe",
       "support": "Support",
       "subcategories": "Sous-catégories",
-      "twoFactor": "2FA"
+      "twoFactor": "2FA",
+      "overview": "Vue d'ensemble",
+      "tags": "Tags"
     },
     "login": {
       "title": "Connexion (équipe)",
@@ -279,7 +313,22 @@
       "limited": "Trop de tentatives. Patientez quelques minutes puis réessayez."
     },
     "dashboard": {
-      "title": "Bonjour, {name}"
+      "title": "Bonjour, {name}",
+      "subtitle": "Ce qui demande quelqu'un maintenant.",
+      "now": "Maintenant",
+      "ordersToDo": "Commandes à traiter",
+      "openChats": "Discussions ouvertes",
+      "oldestChat": "La plus ancienne :",
+      "newReports": "Nouveaux signalements",
+      "paidToday": "Payées aujourd'hui",
+      "revenue": "{value} reçus",
+      "endingSoon": "Remises qui expirent sous 3 jours",
+      "no2fa": "Équipe sans 2FA",
+      "recentOrders": "Dernières commandes",
+      "recentActivity": "Activité récente",
+      "seeAll": "Tout voir",
+      "emptyOrders": "Aucune commande pour l'instant.",
+      "emptyActivity": "Aucune modification enregistrée."
     },
     "fields": {
       "name": "Nom",
@@ -308,7 +357,10 @@
       "optionAxes": "Options (une par ligne : Nom | slider ou boxes | valeur, valeur…)",
       "variants": "Combinaisons (une par ligne : Axe=valeur; Axe=valeur | prix ou - | note)",
       "maxQuantity": "Quantité max. par commande",
-      "hot": "Populaire (mise en avant)"
+      "hot": "Populaire (mise en avant)",
+      "primaryTag": "Tag principal (regroupe la page de la catégorie)",
+      "otherTags": "Autres tags",
+      "noTag": "— sans tag —"
     },
     "kinds": {
       "gold": "Or",
@@ -328,14 +380,36 @@
       "editLink": "Modifier",
       "newPromotion": "Nouvelle promotion",
       "newCoupon": "Nouveau coupon",
-      "newSubcategory": "Nouvelle sous-catégorie"
+      "newSubcategory": "Nouvelle sous-catégorie",
+      "newTag": "Nouveau tag",
+      "sec": {
+        "info": "Informations",
+        "infoHint": "L'essentiel que les gens voient et recherchent.",
+        "display": "Affichage",
+        "displayHint": "Son apparence et sa position dans la boutique.",
+        "status": "Statut",
+        "statusHint": "Ce qui est inactif disparaît de la boutique mais reste dans le panneau.",
+        "pricing": "Prix et quantité",
+        "pricingHint": "Prix en USDT. Avec des options, le prix vient des combinaisons.",
+        "options": "Options",
+        "optionsHint": "Suppléments, choix et prix de chaque combinaison.",
+        "discount": "Remise",
+        "discountHint": "Le montant retiré et où elle s'applique.",
+        "schedule": "Validité",
+        "scheduleHint": "Début et fin de la période, en UTC.",
+        "limits": "Limites",
+        "limitsHint": "Nombre d'utilisations possibles et commande minimale.",
+        "danger": "Zone de danger",
+        "dangerHint": "Supprimer retire l'élément du panneau et de la boutique. L'enregistrement reste en base pour les anciennes commandes et l'audit."
+      }
     },
     "table": {
       "activeProducts": "Produits actifs",
       "status": "Statut",
       "active": "Actif",
       "inactive": "Inactif",
-      "uses": "Utilisations"
+      "uses": "Utilisations",
+      "products": "Produits"
     },
     "formErrors": {
       "generic": "Vérifiez les champs.",
@@ -362,7 +436,8 @@
       "addons": "Une option par ligne au format « Nom | 25 » (1–100 %, sans doublon, 10 max.).",
       "optionAxes": "Jusqu'à 4 options au format « Bosses | slider | 2/8, 3/8 » (noms et valeurs uniques, 30 valeurs max).",
       "variants": "Chaque combinaison doit avoir une valeur listée par option, un prix (ou - sur demande) et ne pas se répéter. Sans options, laissez vide.",
-      "maxQuantity": "Utilisez 1 à 100."
+      "maxQuantity": "Utilisez 1 à 100.",
+      "tags": "Tags : choisissez jusqu’à 10, sans doublon."
     },
     "discount": {
       "percent": "Pourcentage",
@@ -383,14 +458,20 @@
         "order": "Commande",
         "bug_report": "Signalement de bug",
         "staff": "Membre de l'équipe",
-        "support_hours": "Horaires du support"
+        "support_hours": "Horaires du support",
+        "tag": "Tag"
       },
       "actions": {
         "create": "Création",
-        "update": "Modification"
+        "update": "Modification",
+        "delete": "A supprimé"
       },
       "older": "Plus anciens",
-      "newest": "Plus récents"
+      "newest": "Plus récents",
+      "subtitle": "Qui a modifié quoi dans le panneau, du plus récent au plus ancien.",
+      "allEntities": "Tout",
+      "everyone": "Tout le monde",
+      "empty": "Aucune modification avec ces filtres."
     },
     "orders": {
       "todo": "À traiter",
@@ -398,12 +479,39 @@
       "order": "Commande",
       "tx": "Transaction",
       "proof": "Preuve de livraison",
-      "start": "Démarrer la livraison",
-      "complete": "Marquer comme terminée",
       "proofUrl": "Lien de la preuve de livraison (https — capture ou log)",
       "note": "Note pour le client",
       "proofError": "Ajoutez un lien https vers la preuve de livraison.",
-      "stale": "Quelqu'un a déjà fait avancer cette commande. Rechargez la page."
+      "stale": "Quelqu'un a déjà fait avancer cette commande. Rechargez la page.",
+      "count": "{n, plural, one {# commande} other {# commandes}}",
+      "search": "Rechercher par ID ou e-mail",
+      "assignee": "Responsable",
+      "created": "Créée",
+      "emptySearch": "Aucune commande trouvée.",
+      "emptyAll": "Aucune commande pour l’instant.",
+      "emptyTodo": "Rien à faire pour le moment.",
+      "searchHint": "Utilisez le début de l’ID (ex. 3e66e13d) ou l’e-mail complet.",
+      "back": "Retour aux commandes",
+      "timeline": "Historique",
+      "steps": {
+        "confirmPayment": "Confirmer le paiement",
+        "schedule": "Planifier",
+        "partial": "Marquer comme terminée en partie",
+        "complete": "Marquer comme terminée",
+        "requestRefund": "Demander le remboursement",
+        "refund": "Rembourser",
+        "fail": "Marquer l'échec du paiement"
+      },
+      "confirmSteps": {
+        "confirmPayment": "Ne confirmez qu'après avoir vérifié que le paiement est arrivé en entier sur le bon réseau. C'est enregistré dans l'audit.",
+        "schedule": "Vous prenez cette commande et planifiez le service. Le client verra qu'elle est planifiée.",
+        "partial": "Une partie de la commande est livrée. Ajoutez la preuve ; le client la verra.",
+        "complete": "La commande sera terminée avec cette preuve et le client sera prévenu. Action définitive.",
+        "requestRefund": "La commande passe en examen de remboursement. Seul un admin peut rembourser.",
+        "refund": "Confirmez seulement après avoir rendu l'argent au client. Action définitive.",
+        "fail": "Le paiement a échoué ou a été contesté. Le client sera prévenu ; la place et le coupon sont libérés."
+      },
+      "nextSteps": "Étapes suivantes"
     },
     "reports": {
       "new": "Nouveau",
@@ -413,7 +521,12 @@
       "ids": "ID d'erreur · ID de requête",
       "context": "Langue · région · fuseau · version",
       "browser": "Navigateur",
-      "resolve": "Marquer comme résolu"
+      "resolve": "Marquer comme résolu",
+      "confirmResolve": "Le signalement quitte la liste des nouveaux.",
+      "countAll": "{n, plural, one {# signalement} other {# signalements}}",
+      "countNew": "{n, plural, one {# nouveau signalement} other {# nouveaux signalements}}",
+      "emptyAll": "Aucun signalement pour l’instant.",
+      "emptyNew": "Aucun nouveau signalement."
     },
     "team": {
       "role": "Rôle",
@@ -430,7 +543,15 @@
         "emailTaken": "Cet e-mail a déjà un compte.",
         "self": "Vous ne pouvez pas désactiver ni rétrograder votre propre compte.",
         "lastAdmin": "Il doit rester au moins un admin actif."
-      }
+      },
+      "count": "{n, plural, one {# personne dans l’équipe} other {# personnes dans l’équipe}}",
+      "copy": "Copier le lien",
+      "copied": "Copié",
+      "deactivateTitle": "Désactiver {email} ?",
+      "deactivateMessage": "La personne est déconnectée de toutes les sessions immédiatement et ne peut plus entrer dans le panneau tant qu’elle n’est pas réactivée.",
+      "members": "Membres",
+      "pending": "Invitations en attente",
+      "expires": "expire le"
     },
     "accept": {
       "title": "Rejoindre l'équipe",
@@ -444,7 +565,8 @@
         "mismatch": "Les mots de passe ne correspondent pas.",
         "pwned": "Ce mot de passe figure dans une fuite de données. Choisissez-en un autre.",
         "expired": "Cette invitation est invalide, déjà utilisée ou expirée. Demandez-en une nouvelle à un admin."
-      }
+      },
+      "nextStep": "Demandez une nouvelle invitation à l’administrateur de la boutique. Chaque lien est valable 7 jours et ne sert qu’une fois."
     },
     "support": {
       "customer": "Client",
@@ -456,7 +578,21 @@
       },
       "assume": "Prendre la conversation",
       "resolve": "Marquer comme résolue",
-      "you": "Vous"
+      "you": "Vous",
+      "count": "{n, plural, one {# discussion ouverte} other {# discussions ouvertes}}",
+      "assignee": "Agent",
+      "lastMessage": "Dernier message",
+      "yourLanguage": "votre langue",
+      "empty": "Aucune discussion ouverte.",
+      "emptyHint": "La page se met à jour toutes les 15 secondes.",
+      "back": "Retour à la file",
+      "customerOrders": "Commandes de cet e-mail",
+      "noOrders": "Aucune commande avec cet e-mail.",
+      "confirm": {
+        "assume": "Vous prenez cette discussion en charge.",
+        "resolve": "La discussion sera fermée. Si le client écrit à nouveau, elle se rouvre."
+      },
+      "typing": "Le client écrit…"
     },
     "hours": {
       "title": "Horaires du support (UTC)",
@@ -465,6 +601,55 @@
       "start": "De",
       "end": "À",
       "error": "Chaque jour ouvert doit avoir une heure de début et de fin différentes."
+    },
+    "groups": {
+      "operation": "Opérations",
+      "catalog": "Catalogue",
+      "manage": "Gestion"
+    },
+    "confirm": {
+      "ok": "Confirmer",
+      "cancel": "Retour"
+    },
+    "crud": {
+      "count": "{n, plural, one {# élément} other {# éléments}}",
+      "empty": "Rien pour l’instant.",
+      "noMatch": "Rien ne correspond à ces filtres.",
+      "delete": "Supprimer",
+      "deleteTitle": "Supprimer {name} ?",
+      "deleteMessage": "Il quitte le panneau et la boutique mais reste en base : les anciennes commandes et l’audit y font toujours référence.",
+      "deleteConfirm": "Supprimer",
+      "inUse": "Cette catégorie contient encore des produits. Supprimez-les ou déplacez-les d’abord.",
+      "search": "Rechercher",
+      "allCategories": "Toutes les catégories",
+      "allStatuses": "Tous",
+      "window": {
+        "inactive": "Inactive",
+        "scheduled": "Programmée",
+        "live": "En cours",
+        "expired": "Expirée"
+      },
+      "actions": "Actions"
+    },
+    "options": {
+      "addonName": "Nom de l’option",
+      "percent": "Supplément (%)",
+      "addAddon": "Ajouter une option",
+      "axisName": "Nom de l’axe (ex. Bosses)",
+      "style": "Style",
+      "slider": "Curseur (valeurs en séquence)",
+      "boxes": "Cases (choix séparés)",
+      "values": "Valeurs, séparées par des virgules",
+      "valuesHint": "Dans l’ordre vu par le client.",
+      "addAxis": "Ajouter un axe",
+      "variantsHint": "Cochez les combinaisons vendues et indiquez le prix en USDT de chacune.",
+      "include": "Vendu",
+      "note": "Note",
+      "remove": "Retirer",
+      "tooMany": "Trop de combinaisons (200 max). Réduisez les valeurs des axes.",
+      "addonsTitle": "Options payantes",
+      "axesTitle": "Options du service",
+      "variantsTitle": "Combinaisons et prix"
     }
   },
   "Errors": {
@@ -557,6 +742,30 @@
       "characterDuplicate": "Ce personnage est déjà enregistré.",
       "exists": "Cet e-mail a déjà un compte. Connectez-vous.",
       "staff": "C’est un compte de l’équipe : connectez-vous au panneau (/admin)."
+    },
+    "profile": {
+      "title": "Profil",
+      "name": "Comment vous appeler",
+      "avatar": "Avatar",
+      "none": "Juste l’initiale",
+      "save": "Enregistrer le profil",
+      "saved": "Profil enregistré",
+      "error": "Vérifiez les champs et réessayez.",
+      "avatars": {
+        "sword": "Épée",
+        "shield": "Bouclier",
+        "wand": "Baguette",
+        "skull": "Crâne",
+        "crown": "Couronne",
+        "flame": "Flamme",
+        "ghost": "Fantôme",
+        "gem": "Gemme"
+      }
+    },
+    "support": {
+      "title": "Support",
+      "start": "Parler au support",
+      "history": "Conversations précédentes"
     }
   }
 }

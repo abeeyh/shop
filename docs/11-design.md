@@ -21,6 +21,7 @@ Referência visual: começou no template **Enfhess (dark)** da ThemeMarch (anál
 | Gradiente — fim | `#22d3ee` (ciano) | Idem |
 | Destrutivo / erro | `#e11d48` | Excluir, erros (4,7:1 com branco) |
 | Texto de erro | `#fb7185` | Mensagem de erro sobre o fundo (7,4:1) |
+| Sucesso | `#34d399` (verde) | Selo `success` — pedido concluído, item ativo (10:1 no fundo; igual em todos os temas — #172) |
 | Texto principal | `#f7f7fb` (títulos) / `#c8c8d4` (corpo) | 12,1:1 |
 | Texto secundário | `#8e8ea3` | Legendas, placeholders (6,2:1 no fundo; 5,7:1 no input) |
 
@@ -63,7 +64,7 @@ Regras:
   --primary: #6d4aff;  --primary-hover: #5a37ec;  --primary-foreground: #ffffff;
   --link: #a99bff;  --ring: #a99bff;  --gold: #f5c451;
   --gradient-from: #6d4aff;  --gradient-to: #22d3ee;
-  --destructive: #e11d48;  --error-text: #fb7185;
+  --destructive: #e11d48;  --error-text: #fb7185;  --success: #34d399;
 }
 /* @theme inline expõe cada um como cor do Tailwind: bg-card, text-gold, from-gradient-from… */
 ```
@@ -78,7 +79,7 @@ Componentes usam **só tokens** (`bg-primary`, `text-muted-foreground`); hex for
 - Escala: 12 / 14 / 16 / 20 / 24 / 32 px; títulos com `clamp()`.
 - Espaçamento: escala de 4 px do Tailwind.
 - Raio (do template): **15 px** cards e painéis, **10 px** cards pequenos, **5 px** inputs, **pílula (9999 px)** botões, badges e busca, 50% avatares.
-- Container: largura máxima **1200 px na loja** (#102) e **1350 px no admin**; margem lateral 16–20 px no celular.
+- Container: largura máxima **1200 px** na loja (#102) e no conteúdo do admin, ao lado da barra lateral de 16 rem (#144); margem lateral 16–20 px no celular.
 - Ícones: lucide-react, 16/20 px.
 
 ## 4. Acessibilidade (obrigatório)
@@ -124,6 +125,15 @@ Se o componente **conhece o domínio**, fica na feature; se é genérico, em `sr
 | Template | `MarketingTemplate`, `AuthTemplate`, `AppTemplate` | `components/templates` |
 | Domínio | `VariantPicker` (#100: um eixo por linha — slider para valores em sequência, caixas para escolhas soltas; mostra o preço e a nota da combinação), `ProductFilters` (painel lateral no desktop, gaveta no celular), `SortSelect`, `CategoryCard`, `ServiceCard`, `RaidSlotCard` (com `Countdown`), `BestSellerCard`, `AdvantageItem`, `ServiceOptionsDrawer` | `features/catalog`, `features/schedule` |
 | Domínio (compra e conta) | `BuyBox` (preço, opções, personagem, total, "Comprar agora"/"Adicionar"), `ProductPanel` (página do produto), `CartSheet` (carrinho na barra lateral — #109), `AccountForms` (cadastro, login, personagens, excluir conta — RN-107 a RN-109) | `features/cart`, `features/account` |
+| Molécula | `PageHeader` (título, apoio e ação principal — RF-02), `EmptyState` (lista vazia com o próximo passo — RF-03), `StatCard` (número da visão geral, com link), `ConfirmSubmit` (confirmação em `<dialog>` antes de ação que muda estado — RF-05) | `components/molecules` |
+| Átomo | `StatusBadge` (selo com cor **e** texto: neutral, info, success, warning, danger — RF-07; cor do status do pedido em `features/orders/status-tone.ts`) | `components/atoms` |
+| Organismo | `AuthShell` (telas de entrada da equipe: marca, "voltar à loja", título, apoio e o cartão do formulário — RF-32) | `components/organisms` |
+| Molécula | `CopyButton` (copia um texto e confirma por 2 s — link do convite) | `components/molecules` |
+| Domínio (admin) | `ProductOptionsEditor` (adicionais em linhas, eixos com estilo e valores, grade de preços gerada dos eixos — incluir, preço, sob consulta, nota; escreve o mesmo texto que o servidor valida — RF-09 a RF-11), `TagPicker` (tag principal + outras tags do produto — #160) | `features/admin/components` |
+| Molécula | `FormSection` (seção de formulário: título, ajuda e campos; `tone="danger"` para a zona de perigo), `ListTable` (tabela no desktop, cartões no celular via `data-label` — RF-08), `BackLink` (voltar à lista) — #172 | `components/molecules` |
+| Domínio (admin) | `EntityForm` (formulário de criar/editar: coluna principal + lateral, barra de salvar fixa no rodapé com Salvar/Cancelar; criar volta à lista), `EntityFormPage` (cabeçalho com voltar, formulário e zona de perigo com excluir), `RowActions` (Editar + Excluir por linha), `DeleteEntity` (excluir com confirmação; só marca o registro — RN-72, #158; categoria com produtos avisa), `ListFilters` (busca + categoria + status na URL, select filtra na hora — RF-03) | `features/admin/components` |
+| Domínio (admin) | `AdminNav` (#144: barra lateral fixa no desktop e gaveta no celular; links agrupados em Operação, Catálogo e Gestão, com ícone e página atual marcada — `aria-current`; mostra só o que o papel abre, RN-06; 2FA, Loja, usuário e Sair no rodapé) | `features/admin` |
+| Domínio (conta) | `Avatar` (avatar pronto ou inicial, no gradiente do tema — #162), `ProfileForm` (nome + avatares em rádios), `SupportPanel` (chat da conta no perfil + histórico) | `features/account/components` |
 | Domínio (suporte) | `ChatOpenButton` (abre o chat com mensagem pronta: consultar preço, agendar run), `ChatLauncher` (botão flutuante), `ChatWindow`, `ChatMessage`, `ChatComposer`, `OfflineForm`, `SupportQueue` (dashboard) | `features/support` |
 
 ### Convenções
@@ -187,8 +197,8 @@ Garantia: revisão de PR, agente `frontend-ui` e checagem no CI de classes visua
 #102 (2026-11-07): **minimalista, escuro e com destaque nos pontos de ação** — tudo a poucos cliques.
 
 - **Cabeçalho em uma linha:** logo · busca · globo (idioma e fuso, já detectados) · conta · carrinho; logo abaixo, **abas das categorias** (rolam de lado no celular, aba atual marcada). Sem menu escondido.
-- **Produtos em lista densa** (`ProductCard` em linha): ícone · nome + etiquetas (subcategoria, "Popular") + descrição curta · preço em **ouro** ("a partir de" quando tem opções) · "Comprar". A linha inteira é o link. Nada de imagem decorativa repetida.
-- **Subcategorias** como atalhos fixos no topo da lista (âncoras).
+- **Produtos em lista densa** (`ProductCard` em linha): ícone · nome + etiquetas (tags do produto, "Popular") + descrição curta · preço em **ouro** ("a partir de" quando tem opções) · "Comprar". A linha inteira é o link. Nada de imagem decorativa repetida.
+- **Tags** como chips de filtro fixos no topo da lista (`?tag=`); a página agrupa pela tag principal (#160).
 - **Compra:** da lista, o produto abre na **página dele**, com as opções (#109). "Comprar agora" adiciona e vai direto ao pagamento; "Adicionar ao carrinho" abre o **carrinho na barra lateral** (itens, total, ir ao pagamento ou continuar comprando).
 - **"Popular"** só nos destaques escolhidos (borda em gradiente girando) — selo em tudo não destaca nada.
 - **Efeitos** (todos desligados com `prefers-reduced-motion`):
@@ -196,6 +206,26 @@ Garantia: revisão de PR, agente `frontend-ui` e checagem no CI de classes visua
   - luz que segue o cursor em linhas e blocos (`data-spotlight` + `SpotlightTracker`; só mouse);
   - brilho que atravessa o botão principal no hover + halo violeta;
   - barra lateral do carrinho entra deslizando (de baixo no celular);
-  - slider de opções com trilho em gradiente.
+  - slider de opções com trilho em gradiente;
+  - #168 — movimento em todo o projeto (CSS, sem biblioteca; 150–300 ms, saída mais rápida que a entrada): diálogo de confirmação entra com escala e o fundo escurecido em fade; conteúdo de `<details>` (FAQ, filtros, menus) abre com fade + 4 px; mensagens de retorno (`role=status`/`alert`) entram em fade quando o texto aparece; botões apertam no clique (escala 0,97); mensagem nova do chat sobe; contador do carrinho pulsa quando muda; troca de tema transiciona as cores; "cliente digitando" com três pontos (só na tela da equipe);
+  - #164: linha de produto e bloco de categoria **sobem 2 px** no hover; o herói da home **entra uma vez** (opacidade + 10 px, `@keyframes enter`).
 - Uma ação principal por tela continua valendo (botão violeta); a secundária usa `gradient-outline`.
 - Imagens: arte **própria ou licenciada**; nada de arte oficial da Blizzard.
+- **#166 — ícones das categorias:** SVG no estilo de RPG de fantasia (WoW) do **game-icons.net** (Lorc e Delapouite, **CC BY 3.0**; crédito no rodapé da loja): gold = duas moedas, raid = cabeça de dragão, Mythic+ = portão de masmorra, PvP = espadas cruzadas, conquistas = troféu, delves = entrada de caverna. Guardados como caminho SVG em `features/catalog/components/kind-icons.ts` (cor do tema via `currentColor`). Ícones oficiais do jogo continuam fora (arte da Blizzard).
+- **#166 — lista ou grade:** na categoria e na busca o cliente escolhe a exibição (`ViewToggle`); **grade é o padrão** (pedido do dono, 2026-11-10). A escolha vai na URL (`?vista=grade`) e fica lembrada num cookie (`vista`, não sensível). Na grade, `ProductTile`: ícone grande da categoria, nome, etiquetas, preço e "Comprar" (o cartão inteiro é o link).
+- **#164 (redesenho guiado pelas skills de design — ui-ux-pro-max na auditoria, taste-skill em 3 regras; paleta e fontes deste doc mantidas):**
+  - home: herói em 2 colunas no desktop com o **produto em destaque** de verdade (o popular mais vendido que tem imagem: imagem, preço, "Ver opções"); categorias em grade compacta (2 colunas no celular, 1 linha no desktop, ícone em cima do nome);
+  - página do produto no celular: **compra logo depois do título** (galeria e descrição longa vêm depois);
+  - categoria: o card não repete a tag que já é o título da seção;
+  - alvos de toque ≥ 44 px também nas abas, chips, logo e selects; etiquetas com texto ≥ 12 px; trilho de abas esmaece na borda no celular (indica que rola).
+
+## 9. Painel admin: listas e formulários (#172, substitui a gaveta do #152)
+
+Pedido do dono (2026-11-10): a gaveta por cima da lista não ficou boa. Estratégia (checada com a `ui-ux-pro-max`: confirmar ação destrutiva, mostrar sucesso/erro do envio, formulário em seções):
+
+- **Criar e editar são páginas próprias**: `/admin/<entidade>/novo` e `/admin/<entidade>/<id>` (categorias, tags, produtos, promoções, cupons). Link profundo, recarregar funciona e o "voltar" (`BackLink` + Cancelar) sempre cai na lista. Id inexistente ou inválido → "não encontrada".
+- **Formulário em seções** (`FormSection`, título + ajuda): Informações, Preço/Opções (produto), Desconto, Limites e Vigência (promoção/cupom) na coluna principal; Exibição e Status na lateral. **2 colunas a partir de `lg`**, 1 coluna no celular.
+- **Barra de salvar fixa** no rodapé (`position: sticky`): Salvar, Cancelar, "Salvo" (`role=status`) e os erros de campo (`role=alert`) ficam sempre à vista. Criar leva de volta à lista; editar fica na página.
+- **Zona de perigo** (borda `error-text`) no fim da edição: Excluir com `ConfirmSubmit`; só marca `deleted_at` e desativa (RN-72) — a regra continua no servidor (`deleteEntity`).
+- **Listas**: cabeçalho com contagem e "Novo", busca/filtro onde já existe (`ListFilters`), nome como link para editar e coluna de ações por linha (Editar, Excluir com confirmação e o nome do item no `aria-label`). Vazia: `EmptyState` com o botão de criar. **Celular: cada linha vira um cartão** (`ListTable`), sem rolagem lateral (RF-08). As tabelas simples (pedidos, auditoria, suporte) mantêm a rolagem lateral com o mesmo visual.
+- Só tokens do tema; nenhuma cor nova. Alvos ≥ 44 px, nada depende de hover.

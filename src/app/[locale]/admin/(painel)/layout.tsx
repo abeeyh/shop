@@ -1,71 +1,80 @@
 import { getTranslations } from "next-intl/server";
-import Link from "next/link";
-import { buttonVariants } from "@/components/atoms/Button";
-import { signOut } from "@/features/auth/actions";
+import { Suspense } from "react";
+import { AdminNav, type AdminNavGroup, type AdminNavItem } from "@/features/admin/components/AdminNav";
+import { getStaff } from "@/features/auth/staff";
 
-// Só navegação; a permissão é conferida em cada página e action (requireStaff)
+// #144: barra lateral com o que o papel abre (RN-06). Só navegação: a permissão continua conferida em
+// cada página e action (requireStaff); sem sessão, a página manda para o login.
+async function Sidebar({ locale }: { locale: string }) {
+  const [staff, t, nav] = await Promise.all([
+    getStaff(),
+    getTranslations({ locale, namespace: "Admin" }),
+    getTranslations({ locale, namespace: "Nav" }),
+  ]);
+  if (!staff) return null;
+  const admin = staff.role === "admin";
+  const base = `/${locale}/admin`;
+  const item = (key: AdminNavItem["key"], path: string): AdminNavItem => ({
+    key,
+    href: `${base}${path}`,
+    label: t(`nav.${key}`),
+  });
+  const groups: AdminNavGroup[] = [
+    {
+      label: t("groups.operation"),
+      items: [
+        item("overview", ""), // RF-20: suporte também tem a visão geral dele
+        item("support", "/suporte"),
+        item("orders", "/pedidos"),
+        item("reports", "/reportes"),
+      ],
+    },
+    ...(admin
+      ? [
+          {
+            label: t("groups.catalog"),
+            items: [
+              item("categories", "/categorias"),
+              item("tags", "/tags"),
+              item("products", "/produtos"),
+              item("promotions", "/promocoes"),
+              item("coupons", "/cupons"),
+            ],
+          },
+        ]
+      : []),
+    {
+      label: t("groups.manage"),
+      items: [
+        ...(admin ? [item("team", "/equipe"), item("audit", "/auditoria")] : []),
+        item("docs", "/docs"),
+      ],
+    },
+  ];
+  return (
+    <AdminNav
+      locale={locale}
+      homeHref={base}
+      title={t("title")}
+      groups={groups}
+      account={[item("twoFactor", "/2fa"), { key: "store", href: `/${locale}`, label: t("nav.store") }]}
+      user={{ email: staff.user.email, role: t(admin ? "team.admin" : "team.support") }}
+      labels={{ nav: t("title"), menu: nav("menu"), close: nav("closeMenu"), signOut: t("nav.signOut") }}
+    />
+  );
+}
+
 export default async function PanelLayout({ children, params }: LayoutProps<"/[locale]/admin">) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "Admin" });
-  const link = "rounded-full px-3 py-2 text-sm font-semibold text-heading hover:bg-accent";
   return (
-    <>
-      <header className="border-b border-border">
-        <nav
-          aria-label={t("title")}
-          className="mx-auto flex max-w-[1350px] flex-wrap items-center gap-1 px-4 py-3"
-        >
-          <Link href={`/${locale}/admin`} className="mr-3 font-heading text-lg font-bold text-heading">
-            {t("title")}
-          </Link>
-          <Link href={`/${locale}/admin/suporte`} className={link}>
-            {t("nav.support")}
-          </Link>
-          <Link href={`/${locale}/admin/pedidos`} className={link}>
-            {t("nav.orders")}
-          </Link>
-          <Link href={`/${locale}/admin/reportes`} className={link}>
-            {t("nav.reports")}
-          </Link>
-          <Link href={`/${locale}/admin/categorias`} className={link}>
-            {t("nav.categories")}
-          </Link>
-          <Link href={`/${locale}/admin/subcategorias`} className={link}>
-            {t("nav.subcategories")}
-          </Link>
-          <Link href={`/${locale}/admin/produtos`} className={link}>
-            {t("nav.products")}
-          </Link>
-          <Link href={`/${locale}/admin/promocoes`} className={link}>
-            {t("nav.promotions")}
-          </Link>
-          <Link href={`/${locale}/admin/cupons`} className={link}>
-            {t("nav.coupons")}
-          </Link>
-          <Link href={`/${locale}/admin/equipe`} className={link}>
-            {t("nav.team")}
-          </Link>
-          <Link href={`/${locale}/admin/auditoria`} className={link}>
-            {t("nav.audit")}
-          </Link>
-          <Link href={`/${locale}/admin/docs`} className={link}>
-            {t("nav.docs")}
-          </Link>
-          <Link href={`/${locale}/admin/2fa`} className={link}>
-            {t("nav.twoFactor")}
-          </Link>
-          <Link href={`/${locale}`} className={link}>
-            {t("nav.store")}
-          </Link>
-          <form action={signOut} className="ml-auto">
-            <input type="hidden" name="locale" value={locale} />
-            <button type="submit" className={buttonVariants({ variant: "ghost", size: "sm" })}>
-              {t("nav.signOut")}
-            </button>
-          </form>
-        </nav>
-      </header>
-      <main className="mx-auto grid w-full max-w-[1350px] gap-8 px-4 py-8">{children}</main>
-    </>
+    <div className="min-h-dvh lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
+      {/* a sessão só existe na requisição (cacheComponents): até lá, a coluna vazia segura o layout */}
+      <Suspense fallback={<div aria-hidden="true" className="hidden border-r border-border lg:block" />}>
+        <Sidebar locale={locale} />
+      </Suspense>
+      <main className="mx-auto grid w-full max-w-[1200px] content-start gap-8 px-4 py-8 lg:px-8">
+        {children}
+      </main>
+    </div>
   );
 }

@@ -22,11 +22,12 @@ test("RN-100: busca do cabeçalho tolera erro de digitação e ordena por relev�
 
 test("RN-100: termo de 1 caractere pede 2", async ({ page }) => {
   await page.goto("/pt-br/produtos?q=g");
-  await expect(page.getByText("Digite pelo menos 2 caracteres.")).toBeVisible();
+  await expect(page.getByText("Digite pelo menos 2 caracteres.").filter({ visible: true })).toBeVisible();
 });
 
 // #90: painel de filtros recolhível — fechado no celular, aberto no desktop
-const filters = (page: import("@playwright/test").Page) => page.locator("details", { hasText: "Filters" });
+const filters = (page: import("@playwright/test").Page) =>
+  page.locator("details", { hasText: "Filters" }).filter({ visible: true }); // página anterior escondida no DOM (React Activity)
 // desktop abre sozinho depois de hidratar; no celular é preciso tocar no botão
 async function openFilters(page: import("@playwright/test").Page, isMobile: boolean) {
   const panel = filters(page);

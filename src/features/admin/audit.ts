@@ -4,7 +4,8 @@ import { auditLog } from "@/db/schema";
 
 export type Entity =
   | "category"
-  | "subcategory"
+  | "subcategory" // histórico (#94, antes das tags)
+  | "tag"
   | "product"
   | "promotion"
   | "coupon"
@@ -21,6 +22,7 @@ export async function saveAudited(
   id: string | null,
   read: (tx: Tx, id: string) => Promise<object | undefined>,
   write: (tx: Tx) => Promise<string | undefined>,
+  action?: "delete", // #158: exclusão é uma marcação (update), registrada como "delete"
 ): Promise<void> {
   await db.transaction(async (tx) => {
     const before = id ? await read(tx, id) : undefined;
@@ -31,7 +33,7 @@ export async function saveAudited(
       staffId,
       entity,
       entityId: savedId,
-      action: id ? "update" : "create",
+      action: action ?? (id ? "update" : "create"),
       before: before ?? null,
       after: after ?? {},
     });

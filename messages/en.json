@@ -25,7 +25,8 @@
       "carmesim": "Crimson",
       "ouro": "Noir gold",
       "vazio": "Void magenta"
-    }
+    },
+    "dashboard": "Dashboard"
   },
   "Home": {
     "badge": "WoW Retail · US",
@@ -35,7 +36,9 @@
     "ctaRaid": "Book a raid",
     "categories": "Categories",
     "bestSellers": "Best sellers",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "featured": "Featured",
+    "seeOptions": "See options"
   },
   "Catalog": {
     "perK": "per 1,000 gold",
@@ -52,12 +55,20 @@
     "close": "Close",
     "breadcrumb": "Breadcrumb",
     "gallery": "Gallery",
-    "faq": "Frequently asked questions"
+    "faq": "Frequently asked questions",
+    "tags": "Tags",
+    "allTags": "All",
+    "view": {
+      "group": "View",
+      "list": "List",
+      "grid": "Grid"
+    }
   },
   "Footer": {
     "about": "Gold, raids, Mythic+ and achievements for World of Warcraft Retail US.",
     "copyright": "© 2026 Shop · Not affiliated with Blizzard Entertainment.",
-    "report": "Report a problem"
+    "report": "Report a problem",
+    "iconCredits": "Category icons:"
   },
   "NotFound": {
     "title": "Page not found",
@@ -195,17 +206,16 @@
       "email": "Enter a valid email.",
       "empty": "Your cart is empty.",
       "unavailable": "Remove the unavailable items to continue.",
-      "payment": "We couldn't create the payment. Try again in a moment.",
       "coupon": "This coupon reached its usage limit. Remove it to continue.",
       "changed": "The price changed (a promotion ended or the coupon changed). Check the new total and try again.",
       "limited": "Too many checkout attempts. Wait a few minutes and try again.",
-      "notImplemented": "USDT payment: API not yet implemented.",
       "cardNotImplemented": "Credit card: API not yet implemented. Pay with crypto (USDT) for now."
     },
     "method": "Payment method",
     "crypto": "Crypto (USDT)",
     "card": "Credit card",
-    "payCard": "Pay by card"
+    "payCard": "Pay by card",
+    "maintenance": "For now our support team confirms payments by hand: place the order, click Pay and talk to us in the chat."
   },
   "Order": {
     "title": "Your order",
@@ -217,14 +227,17 @@
     "waiting": "Waiting for the payment confirmation. This page updates when you reload it.",
     "partial": "We received {paid}. Send the rest to complete the payment.",
     "statuses": {
-      "pendente": "Awaiting payment",
+      "solicitado": "Requested",
+      "aguardando_pagamento": "Awaiting payment",
       "pagamento_parcial": "Partially paid",
       "pago": "Paid",
-      "em_andamento": "In progress",
+      "agendado": "Scheduled",
+      "concluido_parcial": "Partially completed",
       "concluido": "Completed",
-      "expirado": "Expired",
+      "reembolso_solicitado": "Refund requested",
       "reembolsado": "Refunded",
-      "contestado": "Disputed"
+      "cancelado": "Cancelled",
+      "falha_pagamento": "Payment failed"
     },
     "discount": "Coupon discount",
     "delivered": "Delivered — thank you!",
@@ -232,7 +245,26 @@
     "scheduleTitle": "Schedule your run",
     "scheduleText": "Talk to support in the chat to pick the date and time of your run.",
     "scheduleButton": "Schedule with support",
-    "scheduleMessage": "Hi! I'd like to schedule the run for order {order}."
+    "scheduleMessage": "Hi! I'd like to schedule the run for order {order}.",
+    "payNow": "Pay",
+    "manualPayment": "Our support team confirms your payment for now. Talk to us in the chat to pay.",
+    "partialReview": "We received part of the payment. Our support team will review your order.",
+    "paymentChat": "Pay with support",
+    "paymentMessage": "Hi! I'd like to pay for order {order}.",
+    "failedNotice": "The payment failed or was disputed. Nothing else will be charged; talk to support in the chat if you need help.",
+    "refundNotice": "Refund requested. Our team is reviewing it and will reply soon.",
+    "cancelledNotice": "This order was cancelled because no payment arrived within 2 hours.",
+    "errors": {
+      "payment": "We couldn't create the payment. Try again in a moment.",
+      "stale": "This order has already changed. Reload the page."
+    },
+    "refund": {
+      "button": "Request a refund",
+      "title": "Request a refund?",
+      "message": "Our team will review the request. Only an admin can approve the refund.",
+      "confirm": "Request refund",
+      "cancel": "Go back"
+    }
   },
   "Admin": {
     "title": "Admin",
@@ -250,7 +282,9 @@
       "team": "Team",
       "support": "Support",
       "subcategories": "Subcategories",
-      "twoFactor": "2FA"
+      "twoFactor": "2FA",
+      "overview": "Overview",
+      "tags": "Tags"
     },
     "login": {
       "title": "Staff sign in",
@@ -279,7 +313,22 @@
       "limited": "Too many attempts. Wait a few minutes and try again."
     },
     "dashboard": {
-      "title": "Hello, {name}"
+      "title": "Hello, {name}",
+      "subtitle": "What needs someone right now.",
+      "now": "Now",
+      "ordersToDo": "Orders to do",
+      "openChats": "Open chats",
+      "oldestChat": "Oldest:",
+      "newReports": "New reports",
+      "paidToday": "Paid today",
+      "revenue": "{value} received",
+      "endingSoon": "Discounts ending in 3 days",
+      "no2fa": "Team without 2FA",
+      "recentOrders": "Latest orders",
+      "recentActivity": "Recent activity",
+      "seeAll": "See all",
+      "emptyOrders": "No orders yet.",
+      "emptyActivity": "No changes recorded."
     },
     "fields": {
       "name": "Name",
@@ -308,7 +357,10 @@
       "optionAxes": "Options (one per line: Name | slider or boxes | value, value…)",
       "variants": "Combinations (one per line: Axis=value; Axis=value | price or - | note)",
       "maxQuantity": "Max quantity per order",
-      "hot": "Popular (highlight)"
+      "hot": "Popular (highlight)",
+      "primaryTag": "Main tag (groups the category page)",
+      "otherTags": "Other tags",
+      "noTag": "— no tag —"
     },
     "kinds": {
       "gold": "Gold",
@@ -328,14 +380,36 @@
       "editLink": "Edit",
       "newPromotion": "New promotion",
       "newCoupon": "New coupon",
-      "newSubcategory": "New subcategory"
+      "newSubcategory": "New subcategory",
+      "newTag": "New tag",
+      "sec": {
+        "info": "Details",
+        "infoHint": "The basics people see and search for.",
+        "display": "Display",
+        "displayHint": "How it looks and where it sits in the store.",
+        "status": "Status",
+        "statusHint": "Inactive items disappear from the store but stay in the panel.",
+        "pricing": "Price and quantity",
+        "pricingHint": "Price in USDT. With options, the price comes from the combinations.",
+        "options": "Options",
+        "optionsHint": "Add-ons, choices and the price of each combination.",
+        "discount": "Discount",
+        "discountHint": "How much it takes off and where it applies.",
+        "schedule": "Validity",
+        "scheduleHint": "Start and end of the period, in UTC.",
+        "limits": "Limits",
+        "limitsHint": "How many times it can be used and the minimum order.",
+        "danger": "Danger zone",
+        "dangerHint": "Deleting removes it from the panel and the store. The record stays in the database for past orders and the audit log."
+      }
     },
     "table": {
       "activeProducts": "Active products",
       "status": "Status",
       "active": "Active",
       "inactive": "Inactive",
-      "uses": "Uses"
+      "uses": "Uses",
+      "products": "Products"
     },
     "formErrors": {
       "generic": "Check the highlighted fields.",
@@ -362,7 +436,8 @@
       "addons": "One add-on per line as “Name | 25” (1–100%, no repeated names, up to 10).",
       "optionAxes": "Up to 4 options as “Bosses | slider | 2/8, 3/8” (names and values unique, up to 30 values).",
       "variants": "Each combination needs one listed value per option, a price (or - for on request) and must not repeat. Without options, leave it empty.",
-      "maxQuantity": "Use 1 to 100."
+      "maxQuantity": "Use 1 to 100.",
+      "tags": "Tags: pick up to 10, no repeats."
     },
     "discount": {
       "percent": "Percentage",
@@ -383,14 +458,20 @@
         "order": "Order",
         "bug_report": "Bug report",
         "staff": "Team member",
-        "support_hours": "Support hours"
+        "support_hours": "Support hours",
+        "tag": "Tag"
       },
       "actions": {
         "create": "Created",
-        "update": "Updated"
+        "update": "Updated",
+        "delete": "Deleted"
       },
       "older": "Older",
-      "newest": "Most recent"
+      "newest": "Most recent",
+      "subtitle": "Who changed what in the panel, newest first.",
+      "allEntities": "Everything",
+      "everyone": "Everyone",
+      "empty": "No changes with these filters."
     },
     "orders": {
       "todo": "To do",
@@ -398,12 +479,39 @@
       "order": "Order",
       "tx": "Transaction",
       "proof": "Delivery proof",
-      "start": "Start delivery",
-      "complete": "Mark as completed",
       "proofUrl": "Delivery proof link (https — screenshot or log)",
       "note": "Note for the customer",
       "proofError": "Add an https link to the delivery proof.",
-      "stale": "This order was already moved by someone else. Reload the page."
+      "stale": "This order was already moved by someone else. Reload the page.",
+      "count": "{n, plural, one {# order} other {# orders}}",
+      "search": "Search by ID or email",
+      "assignee": "Assignee",
+      "created": "Created",
+      "emptySearch": "No orders found.",
+      "emptyAll": "No orders yet.",
+      "emptyTodo": "Nothing to do right now.",
+      "searchHint": "Use the start of the ID (e.g. 3e66e13d) or the full email.",
+      "back": "Back to orders",
+      "timeline": "History",
+      "steps": {
+        "confirmPayment": "Confirm payment",
+        "schedule": "Schedule",
+        "partial": "Mark as partially completed",
+        "complete": "Mark as completed",
+        "requestRefund": "Request refund",
+        "refund": "Refund",
+        "fail": "Mark payment as failed"
+      },
+      "confirmSteps": {
+        "confirmPayment": "Only confirm after checking the payment arrived in full on the right network. This is recorded in the audit log.",
+        "schedule": "You take over this order and schedule the service. The customer will see it is scheduled.",
+        "partial": "Part of the order is delivered. Add the proof; the customer will see it.",
+        "complete": "The order will be completed with this proof and the customer will be notified. This cannot be undone.",
+        "requestRefund": "The order goes to refund review. Only an admin can refund it.",
+        "refund": "Confirm only after the money was returned to the customer. This cannot be undone.",
+        "fail": "The payment failed or was disputed. The customer will be told and the slot and coupon are released."
+      },
+      "nextSteps": "Next steps"
     },
     "reports": {
       "new": "New",
@@ -413,7 +521,12 @@
       "ids": "Error ID · request ID",
       "context": "Language · region · time zone · version",
       "browser": "Browser",
-      "resolve": "Mark as resolved"
+      "resolve": "Mark as resolved",
+      "confirmResolve": "The report leaves the list of new reports.",
+      "countAll": "{n, plural, one {# report} other {# reports}}",
+      "countNew": "{n, plural, one {# new report} other {# new reports}}",
+      "emptyAll": "No reports yet.",
+      "emptyNew": "No new reports."
     },
     "team": {
       "role": "Role",
@@ -430,7 +543,15 @@
         "emailTaken": "This email already has an account.",
         "self": "You can't deactivate or demote your own account.",
         "lastAdmin": "There must be at least one active admin."
-      }
+      },
+      "count": "{n, plural, one {# person on the team} other {# people on the team}}",
+      "copy": "Copy link",
+      "copied": "Copied",
+      "deactivateTitle": "Deactivate {email}?",
+      "deactivateMessage": "They are signed out of every session right away and cannot enter the panel until reactivated.",
+      "members": "Members",
+      "pending": "Pending invites",
+      "expires": "expires"
     },
     "accept": {
       "title": "Join the team",
@@ -444,7 +565,8 @@
         "mismatch": "The passwords don't match.",
         "pwned": "This password appeared in a data leak. Choose another one.",
         "expired": "This invite is invalid, already used or expired. Ask an admin for a new one."
-      }
+      },
+      "nextStep": "Ask the store admin for a new invite. Each link lasts 7 days and works only once."
     },
     "support": {
       "customer": "Customer",
@@ -456,7 +578,21 @@
       },
       "assume": "Take this chat",
       "resolve": "Mark as resolved",
-      "you": "You"
+      "you": "You",
+      "count": "{n, plural, one {# open chat} other {# open chats}}",
+      "assignee": "Agent",
+      "lastMessage": "Last message",
+      "yourLanguage": "your language",
+      "empty": "No open chats.",
+      "emptyHint": "This page refreshes every 15 seconds.",
+      "back": "Back to the queue",
+      "customerOrders": "Orders for this email",
+      "noOrders": "No orders with this email.",
+      "confirm": {
+        "assume": "You will handle this chat.",
+        "resolve": "The chat will be closed. If the customer writes again, it reopens."
+      },
+      "typing": "Customer is typing…"
     },
     "hours": {
       "title": "Support hours (UTC)",
@@ -465,6 +601,55 @@
       "start": "From",
       "end": "To",
       "error": "Each open day needs a start and an end time, and they can't be equal."
+    },
+    "groups": {
+      "operation": "Operations",
+      "catalog": "Catalog",
+      "manage": "Management"
+    },
+    "confirm": {
+      "ok": "Confirm",
+      "cancel": "Go back"
+    },
+    "crud": {
+      "count": "{n, plural, one {# item} other {# items}}",
+      "empty": "Nothing here yet.",
+      "noMatch": "Nothing matches these filters.",
+      "delete": "Delete",
+      "deleteTitle": "Delete {name}?",
+      "deleteMessage": "It leaves the panel and the store but stays in the database: past orders and the audit log still point to it.",
+      "deleteConfirm": "Delete",
+      "inUse": "This category still has products. Delete or move the products first.",
+      "search": "Search",
+      "allCategories": "All categories",
+      "allStatuses": "All",
+      "window": {
+        "inactive": "Inactive",
+        "scheduled": "Scheduled",
+        "live": "Live",
+        "expired": "Expired"
+      },
+      "actions": "Actions"
+    },
+    "options": {
+      "addonName": "Add-on name",
+      "percent": "Surcharge (%)",
+      "addAddon": "Add an add-on",
+      "axisName": "Axis name (e.g. Bosses)",
+      "style": "Style",
+      "slider": "Slider (values in sequence)",
+      "boxes": "Boxes (separate choices)",
+      "values": "Values, separated by commas",
+      "valuesHint": "In the order the customer sees them.",
+      "addAxis": "Add an axis",
+      "variantsHint": "Tick the combinations you sell and set the USDT price for each.",
+      "include": "Sells",
+      "note": "Note",
+      "remove": "Remove",
+      "tooMany": "Too many combinations (max 200). Reduce the axis values.",
+      "addonsTitle": "Add-ons",
+      "axesTitle": "Service options",
+      "variantsTitle": "Combinations and prices"
     }
   },
   "Errors": {
@@ -557,6 +742,30 @@
       "characterDuplicate": "This character is already saved.",
       "exists": "This email already has an account. Sign in instead.",
       "staff": "This is a team account: sign in at the admin panel (/admin)."
+    },
+    "profile": {
+      "title": "Profile",
+      "name": "What should we call you",
+      "avatar": "Avatar",
+      "none": "Just the initial",
+      "save": "Save profile",
+      "saved": "Profile saved",
+      "error": "Check the fields and try again.",
+      "avatars": {
+        "sword": "Sword",
+        "shield": "Shield",
+        "wand": "Wand",
+        "skull": "Skull",
+        "crown": "Crown",
+        "flame": "Flame",
+        "ghost": "Ghost",
+        "gem": "Gem"
+      }
+    },
+    "support": {
+      "title": "Support",
+      "start": "Talk to support",
+      "history": "Past conversations"
     }
   }
 }

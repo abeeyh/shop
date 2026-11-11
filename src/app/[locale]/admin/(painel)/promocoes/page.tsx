@@ -1,68 +1,51 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 import { connection } from "next/server";
-import { Input } from "@/components/atoms/Input";
-import { GradientCard } from "@/components/molecules/GradientCard";
-import { savePromotion } from "@/features/admin/actions";
-import { ActionForm } from "@/features/admin/components/ActionForm";
-import { DiscountFields, toUtcInput, valueOf } from "@/features/admin/DiscountFields";
-import { Field, tableCls } from "@/features/admin/fields";
-import { formErrors } from "@/features/admin/labels";
-import { listAllCategories, listAllProducts, listPromotions } from "@/features/admin/queries";
+import { buttonVariants } from "@/components/atoms/Button";
+import { StatusBadge } from "@/components/atoms/StatusBadge";
+import { EmptyState } from "@/components/molecules/EmptyState";
+import { ListTable } from "@/components/molecules/ListTable";
+import { LocalTime } from "@/components/molecules/LocalTime";
+import { PageHeader } from "@/components/molecules/PageHeader";
+import { RowActions } from "@/features/admin/components/RowActions";
+import { DISCOUNT_TONE, discountState } from "@/features/admin/discount-window";
+import { valueOf } from "@/features/admin/DiscountFields";
+import { listPromotions } from "@/features/admin/queries";
 import { requireStaff } from "@/features/auth/staff";
+import { canonicalLocale } from "@/i18n/routing";
+import { getTimezone } from "@/lib/preferences";
 
 export const instant = false;
 
-// RN-21 a RN-24: promoções por tempo (datas em UTC)
-export default async function PromotionsAdmin({
-  params,
-  searchParams,
-}: PageProps<"/[locale]/admin/promocoes">) {
+// RN-21 a RN-24: promoções por tempo (datas em UTC no banco, no fuso de quem vê na tela)
+export default async function PromotionsAdmin({ params }: PageProps<"/[locale]/admin/promocoes">) {
   await connection();
-  const [{ locale }, { editar }] = await Promise.all([params, searchParams]);
+  const { locale } = await params;
   setRequestLocale(locale);
   await requireStaff(locale);
-  const [t, rows, cats, prods] = await Promise.all([
+  const [t, rows, timeZone] = await Promise.all([
     getTranslations({ locale, namespace: "Admin" }),
     listPromotions(),
-    listAllCategories(),
-    listAllProducts(),
+    getTimezone(),
   ]);
-  const edit = rows.find((r) => r.id === editar) ?? null;
+  const lang = canonicalLocale(locale);
+  const now = new Date();
   const base = `/${locale}/admin/promocoes`;
+  const create = (
+    <Link href={`${base}/novo`} className={buttonVariants({ size: "sm" })}>
+      {t("form.newPromotion")}
+    </Link>
+  );
 
   return (
     <>
-      <h1 className="font-heading text-3xl font-bold text-heading">{t("nav.promotions")}</h1>
-      <GradientCard tone="solid" className="grid gap-4">
-        <h2 className="font-heading text-xl font-semibold text-heading">
-          {edit ? t("form.edit", { name: edit.name }) : t("form.newPromotion")}
-        </h2>
-        <ActionForm
-          key={edit?.id ?? "new"}
-          action={savePromotion}
-          locale={locale}
-          id={edit?.id}
-          submit={t("form.save")}
-          saved={t("form.saved")}
-          errors={formErrors(t)}
-        >
-          <div className="grid gap-4 md:grid-cols-2">
-            <Field label={t("fields.name")}>
-              <Input name="name" required maxLength={80} defaultValue={edit?.name} />
-            </Field>
-            <DiscountFields t={t} v={edit} categories={cats} products={prods} />
-          </div>
-        </ActionForm>
-        {edit ? (
-          <Link href={base} className="text-sm text-link hover:underline">
-            {t("form.cancel")}
-          </Link>
-        ) : null}
-      </GradientCard>
-
-      <div className="overflow-x-auto">
-        <table className={tableCls}>
+      <PageHeader
+        title={t("nav.promotions")}
+        description={t("crud.count", { n: rows.length })}
+        actions={create}
+      />
+      {rows.length ? (
+        <ListTable>
           <thead>
             <tr>
               <th>{t("fields.name")}</th>
@@ -71,32 +54,52 @@ export default async function PromotionsAdmin({
               <th>{t("fields.endsAt")}</th>
               <th>{t("table.status")}</th>
               <th>
-                <span className="sr-only">{t("form.editLink")}</span>
+                <span className="sr-only">{t("crud.actions")}</span>
               </th>
             </tr>
           </thead>
           <tbody>
             {rows.map((r) => (
               <tr key={r.id}>
-                <td className="text-heading">{r.name}</td>
-                <td>{r.type === "percent" ? `${r.value}%` : `${valueOf(r)} USDT`}</td>
-                <td>{toUtcInput(r.startsAt).replace("T", " ")}</td>
-                <td>{toUtcInput(r.endsAt).replace("T", " ")}</td>
-                <td>{r.active ? t("table.active") : t("table.inactive")}</td>
-                <td>
+                <td data-label={t("fields.name")}>
                   <Link
-                    href={`${base}?editar=${r.id}`}
-                    aria-label={`${t("form.editLink")} ${r.name}`}
-                    className="text-link hover:underline"
+                    href={`${base}/${r.id}`}
+                    className="font-semibold text-heading hover:text-link hover:underline"
                   >
-                    {t("form.editLink")}
+                    {r.name}
                   </Link>
+                </td>
+                <td data-label={t("fields.value")}>
+                  {r.type === "percent" ? `${r.value}%` : `${valueOf(r)} USDT`}
+                </td>
+                <td data-label={t("fields.startsAt")} className="md:whitespace-nowrap">
+                  <LocalTime iso={r.startsAt.toISOString()} locale={lang} timeZone={timeZone} />
+                </td>
+                <td data-label={t("fields.endsAt")} className="md:whitespace-nowrap">
+                  <LocalTime iso={r.endsAt.toISOString()} locale={lang} timeZone={timeZone} />
+                </td>
+                <td data-label={t("table.status")}>
+                  <StatusBadge tone={DISCOUNT_TONE[discountState(r, now)]}>
+                    {t(`crud.window.${discountState(r, now)}`)}
+                  </StatusBadge>
+                </td>
+                <td>
+                  <RowActions
+                    entity="promotion"
+                    id={r.id}
+                    name={r.name}
+                    href={`${base}/${r.id}`}
+                    locale={locale}
+                    t={t}
+                  />
                 </td>
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
+        </ListTable>
+      ) : (
+        <EmptyState title={t("crud.empty")} action={create} />
+      )}
     </>
   );
 }

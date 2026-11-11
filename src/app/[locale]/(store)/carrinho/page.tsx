@@ -12,6 +12,8 @@ import { describeItem } from "@/features/cart/describe";
 import { KindTile } from "@/features/catalog";
 import { CheckoutForm } from "@/features/orders";
 import { canonicalLocale } from "@/i18n/routing";
+import { env } from "@/lib/env";
+import { invoiceReady } from "@/lib/payments/crypto";
 import { getTimezone } from "@/lib/preferences";
 
 export const instant = false;
@@ -150,6 +152,7 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
             locale={locale}
             defaultEmail={customer?.email}
             disabled={cart.hasUnavailable}
+            manualPayment={!env.PAYMENTS_ENABLED || !invoiceReady()}
             expectedTotal={cart.totalCents}
             labels={{
               email: k("email"),
@@ -162,15 +165,14 @@ export default async function CartPage({ params }: PageProps<"/[locale]/carrinho
               card: k("card"),
               payCard: k("payCard"),
               cardNotImplemented: k("errors.cardNotImplemented"),
+              manualPayment: k("maintenance"),
               errors: {
                 email: k("errors.email"),
                 empty: k("errors.empty"),
                 unavailable: k("errors.unavailable"),
-                payment: k("errors.payment"),
                 coupon: k("errors.coupon"),
                 changed: k("errors.changed"),
                 limited: k("errors.limited"),
-                notImplemented: k("errors.notImplemented"),
                 cardNotImplemented: k("errors.cardNotImplemented"),
               },
             }}

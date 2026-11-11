@@ -1,5 +1,5 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
-import { and, asc, count, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import { db } from "@/db";
 import {
   auditLog,
@@ -9,12 +9,13 @@ import {
   products,
   productVariants,
   promotions,
-  subcategories,
+  productTags,
+  tags,
   users,
 } from "@/db/schema";
 import { ADMIN_PAGE_SIZE, type Cursor } from "@/lib/pagination";
 import { saveAudited } from "./audit";
-import type { CategoryInput, CouponInput, ProductInput, PromotionInput, SubcategoryInput } from "./schemas";
+import type { CategoryInput, CouponInput, ProductInput, PromotionInput, TagInput } from "./schemas";
 
 // Admin vê tudo, inclusive inativos (a vitrine filtra — RN-19)
 export async function listAllCategories() {
@@ -34,6 +35,7 @@ export async function listAllCategories() {
       ),
     })
     .from(categories)
+    .where(isNull(categories.deletedAt)) // #158: excluído some do painel (fica no banco)
     .orderBy(asc(categories.sortOrder), asc(categories.name));
 }
 
@@ -48,7 +50,10 @@ export async function listAllProducts() {
       description: products.description,
       imageUrl: products.imageUrl,
       priceUsdtCents: products.priceUsdtCents,
-      subcategoryId: products.subcategoryId,
+      // #160: ids das tags na ordem (a primeira é a principal)
+      tagIds: sql<
+        string[]
+      >`coalesce((select array_agg(pt.tag_id::text order by pt.position) from ${productTags} pt where pt.product_id = ${products.id}), '{}'::text[])`,
       addons: products.addons,
       optionAxes: products.optionAxes, // #100
       variants: sql<
@@ -64,6 +69,7 @@ export async function listAllProducts() {
     })
     .from(products)
     .innerJoin(categories, eq(products.categoryId, categories.id))
+    .where(isNull(products.deletedAt))
     .orderBy(asc(categories.sortOrder), asc(products.sortOrder), asc(products.name));
 }
 
@@ -75,29 +81,20 @@ export async function activeProductCount(categoryId: string): Promise<number> {
   return r?.n ?? 0;
 }
 
-// #94: subcategorias com o nome da categoria (admin vê inativas também)
-export const listAllSubcategories = () =>
+// #160: tags (admin vê inativas também; excluídas não) com quantos produtos usam cada uma
+export const listAllTags = () =>
   db
     .select({
-      id: subcategories.id,
-      categoryId: subcategories.categoryId,
-      categoryName: categories.name,
-      name: subcategories.name,
-      slug: subcategories.slug,
-      sortOrder: subcategories.sortOrder,
-      active: subcategories.active,
+      id: tags.id,
+      name: tags.name,
+      slug: tags.slug,
+      sortOrder: tags.sortOrder,
+      active: tags.active,
+      products: db.$count(productTags, eq(productTags.tagId, tags.id)),
     })
-    .from(subcategories)
-    .innerJoin(categories, eq(subcategories.categoryId, categories.id))
-    .orderBy(asc(categories.sortOrder), asc(subcategories.sortOrder), asc(subcategories.name));
-
-export async function subcategoryCategoryOf(id: string) {
-  const [r] = await db
-    .select({ categoryId: subcategories.categoryId })
-    .from(subcategories)
-    .where(eq(subcategories.id, id));
-  return r?.categoryId ?? null;
-}
+    .from(tags)
+    .where(isNull(tags.deletedAt))
+    .orderBy(asc(tags.sortOrder), asc(tags.name));
 
 export async function categoryKindOf(id: string) {
   const [r] = await db.select({ kind: categories.kind }).from(categories).where(eq(categories.id, id));
@@ -117,7 +114,8 @@ export function isForeignKeyViolation(err: unknown): boolean {
   return e?.code === "23503" || e?.cause?.code === "23503";
 }
 
-export const listPromotions = () => db.select().from(promotions).orderBy(desc(promotions.endsAt));
+export const listPromotions = () =>
+  db.select().from(promotions).where(isNull(promotions.deletedAt)).orderBy(desc(promotions.endsAt));
 
 // RN-27: usos = reservados + usados
 export const listCoupons = () =>
@@ -133,6 +131,7 @@ export const listCoupons = () =>
       ),
     })
     .from(coupons)
+    .where(isNull(coupons.deletedAt))
     .orderBy(desc(coupons.endsAt));
 
 // RN-71: toda gravação do dashboard passa por saveAudited (antes/depois na mesma transação)
@@ -154,20 +153,20 @@ export const saveCategoryRow = (staffId: string, id: string | null, v: CategoryI
     },
   );
 
-export const saveSubcategoryRow = (staffId: string, id: string | null, v: SubcategoryInput) =>
+export const saveTagRow = (staffId: string, id: string | null, v: TagInput) =>
   saveAudited(
-    "subcategory",
+    "tag",
     staffId,
     id,
-    async (tx, key) => (await tx.select().from(subcategories).where(eq(subcategories.id, key)))[0],
+    async (tx, key) => (await tx.select().from(tags).where(eq(tags.id, key)))[0],
     async (tx) => {
       const [r] = id
         ? await tx
-            .update(subcategories)
+            .update(tags)
             .set({ ...v, updatedAt: new Date() })
-            .where(eq(subcategories.id, id))
-            .returning({ id: subcategories.id })
-        : await tx.insert(subcategories).values(v).returning({ id: subcategories.id });
+            .where(eq(tags.id, id))
+            .returning({ id: tags.id })
+        : await tx.insert(tags).values(v).returning({ id: tags.id });
       return r?.id;
     },
   );
@@ -188,7 +187,14 @@ async function productSnapshot(tx: Tx, key: string) {
     .from(productVariants)
     .where(and(eq(productVariants.productId, key), eq(productVariants.active, true)))
     .orderBy(asc(productVariants.sortOrder));
-  return { ...p, variants };
+  const tagIds = (
+    await tx
+      .select({ id: productTags.tagId })
+      .from(productTags)
+      .where(eq(productTags.productId, key))
+      .orderBy(asc(productTags.position))
+  ).map((t) => t.id);
+  return { ...p, variants, tags: tagIds };
 }
 
 // #100: grava as combinações pela chave (produto, opções); as que saíram da lista são desativadas — não
@@ -223,7 +229,7 @@ async function syncVariants(tx: Tx, productId: string, list: ProductInput["varia
 }
 
 export const saveProductRow = (staffId: string, id: string | null, v: ProductInput, unit: string | null) => {
-  const { price, variants, ...rest } = v;
+  const { price, variants, tags: tagIds, ...rest } = v;
   const row = { ...rest, priceUsdtCents: price, unit };
   return saveAudited("product", staffId, id, productSnapshot, async (tx) => {
     const [r] = id
@@ -233,7 +239,15 @@ export const saveProductRow = (staffId: string, id: string | null, v: ProductInp
           .where(eq(products.id, id))
           .returning({ id: products.id })
       : await tx.insert(products).values(row).returning({ id: products.id });
-    if (r) await syncVariants(tx, r.id, variants);
+    if (r) {
+      await syncVariants(tx, r.id, variants);
+      // #160: tags na ordem escolhida (posição 0 = principal); trocar = apagar a ligação e gravar de novo
+      await tx.delete(productTags).where(eq(productTags.productId, r.id));
+      if (tagIds.length)
+        await tx
+          .insert(productTags)
+          .values(tagIds.map((tagId, position) => ({ productId: r.id, tagId, position })));
+    }
     return r?.id;
   });
 };
@@ -276,7 +290,12 @@ export const saveCouponRow = (staffId: string, id: string | null, v: CouponInput
 
 // RN-71 / #88: auditoria por cursor (mais recentes primeiro). Keyset em vez de OFFSET: a tabela só
 // cresce. Busca uma linha a mais para saber se existe página seguinte.
-export async function listAudit(before: Cursor | null, limit = ADMIN_PAGE_SIZE) {
+// RF-30 (doc 17): filtro opcional por entidade e por pessoa (valores já conferidos pela página)
+export async function listAudit(
+  before: Cursor | null,
+  limit = ADMIN_PAGE_SIZE,
+  filter: { entity?: string; staffId?: string } = {},
+) {
   const rows = await db
     .select({
       id: auditLog.id,
@@ -292,11 +311,63 @@ export async function listAudit(before: Cursor | null, limit = ADMIN_PAGE_SIZE) 
     .from(auditLog)
     .innerJoin(users, eq(auditLog.staffId, users.id))
     .where(
-      before
-        ? sql`(${auditLog.createdAt}, ${auditLog.id}) < (${before.at}::timestamptz, ${before.id}::uuid)`
-        : undefined,
+      and(
+        before
+          ? sql`(${auditLog.createdAt}, ${auditLog.id}) < (${before.at}::timestamptz, ${before.id}::uuid)`
+          : undefined,
+        filter.entity ? eq(auditLog.entity, filter.entity) : undefined,
+        filter.staffId ? eq(auditLog.staffId, filter.staffId) : undefined,
+      ),
     )
     .orderBy(desc(auditLog.createdAt), desc(auditLog.id))
     .limit(limit + 1);
   return { rows: rows.slice(0, limit), more: rows.length > limit };
+}
+
+// #158 + RN-72: excluir só MARCA (deleted_at) e desativa (tag excluída some dos produtos na loja) — o registro fica no banco porque pedidos,
+// carrinhos e a auditoria apontam para ele. Some do painel e da loja. Categoria com produtos não sai.
+export type Deletable = "category" | "tag" | "product" | "promotion" | "coupon";
+const TABLES = {
+  category: categories,
+  tag: tags,
+  product: products,
+  promotion: promotions,
+  coupon: coupons,
+};
+
+export async function deleteCatalogRow(
+  entity: Deletable,
+  staffId: string,
+  id: string,
+): Promise<"ok" | "inUse" | "missing"> {
+  const table = TABLES[entity];
+  if (entity === "category") {
+    const [used] = await db
+      .select({ id: products.id })
+      .from(products)
+      .where(and(eq(products.categoryId, id), isNull(products.deletedAt)))
+      .limit(1);
+    if (used) return "inUse";
+  }
+  let done = false;
+  await saveAudited(
+    entity,
+    staffId,
+    id,
+    async (tx, key) =>
+      entity === "product"
+        ? productSnapshot(tx, key)
+        : (await tx.select().from(table).where(eq(table.id, key)))[0],
+    async (tx) => {
+      const [r] = await tx
+        .update(table)
+        .set({ deletedAt: new Date(), active: false, updatedAt: new Date() })
+        .where(and(eq(table.id, id), isNull(table.deletedAt)))
+        .returning({ id: table.id });
+      done = !!r;
+      return r?.id;
+    },
+    "delete",
+  );
+  return done ? "ok" : "missing";
 }

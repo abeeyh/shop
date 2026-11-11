@@ -230,6 +230,8 @@ flowchart LR
 | PR com `infra/` | `terraform fmt -check`, `validate`, `plan` | Sim |
 | Semanal | rebuild de imagens, audit, Dependabot (PRs para `dev`) | — |
 
+Falha de infraestrutura do runner (rede, espelho do apt) não é falha do código (#175): o passo do navegador do Playwright tenta 3x com espera e, se o apt continuar fora, instala só o Chromium e avisa no log. Nunca se faz merge com check vermelho; o caminho é rodar de novo (`gh run rerun --failed`).
+
 Rollback: redeploy da tag anterior. Produção só recebe imagem que passou por homologação (exceção: `hotfix/*`, com smoke antes). Migrações compatíveis com a versão anterior (expandir → migrar → contrair).
 
 ## 8. Testes

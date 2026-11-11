@@ -8,7 +8,12 @@ import { isStaff } from "./queries";
 export async function getCustomer() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session || (await isStaff(session.user.id))) return null;
-  return { id: session.user.id, email: session.user.email };
+  return {
+    id: session.user.id,
+    email: session.user.email,
+    name: session.user.name,
+    avatar: (session.user as { avatar?: string | null }).avatar ?? null, // #162
+  };
 }
 
 // sessão de equipe aberta (para mandar ao /admin em vez do login da loja)

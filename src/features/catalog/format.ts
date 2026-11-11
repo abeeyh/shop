@@ -45,7 +45,7 @@ type CardProduct = Pick<
   priceOnRequest: boolean;
   hot: boolean;
   description: string;
-  subcategoryName: string | null;
+  tags: string[]; // #160
   optionAxes: unknown[];
 };
 
@@ -69,7 +69,7 @@ export function toProductCard(
     name: p.name,
     kind: p.categoryKind,
     badge: p.hot ? labels.hot : undefined,
-    tags: p.subcategoryName ? [p.subcategoryName] : [],
+    tags: p.tags,
     description: p.description,
     price: p.priceOnRequest ? labels.onRequest : formatUsdt(locale, price.cents),
     original: !p.priceOnRequest && price.originalCents ? formatUsdt(locale, price.originalCents) : undefined,

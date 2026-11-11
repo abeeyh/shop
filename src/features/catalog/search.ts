@@ -1,7 +1,8 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
-import { and, asc, desc, eq, gte, inArray, isNull, lte, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, lte, or, sql, type SQL } from "drizzle-orm";
 import { db } from "@/db";
-import { categories, products, promotions, raidSlots, subcategories } from "@/db/schema";
+import { categories, products, promotions, raidSlots } from "@/db/schema";
+import { productTagNames } from "./tags-sql";
 import { PAGE_SIZE, type Filters } from "./schemas";
 
 const SIMILARITY = 0.3; // RN-100: limiar do pg_trgm (tolera erro de digitação: "mithic" → "Mythic")
@@ -44,11 +45,7 @@ export async function searchProducts(f: Filters) {
   const score = f.q
     ? sql<number>`(2 * word_similarity(${f.q}, ${products.name}) + word_similarity(${f.q}, ${categories.name}) + 0.5 * word_similarity(${f.q}, ${products.description}))`
     : sql<number>`0`;
-  // subcategoria desativada esconde os produtos dela também na busca (igual à categoria — #94)
-  const conditions = [
-    ...filterConditions(f),
-    or(isNull(products.subcategoryId), eq(subcategories.active, true)),
-  ];
+  const conditions = filterConditions(f);
   const order = {
     relevance: [desc(score), desc(products.salesCount)],
     best: [desc(products.salesCount), asc(products.name)],
@@ -63,7 +60,7 @@ export async function searchProducts(f: Filters) {
       name: products.name,
       description: products.description,
       optionAxes: products.optionAxes, // #102: "a partir de" na lista
-      subcategoryName: subcategories.name,
+      tags: productTagNames, // #160
       priceUsdtCents: products.priceUsdtCents,
       unit: products.unit,
       salesCount: products.salesCount,
@@ -78,7 +75,6 @@ export async function searchProducts(f: Filters) {
     })
     .from(products)
     .innerJoin(categories, eq(products.categoryId, categories.id))
-    .leftJoin(subcategories, eq(products.subcategoryId, subcategories.id))
     .where(and(...conditions))
     .orderBy(...order)
     .limit(PAGE_SIZE)

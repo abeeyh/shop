@@ -13,9 +13,16 @@ import { env } from "@/lib/env";
 import { errorSummary, logger } from "@/lib/logger";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
 import { createInvoice, invoiceReady } from "@/lib/payments/crypto";
-import { orderPath } from "./link";
-import { CouponLimitError, insertOrder, markExpired, setInvoice, SoldOutError } from "./queries";
-import { NETWORKS, PAYMENT_WINDOW_MINUTES } from "./rules";
+import { isOrderToken, orderPath } from "./link";
+import {
+  CouponLimitError,
+  getOrder,
+  insertOrder,
+  requestRefund,
+  SoldOutError,
+  startPayment,
+} from "./queries";
+import { canRequestRefund, NETWORKS, PAYMENT_WINDOW_MINUTES, STAFF_STEPS } from "./rules";
 
 export type CheckoutState = {
   error:
@@ -27,7 +34,6 @@ export type CheckoutState = {
     | "coupon"
     | "changed"
     | "limited"
-    | "notImplemented"
     | "cardNotImplemented";
 };
 
@@ -64,24 +70,17 @@ async function createOrder(order: Parameters<typeof insertOrder>[0], cartId: str
   }
 }
 
-// RN-35/RN-36: meio de pagamento sem provedor ligado — nada é criado nem reservado
-// (cartão: provedor ainda não escolhido, #25; USDT: sem chave do gateway)
-function providerMissing(method: "usdt" | "card") {
-  if (method === "card") return "cardNotImplemented" as const;
-  return invoiceReady() ? null : ("notImplemented" as const);
-}
-
 // RN-107: conta logada (opcional) — visitante compra só com e-mail (RN-01)
 const customerId = async () => (await getCustomer())?.id ?? null;
 
-// RN-01, RN-20, RN-30, RN-35: total recalculado aqui; o pedido congela os preços; o pagamento é
-// na fatura do provedor e só o IPN confirma (RN-32)
+// RN-01, RN-20, RN-30, RN-35: total recalculado aqui; o pedido congela os preços e nasce
+// "solicitado" (#170) — o pagamento começa no botão "Pagar" da página do pedido (payOrder)
 export async function placeOrder(_prev: CheckoutState, form: FormData): Promise<CheckoutState> {
   const parsed = input.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: "email" };
   const { email, method, network, locale, expectedTotal } = parsed.data;
-  const blocked = providerMissing(method);
-  if (blocked) return { error: blocked };
+  // RN-35 (#120): cartão ainda sem provedor (#25) — nada é criado nem reservado
+  if (method === "card") return { error: "cardNotImplemented" };
   if (await checkoutLimited()) return { error: "limited" };
   const cartId = await getCartId();
   const cart = await cartSummary(locale, cartId);
@@ -119,27 +118,66 @@ export async function placeOrder(_prev: CheckoutState, form: FormData): Promise<
 
   const created = await createOrder(order, cartId);
   if (typeof created !== "string") return created;
-  const orderId = created;
+  await clearCart(cartId);
+  redirect(orderPath(locale, created));
+}
 
+export type OrderActionState = { error: "" | "payment" | "stale" };
+
+const orderInput = z.object({ locale: z.enum(routing.locales), id: z.uuid(), t: z.string().max(200) });
+
+// dono do pedido = quem tem o link assinado (RN-01; docs/09: IDOR)
+async function ownedOrder(form: FormData) {
+  const p = orderInput.safeParse(Object.fromEntries(form));
+  if (!p.success || !isOrderToken(p.data.id, p.data.t)) return null;
+  const order = await getOrder(p.data.id);
+  return order ? { order, locale: p.data.locale } : null;
+}
+
+// RN-32/RN-35 (#170): "Pagar". Gateway ligado (PAYMENTS_ENABLED + chave) = fatura do provedor e o IPN
+// confirma. Senão o pedido fica aguardando e o suporte confirma o pagamento à mão (auditado, RN-07).
+// TODO(#25/#146): tirar o modo manual quando o gateway sair da manutenção.
+export async function payOrder(_prev: OrderActionState, form: FormData): Promise<OrderActionState> {
+  const owned = await ownedOrder(form);
+  if (!owned || owned.order.status !== "solicitado" || !owned.order.network) return { error: "stale" };
+  const { order, locale } = owned;
+  const network = owned.order.network;
+  if (!env.PAYMENTS_ENABLED || !invoiceReady()) {
+    if (!(await startPayment(order.id))) return { error: "stale" };
+    refresh();
+    return { error: "" };
+  }
   let payUrl: string;
   try {
     const invoice = await createInvoice({
-      orderId,
-      totalUsdtCents: cart.totalCents,
+      orderId: order.id,
+      totalUsdtCents: order.totalUsdtCents,
       network,
       ipnUrl: `${env.APP_URL}/api/webhooks/crypto`,
-      returnUrl: `${env.APP_URL}${orderPath(locale, orderId)}`,
+      returnUrl: `${env.APP_URL}${orderPath(locale, order.id)}`,
     });
-    await setInvoice(orderId, "nowpayments", invoice.providerPaymentId, invoice.payUrl);
     payUrl = invoice.payUrl;
+    const ok = await startPayment(order.id, {
+      provider: "nowpayments",
+      providerPaymentId: invoice.providerPaymentId,
+      payUrl,
+    });
+    if (!ok) return { error: "stale" };
   } catch (err) {
     logger.error(
-      { event: "checkout.invoice_failed", orderId, ...errorSummary(err) },
+      { event: "checkout.invoice_failed", orderId: order.id, ...errorSummary(err) },
       "falha ao criar fatura",
     );
-    await markExpired(orderId); // carrinho continua intacto para tentar de novo
-    return { error: "payment" };
+    return { error: "payment" }; // continua solicitado: dá para tentar de novo
   }
-  await clearCart(cartId);
   redirect(payUrl);
+}
+
+// #170: cliente pede reembolso de pedido pago; a equipe analisa e só o admin reembolsa
+export async function askRefund(_prev: OrderActionState, form: FormData): Promise<OrderActionState> {
+  const owned = await ownedOrder(form);
+  if (!owned || !canRequestRefund(owned.order.status)) return { error: "stale" };
+  if (!(await requestRefund(owned.order.id, STAFF_STEPS.requestRefund.from))) return { error: "stale" };
+  refresh();
+  return { error: "" };
 }

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 // docs/11-design.md §6: estilo só aqui; na chamada, className apenas para layout
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-full font-heading font-semibold transition-colors " +
+  "inline-flex items-center justify-center gap-2 rounded-full font-heading font-semibold transition-[color,background-color,border-color,transform] duration-150 active:scale-[0.97] " + // #168: aperta ao clicar
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 " +
     "focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
   {

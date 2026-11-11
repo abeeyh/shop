@@ -45,13 +45,15 @@ classDiagram
     +slug: string
     +sortOrder: int
     +active: boolean
+    +deletedAt: datetime?
   }
-  class Subcategory {
+  class Tag {
     +id: string
     +name: string
     +slug: string
     +sortOrder: int
     +active: boolean
+    +deletedAt: datetime?
   }
   class Product {
     +id: string
@@ -69,6 +71,7 @@ classDiagram
     +images: src+alt[]
     +faq: q+a[]
     +active: boolean
+    +deletedAt: datetime?
   }
   class ProductVariant {
     +options: eixo→valor
@@ -83,6 +86,7 @@ classDiagram
     +scope: store|category|product
     +startsAt: Date (UTC)
     +endsAt: Date (UTC)
+    +deletedAt: datetime?
   }
   class Coupon {
     +code: string
@@ -94,6 +98,7 @@ classDiagram
     +maxUses: int?
     +maxUsesPerEmail: int?
     +minOrderUsdtCents: int?
+    +deletedAt: datetime?
   }
   class CouponRedemption {
     +email: string
@@ -154,8 +159,7 @@ classDiagram
     +type: string
   }
   Category "1" *-- "*" Product
-  Category "1" --> "0..*" Subcategory
-  Subcategory "0..1" --> "0..*" Product
+  Product "0..*" --> "0..*" Tag : tags (posição 0 = principal)
   Cart "1" *-- "*" CartItem
   CartItem "*" --> "1" Product
   CartItem "*" --> "0..1" RaidSlot
@@ -180,6 +184,7 @@ classDiagram
     +active: boolean
   }
   class SupportConversation {
+    +userId: string?
     +locale: string
     +status: aberta|em_atendimento|resolvida
     +guestEmail: string?
@@ -192,6 +197,7 @@ classDiagram
   }
   SupportConversation "1" *-- "*" SupportMessage
   SupportConversation "*" --> "0..1" Order
+  SupportConversation "*" --> "0..1" User : conta (#162)
   SupportConversation "*" --> "0..1" StaffProfile : atendente
 ```
 
@@ -205,7 +211,7 @@ sequenceDiagram
   participant FX as Cotação
   participant P as Provedor (cripto ou cartão)
   U->>W: Finalizar compra (USDT ou cartão)
-  W->>DB: recalcula total em USDT (RN-20), cria pedido pendente, reserva gold/vaga (RN-34)
+  W->>DB: recalcula total em USDT (RN-20), cria pedido solicitado, reserva gold/vaga (RN-34)
   alt cartão
     W->>FX: cotação USDT→moeda do cartão
     W->>DB: grava cotação travada 15 min (RN-36)
@@ -224,19 +230,28 @@ sequenceDiagram
 
 ```mermaid
 stateDiagram-v2
-  [*] --> pendente
-  pendente --> pago: pagamento confirmado
-  pendente --> pagamento_parcial: USDT a menor
-  pagamento_parcial --> pago: complemento
-  pendente --> expirado: 30 min sem pagamento
-  pago --> em_andamento: admin atribui
-  em_andamento --> concluido: prova de entrega (RN-52)
-  pago --> reembolsado
-  em_andamento --> reembolsado
-  pago --> contestado: chargeback
-  em_andamento --> contestado: chargeback
-  concluido --> contestado: chargeback
-  expirado --> [*]
+  [*] --> solicitado: checkout
+  solicitado --> aguardando_pagamento: cliente clica em Pagar
+  solicitado --> pago: suporte confirma à mão (#170)
+  aguardando_pagamento --> pago: IPN ou suporte confirma
+  aguardando_pagamento --> pagamento_parcial: USDT a menor (suporte avalia)
+  pagamento_parcial --> pago: complemento ou suporte confirma
+  solicitado --> cancelado: 2 h sem pagamento
+  aguardando_pagamento --> cancelado: 2 h sem pagamento
+  aguardando_pagamento --> falha_pagamento: falha/contestação
+  pagamento_parcial --> falha_pagamento: falha/contestação
+  pago --> falha_pagamento: contestação (admin)
+  pago --> agendado: equipe agenda
+  agendado --> concluido_parcial: prova parcial (RN-52)
+  agendado --> concluido: prova de entrega (RN-52)
+  concluido_parcial --> concluido: prova de entrega
+  pago --> reembolso_solicitado: cliente ou equipe
+  agendado --> reembolso_solicitado
+  concluido_parcial --> reembolso_solicitado
+  concluido --> reembolso_solicitado
+  reembolso_solicitado --> reembolsado: só admin
+  cancelado --> [*]
+  falha_pagamento --> [*]
   reembolsado --> [*]
   concluido --> [*]
 ```

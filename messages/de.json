@@ -25,7 +25,8 @@
       "carmesim": "Karmesin",
       "ouro": "Schwarzgold",
       "vazio": "Leere-Magenta"
-    }
+    },
+    "dashboard": "Dashboard"
   },
   "Home": {
     "badge": "WoW Retail · US",
@@ -35,7 +36,9 @@
     "ctaRaid": "Raid buchen",
     "categories": "Kategorien",
     "bestSellers": "Bestseller",
-    "viewAll": "Alle anzeigen"
+    "viewAll": "Alle anzeigen",
+    "featured": "Im Fokus",
+    "seeOptions": "Optionen ansehen"
   },
   "Catalog": {
     "perK": "pro 1.000 Gold",
@@ -52,12 +55,20 @@
     "close": "Schließen",
     "breadcrumb": "Brotkrümelnavigation",
     "gallery": "Galerie",
-    "faq": "Häufige Fragen"
+    "faq": "Häufige Fragen",
+    "tags": "Tags",
+    "allTags": "Alle",
+    "view": {
+      "group": "Ansicht",
+      "list": "Liste",
+      "grid": "Raster"
+    }
   },
   "Footer": {
     "about": "Gold, Raids, Mythisch+ und Erfolge für World of Warcraft Retail US.",
     "copyright": "© 2026 Shop · Nicht mit Blizzard Entertainment verbunden.",
-    "report": "Problem melden"
+    "report": "Problem melden",
+    "iconCredits": "Kategorie-Icons:"
   },
   "NotFound": {
     "title": "Seite nicht gefunden",
@@ -195,17 +206,16 @@
       "email": "Gib eine gültige E-Mail an.",
       "empty": "Dein Warenkorb ist leer.",
       "unavailable": "Entferne die nicht verfügbaren Artikel, um fortzufahren.",
-      "payment": "Die Zahlung konnte nicht erstellt werden. Versuche es gleich noch einmal.",
       "coupon": "Dieser Gutschein hat sein Nutzungslimit erreicht. Entferne ihn, um fortzufahren.",
       "changed": "Der Preis hat sich geändert (eine Aktion ist abgelaufen oder der Gutschein wurde geändert). Prüfe die neue Summe und versuche es erneut.",
       "limited": "Zu viele Bestellversuche. Warte ein paar Minuten und versuche es erneut.",
-      "notImplemented": "USDT-Zahlung: API noch nicht implementiert.",
       "cardNotImplemented": "Kreditkarte: API noch nicht implementiert. Bezahle vorerst mit Krypto (USDT)."
     },
     "method": "Zahlungsart",
     "crypto": "Krypto (USDT)",
     "card": "Kreditkarte",
-    "payCard": "Mit Karte bezahlen"
+    "payCard": "Mit Karte bezahlen",
+    "maintenance": "Derzeit bestätigt der Support Zahlungen von Hand: Bestellung aufgeben, auf Bezahlen klicken und uns im Chat schreiben."
   },
   "Order": {
     "title": "Deine Bestellung",
@@ -217,14 +227,17 @@
     "waiting": "Warte auf die Zahlungsbestätigung. Lade die Seite neu, um sie zu aktualisieren.",
     "partial": "Wir haben {paid} erhalten. Sende den Rest, um die Zahlung abzuschließen.",
     "statuses": {
-      "pendente": "Zahlung ausstehend",
+      "solicitado": "Angefragt",
+      "aguardando_pagamento": "Wartet auf Zahlung",
       "pagamento_parcial": "Teilweise bezahlt",
       "pago": "Bezahlt",
-      "em_andamento": "In Bearbeitung",
+      "agendado": "Geplant",
+      "concluido_parcial": "Teilweise abgeschlossen",
       "concluido": "Abgeschlossen",
-      "expirado": "Abgelaufen",
+      "reembolso_solicitado": "Erstattung angefragt",
       "reembolsado": "Erstattet",
-      "contestado": "Angefochten"
+      "cancelado": "Storniert",
+      "falha_pagamento": "Zahlung fehlgeschlagen"
     },
     "discount": "Gutscheinrabatt",
     "delivered": "Geliefert — danke!",
@@ -232,7 +245,26 @@
     "scheduleTitle": "Run planen",
     "scheduleText": "Sprich im Chat mit dem Support, um Datum und Uhrzeit deines Runs festzulegen.",
     "scheduleButton": "Mit dem Support planen",
-    "scheduleMessage": "Hallo! Ich möchte den Run für Bestellung {order} planen."
+    "scheduleMessage": "Hallo! Ich möchte den Run für Bestellung {order} planen.",
+    "payNow": "Bezahlen",
+    "manualPayment": "Derzeit bestätigt der Support deine Zahlung. Schreib uns im Chat, um zu bezahlen.",
+    "partialReview": "Wir haben einen Teil der Zahlung erhalten. Der Support prüft deine Bestellung.",
+    "paymentChat": "Mit dem Support bezahlen",
+    "paymentMessage": "Hallo! Ich möchte Bestellung {order} bezahlen.",
+    "failedNotice": "Die Zahlung ist fehlgeschlagen oder wurde angefochten. Es wird nichts weiter abgebucht; schreib dem Support im Chat, wenn du Hilfe brauchst.",
+    "refundNotice": "Erstattung angefragt. Das Team prüft sie und meldet sich bald.",
+    "cancelledNotice": "Diese Bestellung wurde storniert, weil innerhalb von 2 Stunden keine Zahlung einging.",
+    "errors": {
+      "payment": "Die Zahlung konnte nicht erstellt werden. Versuch es gleich noch einmal.",
+      "stale": "Diese Bestellung hat sich bereits geändert. Lade die Seite neu."
+    },
+    "refund": {
+      "button": "Erstattung anfragen",
+      "title": "Erstattung anfragen?",
+      "message": "Das Team prüft die Anfrage. Nur ein Admin kann die Erstattung freigeben.",
+      "confirm": "Erstattung anfragen",
+      "cancel": "Zurück"
+    }
   },
   "Admin": {
     "title": "Admin",
@@ -250,7 +282,9 @@
       "team": "Team",
       "support": "Support",
       "subcategories": "Unterkategorien",
-      "twoFactor": "2FA"
+      "twoFactor": "2FA",
+      "overview": "Übersicht",
+      "tags": "Tags"
     },
     "login": {
       "title": "Anmeldung (Team)",
@@ -279,7 +313,22 @@
       "limited": "Zu viele Versuche. Warte ein paar Minuten und versuche es erneut."
     },
     "dashboard": {
-      "title": "Hallo, {name}"
+      "title": "Hallo, {name}",
+      "subtitle": "Was jetzt jemanden braucht.",
+      "now": "Jetzt",
+      "ordersToDo": "Offene Bestellungen",
+      "openChats": "Offene Chats",
+      "oldestChat": "Älteste:",
+      "newReports": "Neue Meldungen",
+      "paidToday": "Heute bezahlt",
+      "revenue": "{value} erhalten",
+      "endingSoon": "Rabatte enden in 3 Tagen",
+      "no2fa": "Team ohne 2FA",
+      "recentOrders": "Neueste Bestellungen",
+      "recentActivity": "Letzte Aktivität",
+      "seeAll": "Alle ansehen",
+      "emptyOrders": "Noch keine Bestellungen.",
+      "emptyActivity": "Keine Änderungen erfasst."
     },
     "fields": {
       "name": "Name",
@@ -308,7 +357,10 @@
       "optionAxes": "Optionen (eine pro Zeile: Name | slider oder boxes | Wert, Wert…)",
       "variants": "Kombinationen (eine pro Zeile: Achse=Wert; Achse=Wert | Preis oder - | Notiz)",
       "maxQuantity": "Max. Anzahl pro Bestellung",
-      "hot": "Beliebt (hervorgehoben)"
+      "hot": "Beliebt (hervorgehoben)",
+      "primaryTag": "Haupt-Tag (gruppiert die Kategorieseite)",
+      "otherTags": "Weitere Tags",
+      "noTag": "— ohne Tag —"
     },
     "kinds": {
       "gold": "Gold",
@@ -328,14 +380,36 @@
       "editLink": "Bearbeiten",
       "newPromotion": "Neue Aktion",
       "newCoupon": "Neuer Gutschein",
-      "newSubcategory": "Neue Unterkategorie"
+      "newSubcategory": "Neue Unterkategorie",
+      "newTag": "Neuer Tag",
+      "sec": {
+        "info": "Angaben",
+        "infoHint": "Die Grundlagen, die Leute sehen und suchen.",
+        "display": "Darstellung",
+        "displayHint": "Wie es aussieht und wo es im Shop steht.",
+        "status": "Status",
+        "statusHint": "Inaktives verschwindet aus dem Shop, bleibt aber im Panel.",
+        "pricing": "Preis und Menge",
+        "pricingHint": "Preis in USDT. Bei Optionen ergibt sich der Preis aus den Kombinationen.",
+        "options": "Optionen",
+        "optionsHint": "Zusätze, Auswahlmöglichkeiten und der Preis jeder Kombination.",
+        "discount": "Rabatt",
+        "discountHint": "Wie viel abgezogen wird und wo er gilt.",
+        "schedule": "Gültigkeit",
+        "scheduleHint": "Beginn und Ende des Zeitraums, in UTC.",
+        "limits": "Limits",
+        "limitsHint": "Wie oft es genutzt werden kann und der Mindestbestellwert.",
+        "danger": "Gefahrenbereich",
+        "dangerHint": "Löschen entfernt den Eintrag aus Panel und Shop. Der Datensatz bleibt für frühere Bestellungen und das Audit-Protokoll in der Datenbank."
+      }
     },
     "table": {
       "activeProducts": "Aktive Produkte",
       "status": "Status",
       "active": "Aktiv",
       "inactive": "Inaktiv",
-      "uses": "Nutzungen"
+      "uses": "Nutzungen",
+      "products": "Produkte"
     },
     "formErrors": {
       "generic": "Prüfe die Felder.",
@@ -362,7 +436,8 @@
       "addons": "Ein Extra pro Zeile als „Name | 25“ (1–100 %, keine Doppelten, max. 10).",
       "optionAxes": "Bis zu 4 Optionen im Format „Bosses | slider | 2/8, 3/8“ (eindeutige Namen und Werte, max. 30 Werte).",
       "variants": "Jede Kombination braucht einen gelisteten Wert pro Option, einen Preis (oder - für auf Anfrage) und darf sich nicht wiederholen. Ohne Optionen leer lassen.",
-      "maxQuantity": "Nutze 1 bis 100."
+      "maxQuantity": "Nutze 1 bis 100.",
+      "tags": "Tags: bis zu 10 wählen, ohne Wiederholung."
     },
     "discount": {
       "percent": "Prozent",
@@ -383,14 +458,20 @@
         "order": "Bestellung",
         "bug_report": "Fehlermeldung",
         "staff": "Teammitglied",
-        "support_hours": "Support-Zeiten"
+        "support_hours": "Support-Zeiten",
+        "tag": "Tag"
       },
       "actions": {
         "create": "Erstellt",
-        "update": "Geändert"
+        "update": "Geändert",
+        "delete": "Gelöscht"
       },
       "older": "Ältere",
-      "newest": "Neueste"
+      "newest": "Neueste",
+      "subtitle": "Wer was im Panel geändert hat, das Neueste zuerst.",
+      "allEntities": "Alles",
+      "everyone": "Alle",
+      "empty": "Keine Änderungen mit diesen Filtern."
     },
     "orders": {
       "todo": "Offen",
@@ -398,12 +479,39 @@
       "order": "Bestellung",
       "tx": "Transaktion",
       "proof": "Liefernachweis",
-      "start": "Lieferung starten",
-      "complete": "Als abgeschlossen markieren",
       "proofUrl": "Link zum Liefernachweis (https — Screenshot oder Log)",
       "note": "Hinweis für den Kunden",
       "proofError": "Gib einen https-Link zum Liefernachweis an.",
-      "stale": "Jemand anderes hat diese Bestellung schon weitergesetzt. Lade die Seite neu."
+      "stale": "Jemand anderes hat diese Bestellung schon weitergesetzt. Lade die Seite neu.",
+      "count": "{n, plural, one {# Bestellung} other {# Bestellungen}}",
+      "search": "Nach ID oder E-Mail suchen",
+      "assignee": "Zuständig",
+      "created": "Erstellt",
+      "emptySearch": "Keine Bestellung gefunden.",
+      "emptyAll": "Noch keine Bestellungen.",
+      "emptyTodo": "Gerade nichts zu tun.",
+      "searchHint": "Nutze den Anfang der ID (z. B. 3e66e13d) oder die vollständige E-Mail.",
+      "back": "Zurück zu den Bestellungen",
+      "timeline": "Verlauf",
+      "steps": {
+        "confirmPayment": "Zahlung bestätigen",
+        "schedule": "Planen",
+        "partial": "Als teilweise abgeschlossen markieren",
+        "complete": "Als abgeschlossen markieren",
+        "requestRefund": "Erstattung anfragen",
+        "refund": "Erstatten",
+        "fail": "Zahlung als fehlgeschlagen markieren"
+      },
+      "confirmSteps": {
+        "confirmPayment": "Bestätige erst, wenn die Zahlung vollständig im richtigen Netzwerk angekommen ist. Wird im Audit-Log gespeichert.",
+        "schedule": "Du übernimmst diese Bestellung und planst den Service. Der Kunde sieht, dass sie geplant ist.",
+        "partial": "Ein Teil der Bestellung ist geliefert. Füge den Nachweis hinzu; der Kunde sieht ihn.",
+        "complete": "Die Bestellung wird mit diesem Nachweis abgeschlossen und der Kunde benachrichtigt. Nicht umkehrbar.",
+        "requestRefund": "Die Bestellung geht in die Erstattungsprüfung. Nur ein Admin kann erstatten.",
+        "refund": "Bestätige erst, nachdem das Geld an den Kunden zurückging. Nicht umkehrbar.",
+        "fail": "Die Zahlung ist fehlgeschlagen oder wurde angefochten. Der Kunde wird informiert; Platz und Gutschein werden freigegeben."
+      },
+      "nextSteps": "Nächste Schritte"
     },
     "reports": {
       "new": "Neu",
@@ -413,7 +521,12 @@
       "ids": "Fehler-ID · Request-ID",
       "context": "Sprache · Region · Zeitzone · Version",
       "browser": "Browser",
-      "resolve": "Als erledigt markieren"
+      "resolve": "Als erledigt markieren",
+      "confirmResolve": "Die Meldung verschwindet aus der Liste der neuen.",
+      "countAll": "{n, plural, one {# Meldung} other {# Meldungen}}",
+      "countNew": "{n, plural, one {# neue Meldung} other {# neue Meldungen}}",
+      "emptyAll": "Noch keine Meldungen.",
+      "emptyNew": "Keine neuen Meldungen."
     },
     "team": {
       "role": "Rolle",
@@ -430,7 +543,15 @@
         "emailTaken": "Für diese E-Mail gibt es schon ein Konto.",
         "self": "Du kannst dein eigenes Konto nicht deaktivieren oder herabstufen.",
         "lastAdmin": "Mindestens ein aktiver Admin muss bleiben."
-      }
+      },
+      "count": "{n, plural, one {# Person im Team} other {# Personen im Team}}",
+      "copy": "Link kopieren",
+      "copied": "Kopiert",
+      "deactivateTitle": "{email} deaktivieren?",
+      "deactivateMessage": "Die Person wird sofort aus allen Sitzungen abgemeldet und kommt nicht mehr ins Panel, bis sie wieder aktiviert wird.",
+      "members": "Mitglieder",
+      "pending": "Offene Einladungen",
+      "expires": "läuft ab"
     },
     "accept": {
       "title": "Dem Team beitreten",
@@ -444,7 +565,8 @@
         "mismatch": "Die Passwörter stimmen nicht überein.",
         "pwned": "Dieses Passwort ist in einem Datenleck aufgetaucht. Wähle ein anderes.",
         "expired": "Diese Einladung ist ungültig, schon benutzt oder abgelaufen. Bitte einen Admin um eine neue."
-      }
+      },
+      "nextStep": "Bitte den Admin des Shops um eine neue Einladung. Jeder Link gilt 7 Tage und nur einmal."
     },
     "support": {
       "customer": "Kunde",
@@ -456,7 +578,21 @@
       },
       "assume": "Chat übernehmen",
       "resolve": "Als gelöst markieren",
-      "you": "Du"
+      "you": "Du",
+      "count": "{n, plural, one {# offener Chat} other {# offene Chats}}",
+      "assignee": "Agent",
+      "lastMessage": "Letzte Nachricht",
+      "yourLanguage": "deine Sprache",
+      "empty": "Keine offenen Chats.",
+      "emptyHint": "Die Seite aktualisiert sich alle 15 Sekunden.",
+      "back": "Zurück zur Warteschlange",
+      "customerOrders": "Bestellungen dieser E-Mail",
+      "noOrders": "Keine Bestellungen mit dieser E-Mail.",
+      "confirm": {
+        "assume": "Du übernimmst diesen Chat.",
+        "resolve": "Der Chat wird geschlossen. Schreibt der Kunde erneut, öffnet er sich wieder."
+      },
+      "typing": "Kunde schreibt…"
     },
     "hours": {
       "title": "Supportzeiten (UTC)",
@@ -465,6 +601,55 @@
       "start": "Von",
       "end": "Bis",
       "error": "Jeder geöffnete Tag braucht eine Start- und Endzeit, die sich unterscheiden."
+    },
+    "groups": {
+      "operation": "Betrieb",
+      "catalog": "Katalog",
+      "manage": "Verwaltung"
+    },
+    "confirm": {
+      "ok": "Bestätigen",
+      "cancel": "Zurück"
+    },
+    "crud": {
+      "count": "{n, plural, one {# Eintrag} other {# Einträge}}",
+      "empty": "Noch nichts angelegt.",
+      "noMatch": "Nichts passt zu diesen Filtern.",
+      "delete": "Löschen",
+      "deleteTitle": "{name} löschen?",
+      "deleteMessage": "Verschwindet aus Panel und Shop, bleibt aber in der Datenbank: alte Bestellungen und das Audit verweisen weiter darauf.",
+      "deleteConfirm": "Löschen",
+      "inUse": "Diese Kategorie hat noch Produkte. Lösche oder verschiebe sie zuerst.",
+      "search": "Suchen",
+      "allCategories": "Alle Kategorien",
+      "allStatuses": "Alle",
+      "window": {
+        "inactive": "Inaktiv",
+        "scheduled": "Geplant",
+        "live": "Aktiv",
+        "expired": "Abgelaufen"
+      },
+      "actions": "Aktionen"
+    },
+    "options": {
+      "addonName": "Name des Zusatzes",
+      "percent": "Aufpreis (%)",
+      "addAddon": "Zusatz hinzufügen",
+      "axisName": "Name der Achse (z. B. Bosses)",
+      "style": "Stil",
+      "slider": "Schieberegler (Werte in Folge)",
+      "boxes": "Kästchen (einzelne Auswahl)",
+      "values": "Werte, durch Kommas getrennt",
+      "valuesHint": "In der Reihenfolge, die der Kunde sieht.",
+      "addAxis": "Achse hinzufügen",
+      "variantsHint": "Markiere die verkauften Kombinationen und gib den USDT-Preis je Kombination an.",
+      "include": "Verkauft",
+      "note": "Notiz",
+      "remove": "Entfernen",
+      "tooMany": "Zu viele Kombinationen (max. 200). Reduziere die Achsenwerte.",
+      "addonsTitle": "Zusätze",
+      "axesTitle": "Optionen des Service",
+      "variantsTitle": "Kombinationen und Preise"
     }
   },
   "Errors": {
@@ -557,6 +742,30 @@
       "characterDuplicate": "Dieser Charakter ist bereits gespeichert.",
       "exists": "Für diese E-Mail gibt es schon ein Konto. Melde dich an.",
       "staff": "Das ist ein Team-Konto: Melde dich im Panel an (/admin)."
+    },
+    "profile": {
+      "title": "Profil",
+      "name": "Wie sollen wir dich nennen",
+      "avatar": "Avatar",
+      "none": "Nur die Initiale",
+      "save": "Profil speichern",
+      "saved": "Profil gespeichert",
+      "error": "Prüfe die Felder und versuche es erneut.",
+      "avatars": {
+        "sword": "Schwert",
+        "shield": "Schild",
+        "wand": "Zauberstab",
+        "skull": "Schädel",
+        "crown": "Krone",
+        "flame": "Flamme",
+        "ghost": "Geist",
+        "gem": "Juwel"
+      }
+    },
+    "support": {
+      "title": "Support",
+      "start": "Mit dem Support sprechen",
+      "history": "Frühere Gespräche"
     }
   }
 }

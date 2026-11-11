@@ -1,9 +1,9 @@
 import "server-only"; // regra de negócio, banco e segredos só no servidor (docs/04)
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
-import { and, asc, count, eq, gt, inArray, ne } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, inArray, ne } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { db } from "@/db";
-import { supportConversations, supportMessages } from "@/db/schema";
+import { supportConversations, supportMessages, users } from "@/db/schema";
 import { env } from "@/lib/env";
 import { publish } from "@/lib/pubsub";
 import { maskSensitive } from "./mask";
@@ -66,13 +66,20 @@ export async function createConversation(v: {
   name: string | null;
   locale: string;
   body: string;
+  userId?: string | null; // #162: logado, a conversa fica na conta
 }) {
   const token = randomBytes(32).toString("base64url");
   const body = maskSensitive(v.body).text; // RN-95: antes de gravar
   const id = await db.transaction(async (tx) => {
     const [c] = await tx
       .insert(supportConversations)
-      .values({ guestEmail: v.email, guestName: v.name, locale: v.locale, guestTokenHash: hash(token) })
+      .values({
+        guestEmail: v.email,
+        guestName: v.name,
+        locale: v.locale,
+        guestTokenHash: hash(token),
+        userId: v.userId ?? null,
+      })
       .returning({ id: supportConversations.id });
     await tx.insert(supportMessages).values({ conversationId: c!.id, authorType: "customer", body });
     return c!.id;
@@ -152,8 +159,25 @@ export const listQueue = () =>
       createdAt: supportConversations.createdAt,
       lastMessageAt: supportConversations.lastMessageAt,
       assignedTo: supportConversations.assignedTo,
+      assignee: users.email, // RF-23 (doc 17): quem está atendendo
     })
     .from(supportConversations)
+    .leftJoin(users, eq(users.id, supportConversations.assignedTo))
     .where(inArray(supportConversations.status, ["aberta", "em_atendimento"]))
     .orderBy(asc(supportConversations.createdAt)) // as mais antigas nunca somem da fila
     .limit(200);
+
+// #162 (RN-92): conversas da conta, a mais recente primeiro (perfil e chat em qualquer aparelho)
+export const listAccountConversations = (userId: string, limit = 10) =>
+  db
+    .select({
+      id: supportConversations.id,
+      status: supportConversations.status,
+      createdAt: supportConversations.createdAt,
+      lastMessageAt: supportConversations.lastMessageAt,
+      resolvedAt: supportConversations.resolvedAt,
+    })
+    .from(supportConversations)
+    .where(eq(supportConversations.userId, userId))
+    .orderBy(desc(supportConversations.lastMessageAt))
+    .limit(limit);
