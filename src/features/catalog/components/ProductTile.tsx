@@ -6,7 +6,7 @@ import type { ProductCardData } from "./ProductCard";
 
 type Props = { p: ProductCardData; cta: string; flag?: string; hideTag?: string | null };
 
-const chip = "rounded-full px-2 py-0.5 text-xs font-semibold";
+const chip = "max-w-full truncate rounded-full px-2 py-0.5 text-xs font-semibold";
 
 // #166: produto em cartão (vista em grade) — ícone grande da categoria, nome, etiquetas, preço e "Comprar".
 // O cartão inteiro é o link (um por produto, acessível); "Comprar" é só o rótulo visual.
@@ -14,12 +14,12 @@ export function ProductTile({ p, cta, flag, hideTag }: Props) {
   return (
     <article
       data-spotlight
-      className="relative flex flex-col gap-3 rounded-lg border border-border bg-card/60 p-4 transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-gradient-from/50"
+      className="relative flex min-w-0 flex-col gap-3 rounded-lg border border-border bg-card/60 p-4 transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-gradient-from/50"
     >
       <div className="grid aspect-[16/9] place-items-center rounded-md bg-linear-[135deg] from-gradient-from/25 to-gradient-to/10 text-heading ring-1 ring-border">
         <KindIcon kind={p.kind} className="size-14 drop-shadow-[0_0_18px_var(--gradient-from)]" />
       </div>
-      <h3 className="font-heading text-[15px] font-semibold text-heading">
+      <h3 className="font-heading text-[15px] font-semibold [overflow-wrap:anywhere] text-heading">
         <Link
           href={p.href}
           className="after:absolute after:inset-0 after:rounded-lg after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-ring"
@@ -38,9 +38,13 @@ export function ProductTile({ p, cta, flag, hideTag }: Props) {
             </span>
           ))}
       </div>
-      <div className="mt-auto flex items-end justify-between gap-3">
+      {/* #180: sem espaço, o botão desce para a linha de baixo em vez de sair do cartão */}
+      <div className="mt-auto flex flex-wrap items-end justify-between gap-x-3 gap-y-2">
         <PriceTag price={p.price} original={p.original} unit={p.unit} size="sm" />
-        <span aria-hidden="true" className={buttonVariants({ variant: "gradient-outline", size: "sm" })}>
+        <span
+          aria-hidden="true"
+          className={`${buttonVariants({ variant: "gradient-outline", size: "sm" })} shrink-0`}
+        >
           {cta}
         </span>
       </div>
