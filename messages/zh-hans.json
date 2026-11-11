@@ -4,6 +4,7 @@
     "description": "World of Warcraft 美服的金币、团队副本、史诗钥石与成就。使用 USDT 付款。"
   },
   "Nav": {
+    "allProducts": "全部",
     "label": "主菜单",
     "skip": "跳到内容",
     "language": "语言",
